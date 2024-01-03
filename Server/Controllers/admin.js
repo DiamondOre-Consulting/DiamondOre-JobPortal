@@ -12,11 +12,12 @@ import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { v4 as uuidv4 } from 'uuid';
 import Candidates from "../Models/Candidates.js";
-import CandidateAuthenticateToken from "../Middlewares/CandidateAuthenticateToken.js";
+import Admin from "../Models/Admin.js";
+import AdminAuthenticateToken from "../Middlewares/AdminAuthenticateToken.js";
 
 dotenv.config();
 
-const secretKey = process.env.JWT_SECRET;
+const secretKey = process.env.JWT_SECRET_ADMIN;
 
 const router = express.Router();
 
@@ -60,7 +61,7 @@ router.post("/send-otp", async (req, res) => {
     const { email } = req.body;
     console.log(req.body);
 
-    const userExists = await Candidates.exists({ email });
+    const userExists = await Admin.exists({ email });
     if (userExists) {
       return res.status(409).json({ message: "User already exists" });
     }
@@ -90,10 +91,10 @@ const credentials = {
     secretAccessKey: "93L4ucUETrFEyo9laZtPsvNCjttYAcCsIRxvmHcc"
 };
 
-const credentialsResumes = {
-    accessKeyId: "rjRpgCugr4BV9iTw",
-    secretAccessKey: "KBhGM26n6kLYZnigoZk6QJnB3GTqHYvMEQ1ihuZs"
-};
+// const credentialsResumes = {
+//     accessKeyId: "rjRpgCugr4BV9iTw",
+//     secretAccessKey: "KBhGM26n6kLYZnigoZk6QJnB3GTqHYvMEQ1ihuZs"
+// };
 
 // Create an S3 service client object
 const s3Client = new S3Client({
@@ -102,11 +103,11 @@ const s3Client = new S3Client({
     region: "global"
 });
 
-const s3ClientResumes = new S3Client({
-    endpoint: "https://s3.tebi.io",
-    credentials: credentialsResumes,
-    region: "global"
-});
+// const s3ClientResumes = new S3Client({
+//     endpoint: "https://s3.tebi.io",
+//     credentials: credentialsResumes,
+//     region: "global"
+// });
 
 // Handle Image file upload
 router.post('/upload-profile-pic', async (req, res) => {
@@ -164,63 +165,63 @@ router.post('/upload-profile-pic', async (req, res) => {
 });
 
 // Handle Resume file upload
-router.post('/upload-resume', async (req, res) => {
-    try {
-        const file = req.files && req.files.myFile; // Change 'myFile' to match the key name in Postman
+// router.post('/upload-resume', async (req, res) => {
+//     try {
+//         const file = req.files && req.files.myFile; // Change 'myFile' to match the key name in Postman
         
-        if (!file) {
-            return res.status(400).send('No file uploaded');
-        }
+//         if (!file) {
+//             return res.status(400).send('No file uploaded');
+//         }
 
-        // Generate a unique identifier
-        const uniqueIdentifier = uuidv4();
+//         // Generate a unique identifier
+//         const uniqueIdentifier = uuidv4();
 
-        // Get the file extension from the original file name
-        const fileExtension = file.name.split('.').pop();
+//         // Get the file extension from the original file name
+//         const fileExtension = file.name.split('.').pop();
 
-        // Create a unique filename by appending the unique identifier to the original filename
-        const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
+//         // Create a unique filename by appending the unique identifier to the original filename
+//         const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
 
-        // Convert file to base64
-        const base64Data = file.data.toString('base64');
+//         // Convert file to base64
+//         const base64Data = file.data.toString('base64');
 
-        // Create a buffer from the base64 data
-        const fileBuffer = Buffer.from(base64Data, 'base64');
+//         // Create a buffer from the base64 data
+//         const fileBuffer = Buffer.from(base64Data, 'base64');
 
-        const uploadData = await s3ClientResumes.send(
-            new PutObjectCommand({
-                Bucket: "resumes",
-                Key: uniqueFileName, // Use the unique filename for the S3 object key
-                Body: fileBuffer // Provide the file buffer as the Body
-            })
-        );
+//         const uploadData = await s3ClientResumes.send(
+//             new PutObjectCommand({
+//                 Bucket: "resumes",
+//                 Key: uniqueFileName, // Use the unique filename for the S3 object key
+//                 Body: fileBuffer // Provide the file buffer as the Body
+//             })
+//         );
 
-        // Generate a public URL for the uploaded file
-        const getObjectCommand = new GetObjectCommand({
-            Bucket: "resumes",
-            Key: uniqueFileName
-        });
+//         // Generate a public URL for the uploaded file
+//         const getObjectCommand = new GetObjectCommand({
+//             Bucket: "resumes",
+//             Key: uniqueFileName
+//         });
 
-        const signedUrl = await getSignedUrl(s3Client, getObjectCommand); // Generate URL valid for 1 hour
+//         const signedUrl = await getSignedUrl(s3Client, getObjectCommand); // Generate URL valid for 1 hour
 
-        // Parse the signed URL to extract the base URL
-        const parsedUrl = new URL(signedUrl);
-        const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
+//         // Parse the signed URL to extract the base URL
+//         const parsedUrl = new URL(signedUrl);
+//         const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
 
-        // Send the URL as a response
-        res.status(200).send(baseUrl);
+//         // Send the URL as a response
+//         res.status(200).send(baseUrl);
 
-        // Log the URL in the console
-        console.log("File uploaded. URL:", baseUrl);
-    } catch (error) {
-        console.error("Error uploading file:", error);
-        return res.status(500).send('Error uploading file');
-    }
-});
+//         // Log the URL in the console
+//         console.log("File uploaded. URL:", baseUrl);
+//     } catch (error) {
+//         console.error("Error uploading file:", error);
+//         return res.status(500).send('Error uploading file');
+//     }
+// });
 
 // SIGNUP AS CANDIDATE
-router.post("/signup", async (req, res) => {
-    const { name, email, phone, password, otp, profilePic, resume } = req.body;
+router.post("/signup-admin", async (req, res) => {
+    const { name, email, password, otp, profilePic } = req.body;
   
     console.log("Signup Email:", email);
     console.log("Entered OTP:", otp);
@@ -231,7 +232,7 @@ router.post("/signup", async (req, res) => {
     try {
       // Verify OTP
       if (otpStore[email] == otp) {
-        const userExists = await Candidates.exists({ email });
+        const userExists = await Admin.exists({ email });
         if (userExists) {
           return res.status(409).json({ message: "User already exists" });
         }
@@ -240,14 +241,12 @@ router.post("/signup", async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
   
         // Create a new user object
-        const newUser = new Candidates({
+        const newUser = new Admin({
           name,
           email,
-          phone,
           otp: null,
           password: hashedPassword,
           profilePic,
-          resume
         });
   
         // Save the user to the database
@@ -257,7 +256,7 @@ router.post("/signup", async (req, res) => {
   
         return res
           .status(201)
-          .json({ message: "Candidate User created successfully" });
+          .json({ message: "Admin User created successfully" });
       } else {
         return res.status(400).json({ message: "Something went wrong!!!" });
       }
@@ -272,12 +271,12 @@ router.post("/signup", async (req, res) => {
   });
 
 // LOGIN AS CANDIDATE
-router.post("/login", async (req, res) => {
+router.post("/login-admin", async (req, res) => {
   const { email, password } = req.body;
 
   try {
     // Find the user in the database
-    const user = await Candidates.findOne({ email });
+    const user = await Admin.findOne({ email });
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
@@ -289,7 +288,7 @@ router.post("/login", async (req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ userId: user._id, name: user.name, email: user.email, role: "candidate" }, secretKey, {
+    const token = jwt.sign({ userId: user._id, name: user.name, email: user.email, role: "admin" }, secretKey, {
       expiresIn: "1h",
     });
 
@@ -301,13 +300,13 @@ router.post("/login", async (req, res) => {
 });
 
 // FETCHING USER DATA
-router.get("/user-data", CandidateAuthenticateToken, async (req, res) => {
+router.get("/user-data", AdminAuthenticateToken, async (req, res) => {
   try {
     // Get the user's email from the decoded token
     const { email } = req.user;
 
     // Find the user in the database
-    const user = await Candidates.findOne({ email });
+    const user = await Admin.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -316,22 +315,14 @@ router.get("/user-data", CandidateAuthenticateToken, async (req, res) => {
     const {
       id,
       name,
-      phone,
       profilePic,
-      resume,
-      allAppliedJobs,
-      allShortlistedJobs
     } = user;
 
     res.status(200).json({
       id,
       name,
       email,
-      phone,
       profilePic,
-      resume,
-      allAppliedJobs,
-      allShortlistedJobs
     });
   } catch (error) {
     console.error("Error fetching user data:", error);

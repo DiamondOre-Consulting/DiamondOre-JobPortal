@@ -10,12 +10,17 @@ const adminSchema = new mongoose.Schema({
     required: true,
     // unique: true,
   },
+  otp: {
+    type: String,
+    default: null
+  },
   password: {
     type: String,
     required: true,
   },
   profilePic: {
     type: String,
+    default: "https://cdn-icons-png.flaticon.com/512/9131/9131529.png"
   },
   createdAt: {
     type: Date,
