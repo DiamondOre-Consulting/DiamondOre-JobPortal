@@ -355,6 +355,28 @@ router.get("/all-jobs", async (req, res) => {
   }
 })
 
+// FETCHING ALL APPLIED JOBS
+// router.get("/all-applied-jobs", CandidateAuthenticateToken, async (req, res) => {
+//   try {
+//         // Get the user's email from the decoded token
+//         const { email } = req.user;
+
+//         // Find the user in the database
+//         const user = await Candidates.findOne({ email });
+//         if (!user) {
+//           return res.status(404).json({ message: "User not found" });
+//         }
+//     const allJobs = await Jobs.find({});
+
+//     console.log(allJobs.);
+
+//     return res.status(200).json({allJobs});
+//   } catch (error) {
+//       console.log(error);
+//       return res.status(500).json({message: "Something went wrong!!!"})
+//   }
+// })
+
 // FETCHING A PARTICULAR JOB
 router.get("/all-jobs/:id", CandidateAuthenticateToken, async (req, res) => {
   try{

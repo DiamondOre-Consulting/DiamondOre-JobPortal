@@ -10,7 +10,7 @@ const AdminAuthenticateToken = (req, res, next) => {
   
     try {
       // Verify and decode the token
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET_ADMIN);
   
       // Attach the decoded token to the request object
       req.user = decoded;

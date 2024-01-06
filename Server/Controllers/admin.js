@@ -10,10 +10,12 @@ import forgotOtp from "../server.js";
 import { S3Client } from "@aws-sdk/client-s3";
 import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import Candidates from "../Models/Candidates.js";
 import Admin from "../Models/Admin.js";
 import AdminAuthenticateToken from "../Middlewares/AdminAuthenticateToken.js";
+import Status from "../Models/Status.js";
+import Jobs from "../Models/Jobs.js";
 
 dotenv.config();
 
@@ -85,10 +87,9 @@ router.post("/send-otp", async (req, res) => {
   }
 });
 
-
 const credentials = {
-    accessKeyId: "wRc04Y5sYocX6Aec",
-    secretAccessKey: "93L4ucUETrFEyo9laZtPsvNCjttYAcCsIRxvmHcc"
+  accessKeyId: "wRc04Y5sYocX6Aec",
+  secretAccessKey: "93L4ucUETrFEyo9laZtPsvNCjttYAcCsIRxvmHcc",
 };
 
 // const credentialsResumes = {
@@ -98,9 +99,9 @@ const credentials = {
 
 // Create an S3 service client object
 const s3Client = new S3Client({
-    endpoint: "https://s3.tebi.io",
-    credentials: credentials,
-    region: "global"
+  endpoint: "https://s3.tebi.io",
+  credentials: credentials,
+  region: "global",
 });
 
 // const s3ClientResumes = new S3Client({
@@ -110,65 +111,65 @@ const s3Client = new S3Client({
 // });
 
 // Handle Image file upload
-router.post('/upload-profile-pic', async (req, res) => {
-    try {
-        const file = req.files && req.files.myFile; // Change 'myFile' to match the key name in Postman
-        
-        if (!file) {
-            return res.status(400).send('No file uploaded');
-        }
+router.post("/upload-profile-pic", async (req, res) => {
+  try {
+    const file = req.files && req.files.myFile; // Change 'myFile' to match the key name in Postman
 
-        // Generate a unique identifier
-        const uniqueIdentifier = uuidv4();
-
-        // Get the file extension from the original file name
-        const fileExtension = file.name.split('.').pop();
-
-        // Create a unique filename by appending the unique identifier to the original filename
-        const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
-
-        // Convert file to base64
-        const base64Data = file.data.toString('base64');
-
-        // Create a buffer from the base64 data
-        const fileBuffer = Buffer.from(base64Data, 'base64');
-
-        const uploadData = await s3Client.send(
-            new PutObjectCommand({
-                Bucket: "profilepics",
-                Key: uniqueFileName, // Use the unique filename for the S3 object key
-                Body: fileBuffer // Provide the file buffer as the Body
-            })
-        );
-
-        // Generate a public URL for the uploaded file
-        const getObjectCommand = new GetObjectCommand({
-            Bucket: "profilepics",
-            Key: uniqueFileName
-        });
-
-        const signedUrl = await getSignedUrl(s3Client, getObjectCommand); // Generate URL valid for 1 hour
-
-        // Parse the signed URL to extract the base URL
-        const parsedUrl = new URL(signedUrl);
-        const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
-
-        // Send the URL as a response
-        res.status(200).send(baseUrl);
-
-        // Log the URL in the console
-        console.log("File uploaded. URL:", baseUrl);
-    } catch (error) {
-        console.error("Error uploading file:", error);
-        return res.status(500).send('Error uploading file');
+    if (!file) {
+      return res.status(400).send("No file uploaded");
     }
+
+    // Generate a unique identifier
+    const uniqueIdentifier = uuidv4();
+
+    // Get the file extension from the original file name
+    const fileExtension = file.name.split(".").pop();
+
+    // Create a unique filename by appending the unique identifier to the original filename
+    const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
+
+    // Convert file to base64
+    const base64Data = file.data.toString("base64");
+
+    // Create a buffer from the base64 data
+    const fileBuffer = Buffer.from(base64Data, "base64");
+
+    const uploadData = await s3Client.send(
+      new PutObjectCommand({
+        Bucket: "profilepics",
+        Key: uniqueFileName, // Use the unique filename for the S3 object key
+        Body: fileBuffer, // Provide the file buffer as the Body
+      })
+    );
+
+    // Generate a public URL for the uploaded file
+    const getObjectCommand = new GetObjectCommand({
+      Bucket: "profilepics",
+      Key: uniqueFileName,
+    });
+
+    const signedUrl = await getSignedUrl(s3Client, getObjectCommand); // Generate URL valid for 1 hour
+
+    // Parse the signed URL to extract the base URL
+    const parsedUrl = new URL(signedUrl);
+    const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
+
+    // Send the URL as a response
+    res.status(200).send(baseUrl);
+
+    // Log the URL in the console
+    console.log("File uploaded. URL:", baseUrl);
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    return res.status(500).send("Error uploading file");
+  }
 });
 
 // Handle Resume file upload
 // router.post('/upload-resume', async (req, res) => {
 //     try {
 //         const file = req.files && req.files.myFile; // Change 'myFile' to match the key name in Postman
-        
+
 //         if (!file) {
 //             return res.status(400).send('No file uploaded');
 //         }
@@ -221,54 +222,54 @@ router.post('/upload-profile-pic', async (req, res) => {
 
 // SIGNUP AS ADMIN
 router.post("/signup-admin", async (req, res) => {
-    const { name, email, password, otp, profilePic } = req.body;
-  
-    console.log("Signup Email:", email);
-    console.log("Entered OTP:", otp);
-    console.log("Stored OTP:", otpStore[email]);
-    // const isValidOTP = verifyOTP(otpStore, otp); //TESTING OTP
-    // if (isValidOTP) {
-    // TESTING OTP
-    try {
-      // Verify OTP
-      if (otpStore[email] == otp) {
-        const userExists = await Admin.exists({ email });
-        if (userExists) {
-          return res.status(409).json({ message: "User already exists" });
-        }
-  
-        // Hash the password
-        const hashedPassword = await bcrypt.hash(password, 10);
-  
-        // Create a new user object
-        const newUser = new Admin({
-          name,
-          email,
-          otp: null,
-          password: hashedPassword,
-          profilePic,
-        });
-  
-        // Save the user to the database
-        await newUser.save();
-  
-        delete otpStore[email];
-  
-        return res
-          .status(201)
-          .json({ message: "Admin User created successfully" });
-      } else {
-        return res.status(400).json({ message: "Something went wrong!!!" });
+  const { name, email, password, otp, profilePic } = req.body;
+
+  console.log("Signup Email:", email);
+  console.log("Entered OTP:", otp);
+  console.log("Stored OTP:", otpStore[email]);
+  // const isValidOTP = verifyOTP(otpStore, otp); //TESTING OTP
+  // if (isValidOTP) {
+  // TESTING OTP
+  try {
+    // Verify OTP
+    if (otpStore[email] == otp) {
+      const userExists = await Admin.exists({ email });
+      if (userExists) {
+        return res.status(409).json({ message: "User already exists" });
       }
-      // Check if user already exists
-    } catch (error) {
-      console.error("Error creating user:", error);
-      return res.status(500).json({ message: "Internal server error" });
+
+      // Hash the password
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      // Create a new user object
+      const newUser = new Admin({
+        name,
+        email,
+        otp: null,
+        password: hashedPassword,
+        profilePic,
+      });
+
+      // Save the user to the database
+      await newUser.save();
+
+      delete otpStore[email];
+
+      return res
+        .status(201)
+        .json({ message: "Admin User created successfully" });
+    } else {
+      return res.status(400).json({ message: "Something went wrong!!!" });
     }
-    // } else {
-    //   res.status(400).json({ error: "Invalid OTP" });
-    // }
-  });
+    // Check if user already exists
+  } catch (error) {
+    console.error("Error creating user:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+  // } else {
+  //   res.status(400).json({ error: "Invalid OTP" });
+  // }
+});
 
 // LOGIN AS ADMIN
 router.post("/login-admin", async (req, res) => {
@@ -288,9 +289,13 @@ router.post("/login-admin", async (req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ userId: user._id, name: user.name, email: user.email, role: "admin" }, secretKey, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { userId: user._id, name: user.name, email: user.email, role: "admin" },
+      secretKey,
+      {
+        expiresIn: "1h",
+      }
+    );
 
     return res.status(200).json({ token });
   } catch (error) {
@@ -312,11 +317,7 @@ router.get("/user-data", AdminAuthenticateToken, async (req, res) => {
     }
 
     // Extract the required fields from the user object
-    const {
-      id,
-      name,
-      profilePic,
-    } = user;
+    const { id, name, profilePic } = user;
 
     res.status(200).json({
       id,
@@ -330,5 +331,300 @@ router.get("/user-data", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
+router.post("/add-job", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const {
+      Company,
+      JobTitle,
+      Industry,
+      Channel,
+      Vacancies,
+      Zone,
+      City,
+      State,
+      MinExperience,
+      MaxSalary,
+    } = req.body;
+
+    const { email } = req.user;
+
+    // Find the user in the database
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "Not authorized or user not found" });
+    }
+
+    // Create a new user object
+    const newJob = new Jobs({
+      Company,
+      JobTitle,
+      Industry,
+      Channel,
+      Vacancies,
+      Zone,
+      City,
+      State,
+      MinExperience,
+      MaxSalary,
+    });
+
+    // Save the user to the database
+    await newJob.save();
+
+    return res.status(201).json({ message: "A Job added successfully" });
+  } catch (error) {
+    console.error("Error adding job", error);
+    return res.status(500).send("Error adding job");
+  }
+});
+
+// UPDATE CV SHORTLISTED
+router.put(
+  "/update-cv-shortlisted/:id1/:id2",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { email } = req.user;
+      const { id1, id2 } = req.params;
+
+      const current = await Status.findOne({ candidateId: id1, jobId: id2 });
+      console.log(current);
+
+      console.log(email, id1, id2);
+
+      const user = await Admin.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const cvShortlistedStatus = await Status.findOneAndUpdate(
+        { candidateId: id1, jobId: id2 },
+        {
+          $set: { CvShortlisted: true },
+        },
+        { new: true }
+      );
+
+      const cvShortlistedJob = await Jobs.findByIdAndUpdate(
+        { _id: id2 },
+        {
+          $push: { shortlistedResumeApplicants: id1 },
+        }
+      );
+
+      console.log(cvShortlistedJob);
+
+      return res
+        .status(201)
+        .json({ message: "CV Shortlisted status updated sucessfully!!!" });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ error, message: "Something went wrong!!!" });
+    }
+  }
+);
+
+// UPDATE Screening
+router.put(
+  "/update-screening/:id1/:id2",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { email } = req.user;
+      const { id1, id2 } = req.params;
+
+      const user = await Admin.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const screeningStatus = await Status.findOneAndUpdate(
+        { candidateId: id1, jobId: id2 },
+        {
+          $set: { Screening: true },
+        },
+        { new: true }
+      );
+
+      const screeningJob = await Jobs.findByIdAndUpdate(
+        { _id: id2 },
+        {
+          $push: { screeningShortlistedApplicants: id1 },
+        }
+      );
+
+      return res
+        .status(201)
+        .json({ message: "Screening status updated sucessfully!!!" });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: "Something went wrong!!!", error });
+    }
+  }
+);
+
+// UPDATE Interview Scheduled
+router.put(
+  "/update-interviewscheduled/:id1/:id2",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { email } = req.user;
+      const { id1, id2 } = req.params;
+
+      const user = await Admin.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const interviewScheduledStatus = await Status.findOneAndUpdate(
+        { candidateId: id1, jobId: id2 },
+        {
+          $set: { InterviewScheduled: true },
+        },
+        { new: true }
+      );
+
+      const interviewScheduledJob = await Jobs.findByIdAndUpdate(
+        { _id: id2 },
+        {
+          $push: { interviewedScheduledApplicants: id1 },
+        }
+      );
+
+      return res
+        .status(201)
+        .json({ message: "Interview scheduled status updated sucessfully!!!" });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: "Something went wrong!!!", error });
+    }
+  }
+);
+
+// UPDATE Interviewed
+router.put(
+  "/update-interviewed/:id1/:id2",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { email } = req.user;
+      const { id1, id2 } = req.params;
+
+      const user = await Admin.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const interviewedStatus = await Status.findOneAndUpdate(
+        { candidateId: id1, jobId: id2 },
+        {
+          $set: { Interviewed: true },
+        },
+        { new: true }
+      );
+
+      const interviewedJob = await Jobs.findByIdAndUpdate(
+        { _id: id2 },
+        {
+          $push: { interviewedApplicants: id1 },
+        }
+      );
+
+      return res
+        .status(201)
+        .json({ message: "Interviewed status updated sucessfully!!!" });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: "Something went wrong!!!", error });
+    }
+  }
+);
+
+// UPDATE Shortlisted
+router.put(
+  "/update-shortlisted/:id1/:id2",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { email } = req.user;
+      const { id1, id2 } = req.params;
+
+      const user = await Admin.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const shortlistedStatus = await Status.findOneAndUpdate(
+        { candidateId: id1, jobId: id2 },
+        {
+          $set: { Shortlisted: true },
+        },
+        { new: true }
+      );
+
+      const shortlistedJob = await Jobs.findByIdAndUpdate(
+        { _id: id2 },
+        {
+          $push: { shortlistedApplicants: id1 },
+        }
+      );
+
+      return res
+        .status(201)
+        .json({ message: "Shortlisted status updated sucessfully!!!" });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: "Something went wrong!!!", error });
+    }
+  }
+);
+
+// UPDATE Joined
+router.put(
+  "/update-joined/:id1/:id2",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { email } = req.user;
+      const { id1, id2 } = req.params;
+
+      const user = await Admin.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const joinedStatus = await Status.findOneAndUpdate(
+        { candidateId: id1, jobId: id2 },
+        {
+          $set: { Joined: true },
+        },
+        { new: true }
+      );
+
+      const shortlistedJob = await Jobs.findByIdAndUpdate(
+        { _id: id2 },
+        {
+          $push: { joinedApplicants: id1 },
+        }
+      );
+
+      return res
+        .status(201)
+        .json({ message: "Joined status updated sucessfully!!!" });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: "Something went wrong!!!", error });
+    }
+  }
+);
 
 export default router;

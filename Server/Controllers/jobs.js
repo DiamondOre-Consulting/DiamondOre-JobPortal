@@ -12,6 +12,7 @@ import Admin from "../Models/Admin.js";
 import AdminAuthenticateToken from "../Middlewares/AdminAuthenticateToken.js";
 import Jobs from "../Models/Jobs.js";
 import CandidateAuthenticateToken from "../Middlewares/CandidateAuthenticateToken.js";
+import Status from "../Models/Status.js";
 
 dotenv.config();
 
@@ -86,105 +87,61 @@ router.post("/upload-profile-pic", async (req, res) => {
   }
 });
 
-router.post("/add-job", AdminAuthenticateToken, async (req, res) => {
-  try {
-    const {
-      Company,
-      JobTitle,
-      Industry,
-      Channel,
-      Vacancies,
-      Zone,
-      City,
-      State,
-      MinExperience,
-      MaxSalary,
-    } = req.body;
-
-    const { email } = req.user;
-
-    // Find the user in the database
-    const user = await Admin.findOne({ email });
-    if (!user) {
-      return res
-        .status(404)
-        .json({ message: "Not authorized or user not found" });
-    }
-
-    // Create a new user object
-    const newJob = new Jobs({
-        Company,
-        JobTitle,
-        Industry,
-        Channel,
-        Vacancies,
-        Zone,
-        City,
-        State,
-        MinExperience,
-        MaxSalary,
-    });
-
-    // Save the user to the database
-    await newJob.save();
-
-    return res.status(201).json({ message: "A Job added successfully" });
-  } catch (error) {
-    console.error("Error adding job", error);
-    return res.status(500).send("Error adding job");
-  }
-});
-
-
 // Define storage options for Multer
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      // Specify the directory where you want to store the uploaded files
-      cb(
-        null,
-        "C:/Users/Harsh Jha/Documents/RAS Portal Pilot/DiamondOreJobPortal/Server/JobsExcel"
-      );
-    },
-    filename: function (req, file, cb) {
-      // Set the file name to be the original name of the uploaded file
+  destination: function (req, file, cb) {
+    // Specify the directory where you want to store the uploaded files
+    cb(
+      null,
+      "C:/Users/Harsh Jha/Documents/RAS Portal Pilot/DiamondOreJobPortal/Server/JobsExcel"
+    );
+  },
+  filename: function (req, file, cb) {
+    // Set the file name to be the original name of the uploaded file
     //   const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-      cb(null, file.originalname);
-    },
-  });
-  
-  // Create the Multer upload instance
-  const upload = multer({ storage: storage });
+    cb(null, file.originalname);
+  },
+});
+
+// Create the Multer upload instance
+const upload = multer({ storage: storage });
 
 router.post("/upload-job-excel", async (req, res) => {
-    // const uploadedfile = req.file;
-    // const mainFile = uploadedfile.path;
-    // console.log(mainFile);
-try {
-    node_xj({
-        input: "C:/Users/Harsh Jha/Documents/RAS Portal Pilot/DiamondOreJobPortal/Server/Controllers/Book1.xlsx",
+  // const uploadedfile = req.file;
+  // const mainFile = uploadedfile.path;
+  // console.log(mainFile);
+  try {
+    node_xj(
+      {
+        input:
+          "C:/Users/Harsh Jha/Documents/RAS Portal Pilot/DiamondOreJobPortal/Server/Controllers/Book1.xlsx",
         output: null,
         lowerCaseHeaders: true,
         allowEmptyKey: false,
-      }, async (err, result) => {
+      },
+      async (err, result) => {
         if (err) {
-          return res.status(500).json({ error: 'Error converting Excel to JSON' });
+          return res
+            .status(500)
+            .json({ error: "Error converting Excel to JSON" });
         }
         console.log(result);
-    
+
         // Assuming the result is an array of job objects
         const jobsAdd = await Jobs.insertMany(result);
-        console.log(jobsAdd)
-        if(jobsAdd) {
-            return res.status(200).json({message: 'Jobs Added successfully!!!'});
+        console.log(jobsAdd);
+        if (jobsAdd) {
+          return res
+            .status(200)
+            .json({ message: "Jobs Added successfully!!!" });
         } else {
-            return res.status(500).json({message: "Something went wrong!!!"})
+          return res.status(500).json({ message: "Something went wrong!!!" });
         }
-    
-      });
-} catch (err) {
-    return res.status(500).json({message: "Something went wrong!!!"})
-}
-  
-})
+      }
+    );
+  } catch (err) {
+    return res.status(500).json({ message: "Something went wrong!!!" });
+  }
+});
 
 export default router;

@@ -75,6 +75,15 @@ const jobsSchema = new mongoose.Schema({
       ],
       default: [],   
   },
+  interviewedScheduledApplicants: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Candidates",
+      },
+    ],
+    default: [], 
+  },
   interviewedApplicants: {
     type: [
         {
