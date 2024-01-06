@@ -2,16 +2,12 @@ import mongoose from "mongoose";
 
 const statusSchema = new mongoose.Schema({
   candidateId: {
-    type: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Candidates",
-    },
   },
   jobId: {
-    type: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Jobs",
-    },
   },
   check: {
     type: Boolean,
@@ -20,31 +16,31 @@ const statusSchema = new mongoose.Schema({
   status: {
     Applied: {
       type: Boolean,
-      default: false,
+      default: null,
     },
     CvShortlisted: {
       type: Boolean,
-      default: false,
+      default: null,
     },
     Screening: {
       type: Boolean,
-      default: false,
+      default: null,
     },
     InterviewScheduled: {
       type: Boolean,
-      default: false,
+      default: null,
     },
     Interviewed: {
       type: Boolean,
-      default: false,
+      default: null,
     },
     Shortlisted: {
       type: Boolean,
-      default: false,
+      default: null,
     },
     Joined: {
       type: Boolean,
-      default: false,
+      default: null,
     },
   },
   createdAt: {

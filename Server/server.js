@@ -13,6 +13,7 @@ app.use(fileUpload());
 app.use(express.json());
 app.use(cors());
 app.use(express.static("ProfileImgUploads"));
+// app.use(bodyParser.urlencoded(extended))
 
 const PORT = 5000;
 
@@ -27,13 +28,13 @@ mongoose
   });
 
 import candidatesController from "./Controllers/candidates.js";
-// import newJobPost from "./Controllers/jobs.js";
+import newJobPost from "./Controllers/jobs.js";
 import adminController from "./Controllers/admin.js";
 // import employerController from "./Controllers/employers.js";
 // import contactUsController from "./Controllers/contactus.js";
 
 app.use('/api/candidates', candidatesController);
-// app.use('/api/jobs', newJobPost);
+app.use('/api/jobs', newJobPost);
 app.use('/api/admin-confi', adminController);
 // app.use('/api/employers', employerController);
 // app.use('/api/contactus', contactUsController);

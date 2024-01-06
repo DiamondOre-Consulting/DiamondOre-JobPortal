@@ -17,6 +17,7 @@ const jobsSchema = new mongoose.Schema({
   },
   Channel: {
     type: String,
+    default: "N/A"
     // required: true,
     // unique: true,
   },
@@ -45,7 +46,7 @@ const jobsSchema = new mongoose.Schema({
   },
   JobStatus: {
     type: Boolean,
-    required: true
+    default: true
   },
   appliedApplicants: {
     type: [

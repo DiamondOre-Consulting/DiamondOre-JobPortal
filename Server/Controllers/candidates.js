@@ -13,6 +13,8 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { v4 as uuidv4 } from 'uuid';
 import Candidates from "../Models/Candidates.js";
 import CandidateAuthenticateToken from "../Middlewares/CandidateAuthenticateToken.js";
+import Jobs from "../Models/Jobs.js";
+import Status from "../Models/Status.js";
 
 dotenv.config();
 
@@ -338,5 +340,92 @@ router.get("/user-data", CandidateAuthenticateToken, async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+// FETCHING ALL JOBS
+router.get("/all-jobs", async (req, res) => {
+  try {
+    const allJobs = await Jobs.find({});
+
+    console.log(allJobs);
+
+    return res.status(200).json({allJobs});
+  } catch (error) {
+      console.log(error);
+      return res.status(500).json({message: "Something went wrong!!!"})
+  }
+})
+
+// FETCHING A PARTICULAR JOB
+router.get("/all-jobs/:id", CandidateAuthenticateToken, async (req, res) => {
+  try{
+    const {email} = req.user;
+    const {id} = req.params;
+
+    const user = await Candidates.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const oneJob = await Jobs.findById({_id: id});
+    console.log(oneJob);
+
+    return res.status(201).json(oneJob);
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({message: "Something went wrong!!!"})
+  }
+})
+
+// APPLY TO A JOB
+router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
+  try {
+    const {userId, email} = req.user;
+    const {id} = req.params;
+
+    const user = await Candidates.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const checkApplied = await Status.findOne({candidateId: userId, jobId: id});
+    if(checkApplied.check) {
+      console.log("Applied to this job already", checkApplied);
+      return res.status(401).json({ message: "Applied to this job already" });
+    } else {
+      console.log("Have to apply");
+      const job = await Jobs.findByIdAndUpdate(
+        {_id: id}, 
+        {
+          $push: { appliedApplicants: userId }
+        }
+      );
+  
+      const userUpdate = await Candidates.findByIdAndUpdate(
+        {_id: userId}, {
+          $push: {allAppliedJobs: id}
+        }
+      )
+  
+      const newStatus = new Status({
+        candidateId: userId,
+        jobId: id,
+        check: true,
+        status: {
+          Applied: true
+        }
+      })
+  
+      await newStatus.save();
+  
+      console.log(newStatus);
+      res.status(201).json({newStatus, message: "Applied to job successfully!!!"})
+    }
+
+  } catch (error){
+    console.log(error);
+    res.status(500).json({message: "Something went wrong!!!"});
+  }
+})
 
 export default router;

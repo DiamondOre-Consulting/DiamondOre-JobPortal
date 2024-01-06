@@ -219,7 +219,7 @@ router.post('/upload-profile-pic', async (req, res) => {
 //     }
 // });
 
-// SIGNUP AS CANDIDATE
+// SIGNUP AS ADMIN
 router.post("/signup-admin", async (req, res) => {
     const { name, email, password, otp, profilePic } = req.body;
   
@@ -270,7 +270,7 @@ router.post("/signup-admin", async (req, res) => {
     // }
   });
 
-// LOGIN AS CANDIDATE
+// LOGIN AS ADMIN
 router.post("/login-admin", async (req, res) => {
   const { email, password } = req.body;
 
@@ -329,5 +329,6 @@ router.get("/user-data", AdminAuthenticateToken, async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
 
 export default router;
