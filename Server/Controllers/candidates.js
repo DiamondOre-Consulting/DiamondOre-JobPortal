@@ -15,6 +15,7 @@ import Candidates from "../Models/Candidates.js";
 import CandidateAuthenticateToken from "../Middlewares/CandidateAuthenticateToken.js";
 import Jobs from "../Models/Jobs.js";
 import Status from "../Models/Status.js";
+import CandidateContact from "../Models/CandidateContact.js";
 
 dotenv.config();
 
@@ -469,6 +470,112 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
     }
 
   } catch (error){
+    console.log(error);
+    res.status(500).json({message: "Something went wrong!!!"});
+  }
+})
+
+// Send Message via email using Nodemailer
+// const sendMsgByEmail = async (name, email, Message) => {
+//   try {
+//     const transporter = nodemailer.createTransport({
+//       service: "gmail",
+//       auth: {
+//         user: "harshkr2709@gmail.com",
+//         pass: "frtohlwnukisvrzh",
+//       },
+//     });
+
+//     const mailOptions = {
+//       from: `Candidate Email <${email}>`,
+//       to: `Recipient <harsh.diamondore@gmail.com>`,
+//       subject: `An issue from ${name}`,
+//       text: `Hi Admin, Candidate's Name: ${name}, Candidate's Email: ${email}, Message: ${Message}`,
+//       // html: `<h1 style="color: blue; text-align: center; font-size: 2rem">Diamond Consulting Pvt. Ltd.</h1> </br> <h3 style="color: black; font-size: 1.3rem; text-align: center;">Your OTP is: ${otp}</h3>`,
+//     };
+
+//     const info = await transporter.sendMail(mailOptions);
+//     console.log("Email sent: " + info.response);
+
+//     // console.log(info);
+//   } catch (error) {
+//     console.error("Error sending OTP:", error);
+//     throw error;
+//   }
+// };
+
+// HELP CONTACT
+router.post("/help-contact", CandidateAuthenticateToken, async (req, res) => {
+  try {
+    const {userId, name, email} = req.user;
+    const { Message } = req.body;
+
+    const user = await Candidates.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const newMsg = new CandidateContact({
+      CandidateId: userId,
+      Name: name,
+      Email: email,
+      Message
+    })
+
+    await newMsg.save();
+
+    console.log(newMsg);
+
+    // await sendMsgByEmail(name, email, Message );
+
+    res.status(201).json({message: "Message sent successfully!!!"})
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({message: "Something went wrong!!!"});
+  }
+})
+
+// EDIT PROFILE (Let Aayush know how this is gonna work)
+router.put("edit-profile", CandidateAuthenticateToken, async (req, res) => {
+  try {
+    const { name, phone, password, resume, profilePic } = req.body;
+    const { email } = req.user;
+
+    const user = await Candidates.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    
+    if(name) {
+      user.name = name;
+      await user.save();
+    } 
+
+    if(phone) {
+      user.phone = phone;
+      await user.save()
+    }
+
+    if(password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.password = hashedPassword;
+
+      await user.save();
+    }
+
+    if(resume) {
+      user.resume = resume;
+      await user.save();
+    }
+
+    if(profilePic) {
+      user.profilePic = profilePic;
+      await user.save();
+    }
+
+    res.status(201).json({message: "Edit profile successful!!!", user})
+
+  } catch(error) {
     console.log(error);
     res.status(500).json({message: "Something went wrong!!!"});
   }

@@ -16,6 +16,7 @@ import Admin from "../Models/Admin.js";
 import AdminAuthenticateToken from "../Middlewares/AdminAuthenticateToken.js";
 import Status from "../Models/Status.js";
 import Jobs from "../Models/Jobs.js";
+import CandidateContact from "../Models/CandidateContact.js";
 
 dotenv.config();
 
@@ -380,6 +381,101 @@ router.post("/add-job", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
+// FETCHING ALL JOBS
+router.get("/all-jobs", async (req, res) => {
+  try {
+    const allJobs = await Jobs.find({});
+
+    console.log(allJobs);
+
+    return res.status(200).json({ allJobs });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong!!!" });
+  }
+});
+
+// FETCHING A PARTICULAR JOB
+router.get("/all-jobs/:id", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { email } = req.user;
+    const { id } = req.params;
+
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const oneJob = await Jobs.findById({ _id: id });
+    console.log(oneJob);
+
+    return res.status(201).json(oneJob);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong!!!" });
+  }
+});
+
+// FETCH POSITIONS WITH HIGH NUMMBER OF APPLICANTS
+router.get("/jobs-high", async (req, res) => {
+  try {
+    // Find the 6 jobs with the highest number of applicants
+    const topJobs = await Jobs.find({})
+      .sort({ appliedApplicants: -1 }) // Sort in descending order based on totalapplicants
+      .limit(6); // Limit the result to 6 jobs
+
+    return res.status(200).json({ topJobs });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong!!!" });
+  }
+});
+
+// FETCHING ALL CANDIDATES
+router.get("/all-candidates", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { email } = req.user;
+
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const allCandidates = await Candidates.find({}, { password: 0 });
+
+    console.log(allCandidates);
+
+    return res.status(200).json({ allCandidates });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong!!!" });
+  }
+});
+
+// FETCHING A CANDIDATE
+router.get("/all-candidates/:id", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { email } = req.user;
+    const { id } = req.params;
+
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const oneCandidate = await Candidates.findById(
+      { _id: id },
+      { password: 0 }
+    );
+    console.log(oneCandidate);
+
+    return res.status(201).json(oneCandidate);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong!!!" });
+  }
+});
+
 // UPDATE CV SHORTLISTED
 router.put(
   "/update-cv-shortlisted/:id1/:id2",
@@ -626,5 +722,77 @@ router.put(
     }
   }
 );
+
+// FETCH ALL MESSAGES OF CANDIDATES
+router.get("/all-messages", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { email } = req.user;
+
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const allMsg = await CandidateContact.find({});
+
+    console.log(allMsg);
+
+    return res.status(200).json({ allMsg });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong!!!" });
+  }
+});
+
+// FETCH A MESSAGE OF CANDIDATE
+router.get("/all-messages/:id", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { email } = req.user;
+    const { id } = req.params;
+
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const allMsg = await CandidateContact.findById({ _id: id });
+
+    console.log(allMsg);
+
+    return res.status(200).json({ allMsg });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong!!!" });
+  }
+});
+
+router.put("edit-profile", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { name, password } = req.body;
+    const { email } = req.user;
+
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (name) {
+      user.name = name;
+      await user.save();
+    }
+
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.password = hashedPassword;
+
+      await user.save();
+    }
+
+    res.status(201).json({ message: "Edit profile successful!!!", user });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong!!!" });
+  }
+});
 
 export default router;
