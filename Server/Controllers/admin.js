@@ -2,8 +2,6 @@ import express, { Router } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import path from "path";
-import multer from "multer";
 import nodemailer from "nodemailer";
 import otpStore from "../server.js";
 import forgotOtp from "../server.js";
@@ -16,6 +14,7 @@ import Admin from "../Models/Admin.js";
 import AdminAuthenticateToken from "../Middlewares/AdminAuthenticateToken.js";
 import Status from "../Models/Status.js";
 import Jobs from "../Models/Jobs.js";
+import CandidateContact from "../Models/CandidateContact.js";
 
 dotenv.config();
 
@@ -92,23 +91,12 @@ const credentials = {
   secretAccessKey: "93L4ucUETrFEyo9laZtPsvNCjttYAcCsIRxvmHcc",
 };
 
-// const credentialsResumes = {
-//     accessKeyId: "rjRpgCugr4BV9iTw",
-//     secretAccessKey: "KBhGM26n6kLYZnigoZk6QJnB3GTqHYvMEQ1ihuZs"
-// };
-
 // Create an S3 service client object
 const s3Client = new S3Client({
   endpoint: "https://s3.tebi.io",
   credentials: credentials,
   region: "global",
 });
-
-// const s3ClientResumes = new S3Client({
-//     endpoint: "https://s3.tebi.io",
-//     credentials: credentialsResumes,
-//     region: "global"
-// });
 
 // Handle Image file upload
 router.post("/upload-profile-pic", async (req, res) => {
@@ -164,61 +152,6 @@ router.post("/upload-profile-pic", async (req, res) => {
     return res.status(500).send("Error uploading file");
   }
 });
-
-// Handle Resume file upload
-// router.post('/upload-resume', async (req, res) => {
-//     try {
-//         const file = req.files && req.files.myFile; // Change 'myFile' to match the key name in Postman
-
-//         if (!file) {
-//             return res.status(400).send('No file uploaded');
-//         }
-
-//         // Generate a unique identifier
-//         const uniqueIdentifier = uuidv4();
-
-//         // Get the file extension from the original file name
-//         const fileExtension = file.name.split('.').pop();
-
-//         // Create a unique filename by appending the unique identifier to the original filename
-//         const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
-
-//         // Convert file to base64
-//         const base64Data = file.data.toString('base64');
-
-//         // Create a buffer from the base64 data
-//         const fileBuffer = Buffer.from(base64Data, 'base64');
-
-//         const uploadData = await s3ClientResumes.send(
-//             new PutObjectCommand({
-//                 Bucket: "resumes",
-//                 Key: uniqueFileName, // Use the unique filename for the S3 object key
-//                 Body: fileBuffer // Provide the file buffer as the Body
-//             })
-//         );
-
-//         // Generate a public URL for the uploaded file
-//         const getObjectCommand = new GetObjectCommand({
-//             Bucket: "resumes",
-//             Key: uniqueFileName
-//         });
-
-//         const signedUrl = await getSignedUrl(s3Client, getObjectCommand); // Generate URL valid for 1 hour
-
-//         // Parse the signed URL to extract the base URL
-//         const parsedUrl = new URL(signedUrl);
-//         const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
-
-//         // Send the URL as a response
-//         res.status(200).send(baseUrl);
-
-//         // Log the URL in the console
-//         console.log("File uploaded. URL:", baseUrl);
-//     } catch (error) {
-//         console.error("Error uploading file:", error);
-//         return res.status(500).send('Error uploading file');
-//     }
-// });
 
 // SIGNUP AS ADMIN
 router.post("/signup-admin", async (req, res) => {
@@ -331,52 +264,98 @@ router.get("/user-data", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
-router.post("/add-job", AdminAuthenticateToken, async (req, res) => {
+// FETCHING ALL JOBS
+router.get("/all-jobs", async (req, res) => {
   try {
-    const {
-      Company,
-      JobTitle,
-      Industry,
-      Channel,
-      Vacancies,
-      Zone,
-      City,
-      State,
-      MinExperience,
-      MaxSalary,
-    } = req.body;
+    const allJobs = await Jobs.find({});
 
+    console.log(allJobs);
+
+    return res.status(200).json({ allJobs });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong!!!" });
+  }
+});
+
+// FETCHING A PARTICULAR JOB
+router.get("/all-jobs/:id", AdminAuthenticateToken, async (req, res) => {
+  try {
     const { email } = req.user;
+    const { id } = req.params;
 
-    // Find the user in the database
     const user = await Admin.findOne({ email });
     if (!user) {
-      return res
-        .status(404)
-        .json({ message: "Not authorized or user not found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    // Create a new user object
-    const newJob = new Jobs({
-      Company,
-      JobTitle,
-      Industry,
-      Channel,
-      Vacancies,
-      Zone,
-      City,
-      State,
-      MinExperience,
-      MaxSalary,
-    });
+    const oneJob = await Jobs.findById({ _id: id });
+    console.log(oneJob);
 
-    // Save the user to the database
-    await newJob.save();
-
-    return res.status(201).json({ message: "A Job added successfully" });
+    return res.status(201).json(oneJob);
   } catch (error) {
-    console.error("Error adding job", error);
-    return res.status(500).send("Error adding job");
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong!!!" });
+  }
+});
+
+// FETCH POSITIONS WITH HIGH NUMMBER OF APPLICANTS
+router.get("/jobs-high", async (req, res) => {
+  try {
+    // Find the 6 jobs with the highest number of applicants
+    const topJobs = await Jobs.find({})
+      .sort({ appliedApplicants: -1 }) // Sort in descending order based on totalapplicants
+      .limit(6); // Limit the result to 6 jobs
+
+    return res.status(200).json({ topJobs });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong!!!" });
+  }
+});
+
+// FETCHING ALL CANDIDATES
+router.get("/all-candidates", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { email } = req.user;
+
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const allCandidates = await Candidates.find({}, { password: 0 });
+
+    console.log(allCandidates);
+
+    return res.status(200).json({ allCandidates });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong!!!" });
+  }
+});
+
+// FETCHING A CANDIDATE
+router.get("/all-candidates/:id", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { email } = req.user;
+    const { id } = req.params;
+
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const oneCandidate = await Candidates.findById(
+      { _id: id },
+      { password: 0 }
+    );
+    console.log(oneCandidate);
+
+    return res.status(201).json(oneCandidate);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong!!!" });
   }
 });
 
@@ -626,5 +605,77 @@ router.put(
     }
   }
 );
+
+// FETCH ALL MESSAGES OF CANDIDATES
+router.get("/all-messages", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { email } = req.user;
+
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const allMsg = await CandidateContact.find({});
+
+    console.log(allMsg);
+
+    return res.status(200).json({ allMsg });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong!!!" });
+  }
+});
+
+// FETCH A MESSAGE OF CANDIDATE
+router.get("/all-messages/:id", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { email } = req.user;
+    const { id } = req.params;
+
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const allMsg = await CandidateContact.findById({ _id: id });
+
+    console.log(allMsg);
+
+    return res.status(200).json({ allMsg });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong!!!" });
+  }
+});
+
+router.put("edit-profile", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { name, password } = req.body;
+    const { email } = req.user;
+
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (name) {
+      user.name = name;
+      await user.save();
+    }
+
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.password = hashedPassword;
+
+      await user.save();
+    }
+
+    res.status(201).json({ message: "Edit profile successful!!!", user });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong!!!" });
+  }
+});
 
 export default router;
