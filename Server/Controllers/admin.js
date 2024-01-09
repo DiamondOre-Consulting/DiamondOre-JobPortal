@@ -2,8 +2,6 @@ import express, { Router } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import path from "path";
-import multer from "multer";
 import nodemailer from "nodemailer";
 import otpStore from "../server.js";
 import forgotOtp from "../server.js";
@@ -93,23 +91,12 @@ const credentials = {
   secretAccessKey: "93L4ucUETrFEyo9laZtPsvNCjttYAcCsIRxvmHcc",
 };
 
-// const credentialsResumes = {
-//     accessKeyId: "rjRpgCugr4BV9iTw",
-//     secretAccessKey: "KBhGM26n6kLYZnigoZk6QJnB3GTqHYvMEQ1ihuZs"
-// };
-
 // Create an S3 service client object
 const s3Client = new S3Client({
   endpoint: "https://s3.tebi.io",
   credentials: credentials,
   region: "global",
 });
-
-// const s3ClientResumes = new S3Client({
-//     endpoint: "https://s3.tebi.io",
-//     credentials: credentialsResumes,
-//     region: "global"
-// });
 
 // Handle Image file upload
 router.post("/upload-profile-pic", async (req, res) => {
@@ -165,61 +152,6 @@ router.post("/upload-profile-pic", async (req, res) => {
     return res.status(500).send("Error uploading file");
   }
 });
-
-// Handle Resume file upload
-// router.post('/upload-resume', async (req, res) => {
-//     try {
-//         const file = req.files && req.files.myFile; // Change 'myFile' to match the key name in Postman
-
-//         if (!file) {
-//             return res.status(400).send('No file uploaded');
-//         }
-
-//         // Generate a unique identifier
-//         const uniqueIdentifier = uuidv4();
-
-//         // Get the file extension from the original file name
-//         const fileExtension = file.name.split('.').pop();
-
-//         // Create a unique filename by appending the unique identifier to the original filename
-//         const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
-
-//         // Convert file to base64
-//         const base64Data = file.data.toString('base64');
-
-//         // Create a buffer from the base64 data
-//         const fileBuffer = Buffer.from(base64Data, 'base64');
-
-//         const uploadData = await s3ClientResumes.send(
-//             new PutObjectCommand({
-//                 Bucket: "resumes",
-//                 Key: uniqueFileName, // Use the unique filename for the S3 object key
-//                 Body: fileBuffer // Provide the file buffer as the Body
-//             })
-//         );
-
-//         // Generate a public URL for the uploaded file
-//         const getObjectCommand = new GetObjectCommand({
-//             Bucket: "resumes",
-//             Key: uniqueFileName
-//         });
-
-//         const signedUrl = await getSignedUrl(s3Client, getObjectCommand); // Generate URL valid for 1 hour
-
-//         // Parse the signed URL to extract the base URL
-//         const parsedUrl = new URL(signedUrl);
-//         const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
-
-//         // Send the URL as a response
-//         res.status(200).send(baseUrl);
-
-//         // Log the URL in the console
-//         console.log("File uploaded. URL:", baseUrl);
-//     } catch (error) {
-//         console.error("Error uploading file:", error);
-//         return res.status(500).send('Error uploading file');
-//     }
-// });
 
 // SIGNUP AS ADMIN
 router.post("/signup-admin", async (req, res) => {
@@ -329,55 +261,6 @@ router.get("/user-data", AdminAuthenticateToken, async (req, res) => {
   } catch (error) {
     console.error("Error fetching user data:", error);
     res.status(500).json({ message: "Internal server error" });
-  }
-});
-
-router.post("/add-job", AdminAuthenticateToken, async (req, res) => {
-  try {
-    const {
-      Company,
-      JobTitle,
-      Industry,
-      Channel,
-      Vacancies,
-      Zone,
-      City,
-      State,
-      MinExperience,
-      MaxSalary,
-    } = req.body;
-
-    const { email } = req.user;
-
-    // Find the user in the database
-    const user = await Admin.findOne({ email });
-    if (!user) {
-      return res
-        .status(404)
-        .json({ message: "Not authorized or user not found" });
-    }
-
-    // Create a new user object
-    const newJob = new Jobs({
-      Company,
-      JobTitle,
-      Industry,
-      Channel,
-      Vacancies,
-      Zone,
-      City,
-      State,
-      MinExperience,
-      MaxSalary,
-    });
-
-    // Save the user to the database
-    await newJob.save();
-
-    return res.status(201).json({ message: "A Job added successfully" });
-  } catch (error) {
-    console.error("Error adding job", error);
-    return res.status(500).send("Error adding job");
   }
 });
 
