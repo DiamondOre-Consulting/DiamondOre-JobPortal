@@ -2,15 +2,14 @@ import React from 'react'
 import CandidateNav from './CandidateNav'
 import SideMenu from './SideMenu'
 import JobsData from './JobsData'
+import CandidateFooter from './CandidateFooter'
 
 const CandidateHome = () => {
   return (
     <div>
       <CandidateNav/>
-      <div className='flex'>
-        <SideMenu/>
-        <JobsData/>
-      </div>
+      <SideMenu/>
+      <CandidateFooter/>
       
     </div>
   )

@@ -1,5 +1,6 @@
 import React,{useState} from 'react'
 import { Link } from 'react-router-dom'
+import Logo from '../../assets/Logo.png'
 
 const CandidateNav = () => {
 
@@ -15,33 +16,21 @@ const CandidateNav = () => {
       <div className="bg-white pb-6 sm:pb-8 lg:pb-6">
         <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
           <header className="mb-8 flex items-center justify-between py-2 md:mb-12 md:py-2 xl:mb-8">
-          <a href="/" class="inline-flex items-center gap-2.5 text-2xl font-bold text-black md:text-3xl" aria-label="logo">
-        <svg width="95" height="94" viewBox="0 0 95 94" class="h-auto w-6 text-indigo-500" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <path d="M96 0V47L48 94H0V47L48 0H96Z" />
-        </svg>
-
-        Flowrift
-      </a>
-
+          <img className='w-1/4 h-auto' src={Logo} alt="DiamondOre Logo" />
             <nav className="hidden gap-12 lg:flex">
-              <a href="#" className="text-lg font-semibold  text-gray-600 transition duration-100 hover:text-indigo-500 active:text-indigo-700">
+              <a href="#" className="text-lg font-semibold  text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900">
                 Refer & Earn
               </a>
+
               <a
                 href="#"
-                className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-indigo-500 active:text-indigo-700"
-              >
-                Jobs
-              </a>
-              <a
-                href="#"
-                className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-indigo-500 active:text-indigo-700"
+                className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
               >
                 Services
               </a>
               <a
                 href="#"
-                className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-indigo-500 active:text-indigo-700"
+                className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
               >
                 Contact Us
               </a>
@@ -76,7 +65,7 @@ const CandidateNav = () => {
               <li
                 className={`${
                   menuOpen ? "block" : "hidden"
-                } transition ease-in-out delay-150 px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-indigo-500 hover:text-white hover:-translate-y-1 hover:scale-110 duration-250`}
+                } transition ease-in-out delay-150 px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Refer & Earn
               </li>
@@ -85,7 +74,7 @@ const CandidateNav = () => {
               <li
                 className={`${
                   menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-indigo-500 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 About Us
               </li>
@@ -94,7 +83,7 @@ const CandidateNav = () => {
               <li
                 className={`${
                   menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-indigo-500 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Services
               </li>
@@ -103,7 +92,7 @@ const CandidateNav = () => {
               <li
                 className={`${
                   menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-indigo-500 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Contact Us
               </li>
@@ -112,7 +101,7 @@ const CandidateNav = () => {
               <li
                 className={`${
                   menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-indigo-500 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 General
               </li>
@@ -121,7 +110,7 @@ const CandidateNav = () => {
               <li
                 className={`${
                   menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-indigo-500 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Applied
               </li>
@@ -130,7 +119,7 @@ const CandidateNav = () => {
               <li
                 className={`${
                   menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-indigo-500 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Shortlisted
               </li>
@@ -139,7 +128,7 @@ const CandidateNav = () => {
               <li
                 className={`${
                   menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-indigo-500 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Bookmarked
               </li>

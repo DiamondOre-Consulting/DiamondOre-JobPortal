@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import Logo from '../../assets/Logo.png'
 
 const Footer = () => {
   return (
@@ -9,14 +10,8 @@ const Footer = () => {
             <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
             <div className="grid grid-cols-2 gap-12 border-t pt-10 md:grid-cols-4 lg:grid-cols-6 lg:gap-8 lg:pt-12">
                 <div className="col-span-full lg:col-span-2">
-                <div className="mb-4 lg:-mt-2">
-                    <a href="/" className="inline-flex items-center gap-2 text-xl font-bold text-black md:text-2xl" aria-label="logo">
-                    <svg width="95" height="94" viewBox="0 0 95 94" className="h-auto w-5 text-indigo-500" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M96 0V47L48 94H0V47L48 0H96Z" />
-                    </svg>
-
-                    Flowrift
-                    </a>
+                <div className="mb-4 w-3/4">
+                    <img src={Logo} alt="" />
                 </div>
 
                 <p className="text-gray-500 sm:pr-8">Filler text is dummy text which has no meaning however looks very similar to real text.</p>

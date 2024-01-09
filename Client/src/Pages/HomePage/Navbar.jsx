@@ -1,5 +1,6 @@
 import React,{useState} from 'react'
 import { Link } from 'react-router-dom';
+import Logo from '../../assets/Logo.png';
 
 const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -13,52 +14,47 @@ const Navbar = () => {
       <div className="bg-white pb-6 sm:pb-8 lg:pb-6">
         <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
           <header className="mb-8 flex items-center justify-between py-2 md:mb-12 md:py-2 xl:mb-8">
-          <a href="/" class="inline-flex items-center gap-2.5 text-2xl font-bold text-black md:text-3xl" aria-label="logo">
-        <svg width="95" height="94" viewBox="0 0 95 94" class="h-auto w-6 text-indigo-500" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <path d="M96 0V47L48 94H0V47L48 0H96Z" />
-        </svg>
 
-        Flowrift
-      </a>
+          <img className='w-1/4 h-auto' src={Logo} alt="DiamondOre Logo" />
 
             <nav className="hidden gap-12 lg:flex">
-              <a href="#" className="text-lg font-semibold text-indigo-500">
+              <a href="#" className="text-lg font-semibold text-blue-950">
                 Home
               </a>
               <a
                 href="#"
-                className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-indigo-500 active:text-indigo-700"
+                className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
               >
                 About Us
               </a>
               <a
                 href="#"
-                className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-indigo-500 active:text-indigo-700"
+                className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
               >
                 Services
               </a>
               <a
                 href="#"
-                className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-indigo-500 active:text-indigo-700"
+                className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
               >
                 Contact Us
               </a>
             </nav>
 
-            <div className="hidden md:inline-block relative text-left">
+            <div className="hidden lg:inline-block relative text-left">
               <Link
                 to={'/signup'}
-                className="rounded-lg bg-gray-200 px-4 py-3 text-center text-sm font-semibold text-gray-500 outline-none ring-indigo-300 transition duration-100 hover:bg-gray-300 focus-visible:ring active:text-gray-700 md:text-base inline-flex items-center"
+                className="rounded-lg bg-blue-900 px-4 py-3 text-center text-sm font-semibold text-gray-500 outline-none ring-indigo-300 transition duration-100 hover:bg-blue-950 focus-visible:ring active:text-gray-700 md:text-base inline-flex items-center"
               >
               <svg 
-                className="w-4 h-4 text-gray-500 dark:text-white" 
+                className="w-4 h-4 text-white " 
                 aria-hidden="true" 
                 xmlns="http://www.w3.org/2000/svg" 
                 fill="currentColor" 
                 viewBox="0 0 14 18">
                 <path d="M7 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Zm2 1H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z"/>
               </svg>
-              <span className="ml-2">Sign in</span>
+              <span className="ml-2 text-white">Sign in</span>
               </Link>
             </div>
 
@@ -91,7 +87,7 @@ const Navbar = () => {
               <li
                 className={`${
                   menuOpen ? "block" : "hidden"
-                } transition ease-in-out delay-150 px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-indigo-500 hover:text-white hover:-translate-y-1 hover:scale-110 duration-250`}
+                } transition ease-in-out delay-150 px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Home
               </li>
@@ -100,7 +96,7 @@ const Navbar = () => {
               <li
                 className={`${
                   menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-indigo-500 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 About Us
               </li>
@@ -109,7 +105,7 @@ const Navbar = () => {
               <li
                 className={`${
                   menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-indigo-500 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Services
               </li>
@@ -118,7 +114,7 @@ const Navbar = () => {
               <li
                 className={`${
                   menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-indigo-500 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Contact Us
               </li>
@@ -127,7 +123,7 @@ const Navbar = () => {
               <li
                 className={`${
                   menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-lg font-semibold bg-indigo-500 text-white hover:bg-indigo-700 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                } px-32 py-3 text-lg font-semibold bg-blue-900 text-white hover:bg-blue-950 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Signin
               </li>
