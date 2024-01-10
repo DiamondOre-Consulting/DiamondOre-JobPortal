@@ -1,62 +1,95 @@
-import React,{useState} from 'react'
-import { Link } from 'react-router-dom';
-import Logo from '../../assets/Logo.png';
+import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
+import Logo from "../../assets/Logo.png";
 
-const Navbar = () => {
-    const [menuOpen, setMenuOpen] = useState(false);
-    const toggleMenu = () => {
-        setMenuOpen(!menuOpen);
-        console.log(menuOpen);
-      };
+const CandidateNav = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+    console.log(menuOpen);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");;
+    window.location.href = "/login";
+    console.log("Logging out");
+  };
   return (
     <div>
       {/* Header and Nav Section Start */}
       <div className="bg-white pb-6 sm:pb-8 lg:pb-6">
         <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
           <header className="mb-8 flex items-center justify-between py-2 md:mb-12 md:py-2 xl:mb-8">
+            <img className="w-1/6 h-auto" src={Logo} alt="DiamondOre Logo" />
 
-          <img className='w-1/6 h-auto' src={Logo} alt="DiamondOre Logo" />
+            <div className="flex justify-between items-center gap-8">
+              <nav className="hidden gap-16 lg:flex">
+                <Link to={'/dashboard'} className="text-md font-semibold text-blue-950">
+                  Home
+                </Link>
+                <Link
+                  to={'/all-jobs'}
+                  className="text-md font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
+                >
+                  All Jobs
+                </Link>
+                <Link
+                  href="#"
+                  className="text-md font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
+                >
+                  Applied Jobs
+                </Link>
+                <Link
+                  href="#"
+                  className="text-md font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
+                >
+                  Specialized
+                </Link>
+              </nav>
 
-            <nav className="hidden gap-12 lg:flex">
-              <a href="#" className="text-lg font-semibold text-blue-950">
-                Home
-              </a>
-              <a
-                href="#"
-                className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
-              >
-                About Us
-              </a>
-              <a
-                href="#"
-                className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
-              >
-                Services
-              </a>
-              <a
-                href="#"
-                className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
-              >
-                Contact Us
-              </a>
-            </nav>
-
-            <div className="hidden lg:inline-block relative text-left">
-              <Link
-                to={'/signup'}
-                className="rounded-lg bg-blue-900 px-4 py-3 text-center text-sm font-semibold text-gray-500 outline-none ring-indigo-300 transition duration-100 hover:bg-blue-950 focus-visible:ring active:text-gray-700 md:text-base inline-flex items-center"
-              >
-              <svg 
-                className="w-4 h-4 text-white " 
-                aria-hidden="true" 
-                xmlns="http://www.w3.org/2000/svg" 
-                fill="currentColor" 
-                viewBox="0 0 14 18">
-                <path d="M7 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Zm2 1H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z"/>
-              </svg>
-              <span className="ml-2 text-white">Sign in</span>
-              </Link>
+              <div className="hidden lg:inline-block relative text-left" ref={dropdownRef}>
+                <img onClick={toggleDropdown} className="cursor-pointer rounded-full w-12 h-12 hover:border-4 hover:border-blue-950" src="https://w7.pngwing.com/pngs/713/762/png-transparent-computer-icons-button-login-image-file-formats-logo-monochrome.png" alt="account" />
+              </div>
             </div>
+
+            {isDropdownOpen && (
+                  <div className="absolute right-8 top-6 mt-12 py-2 w-lg bg-gray-200 rounded-md shadow-lg">
+                    <Link
+                      
+                      className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
+                      onClick={toggleDropdown}
+                    >
+                      Edit Profile
+                    </Link>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </a>
+                  </div>
+                )}
 
             <button
               type="button"
@@ -129,12 +162,11 @@ const Navbar = () => {
               </li>
             </a>
           </ul>
-          
         </div>
       </div>
       {/* Header and Nav Section End */}
     </div>
-  )
-}
+  );
+};
 
-export default Navbar
+export default CandidateNav;

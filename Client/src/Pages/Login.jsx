@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
 
@@ -10,6 +10,8 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -21,7 +23,11 @@ const Login = () => {
     setError(null);
     // Perform login logic here
     try {
-      const response="";
+      const response= await axios.post("http://localhost:5000/api/candidates/login",
+      {
+        email,
+        password
+      });
 
       if (response.status === 200) {
         const token = response.data.token;
@@ -30,7 +36,7 @@ const Login = () => {
         console.log("Logged in successfully as Affiliate");
         // Redirect to dashboard page
         setTimeout(() => {
-        //   navigate("/dashboard");
+          navigate("/dashboard");
         }, 1000);
       } else {
         console.log("Login failed");
@@ -52,7 +58,7 @@ const Login = () => {
     <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-lg">
         <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">
-          Continue your journey here
+          Login to your account!
         </h1>
 
         <form

@@ -5,7 +5,7 @@ import Homemain from "./Pages/HomePage/Homemain";
 import Signup from './Pages/Signup'
 import Login from './Pages/Login'
 import CandidateHome from "./Pages/CandidatePage/CandidateHome";
-import AllJobs from "./Pages/CandidatePage/AllJobs";
+import CandidateAllJobs from "./Pages/CandidatePage/AllJobs";
 
 function App() {
   const [count, setCount] = useState(0)
@@ -18,8 +18,8 @@ function App() {
             <Route index element={<Homemain/>} />
             <Route path="/signup" element={<Signup/>} />
             <Route path="/login" element={<Login/>} />
-            <Route path="/candidate-home" element={<CandidateHome/>}/>
-            <Route path="/all-jobs" element={<AllJobs/>}/>
+            <Route path="/dashboard" element={<CandidateHome/>}/>
+            <Route path="/all-jobs" element={<CandidateAllJobs/>}/>
           </Route> 
         </Routes>
       </Router>

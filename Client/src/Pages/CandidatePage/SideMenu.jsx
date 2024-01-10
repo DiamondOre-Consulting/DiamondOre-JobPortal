@@ -3,25 +3,25 @@ import JobsData from './JobsData'; // Import the component you want to render
 import AllJobs from './AllJobs';
 
 const SideMenu = () => {
-  const [selectedComponent, setSelectedComponent] = useState('home');
+//   const [selectedComponent, setSelectedComponent] = useState('home');
 
-  const handleButtonClick = (component) => {
-    setSelectedComponent(component);
-  };
+//   const handleButtonClick = (component) => {
+//     setSelectedComponent(component);
+//   };
 
-  const renderComponent = () => {
-    switch (selectedComponent) {
-      case 'home':
-        return <JobsData />; // Render the Home component
-      // Add cases for other components you want to render
+//   const renderComponent = () => {
+//     switch (selectedComponent) {
+//       case 'home':
+//         return <JobsData />; // Render the Home component
+//       // Add cases for other components you want to render
 
-      case 'all':
-        return <AllJobs/>
+//       case 'all':
+//         return <AllJobs/>
 
-      default:
-        return null;
-    }
-  };
+//       default:
+//         return null;
+//     }
+//   };
 
   return (
     <div className="flex">
@@ -74,7 +74,7 @@ const SideMenu = () => {
         </div>
     </div>
     
-    {renderComponent()}
+    {/* {renderComponent()} */}
 
     </div>
 

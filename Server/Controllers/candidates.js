@@ -349,7 +349,7 @@ router.get("/all-jobs", async (req, res) => {
 
     console.log(allJobs);
 
-    return res.status(200).json({allJobs});
+    return res.status(200).json(allJobs);
   } catch (error) {
       console.log(error);
       return res.status(500).json({message: "Something went wrong!!!"})
