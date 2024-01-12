@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useJwt } from "react-jwt";
+import { Link, useNavigate } from "react-router-dom";
 
 const HomeNewRecommend = () => {
   const navigate = useNavigate();
   const [latestJobs, setLatestJobs] = useState([]);
+
+  const { decodedToken } = useJwt(localStorage.getItem("token"));
+  const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login"); // Redirect to login page if not authenticated
+      return;
+    }
 
   useEffect(() => {
     const fetchLatestJobs = async () => {
@@ -64,11 +72,12 @@ const HomeNewRecommend = () => {
                 <p className="text-xl text-gray-600 font-semibold">
                   Total Openings - <span className="text-blue-950">{latestJob?.Vacancies}</span>
                 </p>
-                <div class="cursor-pointer w-full flex-col rounded-lg bg-white p-4 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200">
+                {(latestJob?.appliedApplicants == decodedToken?.userId) ? (<p className="text-center text-md text-green-500 font-semibold">Already applied</p>) : ""}
+                <Link to={`/all-jobs/${latestJob?._id}`} class="cursor-pointer w-full flex-col rounded-lg bg-white p-4 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200">
                   <span class="text-md font-bold lg:text-md">
                     Know More
                   </span>
-                </div>
+                </Link>
               </div>
             </div>
           ))}
@@ -77,11 +86,11 @@ const HomeNewRecommend = () => {
             <div
               class="flex flex-col justify-center h-72 overflow-hidden rounded-lg bg-gray-200 p-4 shadow-lg"
             >
-              <div class="cursor-pointer w-full flex-col rounded-lg bg-white p-4 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200">
-                <span class="text-md font-bold lg:text-md">
-                  All Jobs
-                </span>
-              </div>
+                <Link to={`/all-jobs`} class="cursor-pointer w-full flex-col rounded-lg bg-white p-4 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200">
+                  <span class="text-md font-bold lg:text-md">
+                    Know More
+                  </span>
+                </Link>
             </div>
           </div>
         </div>

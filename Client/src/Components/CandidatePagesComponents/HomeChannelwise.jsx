@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const HomeChannelwise = () => {
   return (
@@ -10,21 +11,8 @@ const HomeChannelwise = () => {
 
         <div class="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
           <div>
-            <a
-              href="#"
-              class="flex flex-col justify-center h-auto overflow-hidden rounded-lg bg-gray-200 p-4 shadow-lg"
-            >
-              <div class="w-full flex-col rounded-lg bg-white p-4 text-center cursor-pointer hover:bg-blue-950 text-gray-800 hover:text-gray-200">
-                <span class="text-md font-bold lg:text-md">
-                  Direct Channel
-                </span>
-              </div>
-            </a>
-          </div>
-
-          <div>
-            <a
-              href="#"
+            <Link
+              to={'/all-banca-jobs'}
               class="flex flex-col justify-center h-auto overflow-hidden rounded-lg bg-gray-200 p-4 shadow-lg"
             >
               <div class="w-full flex-col rounded-lg bg-white p-4 text-center cursor-pointer hover:bg-blue-950 text-gray-800 hover:text-gray-200">
@@ -32,12 +20,25 @@ const HomeChannelwise = () => {
                   Banca Channel
                 </span>
               </div>
-            </a>
+            </Link>
           </div>
 
           <div>
-            <a
-              href="#"
+            <Link
+              to={'/all-direct-jobs'}
+              class="flex flex-col justify-center h-auto overflow-hidden rounded-lg bg-gray-200 p-4 shadow-lg"
+            >
+              <div class="w-full flex-col rounded-lg bg-white p-4 text-center cursor-pointer hover:bg-blue-950 text-gray-800 hover:text-gray-200">
+                <span class="text-md font-bold lg:text-md">
+                  Direct Channel
+                </span>
+              </div>
+            </Link>
+          </div>
+
+          <div>
+            <Link
+              to={'/all-agency-jobs'}
               class="flex flex-col justify-center h-auto overflow-hidden rounded-lg bg-gray-200 p-4 shadow-lg"
             >
               <div class="w-full flex-col rounded-lg bg-white p-4 text-center cursor-pointer hover:bg-blue-950 text-gray-800 hover:text-gray-200">
@@ -45,7 +46,7 @@ const HomeChannelwise = () => {
                   Agency Channel
                 </span>
               </div>
-            </a>
+            </Link>
           </div>
 
           <div>

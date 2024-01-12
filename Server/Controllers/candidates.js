@@ -372,7 +372,7 @@ router.get("/all-applied-jobs", CandidateAuthenticateToken, async (req, res) => 
 
         const appliedJobs = await Jobs.find({ _id: { $in: allAppliedJobs } });
 
-    return res.status(200).json({appliedJobs});
+    return res.status(200).json(appliedJobs);
   } catch (error) {
       console.log(error);
       return res.status(500).json({message: "Something went wrong!!!"})
@@ -396,6 +396,77 @@ router.get("/all-shortlisted-jobs", CandidateAuthenticateToken, async (req, res)
         const shortlistedJobs = await Jobs.find({ _id: { $in: allShortlistedJobs } });
 
     return res.status(200).json({shortlistedJobs});
+  } catch (error) {
+      console.log(error);
+      return res.status(500).json({message: "Something went wrong!!!"})
+  }
+})
+
+// FETCHING ALL DIRECT CHANNEL JOBS
+router.get("/all-direct-jobs", CandidateAuthenticateToken, async (req, res) => {
+  try {
+    const allJobs = await Jobs.find({Channel: "Direct"});
+    if(!allJobs) {
+      return res.status(402).json({message: "No Direct Jobs"})
+    }
+
+    console.log(allJobs);
+
+    return res.status(200).json(allJobs);
+  } catch (error) {
+      console.log(error);
+      return res.status(500).json({message: "Something went wrong!!!"})
+  }
+})
+
+// FETCHING ALL BANCA CHANNEL JOBS
+router.get("/all-banca-jobs", CandidateAuthenticateToken, async (req, res) => {
+  try {
+    const allJobs = await Jobs.find({Channel: "Banca"});
+    if(!allJobs) {
+      return res.status(402).json({message: "No Banca Jobs"})
+    }
+
+    console.log(allJobs);
+
+    return res.status(200).json(allJobs);
+  } catch (error) {
+      console.log(error);
+      return res.status(500).json({message: "Something went wrong!!!"})
+  }
+})
+
+// FETCHING ALL AGENCY CHANNEL JOBS
+router.get("/all-agency-jobs", CandidateAuthenticateToken, async (req, res) => {
+  try {
+    const allJobs = await Jobs.find({Channel: "Agency"});
+    if(!allJobs) {
+      return res.status(402).json({message: "No agency Jobs"})
+    }
+
+    console.log(allJobs);
+
+    return res.status(200).json(allJobs);
+  } catch (error) {
+      console.log(error);
+      return res.status(500).json({message: "Something went wrong!!!"})
+  }
+})
+
+// FETCHING ALL OTHER JOBS
+router.get("/all-other-jobs", CandidateAuthenticateToken, async (req, res) => {
+  try {
+    const excludedChannels = ["Banca", "Agency", "Direct"];
+
+    const filteredJobs = await Jobs.find({ Channel: { $nin: excludedChannels } });
+    const allJobs = await Jobs.find({Channel: "Agency"});
+    if (!filteredJobs || filteredJobs.length === 0) {
+      return res.status(402).json({ message: "No jobs matching the criteria" });
+    }
+
+    console.log(filteredJobs);
+
+    return res.status(200).json(filteredJobs);
   } catch (error) {
       console.log(error);
       return res.status(500).json({message: "Something went wrong!!!"})
@@ -436,7 +507,7 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
     }
 
     const checkApplied = await Status.findOne({candidateId: userId, jobId: id});
-    if(checkApplied.check) {
+    if(checkApplied?.check) {
       console.log("Applied to this job already", checkApplied);
       return res.status(401).json({ message: "Applied to this job already" });
     } else {
@@ -457,7 +528,6 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
       const newStatus = new Status({
         candidateId: userId,
         jobId: id,
-        check: true,
         status: {
           Applied: true
         }
@@ -470,6 +540,28 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
     }
 
   } catch (error){
+    console.log(error);
+    res.status(500).json({message: "Something went wrong!!!"});
+  }
+})
+
+// STATUS OF A JOB
+router.get("/status/:id1/:id2", CandidateAuthenticateToken, async (req, res) => {
+  try {
+    const {userId, email} = req.user;
+    const {id1, id2} = req.params;
+
+    const user = await Candidates.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const allStatus = await Status.findOne({candidateId: id1, jobId: id2})
+    console.log(allStatus);
+
+    res.status(201).json(allStatus);
+
+  } catch(error) {
     console.log(error);
     res.status(500).json({message: "Something went wrong!!!"});
   }

@@ -1,12 +1,11 @@
-import React, { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, {useEffect} from 'react'
 import { useJwt } from "react-jwt";
+import { useNavigate } from 'react-router-dom'
 import CandidateNav from '../../Components/CandidatePagesComponents/CandidateNav'
 import CandidateFooter from '../../Components/CandidatePagesComponents/CandidateFooter'
-import HomeNewRecommend from '../../Components/CandidatePagesComponents/HomeNewRecommend'
-import HomeChannelwise from '../../Components/CandidatePagesComponents/HomeChannelwise'
+import CandidateAllAgencyJobsCards from '../../Components/CandidatePagesComponents/CandidateAllAgencyJobsCards';
 
-const CandidateHome = () => {
+const AllAgencyJobs = () => {
   const navigate = useNavigate();
 
   const { decodedToken } = useJwt(localStorage.getItem("token"));
@@ -37,12 +36,10 @@ const CandidateHome = () => {
   return (
     <div className='bg-white mx-5'>
       <CandidateNav/>
-      <h2 className='text-5xl px-10 font-bold text-gray-800'>Welcome aboard, <span className='text-blue-900'>{userName}</span></h2>
-      <HomeNewRecommend />
-      <HomeChannelwise />
+      <CandidateAllAgencyJobsCards />
       <CandidateFooter/>
     </div>
   )
 }
 
-export default CandidateHome
+export default AllAgencyJobs;

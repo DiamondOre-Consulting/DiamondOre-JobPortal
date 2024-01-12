@@ -381,7 +381,7 @@ router.put(
       const cvShortlistedStatus = await Status.findOneAndUpdate(
         { candidateId: id1, jobId: id2 },
         {
-          $set: { CvShortlisted: true },
+          $set: { status: {Applied: true, CvShortlisted: true} },
         },
         { new: true }
       );
@@ -423,7 +423,7 @@ router.put(
       const screeningStatus = await Status.findOneAndUpdate(
         { candidateId: id1, jobId: id2 },
         {
-          $set: { Screening: true },
+          $set: { status: {Applied: true, CvShortlisted: true, Screening: true} },
         },
         { new: true }
       );
@@ -463,7 +463,7 @@ router.put(
       const interviewScheduledStatus = await Status.findOneAndUpdate(
         { candidateId: id1, jobId: id2 },
         {
-          $set: { InterviewScheduled: true },
+          $set: { status: {Applied: true, CvShortlisted: true, Screening: true, InterviewScheduled: true} },
         },
         { new: true }
       );
@@ -503,7 +503,7 @@ router.put(
       const interviewedStatus = await Status.findOneAndUpdate(
         { candidateId: id1, jobId: id2 },
         {
-          $set: { Interviewed: true },
+          $set: { status: {Applied: true, CvShortlisted: true, Screening: true, InterviewScheduled: true, Interviewed: true} },
         },
         { new: true }
       );
@@ -543,7 +543,7 @@ router.put(
       const shortlistedStatus = await Status.findOneAndUpdate(
         { candidateId: id1, jobId: id2 },
         {
-          $set: { Shortlisted: true },
+          $set: { status: {Applied: true, CvShortlisted: true, Screening: true, InterviewScheduled: true, Interviewed: true, Shortlisted: true} },
         },
         { new: true }
       );
@@ -583,7 +583,7 @@ router.put(
       const joinedStatus = await Status.findOneAndUpdate(
         { candidateId: id1, jobId: id2 },
         {
-          $set: { Joined: true },
+          $set: { status: {Applied: true, CvShortlisted: true, Screening: true, InterviewScheduled: true, Interviewed: true, Shortlisted: true, Joined: true} },
         },
         { new: true }
       );
@@ -592,6 +592,7 @@ router.put(
         { _id: id2 },
         {
           $push: { joinedApplicants: id1 },
+          $inc: { Vacancies: -1 },
         }
       );
 

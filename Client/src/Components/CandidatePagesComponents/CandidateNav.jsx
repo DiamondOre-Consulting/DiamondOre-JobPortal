@@ -1,11 +1,51 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "../../assets/Logo.png";
+import axios from "axios";
 
 const CandidateNav = () => {
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [userData, setUserData] = useState(null);
   const dropdownRef = useRef(null);
+
+    useEffect(() => {
+      const fetchUserData = async () => {
+        try {
+          const token = localStorage.getItem("token");
+  
+          if (!token) {
+            // Token not found in local storage, handle the error or redirect to the login page
+            console.error("No token found");
+            navigate("/login");
+            return;
+          }
+  
+          // Fetch associates data from the backend
+          const response = await axios.get(
+            "http://localhost:5000/api/candidates/user-data",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            }
+          );
+          if(response.status==200) {
+            console.log(response.data);
+            setUserData(response.data);
+          } else {
+            console.log(response.data);
+            setUserData("Did not get any response!!!")
+          }
+        } catch (error) {
+          console.error("Error fetching associates:", error);
+          // Handle error and show appropriate message
+        }
+      };
+  
+      fetchUserData();
+    }, [])
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -54,7 +94,7 @@ const CandidateNav = () => {
                   All Jobs
                 </Link>
                 <Link
-                  href="#"
+                  to={'/all-applied-jobs'}
                   className="text-md font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
                 >
                   Applied Jobs
@@ -68,7 +108,7 @@ const CandidateNav = () => {
               </nav>
 
               <div className="hidden lg:inline-block relative text-left" ref={dropdownRef}>
-                <img onClick={toggleDropdown} className="cursor-pointer rounded-full w-12 h-12 hover:border-4 hover:border-blue-950" src="https://w7.pngwing.com/pngs/713/762/png-transparent-computer-icons-button-login-image-file-formats-logo-monochrome.png" alt="account" />
+                <img onClick={toggleDropdown} className="cursor-pointer rounded-full w-12 h-12 hover:border-4 hover:border-blue-950" src={userData?.profilePic} alt="account" />
               </div>
             </div>
 

@@ -11,7 +11,7 @@ const statusSchema = new mongoose.Schema({
   },
   check: {
     type: Boolean,
-    default: false
+    default: true
   },
   status: {
     Applied: {
