@@ -114,7 +114,7 @@ const s3ClientResumes = new S3Client({
 // Handle Image file upload
 router.post('/upload-profile-pic', async (req, res) => {
     try {
-        const file = req.files && req.files.myFile; // Change 'myFile' to match the key name in Postman
+        const file = req.files && req.files.myFileImage; // Change 'myFile' to match the key name in Postman
         
         if (!file) {
             return res.status(400).send('No file uploaded');
@@ -156,7 +156,7 @@ router.post('/upload-profile-pic', async (req, res) => {
         const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
 
         // Send the URL as a response
-        res.status(200).send(baseUrl);
+        res.status(200).json(baseUrl);
 
         // Log the URL in the console
         console.log("File uploaded. URL:", baseUrl);
@@ -169,7 +169,7 @@ router.post('/upload-profile-pic', async (req, res) => {
 // Handle Resume file upload
 router.post('/upload-resume', async (req, res) => {
     try {
-        const file = req.files && req.files.myFile; // Change 'myFile' to match the key name in Postman
+        const file = req.files && req.files.myFileResume; // Change 'myFile' to match the key name in Postman
         
         if (!file) {
             return res.status(400).send('No file uploaded');
@@ -201,8 +201,7 @@ router.post('/upload-resume', async (req, res) => {
         // Generate a public URL for the uploaded file
         const getObjectCommand = new GetObjectCommand({
             Bucket: "resumes",
-            Key: uniqueFileName
-        });
+            Key: uniqueFileName        });
 
         const signedUrl = await getSignedUrl(s3Client, getObjectCommand); // Generate URL valid for 1 hour
 
@@ -211,7 +210,8 @@ router.post('/upload-resume', async (req, res) => {
         const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
 
         // Send the URL as a response
-        res.status(200).send(baseUrl);
+        console.log(baseUrl);
+        res.status(200).json(baseUrl);
 
         // Log the URL in the console
         console.log("File uploaded. URL:", baseUrl);
@@ -224,6 +224,8 @@ router.post('/upload-resume', async (req, res) => {
 // SIGNUP AS CANDIDATE
 router.post("/signup", async (req, res) => {
     const { name, email, phone, password, otp, profilePic, resume } = req.body;
+    console.log(profilePic);
+    console.log(resume);
   
     console.log("Signup Email:", email);
     console.log("Entered OTP:", otp);

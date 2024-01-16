@@ -50,8 +50,8 @@ const HomeChannelwise = () => {
           </div>
 
           <div>
-            <a
-              href="#"
+            <Link
+              to={'/all-other-jobs'}
               class="flex flex-col justify-center h-auto overflow-hidden rounded-lg bg-gray-200 p-4 shadow-lg"
             >
               <div class="w-full flex-col rounded-lg bg-white p-4 text-center cursor-pointer hover:bg-blue-950 text-gray-800 hover:text-gray-200">
@@ -59,7 +59,7 @@ const HomeChannelwise = () => {
                   Others
                 </span>
               </div>
-            </a>
+            </Link>
           </div>
 
         </div>

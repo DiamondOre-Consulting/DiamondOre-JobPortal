@@ -37,7 +37,7 @@ const CandidateAllDirectJobsCards = () => {
           console.log(latest.reverse());
           }
         } catch (error) {
-          console.error("Error fetching associates:", error);
+          console.error("Error fetching jobs:", error);
           // Handle error and show appropriate message
         }
       };

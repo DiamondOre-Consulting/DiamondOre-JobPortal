@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
-const Login = () => {
+const AdminLogin = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,17 +13,13 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  }
-
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
     // Perform login logic here
     try {
-      const response= await axios.post("http://localhost:5000/api/candidates/login",
+      const response= await axios.post("http://localhost:5000/api/admin-confi/login-admin",
       {
         email,
         password
@@ -36,7 +32,7 @@ const Login = () => {
         console.log("Logged in successfully as Affiliate");
         // Redirect to dashboard page
         setTimeout(() => {
-          navigate("/dashboard");
+          navigate("/admin-dashboard");
         }, 1000);
       } else {
         console.log("Login failed");
@@ -52,6 +48,10 @@ const Login = () => {
         setLoading(false);
       }, 1000); // Turn off loading after 2 seconds
     }
+  };
+
+  const handleShowPassword = () => {
+    return setShowPass(!showPass);
   };
 
   return (
@@ -136,7 +136,7 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <span className="absolute inset-y-0 end-0 grid place-content-center px-4 cursor-pointer" onClick={togglePasswordVisibility}>
+              <span className="absolute inset-y-0 end-0 grid place-content-center px-4 cursor-pointer" onClick={handleShowPassword}>
                 {showPassword ? (
                   <svg fill="#aea3a3" width="15px" height="15px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M960 1277.853c-175.297 0-317.951-142.654-317.951-317.951 0-175.297 142.654-317.951 317.951-317.951 175.297 0 317.951 142.654 317.951 317.951 0 175.297-142.654 317.95-317.951 317.95Zm948.342-341.585C1720.645 558.648 1357.332 324 960 324c-397.333 0-760.645 234.648-948.342 612.268L0 959.902l11.658 23.634c187.697 377.62 551.01 612.268 948.342 612.268 397.333 0 760.645-234.648 948.342-612.268L1920 959.902l-11.658-23.634Z" fillRule="evenodd"></path> </g></svg>
                 ) : (
@@ -155,7 +155,7 @@ const Login = () => {
 
           <p className="text-center text-gray-500 my-10">
             No account?
-            <Link to={'/signup'} className="underline cursor-pointer">
+            <Link to={'/admin-signup'} className="underline cursor-pointer">
               Sign up
             </Link>
           </p>
@@ -176,4 +176,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default AdminLogin;

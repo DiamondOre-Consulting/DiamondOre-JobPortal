@@ -101,7 +101,7 @@ const s3Client = new S3Client({
 // Handle Image file upload
 router.post("/upload-profile-pic", async (req, res) => {
   try {
-    const file = req.files && req.files.myFile; // Change 'myFile' to match the key name in Postman
+    const file = req.files && req.files.myFileImage; // Change 'myFile' to match the key name in Postman
 
     if (!file) {
       return res.status(400).send("No file uploaded");
@@ -307,7 +307,7 @@ router.get("/jobs-high", async (req, res) => {
       .sort({ appliedApplicants: -1 }) // Sort in descending order based on totalapplicants
       .limit(6); // Limit the result to 6 jobs
 
-    return res.status(200).json({ topJobs });
+    return res.status(200).json( topJobs );
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Something went wrong!!!" });
