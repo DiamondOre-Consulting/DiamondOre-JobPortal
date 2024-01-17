@@ -34,10 +34,10 @@ const JobsWithMostApplicants = () => {
         const all = response.data;
         const latest = all.slice(-7);
         // console.log(latestJobs);
-        setLatestJobs(latest.reverse());
+        setLatestJobs(response.data);
         console.log(latest);
       } catch (error) {
-        console.error("Error fetching associates:", error);
+        console.error("Error fetching jobs:", error);
         // Handle error and show appropriate message
       }
     };
@@ -73,7 +73,7 @@ const JobsWithMostApplicants = () => {
                   Total Openings - <span className="text-blue-950">{latestJob?.Vacancies}</span>
                 </p>
                 {(latestJob?.appliedApplicants == decodedToken?.userId) ? (<p className="text-center text-md text-green-500 font-semibold">Already applied</p>) : ""}
-                <Link to={`/all-jobs/${latestJob?._id}`} class="cursor-pointer w-full flex-col rounded-lg bg-white p-4 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200">
+                <Link to={`/admin/all-jobs/${latestJob?._id}`} class="cursor-pointer w-full flex-col rounded-lg bg-white p-4 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200">
                   <span class="text-md font-bold lg:text-md">
                     Know More
                   </span>
@@ -81,18 +81,6 @@ const JobsWithMostApplicants = () => {
               </div>
             </div>
           ))}
-
-          <div>
-            <div
-              class="flex flex-col justify-center h-72 overflow-hidden rounded-lg bg-gray-200 p-4 shadow-lg"
-            >
-                <Link to={`/all-jobs`} class="cursor-pointer w-full flex-col rounded-lg bg-white p-4 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200">
-                  <span class="text-md font-bold lg:text-md">
-                    Know More
-                  </span>
-                </Link>
-            </div>
-          </div>
         </div>
       </div>
     </div>

@@ -305,9 +305,9 @@ router.get("/jobs-high", async (req, res) => {
     // Find the 6 jobs with the highest number of applicants
     const topJobs = await Jobs.find({})
       .sort({ appliedApplicants: -1 }) // Sort in descending order based on totalapplicants
-      .limit(6); // Limit the result to 6 jobs
+      .limit(8); // Limit the result to 6 jobs
 
-    return res.status(200).json( topJobs );
+    return res.status(200).json(topJobs);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Something went wrong!!!" });
@@ -328,7 +328,7 @@ router.get("/all-candidates", AdminAuthenticateToken, async (req, res) => {
 
     console.log(allCandidates);
 
-    return res.status(200).json({ allCandidates });
+    return res.status(200).json(allCandidates);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Something went wrong!!!" });
@@ -359,6 +359,67 @@ router.get("/all-candidates/:id", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
+// FETCHING ALL APPLIED JOBS BY A CANDIDATE
+router.get(
+  "/all-applied-jobs/:id",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      // Get the user's email from the decoded token
+      const { email } = req.user;
+
+      const { id } = req.params;
+
+      // Find the user in the database
+      const user = await Admin.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const candidate = await Candidates.findById({ _id: id });
+
+      const allAppliedJobs = candidate.allAppliedJobs;
+
+      const appliedJobs = await Jobs.find({ _id: { $in: allAppliedJobs } });
+
+      return res.status(200).json(appliedJobs);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: "Something went wrong!!!" });
+    }
+  }
+);
+
+// FETCHING ALL CANDIDATES APPLIED FOR A PARTICULAR JOB
+router.get(
+  "/applied-candidates/:id",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { email } = req.user;
+
+      const user = await Admin.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const job = await Jobs.findById({ _id: id });
+
+      const allAppliedCandidates = job.appliedApplicants;
+
+      const appliedCandidates = await Candidates.find({
+        _id: { $in: allAppliedCandidates },
+      });
+
+      return res.status(200).json(appliedCandidates);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: "Something went wrong!!!" });
+    }
+  }
+);
+
 // UPDATE CV SHORTLISTED
 router.put(
   "/update-cv-shortlisted/:id1/:id2",
@@ -381,7 +442,7 @@ router.put(
       const cvShortlistedStatus = await Status.findOneAndUpdate(
         { candidateId: id1, jobId: id2 },
         {
-          $set: { status: {Applied: true, CvShortlisted: true} },
+          $set: { status: { Applied: true, CvShortlisted: true } },
         },
         { new: true }
       );
@@ -423,7 +484,9 @@ router.put(
       const screeningStatus = await Status.findOneAndUpdate(
         { candidateId: id1, jobId: id2 },
         {
-          $set: { status: {Applied: true, CvShortlisted: true, Screening: true} },
+          $set: {
+            status: { Applied: true, CvShortlisted: true, Screening: true },
+          },
         },
         { new: true }
       );
@@ -463,7 +526,14 @@ router.put(
       const interviewScheduledStatus = await Status.findOneAndUpdate(
         { candidateId: id1, jobId: id2 },
         {
-          $set: { status: {Applied: true, CvShortlisted: true, Screening: true, InterviewScheduled: true} },
+          $set: {
+            status: {
+              Applied: true,
+              CvShortlisted: true,
+              Screening: true,
+              InterviewScheduled: true,
+            },
+          },
         },
         { new: true }
       );
@@ -503,7 +573,15 @@ router.put(
       const interviewedStatus = await Status.findOneAndUpdate(
         { candidateId: id1, jobId: id2 },
         {
-          $set: { status: {Applied: true, CvShortlisted: true, Screening: true, InterviewScheduled: true, Interviewed: true} },
+          $set: {
+            status: {
+              Applied: true,
+              CvShortlisted: true,
+              Screening: true,
+              InterviewScheduled: true,
+              Interviewed: true,
+            },
+          },
         },
         { new: true }
       );
@@ -543,7 +621,16 @@ router.put(
       const shortlistedStatus = await Status.findOneAndUpdate(
         { candidateId: id1, jobId: id2 },
         {
-          $set: { status: {Applied: true, CvShortlisted: true, Screening: true, InterviewScheduled: true, Interviewed: true, Shortlisted: true} },
+          $set: {
+            status: {
+              Applied: true,
+              CvShortlisted: true,
+              Screening: true,
+              InterviewScheduled: true,
+              Interviewed: true,
+              Shortlisted: true,
+            },
+          },
         },
         { new: true }
       );
@@ -583,7 +670,17 @@ router.put(
       const joinedStatus = await Status.findOneAndUpdate(
         { candidateId: id1, jobId: id2 },
         {
-          $set: { status: {Applied: true, CvShortlisted: true, Screening: true, InterviewScheduled: true, Interviewed: true, Shortlisted: true, Joined: true} },
+          $set: {
+            status: {
+              Applied: true,
+              CvShortlisted: true,
+              Screening: true,
+              InterviewScheduled: true,
+              Interviewed: true,
+              Shortlisted: true,
+              Joined: true,
+            },
+          },
         },
         { new: true }
       );

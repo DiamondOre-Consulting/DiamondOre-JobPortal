@@ -33,6 +33,7 @@ const AdminDashboard = () => {
           }
         }
       }, [decodedToken])
+      
   return (
     <div className='bg-white mx-5'>
         <AdminNav />

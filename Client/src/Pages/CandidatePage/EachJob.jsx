@@ -210,7 +210,7 @@ const EachJob = () => {
               </p>
             </div>
             <div className="mt-auto mb-10 px-5">
-                {singleJob?.appliedApplicants == decodedToken?.userId ? (
+                {statusCheck?.status?.Applied ? (
                   <>
                     <p className="text-green-500">Already Applied</p>
                     <div>

@@ -28,10 +28,8 @@ const CandidateAllJobsCards = () => {
         if(response.status==200) {
           console.log(response.data);
         const all = response.data;
-        const latest = all.slice(-7);
         // console.log(latestJobs);
         setLatestJobs(all.reverse());
-        console.log(latest.reverse());
         }
       } catch (error) {
         console.error("Error fetching associates:", error);
