@@ -188,7 +188,7 @@ const AdminEachJob = () => {
                   <span class="text-md font-bold lg:text-md">Download Resume</span>
                 </a>
                 <Link
-                  to={`/update-status/6594ddad248c980025b1e81a/6594ddad248c980025b1e81a}`}
+                  to={`/update-status/${jobs?._id}/${id}`}
                   class="cursor-pointer w-full flex-col rounded-lg bg-white p-4 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200"
                 >
                   <span class="text-md font-bold lg:text-md">Update Status</span>

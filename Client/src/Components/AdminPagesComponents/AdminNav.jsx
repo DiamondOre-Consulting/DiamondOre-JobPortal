@@ -100,13 +100,13 @@ const AdminNav = () => {
                   to={"/all-applied-jobs"}
                   className="text-md font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
                 >
-                  Applied Jobs
+                  All Candidates
                 </Link>
                 <Link
                   href="#"
                   className="text-md font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
                 >
-                  Specialized
+                  ERP
                 </Link>
               </nav>
 

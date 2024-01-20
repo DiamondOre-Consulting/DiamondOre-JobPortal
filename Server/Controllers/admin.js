@@ -420,24 +420,52 @@ router.get(
   }
 );
 
+// GET STATUS OF A CANDIDATE FOR A PARTICULAR JOB
+router.get(
+  "/get-status/:id1/:id2",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { id1, id2 } = req.params;
+      const { email } = req.user;
+
+      const user = await Admin.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const statusData = await Status.findOne({candidateId: id1, jobId: id2});
+
+      // console.log(statusData);
+      return res.status(200).json(statusData);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: "Something went wrong!!!" });
+    }
+  }
+);
+
 // UPDATE CV SHORTLISTED
 router.put(
   "/update-cv-shortlisted/:id1/:id2",
   AdminAuthenticateToken,
   async (req, res) => {
     try {
-      const { email } = req.user;
       const { id1, id2 } = req.params;
-
-      const current = await Status.findOne({ candidateId: id1, jobId: id2 });
-      console.log(current);
-
-      console.log(email, id1, id2);
+      console.log(id1, id2);
+      const { email } = req.user;
+      // console.log(email, id1, id2);
 
       const user = await Admin.findOne({ email });
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
+
+      const current = await Status.findOne({ candidateId: id1, jobId: id2 });
+      if (!current) {
+        return res.status(402).json({ message: "Status not found" });
+      }
+      // console.log(current);
 
       const cvShortlistedStatus = await Status.findOneAndUpdate(
         { candidateId: id1, jobId: id2 },
@@ -446,6 +474,8 @@ router.put(
         },
         { new: true }
       );
+
+      console.log(cvShortlistedStatus);
 
       const cvShortlistedJob = await Jobs.findByIdAndUpdate(
         { _id: id2 },
