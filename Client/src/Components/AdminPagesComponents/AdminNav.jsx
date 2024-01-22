@@ -80,30 +80,31 @@ const AdminNav = () => {
       <div className="bg-white pb-6 sm:pb-8 lg:pb-6">
         <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
           <header className="mb-8 flex items-center justify-between py-2 md:mb-12 md:py-2 xl:mb-8">
-            <img className="w-1/6 h-auto" src={Logo} alt="DiamondOre Logo" />
-
+            <a href="/">
+              <img className="w-full h-16" src={Logo} alt="DiamondOre Logo" />
+            </a>
             <div className="flex justify-between items-center gap-8">
-              <nav className="hidden gap-16 lg:flex">
+              <nav className="hidden sm:gap-10 md:gap-12 lg:gap-16 lg:flex">
                 <Link
-                  to={"/dashboard"}
+                  to={"/admin-dashboard"}
                   className="text-md font-semibold text-blue-950"
                 >
                   Home
                 </Link>
                 <Link
-                  to={"/all-jobs"}
+                  to={"/admin/all-jobs"}
                   className="text-md font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
                 >
                   All Jobs
                 </Link>
                 <Link
-                  to={"/all-applied-jobs"}
+                  to={"/admin/all-candidates"}
                   className="text-md font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
                 >
                   All Candidates
                 </Link>
                 <Link
-                  href="#"
+                  to={"/admin/erp-dashboard"}
                   className="text-md font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
                 >
                   ERP

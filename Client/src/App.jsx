@@ -17,6 +17,9 @@ import AdminDashboard from "./Pages/AdminPage/AdminDashboard";
 import EachCandidate from "./Pages/AdminPage/EachCandidate";
 import AdminEachJob from "./Pages/AdminPage/EachJob";
 import UpdateStatus from "./Pages/AdminPage/UpdateStatus";
+import AdminAllJobs from "./Pages/AdminPage/AllJobs";
+import AdminAllCandidates from "./Pages/AdminPage/AllCandidates";
+import AdminERP from "./Pages/AdminPage/AdminERP";
 
 function App() {
 
@@ -41,11 +44,13 @@ function App() {
             <Route path="/admin-signup" element={<AdminSignup />} />
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
-            <Route path="/admin/all-jobs" />
+            <Route path="/admin/all-jobs" element={<AdminAllJobs />} />
             <Route path="/admin/all-jobs/:id" element={<AdminEachJob />} />
-            <Route path="/all-candidates" />
-            <Route path="/all-candidates/:id" element={<EachCandidate />} />
+            <Route path="/admin/all-candidates" element={<AdminAllCandidates />} />
+            <Route path="/admin/all-candidates/:id" element={<EachCandidate />} />
             <Route path="/update-status/:id1/:id2" element={<UpdateStatus />} />
+
+            <Route path="/admin/erp-dashboard" element={<AdminERP />} />
           </Route> 
         </Routes>
       </Router>
