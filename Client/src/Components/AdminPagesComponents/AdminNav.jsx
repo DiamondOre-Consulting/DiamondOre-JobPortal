@@ -7,6 +7,7 @@ const AdminNav = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  // const [isDropdownOpenERP, setIsDropdownOpenERP] = useState(false);
   const [userData, setUserData] = useState(null);
   const dropdownRef = useRef(null);
 
@@ -50,6 +51,10 @@ const AdminNav = () => {
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
+
+  // const toggleDropdownERP = () => {
+  //   setIsDropdownOpenERP(!isDropdownOpenERP);
+  // };
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -104,8 +109,8 @@ const AdminNav = () => {
                   All Candidates
                 </Link>
                 <Link
-                  to={"/admin/erp-dashboard"}
-                  className="text-md font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
+                  to={'/admin/erp-dashboard'}
+                  className="cursor-pointer text-md font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
                 >
                   ERP
                 </Link>
@@ -141,6 +146,24 @@ const AdminNav = () => {
                 </a>
               </div>
             )}
+
+            {/* {isDropdownOpenERP && (
+              <div className="absolute right-24 top-6 mt-12 py-2 w-lg bg-gray-200 rounded-md shadow-lg">
+                <Link
+                  className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
+                  onClick={toggleDropdown}
+                >
+                  Latest
+                </Link>
+                <a
+                  href="#"
+                  className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
+                  onClick={handleLogout}
+                >
+                  Add New
+                </a>
+              </div>
+            )} */}
 
             <button
               type="button"

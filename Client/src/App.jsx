@@ -20,6 +20,7 @@ import UpdateStatus from "./Pages/AdminPage/UpdateStatus";
 import AdminAllJobs from "./Pages/AdminPage/AllJobs";
 import AdminAllCandidates from "./Pages/AdminPage/AllCandidates";
 import AdminERP from "./Pages/AdminPage/AdminERP";
+import AddNewERP from "./Pages/AdminPage/AddNewERP";
 
 function App() {
 
@@ -51,6 +52,7 @@ function App() {
             <Route path="/update-status/:id1/:id2" element={<UpdateStatus />} />
 
             <Route path="/admin/erp-dashboard" element={<AdminERP />} />
+            <Route path="/admin/erp-dashboard/add" element={<AddNewERP />} />
           </Route> 
         </Routes>
       </Router>
