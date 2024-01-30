@@ -8,8 +8,13 @@ import AdminFooter from "../../Components/AdminPagesComponents/AdminFooter";
 const UpdateStatus = () => {
   const navigate = useNavigate();
   const [statusData, setStatusData] = useState(null);
-  const [adminDetails, setAdminDetails] = useState(null)
+  const [adminDetails, setAdminDetails] = useState(null);
   const [cvStatus, setCvStatus] = useState(null);
+  const [screenStatus, setScreenStatus] = useState(null);
+  const [intSchStatus, setIntSchStatus] = useState(null);
+  const [interStatus, setInterStatus] = useState(null);
+  const [shortlistedStatus, setShortlistedStatus] = useState(null);
+  const [joinedStatus, setJoinedStatus] = useState(null);
 
   const { id1, id2 } = useParams();
   console.log(id1, " ", id2);
@@ -70,19 +75,19 @@ const UpdateStatus = () => {
           }
         );
 
-        if(response.status===201) {
+        if (response.status === 201) {
           setAdminDetails(response.data);
           console.log(adminDetails);
         } else {
-          setAdminDetails("Error finding candidate with id: ", id1)
+          setAdminDetails("Error finding candidate with id: ", id1);
         }
-      } catch(error) {
+      } catch (error) {
         console.log("Something went wrong!!!", error);
       }
-    }
+    };
 
     fetchCandidatenDetail();
-  }, [decodedToken])
+  }, [decodedToken]);
 
   const updateCvShortlisted = async () => {
     try {
@@ -92,16 +97,17 @@ const UpdateStatus = () => {
         return;
       }
       const response = await axios.put(
-        `http://localhost:5000/api/admin-confi/update-cv-shortlisted/${id1}/${id2}`, {},
+        `http://localhost:5000/api/admin-confi/update-cv-shortlisted/${id1}/${id2}`,
+        {},
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      
-      if(response.status===201) {
-        setCvStatus(true)
+
+      if (response.status === 201) {
+        setCvStatus(true);
         console.log("CV is shortlisted!!!");
       }
     } catch (error) {
@@ -118,23 +124,26 @@ const UpdateStatus = () => {
         return;
       }
       const response = await axios.put(
-        `http://localhost:5000/api/admin-confi/update-screening/${id1}/${id2}`, {},
+        `http://localhost:5000/api/admin-confi/update-screening/${id1}/${id2}`,
+        {},
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      
-      if(response.status===201) {
+
+      if (response.status === 201) {
         // setCvStatus(true)
+        setScreenStatus(true);
         console.log("Screening!!!");
       }
     } catch (error) {
       // setCvStatus(false);
+      setScreenStatus(false);
       console.log("Something went wrong!!!", error);
     }
-  }
+  };
 
   const updateInterviewedScheduled = async () => {
     try {
@@ -144,25 +153,28 @@ const UpdateStatus = () => {
         return;
       }
       const response = await axios.put(
-        `http://localhost:5000/api/admin-confi/update-interviewscheduled/${id1}/${id2}`, {},
+        `http://localhost:5000/api/admin-confi/update-interviewscheduled/${id1}/${id2}`,
+        {},
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      
-      if(response.status===201) {
+
+      if (response.status === 201) {
         // setCvStatus(true)
+        setIntSchStatus(true);
         console.log("Interviewed Scheduled!!!");
       }
     } catch (error) {
       // setCvStatus(false);
+      setIntSchStatus(false);
       console.log("Something went wrong!!!", error);
     }
-  }
+  };
 
-  const updateInterviewed= async () => {
+  const updateInterviewed = async () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -170,23 +182,26 @@ const UpdateStatus = () => {
         return;
       }
       const response = await axios.put(
-        `http://localhost:5000/api/admin-confi/update-interviewed/${id1}/${id2}`, {},
+        `http://localhost:5000/api/admin-confi/update-interviewed/${id1}/${id2}`,
+        {},
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      
-      if(response.status===201) {
+
+      if (response.status === 201) {
         // setCvStatus(true)
+        setInterStatus(true);
         console.log("Interviewed!!!");
       }
     } catch (error) {
       // setCvStatus(false);
+      setInterStatus(false);
       console.log("Something went wrong!!!", error);
     }
-  }
+  };
 
   const updateShortlisted = async () => {
     try {
@@ -196,23 +211,26 @@ const UpdateStatus = () => {
         return;
       }
       const response = await axios.put(
-        `http://localhost:5000/api/admin-confi/update-shortlisted/${id1}/${id2}`, {},
+        `http://localhost:5000/api/admin-confi/update-shortlisted/${id1}/${id2}`,
+        {},
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      
-      if(response.status===201) {
+
+      if (response.status === 201) {
         // setCvStatus(true)
+        setShortlistedStatus(true);
         console.log("Shortlisted!!!");
       }
     } catch (error) {
       // setCvStatus(false);
+      setShortlistedStatus(false);
       console.log("Something went wrong!!!", error);
     }
-  }
+  };
 
   const updateJoined = async () => {
     try {
@@ -222,23 +240,26 @@ const UpdateStatus = () => {
         return;
       }
       const response = await axios.put(
-        `http://localhost:5000/api/admin-confi/update-joined/${id1}/${id2}`, {},
+        `http://localhost:5000/api/admin-confi/update-joined/${id1}/${id2}`,
+        {},
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      
-      if(response.status===201) {
+
+      if (response.status === 201) {
         // setCvStatus(true)
+        setJoinedStatus(true);
         console.log("Joined!!!");
       }
     } catch (error) {
       // setCvStatus(false);
+      setJoinedStatus(false);
       console.log("Something went wrong!!!", error);
     }
-  }
+  };
 
   return (
     <div className="bg-white mx-5">
@@ -286,7 +307,10 @@ const UpdateStatus = () => {
 
                 <dl className="mt-8 flex gap-4 sm:gap-6">
                   <div className="flex">
-                    <a href={adminDetails?.resume} className="text-sm font-semibold text-gray-100 bg-blue-900 hover:bg-blue-950 rounded-md px-5 py-2">
+                    <a
+                      href={adminDetails?.resume}
+                      className="text-sm font-semibold text-gray-100 bg-blue-900 hover:bg-blue-950 rounded-md px-5 py-2"
+                    >
                       Download Resume
                     </a>
                   </div>
@@ -314,47 +338,62 @@ const UpdateStatus = () => {
                 {statusData?.status?.CvShortlisted ? (
                   <span className="text-md text-green-600">Yes</span>
                 ) : (
-                  <button
-                    className={`px-5 py-1 rounded-md text-sm text-gray-100 ${
-                      statusData?.status.Applied
-                        ? "bg-green-600 hover:bg-green-700"
-                        : "bg-gray-400"
-                    }`}
-                    onClick={() => {
-                      if (statusData?.status.Applied) {
-                        updateCvShortlisted()
-                    } else {
-                        alert("Please complete the previous step first!!!");
-                    }
-                    }}
-                  >
-                    Yes
-                  </button>
+                  <>
+                    {cvStatus ? (
+                      <p className="text-green-600 font-semibold">
+                        CV has been shortlisted!!!
+                      </p>
+                    ) : (
+                      <button
+                        className={`px-5 py-1 rounded-md text-sm text-gray-100 ${
+                          statusData?.status.Applied
+                            ? "bg-green-600 hover:bg-green-700"
+                            : "bg-gray-400"
+                        }`}
+                        onClick={() => {
+                          if (statusData?.status.Applied) {
+                            updateCvShortlisted();
+                          } else {
+                            alert("Please complete the previous step first!!!");
+                          }
+                        }}
+                      >
+                        Yes
+                      </button>
+                    )}
+                  </>
                 )}
-                
               </p>
-              
+
               <p class="mb-2 max-w-md text-gray-600 font-semibold">
                 Screening?{" "}
                 {statusData?.status.Screening ? (
                   <span className="text-md text-green-600">Yes</span>
                 ) : (
-                  <button
-                    className={`px-5 py-1 rounded-md text-sm text-gray-100 ${
-                      statusData?.status.CvShortlisted
-                        ? "bg-green-600 hover:bg-green-700"
-                        : "bg-gray-400"
-                    }`}
-                    onClick={() => {
-                      if (statusData?.status.CvShortlisted) {
-                        updateScreening();
-                    } else {
-                        alert("Please complete the previous step first!!!");
-                    }
-                    }}
-                  >
-                    Yes
-                  </button> 
+                  <>
+                    {screenStatus ? (
+                      <p className="text-green-600 font-semibold">
+                        Screened Successfully!!!
+                      </p>
+                    ) : (
+                      <button
+                        className={`px-5 py-1 rounded-md text-sm text-gray-100 ${
+                          statusData?.status.CvShortlisted
+                            ? "bg-green-600 hover:bg-green-700"
+                            : "bg-gray-400"
+                        }`}
+                        onClick={() => {
+                          if (statusData?.status.CvShortlisted) {
+                            updateScreening();
+                          } else {
+                            alert("Please complete the previous step first!!!");
+                          }
+                        }}
+                      >
+                        Yes
+                      </button>
+                    )}
+                  </>
                 )}
               </p>
               <p class="mb-2 max-w-md text-gray-600 font-semibold">
@@ -362,22 +401,30 @@ const UpdateStatus = () => {
                 {statusData?.status.InterviewScheduled ? (
                   <span className="text-md text-green-600">Yes</span>
                 ) : (
-                  <button
-                    className={`px-5 py-1 rounded-md text-sm text-gray-100 ${
-                      statusData?.status.Screening
-                        ? "bg-green-600 hover:bg-green-700"
-                        : "bg-gray-400"
-                    }`}
-                    onClick={() => {
-                      if (statusData?.status.Screening) {
-                        updateInterviewedScheduled();
-                    } else {
-                        alert("Please complete the previous step first!!!");
-                    }
-                    }}
-                  >
-                    Yes
-                  </button>
+                  <>
+                    {intSchStatus ? (
+                      <p className="text-green-600 font-semibold">
+                        Interview Scheduled Successfully!!!
+                      </p>
+                    ) : (
+                      <button
+                        className={`px-5 py-1 rounded-md text-sm text-gray-100 ${
+                          statusData?.status.Screening
+                            ? "bg-green-600 hover:bg-green-700"
+                            : "bg-gray-400"
+                        }`}
+                        onClick={() => {
+                          if (statusData?.status.Screening) {
+                            updateInterviewedScheduled();
+                          } else {
+                            alert("Please complete the previous step first!!!");
+                          }
+                        }}
+                      >
+                        Yes
+                      </button>
+                    )}
+                  </>
                 )}
               </p>
               <p class="mb-2 max-w-md text-gray-600 font-semibold">
@@ -385,22 +432,29 @@ const UpdateStatus = () => {
                 {statusData?.status.Interviewed ? (
                   <span className="text-md text-green-600">Yes</span>
                 ) : (
-                  <button
-                  className={`px-5 py-1 rounded-md text-sm text-gray-100 ${
-                    statusData?.status.InterviewScheduled
-                      ? "bg-green-600 hover:bg-green-700"
-                      : "bg-gray-400"
-                  }`}
-                  onClick={() => {
-                    if (statusData?.status.InterviewScheduled) {
-                      updateInterviewed();
-                  } else {
-                      alert("Please complete the previous step first!!!");
-                  }
-                  }}
-                >
-                  Yes
-                </button>
+                  <>
+                    {interStatus && (
+                      <p className="text-green-600 font-semibold">
+                        Interview is done!!!
+                      </p>
+                    )}
+                    <button
+                      className={`px-5 py-1 rounded-md text-sm text-gray-100 ${
+                        statusData?.status.InterviewScheduled
+                          ? "bg-green-600 hover:bg-green-700"
+                          : "bg-gray-400"
+                      }`}
+                      onClick={() => {
+                        if (statusData?.status.InterviewScheduled) {
+                          updateInterviewed();
+                        } else {
+                          alert("Please complete the previous step first!!!");
+                        }
+                      }}
+                    >
+                      Yes
+                    </button>
+                  </>
                 )}
               </p>
               <p class="mb-2 max-w-md text-gray-600 font-semibold">
@@ -408,22 +462,29 @@ const UpdateStatus = () => {
                 {statusData?.status.Shortlisted ? (
                   <span className="text-md text-green-600">Yes</span>
                 ) : (
-                  <button
-                    className={`px-5 py-1 rounded-md text-sm text-gray-100 ${
-                      statusData?.status.Interviewed
-                        ? "bg-green-600 hover:bg-green-700"
-                        : "bg-gray-400"
-                    }`}
-                    onClick={() => {
-                      if (statusData?.status.Interviewed) {
-                        updateShortlisted();
-                    } else {
-                        alert("Please complete the previous step first!!!");
-                    }
-                    }}
-                  >
-                    Yes
-                  </button>
+                  <>
+                    {shortlistedStatus && (
+                      <p className="text-green-600 font-semibold">
+                        Candidate has been shortlisted!!!
+                      </p>
+                    )}
+                    <button
+                      className={`px-5 py-1 rounded-md text-sm text-gray-100 ${
+                        statusData?.status.Interviewed
+                          ? "bg-green-600 hover:bg-green-700"
+                          : "bg-gray-400"
+                      }`}
+                      onClick={() => {
+                        if (statusData?.status.Interviewed) {
+                          updateShortlisted();
+                        } else {
+                          alert("Please complete the previous step first!!!");
+                        }
+                      }}
+                    >
+                      Yes
+                    </button>
+                  </>
                 )}
               </p>
               <p class="mb-2 max-w-md text-gray-600 font-semibold">
@@ -431,22 +492,29 @@ const UpdateStatus = () => {
                 {statusData?.status.Joined ? (
                   <span className="text-md text-green-600">Yes</span>
                 ) : (
-                  <button
-                  className={`px-5 py-1 rounded-md text-sm text-gray-100 ${
-                    statusData?.status.Shortlisted
-                      ? "bg-green-600 hover:bg-green-700"
-                      : "bg-gray-400"
-                  }`}
-                  onClick={() => {
-                    if (statusData?.status.Shortlisted) {
-                      updateJoined();
-                  } else {
-                      alert("Please complete the previous step first!!!");
-                  }
-                  }}
-                >
-                  Yes
-                </button>
+                  <>
+                    {joinedStatus && (
+                      <p className="text-green-600 font-semibold">
+                        CV has Joined!!!
+                      </p>
+                    )}
+                    <button
+                      className={`px-5 py-1 rounded-md text-sm text-gray-100 ${
+                        statusData?.status.Shortlisted
+                          ? "bg-green-600 hover:bg-green-700"
+                          : "bg-gray-400"
+                      }`}
+                      onClick={() => {
+                        if (statusData?.status.Shortlisted) {
+                          updateJoined();
+                        } else {
+                          alert("Please complete the previous step first!!!");
+                        }
+                      }}
+                    >
+                      Yes
+                    </button>
+                  </>
                 )}
               </p>
             </div>
