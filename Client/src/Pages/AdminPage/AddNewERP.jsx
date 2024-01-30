@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useJwt } from "react-jwt";
+<<<<<<< HEAD
 import AdminNav from "../../Components/AdminPagesComponents/AdminNav";
 import AdminFooter from "../../Components/AdminPagesComponents/AdminFooter";
+=======
+import { useNavigate } from "react-router-dom";
+>>>>>>> 24c323781742ce2e792ba9cfb4f5f651465acb3d
 
 const AddERPForm = () => {
+  const navigate = useNavigate();
   const initialFormData = {
     EmpOfMonth: "",
     Top5HRs: [{ name: "" }],
