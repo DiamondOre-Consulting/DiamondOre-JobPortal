@@ -21,6 +21,7 @@ import AdminAllJobs from "./Pages/AdminPage/AllJobs";
 import AdminAllCandidates from "./Pages/AdminPage/AllCandidates";
 import AdminERP from "./Pages/AdminPage/AdminERP";
 import AddNewERP from "./Pages/AdminPage/AddNewERP";
+import PathSearch from "./Pages/HomePage/PathSearch";
 
 function App() {
 
@@ -41,7 +42,6 @@ function App() {
             <Route path="/all-agency-jobs" element={<AllAgencyJobs />} />
             <Route path="/all-banca-jobs" element={<AllBancaJobs />} />
             <Route path="/all-other-jobs" element={<AllOtherJobs />} />
-
             <Route path="/admin-signup" element={<AdminSignup />} />
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />

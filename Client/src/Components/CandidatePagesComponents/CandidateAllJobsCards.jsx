@@ -7,19 +7,11 @@ const CandidateAllJobsCards = () => {
   const navigate = useNavigate();
   const [latestJobs, setLatestJobs] = useState([]);
 
-  const { decodedToken } = useJwt(localStorage.getItem("token"));
+  // const { decodedToken } = useJwt(localStorage.getItem("token"));
 
   useEffect(() => {
     const fetchAllJobs = async () => {
       try {
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-          // Token not found in local storage, handle the error or redirect to the login page
-          console.error("No token found");
-          navigate("/login");
-          return;
-        }
 
         // Fetch associates data from the backend
         const response = await axios.get(
