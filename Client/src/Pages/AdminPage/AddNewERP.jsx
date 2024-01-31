@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useJwt } from "react-jwt";
-<<<<<<< HEAD
-import AdminNav from "../../Components/AdminPagesComponents/AdminNav";
-import AdminFooter from "../../Components/AdminPagesComponents/AdminFooter";
-=======
 import { useNavigate } from "react-router-dom";
->>>>>>> 24c323781742ce2e792ba9cfb4f5f651465acb3d
+
 
 const AddERPForm = () => {
   const navigate = useNavigate();
@@ -107,7 +103,7 @@ const AddERPForm = () => {
 
   return (
     <div className="mx-5 ">
-      <AdminNav/>
+    
       <h1 className="mx-auto text-center text-3xl my-2">Employee of the month</h1>
       <div className="w-44 h-0.5 bg-blue-900 justify-center mx-auto"></div>
     <form className="mx-auto grid max-w-screen-md gap-4 sm:grid-cols-2 shadow-lg p-5">
@@ -461,7 +457,7 @@ const AddERPForm = () => {
         .
       </p>
     </form>
-    <AdminFooter/>
+    
     </div>
   
   );
