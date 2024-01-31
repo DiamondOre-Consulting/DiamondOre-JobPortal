@@ -343,7 +343,7 @@ const JobsReviews = () => {
             <button
               aria-label="Previous slide"
               id="keen-slider-previous"
-              className="rounded-full border border-rose-600 p-4 text-rose-600 transition hover:bg-rose-600 hover:text-white"
+              className="rounded-full border border-blue-950 p-4 text-blue-950 transition hover:bg-blue-950 hover:text-white"
             >
               <svg
                 className="h-5 w-5 -rotate-180 transform"
@@ -359,7 +359,7 @@ const JobsReviews = () => {
             <button
               aria-label="Next slide"
               id="keen-slider-next"
-              className="rounded-full border border-rose-600 p-4 text-rose-600 transition hover:bg-rose-600 hover:text-white"
+              className="rounded-full border border-blue-950 p-4 text-blue-950 transition hover:bg-blue-950 hover:text-white"
             >
               <svg
                 className="h-5 w-5"

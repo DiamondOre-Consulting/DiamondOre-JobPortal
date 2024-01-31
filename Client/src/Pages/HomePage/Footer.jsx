@@ -14,7 +14,7 @@ const Footer = () => {
                     <img src={Logo} alt="" />
                 </div>
 
-                <p className="text-gray-500 sm:pr-8">Filler text is dummy text which has no meaning however looks very similar to real text.</p>
+                <p className="text-gray-500 sm:pr-8">Empowering Success, Enriching Lives. Your journey starts here with <b>Diamond Ore consolting Pvt Ltd.</b>".</p>
                 </div>
 
                 <div>

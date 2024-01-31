@@ -5,7 +5,7 @@ const HeroNav = () => {
   return (
     <div>
       <section className="overflow-hidden flex flex-between sm:grid sm:grid-cols-2">
-        <div className="p-8 md:p-12 lg:px-16 lg:py-24 mr-10">
+        <div className="p-8 md:p-12 lg:px-16 lg:py-24 mr-10 xxs:mr-0">
           <div className="mx-auto max-w-xl text-left ltr:sm:text-left rtl:sm:text-right">
             <h2 className="text-5xl font-bold text-gray-700 md:text-5xl sm:text-2xl font-serif">
             Welcome to <span className="text-blue-950">Diamond Ore Consulting Pvt Ltd</span>
@@ -26,7 +26,7 @@ const HeroNav = () => {
           </div>
         </div>
 
-        <div className="flex justify-center px-10">
+        <div className="flex justify-center px-10 ">
         <img
           alt="Image by Freepik"
           src={Boyimage}

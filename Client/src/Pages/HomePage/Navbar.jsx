@@ -15,7 +15,7 @@ const Navbar = () => {
         <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
           <header className="mb-8 flex items-center justify-between py-2 md:mb-12 md:py-2 xl:mb-8">
 
-          <img className='w-1/6 h-auto' src={Logo} alt="DiamondOre Logo" />
+          <img className='w-1/6 h-auto ' src={Logo} alt="DiamondOre Logo" />
 
             <nav className="hidden gap-12 lg:flex">
               <a href="#" className="text-lg font-semibold text-blue-950">
@@ -61,7 +61,7 @@ const Navbar = () => {
             <button
               type="button"
               onClick={toggleMenu}
-              className="inline-flex items-center gap-2 rounded-lg bg-gray-200 px-2.5 py-2 text-sm font-semibold text-gray-500 ring-indigo-300 hover:bg-gray-300 focus-visible:ring active:text-gray-700 md:text-base lg:hidden"
+              className="inline-flex items-center gap-2 rounded-lg bg-blue-950 px-2.5 py-2 text-sm font-semibold text-gray-100   md:text-base lg:hidden"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -75,7 +75,7 @@ const Navbar = () => {
                   clipRule="evenodd"
                 />
               </svg>
-              Menu
+              
             </button>
           </header>
           <ul
