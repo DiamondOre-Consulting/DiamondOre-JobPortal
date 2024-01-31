@@ -22,20 +22,17 @@ const Footer = () => {
 
                 <nav className="flex flex-col gap-4">
                     <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Overview</a>
+                    <a href="#" className="text-gray-500 transition duration-100 hover:text-blue-950 active:text-bg blue-950 ">Jobs</a>
                     </div>
 
                     <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Solutions</a>
+                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">CV genie</a>
                     </div>
 
                     <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Pricing</a>
+                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Br Client</a>
                     </div>
 
-                    <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Customers</a>
-                    </div>
                 </nav>
                 </div>
 
@@ -48,15 +45,15 @@ const Footer = () => {
                     </div>
 
                     <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Investor Relations</a>
+                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Team</a>
                     </div>
 
                     <div>
-                    <Link to={'/candidate-home'} className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Jobs</Link>
+                    <Link to={'/candidate-home'} className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Admin login</Link>
                     </div>
 
                     <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Blog</a>
+                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Employee login</a>
                     </div>
                 </nav>
                 </div>
@@ -71,16 +68,12 @@ const Footer = () => {
                     </div>
 
                     <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Documentation</a>
-                    </div>
-
-                    <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Chat</a>
-                    </div>
-
-                    <div>
                     <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">FAQ</a>
                     </div>
+
+                    
+
+                    
                 </nav>
                 </div>
                 
@@ -97,9 +90,7 @@ const Footer = () => {
                     <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Privacy Policy</a>
                     </div>
 
-                    <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Cookie settings</a>
-                    </div>
+                   
                 </nav>
                 </div>
             </div>
