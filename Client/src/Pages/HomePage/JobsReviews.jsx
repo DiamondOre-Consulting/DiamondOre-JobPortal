@@ -31,9 +31,19 @@ const JobsReviews = () => {
 
       keenSliderPrevious.addEventListener('click', () => keenSlider.prev());
       keenSliderNext.addEventListener('click', () => keenSlider.next());
-    };
 
-    initKeenSlider();
+      keenSlider.on('mousemove', (e) => {
+        const { clientX } = e;
+        if (clientX < window.innerWidth / 2) {
+          keenSlider.prev();
+        } else {
+          keenSlider.next();
+        }
+      })
+    };
+    
+
+  initKeenSlider();
 
     return () => {
       if (keenSlider) {
