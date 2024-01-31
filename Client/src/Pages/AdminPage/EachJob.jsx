@@ -50,7 +50,7 @@ const AdminEachJob = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          `http://localhost:5000/api/admin-confi/all-jobs/${id}`,
+          `https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/all-jobs/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -73,7 +73,7 @@ const AdminEachJob = () => {
     const fetchJobsAppliedApplicants = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/admin-confi/applied-candidates/${id}`,
+          `https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/applied-candidates/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

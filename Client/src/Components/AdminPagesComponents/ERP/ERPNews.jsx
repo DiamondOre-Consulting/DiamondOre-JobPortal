@@ -6,7 +6,7 @@ const HomeNews = ({empofthemonth,latestnews}) => {
   //     async function getdata(){
   //       // fetching data from backend
   //       const response = await axios.get(
-  //         "http://localhost:5000/api/admin-confi/erp/all-erp-data"
+  //         "https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/erp/all-erp-data"
   //       );
   //       console.log(response.data);
   //       const all = response.data;

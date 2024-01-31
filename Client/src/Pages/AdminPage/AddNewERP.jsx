@@ -79,7 +79,7 @@ const AddERPForm = () => {
     try {
     
       const response = await axios.post(
-        "http://localhost:5000/api/admin-confi/erp/add-erp-data",
+        "https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/erp/add-erp-data",
         formData,
         {
           headers: {

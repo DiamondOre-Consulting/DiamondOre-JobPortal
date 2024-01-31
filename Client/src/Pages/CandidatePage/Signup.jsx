@@ -27,7 +27,7 @@ const Signup = ({ toggleForm }) => {
       const formData = new FormData();
       formData.append("myFileImage", profilePic);
       const response = await axios.post(
-        "http://localhost:5000/api/candidates/upload-profile-pic",
+        "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/upload-profile-pic",
         formData,
         {
           headers: {
@@ -52,7 +52,7 @@ const Signup = ({ toggleForm }) => {
       const formData = new FormData();
       formData.append("myFileResume", resume);
       const response = await axios.post(
-        "http://localhost:5000/api/candidates/upload-resume",
+        "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/upload-resume",
         formData,
         {
           headers: {
@@ -79,7 +79,7 @@ const Signup = ({ toggleForm }) => {
     try {
       // Simulate OTP sent successfully
       // For demonstration purposes, setting OTP sent to true after a delay
-      const response = await axios.post("http://localhost:5000/api/candidates/send-otp", {
+      const response = await axios.post("https://diamond-ore-job-portal-backend.vercel.app/api/candidates/send-otp", {
         email
       })
 
@@ -101,7 +101,7 @@ const Signup = ({ toggleForm }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/candidates/signup",
+        "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/signup",
         {
           name,
           email,

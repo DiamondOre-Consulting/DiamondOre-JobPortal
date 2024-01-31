@@ -24,7 +24,7 @@ const CandidateNav = () => {
   
           // Fetch associates data from the backend
           const response = await axios.get(
-            "http://localhost:5000/api/candidates/user-data",
+            "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/user-data",
             {
               headers: {
                 Authorization: `Bearer ${token}`
