@@ -19,7 +19,7 @@ const PORT = 5000;
 
 // Database connect
 mongoose
-  .connect("mongodb+srv://harshdiamondore:QpYdgGw1kEAWNkfj@cluster0.a52nd4l.mongodb.net/?retryWrites=true&w=majority")
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("Connected to MongoDB");
   })

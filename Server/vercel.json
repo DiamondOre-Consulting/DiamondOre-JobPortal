@@ -1,6 +1,6 @@
 {
     "version": 2,
-    "name": "merchant_customer",
+    "name": "diamondore_job_portal",
     "builds": [{ "src": "server.js", "use": "@vercel/node" }],
     "routes": [
       {
