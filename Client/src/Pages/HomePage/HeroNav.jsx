@@ -26,7 +26,7 @@ const HeroNav = () => {
           </div>
         </div>
 
-        <div className="flex justify-center px-10 ">
+        <div className="hidden sm:flex justify-center px-10 ">
         <img
           alt="Image by Freepik"
           src={Boyimage}

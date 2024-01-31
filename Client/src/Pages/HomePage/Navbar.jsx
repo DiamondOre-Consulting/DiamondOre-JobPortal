@@ -15,7 +15,7 @@ const Navbar = () => {
         <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
           <header className="mb-8 flex items-center justify-between py-2 md:mb-12 md:py-2 xl:mb-8">
 
-          <img className='w-1/6 h-auto ' src={Logo} alt="DiamondOre Logo" />
+          <img className='w-3/6 sm:w-2/6 md:w-1/6 h-auto' src={Logo} alt="DiamondOre Logo" />
 
             <nav className="hidden gap-12 lg:flex">
               <a href="#" className="text-lg font-semibold text-blue-950">
