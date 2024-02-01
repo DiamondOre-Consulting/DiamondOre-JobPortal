@@ -82,7 +82,7 @@ const Navbar = () => {
               menuOpen ? "block" : "hidden"
             } w-full flex flex-col items-center justify-center mb-14`}
           >
-            <a href={"/home-main"}>
+            <Link to={"/"}>
               <li
                 className={`${
                   menuOpen ? "block" : "hidden"
@@ -90,8 +90,8 @@ const Navbar = () => {
               >
                 Home
               </li>
-            </a>
-            <a href={"/aboutus"}>
+            </Link>
+            <Link to={"/about"}>
               <li
                 className={`${
                   menuOpen ? "block" : "hidden"
@@ -99,8 +99,8 @@ const Navbar = () => {
               >
                 About Us
               </li>
-            </a>
-            <a href={"/services"}>
+            </Link>
+            <Link to={"/services"}>
               <li
                 className={`${
                   menuOpen ? "block" : "hidden"
@@ -108,8 +108,8 @@ const Navbar = () => {
               >
                 Services
               </li>
-            </a>
-            <a href={"/contactmain"}>
+            </Link>
+            <Link to={"/contact"}>
               <li
                 className={`${
                   menuOpen ? "block" : "hidden"
@@ -117,7 +117,7 @@ const Navbar = () => {
               >
                 Contact Us
               </li>
-            </a>
+            </Link>
             <a href={"/home-main"}>
               <li
                 className={`${
