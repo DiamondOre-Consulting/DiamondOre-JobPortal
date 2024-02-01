@@ -51,7 +51,7 @@ const StatsPartners = () => {
     <marquee behavior="scroll" direction="left" scrollamount="19" scrolldelay="0">
       <div className="flex items-center justify-center sm:justify-start sm:flex-wrap gap-12 rounded-lg p-6 sm:h-40 sm:content-evenly md:grid-cols-6 mt-6">
         <div className="flex justify-center text-indigo-500 object-cover">
-          <img src={abglogo} alt="" className="w-28 object-cover" />
+          <img src={abglogo} alt="" className="w-28 sm:w-32 md:w-40 object-cover" />
         </div>
 
         <div className="flex justify-center text-indigo-500 object-cover">
