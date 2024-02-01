@@ -11,40 +11,39 @@ const Navbar = () => {
   return (
     <div>
       {/* Header and Nav Section Start */}
-      <div className="bg-white pb-6 sm:pb-8 lg:pb-6">
+      <div className=" pb-6 sm:pb-8 lg:pb-6 z-40">
         <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
           <header className="mb-8 flex items-center justify-between py-2 md:mb-12 md:py-2 xl:mb-8">
 
-          <img className='w-3/6 sm:w-2/6 md:w-1/6 h-auto' src={Logo} alt="DiamondOre Logo" />
+          <img className='w-3/6 sm:w-2/6 md:w-1/6 h-auto z-40' src={Logo} alt="DiamondOre Logo" />
 
-            <nav className="hidden gap-12 lg:flex">
-              <a href="#" className="text-lg font-semibold text-blue-950">
+            <nav className="hidden gap-12 lg:flex cursor-pointer z-40">
+              <Link to={'/'} href="#" className="text-lg font-semibold text-blue-950">
                 Home
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link to={'/about'}  
                 className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
               >
                 About Us
-              </a>
-              <a
-                href="#"
+                </Link>
+              <Link to={'/services'}
+                
                 className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
               >
                 Services
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link to={'/contact'}
+                
                 className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
               >
                 Contact Us
-              </a>
+              </Link>
             </nav>
 
             <div className="hidden lg:inline-block relative text-left">
               <Link
                 to={'/signup'}
-                className="rounded-lg bg-blue-900 px-4 py-3 text-center text-sm font-semibold text-gray-500 outline-none ring-indigo-300 transition duration-100 hover:bg-blue-950 focus-visible:ring active:text-gray-700 md:text-base inline-flex items-center"
+                className="rounded-lg bg-blue-900 px-4 py-3 text-center text-sm font-semibold text-gray-500 outline-none ring-indigo-300 transition duration-100 hover:bg-blue-950 focus-visible:ring active:text-gray-700 md:text-base inline-flex items-center z-40"
               >
               <svg 
                 className="w-4 h-4 text-white " 
@@ -54,14 +53,14 @@ const Navbar = () => {
                 viewBox="0 0 14 18">
                 <path d="M7 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Zm2 1H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z"/>
               </svg>
-              <span className="ml-2 text-white">Sign in</span>
+              <span className="ml-2 text-white z-40">Sign in</span>
               </Link>
             </div>
 
             <button
               type="button"
               onClick={toggleMenu}
-              className="inline-flex items-center gap-2 rounded-lg bg-blue-950 px-2.5 py-2 text-sm font-semibold text-gray-100   md:text-base lg:hidden"
+              className="inline-flex items-center gap-2 rounded-lg bg-blue-950 px-2.5 py-2 text-sm font-semibold text-gray-100 z-40  md:text-base lg:hidden"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

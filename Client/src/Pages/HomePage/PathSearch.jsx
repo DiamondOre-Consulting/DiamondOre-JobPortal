@@ -258,9 +258,9 @@ const PathSearch = ({ latestJobs }) => {
 
                                     <div className="mb-2 text-lg font-normal text-gray-200 text-left"style={{ fontFamily: "'Roboto', sans-serif" }}>Experience:- {latestJob?.MinExperience}</div>
 
-                                    <button className="px-4 py-2 bg-blue-950 text-gray-200 rounded-md hover:bg-white hover:text-black focus:outline-none focus:bg-teal-600">
+                                   <Link to={'all-jobs/:id'}> <button className="px-4 py-2 bg-blue-950 text-gray-200 rounded-md hover:bg-white hover:text-black ">
                                         Know More
-                                    </button>
+                                    </button> </Link>
                                 </div>
                             </div>
 

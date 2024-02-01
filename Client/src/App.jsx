@@ -22,6 +22,9 @@ import AdminAllCandidates from "./Pages/AdminPage/AllCandidates";
 import AdminERP from "./Pages/AdminPage/AdminERP";
 import AddNewERP from "./Pages/AdminPage/AddNewERP";
 import PathSearch from "./Pages/HomePage/PathSearch";
+import AboutUs from "./Pages/Navpage/AboutUs";
+import Services from "./Pages/Navpage/Services";
+import Contact from "./Pages/Navpage/Contact";
 
 function App() {
 
@@ -31,7 +34,9 @@ function App() {
         <Routes>
           <Route path="/">
             <Route index element={<Homemain/>} />
-
+            <Route path="/about" element={<AboutUs/>}/>
+            <Route path='services' element={<Services/>}/>
+            <Route path="/contact" element={<Contact/>}/>
             <Route path="/signup" element={<Signup/>} />
             <Route path="/login" element={<Login/>} />
             <Route path="/dashboard" element={<CandidateHome/>}/>
