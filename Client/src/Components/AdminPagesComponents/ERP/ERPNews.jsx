@@ -1,26 +1,7 @@
 import React, { useEffect } from "react";
 
 const HomeNews = ({empofthemonth,latestnews}) => {
-  //  useEffect(()=>{
-  //   try{
-  //     async function getdata(){
-  //       // fetching data from backend
-  //       const response = await axios.get(
-  //         "https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/erp/all-erp-data"
-  //       );
-  //       console.log(response.data);
-  //       const all = response.data;
-  //       const latest = all.slice(-1);
-  //       setLatestJobs(latest.reverse());
-  //       console.log(latest);
-  //     }
-  //   }
-  //   catch(e){
-  //     console.e("Error fetching associates:", e);
-  //   }
-  //  getdata();
-  //  })
-  // console.log(latestnews);
+
   return (
     <div className="mx-10 my-16">
       {/* Employee of the month */}
@@ -80,14 +61,6 @@ const HomeNews = ({empofthemonth,latestnews}) => {
         Breaking News & Announcements
       </h2>
       <div className="space-y-4">
-        {/* <details className="group">
-          <summary className="flex cursor-pointer items-center justify-start gap-5 rounded-lg bg-gray-300 p-4 text-start">
-            <p className="font-semibold text-gray-800">1.</p>
-            <h2 className="font-medium text-blue-950">
-             {latestnews}
-            </h2>
-          </summary>
-        </details> */}
         {latestnews?.map((newNews) => (
           <details className="group">
           <summary className="flex cursor-pointer items-center justify-start gap-5 rounded-lg bg-gray-300 p-4">

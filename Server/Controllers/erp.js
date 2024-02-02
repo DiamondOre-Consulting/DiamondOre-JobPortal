@@ -51,15 +51,15 @@ router.post("/add-erp-data", AdminAuthenticateToken, async (req, res) => {
 });
 
 // GET ALL ERP DATA
-router.get("/all-erp-data", AdminAuthenticateToken, async (req, res) => {
+router.get("/all-erp-data", async (req, res) => {
   try {
-    const { email } = req.user;
+    // const { email } = req.user;
 
-    // Find the user in the database
-    const user = await Admin.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    // // Find the user in the database
+    // const user = await Admin.findOne({ email });
+    // if (!user) {
+    //   return res.status(404).json({ message: "User not found" });
+    // }
 
     const allData = await ERP.find({});
 
