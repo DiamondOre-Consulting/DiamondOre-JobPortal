@@ -13,6 +13,11 @@ import Navbar from "../HomePage/Navbar";
 const AdminERP = () => {
   const [empofthemonth,setempofthemonth]=useState(null);
   const [latestnews,setlatestnews]=useState(null);
+  const [hrname,sethrname]=useState(null)
+  const [client,setclient]=useState(null);
+  const [RnRinterns,setRnRinterns]=useState(null);
+  const [RnRRecruiter,setRnRRecruiter]=useState(null);
+  const [Joinings,setjoinings]=useState(null);
 
   useEffect(() => {
 
@@ -23,14 +28,63 @@ const AdminERP = () => {
         );
         if(response.status===200){
         const lastData = response.data.reverse()[0];
+
         console.log(lastData.EmpOfMonth)
         console.log(response.data.reverse()[0]);
-         setempofthemonth(lastData.EmpOfMonth);
+
+         setempofthemonth(lastData.EmpOfMonth);  //emp of the mounth
+         //breaking news
          if (lastData.BreakingNews && lastData.BreakingNews.length > 0) {
           console.log("news", lastData.BreakingNews[0]);
           setlatestnews(lastData.BreakingNews)
-        } else {
+         } 
+        else {
           console.log("BreakingNews array is empty or undefined");
+        }
+          //top hr
+        if (lastData.Top5HRs && lastData.Top5HRs.length > 0) {
+          console.log("Top5Hr", lastData.Top5HRs);
+          sethrname(lastData.Top5HRs)
+         } 
+        else {
+          console.log("top 5 hr array is empty");
+        }
+
+        //top 5 client 
+
+        if (lastData.Top5Clients && lastData.Top5Clients.length > 0) {
+          console.log("Top5Clients", lastData.Top5Clients);
+          setclient(lastData.Top5Clients)
+         } 
+        else {
+          console.log("top 5 client array is empty");
+        }
+
+        //Rnr recuiter
+        if (lastData.RnRRecruiters && lastData.RnRRecruiters.length > 0) {
+          console.log("RnrRecuiters", lastData.RnRRecruiters);
+          setRnRRecruiter(lastData.RnRRecruiters);
+         } 
+        else {
+          console.log("Rnr recuiiter array is empty");
+        }
+
+         //Rnr interns
+         if (lastData.RnRInterns && lastData.RnRInterns.length > 0) {
+          console.log("Rnrrec", lastData.RnRInterns);
+          setRnRinterns(lastData.RnRInterns);
+         } 
+        else {
+          console.log("Rnr interns array is empty");
+        }
+
+        //Joinings
+        if (lastData.JoningsForWeek && lastData.JoningsForWeek.length > 0) {
+          console.log("joinings", lastData.JoningsForWeek);
+          setjoinings(lastData.JoningsForWeek);
+         } 
+        else {
+          console.log("joinings array is empty");
         }
        
         }
@@ -57,10 +111,10 @@ const AdminERP = () => {
           Add This Week's Data →
         </Link>
       </div>
-      <HomeNews empofthemonth={empofthemonth} latestnews={latestnews}/>
-      <ERPTop5s />
-      <RnRLeaderboard />
-      <JoiningsForWeek />
+      <HomeNews empofthemonth={empofthemonth} latestnews={latestnews} />
+      <ERPTop5s hrname={hrname} client={client}/>
+      <RnRLeaderboard RnRinterns={RnRinterns} RnRRecruiter={RnRRecruiter}/>
+      <JoiningsForWeek Joinings={Joinings} />
 
       <AdminFooter />
     </div>

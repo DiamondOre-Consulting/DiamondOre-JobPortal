@@ -7,13 +7,13 @@ import boy from '../../assets/Boyimage.jpg'
 const AboutUs = () => {
     return (
         <div>
-            <div className="relative h-screen sm:h-block md:h-96 lg:h-screen bg-cover bg-center overflow-hidden" style={{ backgroundImage: `url(${empimage})`, backgroundPosition: "top" }}>
-                <Navbar />
-                <div className="absolute inset-0 bg-black opacity-50"></div>
-                <div className="absolute inset-0 flex items-center justify-center text-white text-center">
+             <Navbar />
+            <div className="h-96 sm:h-block md:h-96 lg:h-96 bg-cover bg-center overflow-hidden" style={{ backgroundImage: `url(${empimage})`, backgroundPosition: "top" }}>
+                <div className=" inset-0 bg-black opacity-50"></div>
+                <div className=" inset-0 flex items-center justify-center text-gray-900 text-center">
                     <div>
-                        <h1 className="text-3xl md:text-3xl lg:text-6xl font-bold mt-60 font-serif">Diamond Ore Consulting Pvt Ltd</h1>
-                        <p className="text-sm md:text-xl lg:text-xl font-bold shadow-xl px-12 ">we are dedicated to transforming challenges into opportunities.</p>
+                        {/* <h1 className="text-3xl md:text-3xl lg:text-6xl font-bold font-serif ">Diamond Ore Consulting Pvt Ltd</h1> */}
+                       
                     </div>
                 </div>
             </div>

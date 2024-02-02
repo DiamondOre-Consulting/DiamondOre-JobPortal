@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-const HomeNews = ({empofthemonth,latestnews}) => {
+const HomeNews = ({empofthemonth,latestnews,hrname}) => {
 
   return (
     <div className="mx-10 my-16">

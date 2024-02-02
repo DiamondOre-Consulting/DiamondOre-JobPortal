@@ -1,6 +1,6 @@
 import React from "react";
 
-const JoiningsForWeek = () => {
+const JoiningsForWeek = ({ Joinings }) => {
   return (
     <div>
       <section>
@@ -23,59 +23,27 @@ const JoiningsForWeek = () => {
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
                     <th scope="col" class="px-6 py-3">
-                      S. No.
+                      position
                     </th>
                     <th scope="col" class="px-6 py-3">
-                      HR Name
+                      No.joinings
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <th
-                      scope="row"
-                      class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                    >
-                      Apple MacBook Pro 17"
-                    </th>
-                    <td class="px-6 py-4">Silver</td>
-                  </tr>
-                  <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <th
-                      scope="row"
-                      class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                    >
-                      Microsoft Surface Pro
-                    </th>
-                    <td class="px-6 py-4">White</td>
-                  </tr>
-                  <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <th
-                      scope="row"
-                      class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                    >
-                      Apple MacBook Pro 17"
-                    </th>
-                    <td class="px-6 py-4">Silver</td>
-                  </tr>
-                  <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <th
-                      scope="row"
-                      class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                    >
-                      Apple MacBook Pro 17"
-                    </th>
-                    <td class="px-6 py-4">Silver</td>
-                  </tr>
-                  <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <th
-                      scope="row"
-                      class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                    >
-                      Apple MacBook Pro 17"
-                    </th>
-                    <td class="px-6 py-4">Silver</td>
-                  </tr>
+                  {Joinings?.map((join) => (
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                      <th
+                        scope="row"
+                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                      >
+                       {join.names}
+                      </th>
+                      <td class="px-6 py-4">{join.noOfJoinings}</td>
+                    </tr>
+
+                  ))}
+
                 </tbody>
               </table>
             </div>
