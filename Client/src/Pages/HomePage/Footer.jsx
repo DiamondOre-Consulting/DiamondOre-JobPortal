@@ -49,7 +49,7 @@ const Footer = () => {
                     </div>
 
                     <div>
-                    <Link to={'/admn-login'} className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Admin login</Link>
+                    <Link to={'/admin-login'} className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Admin login</Link>
                     </div>
 
                     <div>
