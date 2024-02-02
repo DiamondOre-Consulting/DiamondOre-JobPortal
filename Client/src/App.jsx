@@ -39,7 +39,6 @@ function App() {
             <Route path='services' element={<Services/>}/>
             <Route path="/contact" element={<Contact/>}/>
             <Route path="/signup" element={<Signup/>} />
-            <Route path='/addjobs' element={<Addjobs/>}/>
             <Route path="/login" element={<Login/>} />
             <Route path="/dashboard" element={<CandidateHome/>}/>
             <Route path="/all-jobs" element={<CandidateAllJobs/>} />
@@ -53,6 +52,7 @@ function App() {
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/admin/all-jobs" element={<AdminAllJobs />} />
+            <Route path='/addjobs' element={<Addjobs/>}/>
             <Route path="/admin/all-jobs/:id" element={<AdminEachJob />} />
             <Route path="/admin/all-candidates" element={<AdminAllCandidates />} />
             <Route path="/admin/all-candidates/:id" element={<EachCandidate />} />
