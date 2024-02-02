@@ -17,6 +17,7 @@ const CandidateAllJobsCards = () => {
         const response = await axios.get(
           "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/all-jobs"
         );
+        console.log(response.data)
         if(response.status==200) {
           console.log(response.data);
         const all = response.data;

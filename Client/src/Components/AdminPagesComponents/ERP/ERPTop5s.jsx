@@ -1,6 +1,6 @@
 import React from "react";
 
-const ERPTop5s = () => {
+const ERPTop5s = ({ hrname, client }) => {
   return (
     <div>
       <section className="bg-red-50">
@@ -20,59 +20,26 @@ const ERPTop5s = () => {
                   <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                       <th scope="col" class="px-6 py-3">
-                        S. No.
+                        serial No
                       </th>
                       <th scope="col" class="px-6 py-3">
-                        HR Name
+                        Top5hrs
                       </th>
                     </tr>
+
+                    {hrname?.map((hrs) => (
+                      <tr>
+                        <th scope="col" class="px-6 py-3">
+                          {hrs.serialNumber}
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                          {hrs.name}
+                        </th>
+                      </tr>
+                    ))}
                   </thead>
                   <tbody>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                      <th
-                        scope="row"
-                        class="px-6 py-4"
-                      >
-                        1.
-                      </th>
-                      <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">Silver</td>
-                    </tr>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                      <th
-                        scope="row"
-                        class="px-6 py-4"
-                      >
-                        2.
-                      </th>
-                      <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">White</td>
-                    </tr>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                      <th
-                        scope="row"
-                        class="px-6 py-4"
-                      >
-                       3.
-                      </th>
-                      <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">Silver</td>
-                    </tr>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                      <th
-                        scope="row"
-                        class="px-6 py-4"
-                      >
-                        4.
-                      </th>
-                      <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">Silver</td>
-                    </tr>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                      <th
-                        scope="row"
-                        class="px-6 py-4"
-                      >
-                        5.
-                      </th>
-                      <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">Silver</td>
-                    </tr>
+
                   </tbody>
                 </table>
               </div>
@@ -101,56 +68,23 @@ const ERPTop5s = () => {
                         S. No.
                       </th>
                       <th scope="col" class="px-6 py-3">
-                        HR Name
+                        Top5Client
                       </th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                      <th
-                        scope="row"
-                        class="px-6 py-4"
-                      >
-                        1.
-                      </th>
-                      <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">Silver</td>
-                    </tr>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                      <th
-                        scope="row"
-                        class="px-6 py-4"
-                      >
-                        2.
-                      </th>
-                      <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">White</td>
-                    </tr>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                      <th
-                        scope="row"
-                        class="px-6 py-4"
-                      >
-                       3.
-                      </th>
-                      <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">Silver</td>
-                    </tr>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                      <th
-                        scope="row"
-                        class="px-6 py-4"
-                      >
-                        4.
-                      </th>
-                      <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">Silver</td>
-                    </tr>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                      <th
-                        scope="row"
-                        class="px-6 py-4"
-                      >
-                        5.
-                      </th>
-                      <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">Silver</td>
-                    </tr>
+                  {client?.map((cl) => (
+                      <tr>
+                        <th scope="col" class="px-6 py-3">
+                          {cl.serialNumber}
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                          {cl.name}
+                        </th>
+                      </tr>
+                    ))}
+
+
                   </tbody>
                 </table>
               </div>
