@@ -35,12 +35,13 @@ const AdminNav = () => {
         if (response.status == 200) {
           console.log(response.data);
           setUserData(response.data);
+          console.log(userData);
         } else {
           console.log(response.data);
           setUserData("Did not get any response!!!");
         }
       } catch (error) {
-        console.error("Error fetching associates:", error);
+        console.error("Error fetching admin data:", error);
         // Handle error and show appropriate message
       }
     };

@@ -20,6 +20,7 @@ const HomeNews = ({empofthemonth,latestnews}) => {
   //   }
   //  getdata();
   //  })
+  // console.log(latestnews);
   return (
     <div className="mx-10 my-16">
       {/* Employee of the month */}
@@ -79,23 +80,24 @@ const HomeNews = ({empofthemonth,latestnews}) => {
         Breaking News & Announcements
       </h2>
       <div className="space-y-4">
-        <details className="group">
+        {/* <details className="group">
           <summary className="flex cursor-pointer items-center justify-start gap-5 rounded-lg bg-gray-300 p-4 text-start">
             <p className="font-semibold text-gray-800">1.</p>
             <h2 className="font-medium text-blue-950">
              {latestnews}
             </h2>
           </summary>
-        </details>
-
-        <details className="group">
+        </details> */}
+        {latestnews?.map((newNews) => (
+          <details className="group">
           <summary className="flex cursor-pointer items-center justify-start gap-5 rounded-lg bg-gray-300 p-4">
-            <p className="font-semibold text-gray-800">2.</p>
+            <p className="font-semibold text-gray-800">{newNews.serialNumber}</p>
             <h2 className="font-medium text-blue-950">
-              {latestnews}
+              {newNews.news}
             </h2>
           </summary>
         </details>
+        ))}
       </div>
     </div>
   );

@@ -11,7 +11,7 @@ import JoiningsForWeek from "../../Components/AdminPagesComponents/ERP/JoiningsF
 
 const AdminERP = () => {
   const [empofthemonth,setempofthemonth]=useState(null);
-  const [latestnews,setlatestnews]=useState("null");
+  const [latestnews,setlatestnews]=useState(null);
  
   const navigate = useNavigate();
 
@@ -26,6 +26,22 @@ const AdminERP = () => {
 
 
   useEffect(() => {
+   
+  
+    const token = localStorage.getItem("token");
+    if (!token) {
+      // No token found, redirect to login page
+      navigate("/admin-login");
+    } else {
+      const tokenExpiration = decodedToken ? decodedToken.exp * 1000 : 0; // Convert expiration time to milliseconds
+
+      if (tokenExpiration && tokenExpiration < Date.now()) {
+        // Token expired, remove from local storage and redirect to login page
+        localStorage.removeItem("token");
+        navigate("/admin-login");
+      }
+    }
+
     const fetchdata = async () => {
       try{
         const response = await axios.get(
@@ -42,8 +58,8 @@ const AdminERP = () => {
         console.log(response.data.reverse()[0]);
          setempofthemonth(lastData.EmpOfMonth);
          if (lastData.BreakingNews && lastData.BreakingNews.length > 0) {
-          console.log("news", lastData.BreakingNews[0].news);
-          setlatestnews(lastData.BreakingNews[0].news)
+          console.log("news", lastData.BreakingNews[0]);
+          setlatestnews(lastData.BreakingNews)
         } else {
           console.log("BreakingNews array is empty or undefined");
         }
@@ -57,21 +73,6 @@ const AdminERP = () => {
         console.log("error occured", e)
       }
      
-    }
-   
-  
-    const token = localStorage.getItem("token");
-    if (!token) {
-      // No token found, redirect to login page
-      navigate("/admin-login");
-    } else {
-      const tokenExpiration = decodedToken ? decodedToken.exp * 1000 : 0; // Convert expiration time to milliseconds
-
-      if (tokenExpiration && tokenExpiration < Date.now()) {
-        // Token expired, remove from local storage and redirect to login page
-        localStorage.removeItem("token");
-        navigate("/admin-login");
-      }
     }
  
     fetchdata()
