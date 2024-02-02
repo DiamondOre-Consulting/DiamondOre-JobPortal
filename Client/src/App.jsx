@@ -25,6 +25,7 @@ import PathSearch from "./Pages/HomePage/PathSearch";
 import AboutUs from "./Pages/Navpage/AboutUs";
 import Services from "./Pages/Navpage/Services";
 import Contact from "./Pages/Navpage/Contact";
+import Addjobs from "./Pages/AdminPage/Addjobs";
 
 function App() {
 
@@ -38,6 +39,7 @@ function App() {
             <Route path='services' element={<Services/>}/>
             <Route path="/contact" element={<Contact/>}/>
             <Route path="/signup" element={<Signup/>} />
+            <Route path='/addjobs' element={<Addjobs/>}/>
             <Route path="/login" element={<Login/>} />
             <Route path="/dashboard" element={<CandidateHome/>}/>
             <Route path="/all-jobs" element={<CandidateAllJobs/>} />

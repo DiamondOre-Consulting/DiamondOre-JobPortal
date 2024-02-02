@@ -114,6 +114,14 @@ const AdminNav = () => {
                 >
                   ERP
                 </Link>
+
+                <Link
+                  to={'/addjobs'}
+                  className="cursor-pointer text-md font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
+                 
+                >
+                  AddJobs
+                </Link>
               </nav>
 
               <div

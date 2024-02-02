@@ -599,25 +599,15 @@ router.get("/status/:id1/:id2", CandidateAuthenticateToken, async (req, res) => 
 // };
 
 // HELP CONTACT
-router.post("/help-contact", CandidateAuthenticateToken, async (req, res) => {
+router.post("/help-contact", async (req, res) => {
   try {
-    const {userId, name, email} = req.user;
-    const { Message } = req.body;
-
-    const user = await Candidates.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    const {Name,Email, Message } = req.body;
 
     const newMsg = new CandidateContact({
-      CandidateId: userId,
-      Name: name,
-      Email: email,
-      Message
+      Name,Email,Message
     })
 
     await newMsg.save();
-
     console.log(newMsg);
 
     // await sendMsgByEmail(name, email, Message );
