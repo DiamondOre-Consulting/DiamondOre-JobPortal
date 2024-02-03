@@ -1,17 +1,60 @@
-import React from 'react'
+import { React, useState } from 'react'
 import Navbar from '../HomePage/Navbar'
 import Footer from '../HomePage/Footer'
+import {useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Employeelogin = () => {
+    const [email, setEmail] = useState(null);
+    const [password, setPassword] = useState(null);
+    const [error, setError] = useState(false);
+
+    const navigate = useNavigate();
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        setError(null);
+        // Perform login logic here
+        try {
+            console.log(email, password)
+            const response = await axios.post("http://localhost:5000/api/employee/login",
+                {
+                    email,
+                    password
+                });
+                console.log("complete response ",response)
+
+            if (response.status === 200) {
+                const token = response.data.token;
+                // Store the token in local storage
+                localStorage.setItem("token", token);
+                console.log("Logged in successfully as Employee");
+                // Redirect to dashboard page
+                setTimeout(() => {
+                    navigate("/Employeedashboard");
+                }, 1000);
+            } else {
+                console.log("Login failed");
+                setError("Login Details Are Wrong!!");
+                // Handle login error
+            }
+        } catch (error) {
+            console.error("Error logging in:", error);
+            setError("Login Details Are Wrong!!");
+            // Handle error
+        } finally {
+        }
+    };
+
     return (
         <div>
-            <Navbar/>
+            <Navbar />
             <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
                 <div class="mx-auto max-w-lg text-center">
                     <h1 class="text-2xl font-bold sm:text-3xl text-blue-950 font-serif">Employee Login</h1>
                 </div>
 
-                <form action="" class="mx-auto mb-0 mt-8 max-w-md space-y-4">
+                <form onSubmit={handleLogin} class="mx-auto mb-0 mt-8 max-w-md space-y-4">
                     <div>
                         <label for="email" class="sr-only">Email</label>
 
@@ -20,6 +63,8 @@ const Employeelogin = () => {
                                 type="email"
                                 class="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-xl"
                                 placeholder="Enter email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
 
                             <span class="absolute inset-y-0 end-0 grid place-content-center px-4">
@@ -49,6 +94,8 @@ const Employeelogin = () => {
                                 type="password"
                                 class="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-xl"
                                 placeholder="Enter password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                             />
 
                             <span class="absolute inset-y-0 end-0 grid place-content-center px-4">
@@ -85,13 +132,19 @@ const Employeelogin = () => {
                         <button
                             type="submit"
                             class="inline-block rounded-lg bg-blue-950 px-5 py-3 text-sm font-medium text-white shadow-xl shadow-blue-950"
+                           
                         >
-                           Login
+                            Login
                         </button>
                     </div>
                 </form>
+                {error && (
+                    <div className="flex items-center justify-center bg-red-300 p-4 rounded-md">
+                        <p className="text-center text-sm text-red-500">{error}</p>
+                    </div>
+                )}
             </div>
-            <Footer/>
+            <Footer />
         </div>
     )
 }

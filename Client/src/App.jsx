@@ -27,6 +27,7 @@ import Services from "./Pages/Navpage/Services";
 import Contact from "./Pages/Navpage/Contact";
 import Addjobs from "./Pages/AdminPage/Addjobs";
 import Employeelogin from "./Pages/Employeepage/Employeelogin";
+import Employeedashboard from "./Pages/Employeepage/Employeedashboard";
 
 function App() {
 
@@ -60,7 +61,8 @@ function App() {
             <Route path="/update-status/:id1/:id2" element={<UpdateStatus />} />
             <Route path="/erp-dashboard" element={<AdminERP />} />
             <Route path="/admin/erp-dashboard/add" element={<AddNewERP />} />
-            <Route path='/employeelogin'element={<Employeelogin/>}/>
+            <Route path='/employee/login'element={<Employeelogin/>}/>
+            <Route path='/Empoyeedashboard' element={<Employeedashboard/>}/>
           </Route> 
         </Routes>
       </Router>

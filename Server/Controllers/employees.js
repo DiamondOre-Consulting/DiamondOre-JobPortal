@@ -34,9 +34,9 @@ router.post("/add-emp", async (req, res) => {
 
 // EMPLOYEE LOGIN
 router.post("/login", async (req, res) => {
-    const { email, password } = req.body;
-  
     try {
+      const { email, password } = req.body;
+      console.log(email, password)
       // Find the user in the database
       const user = await Employees.findOne({ email });
       if (!user) {
