@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import Employees from "../Models/Employees.js";
 import EmployeeAuthenticateToken from "../Middlewares/EmployeeAuthenticateToken.js";
+import ERP from "../Models/ERP.js";
 
 dotenv.config();
 
@@ -24,7 +25,7 @@ router.post("/add-emp", async (req, res) => {
 
         await newEmp.save();
 
-        res.status(201).json({message: "New Employee registered successfully!!! ", newERPData});
+        res.status(201).json({message: "New Employee registered successfully!!! ", newEmp});
     } catch(error) {
         console.log(error, "Something went wrong!!!");
         res.status(500).json("Something went wrong!!!", error);
