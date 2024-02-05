@@ -239,7 +239,7 @@ const PathSearch = ({ latestJobs }) => {
                         <p className="mx-auto max-w-screen-md text-center text-black md:text-lg " style={{ fontFamily: "'Roboto', sans-serif" }}>
 
                             Embark on a journey of possibilities and discover your dream career with us. Explore exciting job opportunities tailored to your skills and aspirations.
-                       
+
                         </p>
                     </div>
 
@@ -252,13 +252,13 @@ const PathSearch = ({ latestJobs }) => {
                                 <div className="flex flex-1 flex-col py-4 ">
                                     <div className="mb-2 text-lg font-bold text-white text-left  font-serif ">{latestJob?.JobTitle}</div>
 
-                                    <div className="mb-2 text-lg font-normal text-gray-200 text-left"style={{ fontFamily: "'Roboto', sans-serif" }}>Industry:- {latestJob?.Industry}</div>
+                                    <div className="mb-2 text-lg font-normal text-gray-200 text-left" style={{ fontFamily: "'Roboto', sans-serif" }}>Industry:- {latestJob?.Industry}</div>
 
-                                    <div className="mb-2 text-lg font-normal text-gray-200 text-left"style={{ fontFamily: "'Roboto', sans-serif" }}>Channels:- {latestJob?.Channel}</div>
+                                    <div className="mb-2 text-lg font-normal text-gray-200 text-left" style={{ fontFamily: "'Roboto', sans-serif" }}>Channels:- {latestJob?.Channel}</div>
 
-                                    <div className="mb-2 text-lg font-normal text-gray-200 text-left"style={{ fontFamily: "'Roboto', sans-serif" }}>Experience:- {latestJob?.MinExperience}</div>
+                                    <div className="mb-2 text-lg font-normal text-gray-200 text-left" style={{ fontFamily: "'Roboto', sans-serif" }}>Experience:- {latestJob?.MinExperience}</div>
 
-                                   <Link to={'all-jobs/:id'}> <button className="px-4 py-2 bg-blue-950 text-gray-200 rounded-md hover:bg-white hover:text-black ">
+                                    <Link to={'all-jobs/:id'}> <button className="px-4 py-2 bg-blue-950 text-gray-200 rounded-md hover:bg-white hover:text-black ">
                                         Know More
                                     </button> </Link>
                                 </div>
@@ -272,20 +272,19 @@ const PathSearch = ({ latestJobs }) => {
                         <div className="flex flex-col overflow-hidden rounded-lg bg-blue-900 hover:bg-blue-950 shadow-lg shadow-gray-800 hover:shadow-2xl shadow-gray-900">
                             <div className="flex flex-1 flex-col justify-center items-center p-4 sm:p-6">
                                 <h2 className="mb-2 text-2xl font-semibold text-gray-200">
-
-                                    <Link to={'/all-jobs'}
-                                        className="transition duration-100 "
-                                    >
-                                        And many more...
-                                    </Link>
-
-
+                                    And many more...
                                 </h2>
-                                <p className="rounded-md bg-blue-950 cursor-pointer px-2 py-1 text-sm font-semibold text-gray-200 ">
-                                    <svg className="w-6 h-6  mx-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
-                                    </svg>
-                                </p>
+                                <Link to={'/all-jobs'}
+                                    className="transition duration-100 "
+                                >
+                                    <p className="rounded-md  cursor-pointer px-2 py-1 text-sm font-semibold text-gray-200 ">
+
+                                        <svg className="w-6 h-6  mx-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
+                                        </svg>
+
+                                    </p>
+                                </Link>
                             </div>
 
                         </div>

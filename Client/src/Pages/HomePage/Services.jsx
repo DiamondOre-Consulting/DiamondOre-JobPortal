@@ -1,7 +1,7 @@
 import React from 'react'
-import Navbar from '../HomePage/Navbar'
+import Navbar from './Navbar'
 import potrait from '../../assets/potrait.png'
-import Footer from '../HomePage/Footer'
+import Footer from './Footer'
 
 const Services = () => {
     return (

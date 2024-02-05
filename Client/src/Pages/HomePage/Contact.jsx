@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from 'react'
-import Navbar from '../HomePage/Navbar'
-import Footer from '../HomePage/Footer'
+import Navbar from './Navbar'
+import Footer from './Footer'
 import { Link } from 'react-router-dom'
 import { useJwt } from "react-jwt";
 import axios from "axios";
@@ -19,7 +19,7 @@ const Contact = () => {
         // const formData = { Name, Email, Message };
         try {
             const response = await axios.post(
-                'https://diamond-ore-job-portal-backend.vercel.app/api/candidates/help-contact',
+                'http://localhost:5000/api/candidates/help-contact',
                 {
                     Name,
                     Email,

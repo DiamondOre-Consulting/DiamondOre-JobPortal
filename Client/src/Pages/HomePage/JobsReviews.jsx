@@ -29,8 +29,15 @@ const JobsReviews = () => {
       const keenSliderPrevious = document.getElementById('keen-slider-previous');
       const keenSliderNext = document.getElementById('keen-slider-next');
 
+
+      const keenSliderPreviousDesktop = document.getElementById('keen-slider-previous-desktop')
+      const keenSliderNextDesktop = document.getElementById('keen-slider-next-desktop')
+
       keenSliderPrevious.addEventListener('click', () => keenSlider.prev());
       keenSliderNext.addEventListener('click', () => keenSlider.next());
+
+      keenSliderPreviousDesktop.addEventListener('click', () => keenSlider.prev())
+      keenSliderNextDesktop.addEventListener('click', () => keenSlider.next())
 
       keenSlider.on('mousemove', (e) => {
         const { clientX } = e;
@@ -41,9 +48,9 @@ const JobsReviews = () => {
         }
       })
     };
-    
 
-  initKeenSlider();
+
+    initKeenSlider();
 
     return () => {
       if (keenSlider) {
@@ -71,7 +78,7 @@ const JobsReviews = () => {
               <div className="hidden lg:mt-8 lg:flex lg:gap-4">
                 <button
                   aria-label="Previous slide"
-                  id="keen-slider-previous-desktop"
+                  id="keen-slider-previous"
                   className="rounded-full border border-blue-950 p-3 text-blue-950 transition hover:bg-blue-950 hover:text-white"
                 >
                   <svg
@@ -352,7 +359,7 @@ const JobsReviews = () => {
           <div className="mt-8 flex justify-center gap-4 lg:hidden">
             <button
               aria-label="Previous slide"
-              id="keen-slider-previous"
+              id="keen-slider-previous-desktop"
               className="rounded-full border border-blue-950 p-4 text-blue-950 transition hover:bg-blue-950 hover:text-white"
             >
               <svg
@@ -368,7 +375,7 @@ const JobsReviews = () => {
 
             <button
               aria-label="Next slide"
-              id="keen-slider-next"
+              id="keen-slider-next-desktop"
               className="rounded-full border border-blue-950 p-4 text-blue-950 transition hover:bg-blue-950 hover:text-white"
             >
               <svg

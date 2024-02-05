@@ -22,9 +22,9 @@ import AdminAllCandidates from "./Pages/AdminPage/AllCandidates";
 import AdminERP from "./Pages/AdminPage/AdminERP";
 import AddNewERP from "./Pages/AdminPage/AddNewERP";
 import PathSearch from "./Pages/HomePage/PathSearch";
-import AboutUs from "./Pages/Navpage/AboutUs";
-import Services from "./Pages/Navpage/Services";
-import Contact from "./Pages/Navpage/Contact";
+import AboutUs from "./Pages/HomePage/AboutUs";
+import Services from "./Pages/HomePage/Services";
+import Contact from "./Pages/HomePage/Contact";
 import Employeelogin from "./Pages/Employeepage/Employeelogin";
 import Employeedashboard from "./Pages/Employeepage/Employeedashboard";
 import AddJobs from "./Pages/AdminPage/Addjobs";
@@ -38,7 +38,7 @@ function App() {
           <Route path="/">
             <Route index element={<Homemain/>} />
             <Route path="/about" element={<AboutUs/>}/>
-            <Route path='services' element={<Services/>}/>
+            <Route path='/services' element={<Services/>}/>
             <Route path="/contact" element={<Contact/>}/>
             <Route path="/signup" element={<Signup/>} />
             <Route path="/login" element={<Login/>} />
