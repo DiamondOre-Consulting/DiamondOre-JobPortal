@@ -53,7 +53,7 @@ const Footer = () => {
                     </div>
 
                     <div>
-                    <Link to={'/employeelogin'} className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Employee login</Link>
+                    <Link to={'/employee/login'} className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Employee login</Link>
                     </div>
                 </nav>
                 </div>

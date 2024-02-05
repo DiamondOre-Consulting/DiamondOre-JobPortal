@@ -5,12 +5,12 @@ const PathSearch = ({ latestJobs }) => {
 
     return (
         <div>
-            <div className="bg-white py-6 sm:py-8 lg:py-12">
+            <div className="bg-white py-4 sm:py-6 lg:py-8">
                 <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
                     <div className="mb-10 md:mb-16">
-                        <h2 className="mb-4 text-center text-2xl font-bold text-black md:mb-6 lg:text-3xl font-serif sm:p-3"><span className='text-7xl text-blue-950'>4</span>Step Easy Process</h2>
+                        <h2 className="mb-4 text-center text-2xl font-bold text-black md:mb-6 lg:text-3xl font-serif sm:p-3"><span className='text-7xl text-blue-950'>4</span> Step Easy Process</h2>
 
-                        <p className="mx-auto max-w-screen-md text-center text-black md:text-lg" style={{ fontFamily: "'Roboto', sans-serif" }}>This is a section of some simple filler text, also known as placeholder text. It shares some characteristics of a real written text but is random or otherwise generated.</p>
+                        <p className="mx-auto max-w-screen-md text-center text-black md:text-lg" style={{ fontFamily: "'Roboto', sans-serif" }}>Navigate our job portal seamlessly in 4 steps: Explore opportunities, tailor your profile, apply effortlessly, and embark on your career journey with ease.</p>
                     </div>
 
                     <div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-4 xl:grid-cols-4 xl:gap-8">

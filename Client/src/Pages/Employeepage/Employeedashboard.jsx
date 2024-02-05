@@ -128,7 +128,7 @@ const Employeedashboard = () => {
     <div className="mx-5">
       <Navbar/>
       <h2 className="text-5xl px-10 font-bold text-gray-800">
-        Welcome aboard <span className="text-blue-900"> {userName}</span>
+        Welcome aboard <span className="text-blue-900"> </span>
       </h2>
       <HomeNews empofthemonth={empofthemonth} latestnews={latestnews} />
       <ERPTop5s hrname={hrname} client={client} />

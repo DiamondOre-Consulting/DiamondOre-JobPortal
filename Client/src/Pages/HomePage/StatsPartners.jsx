@@ -43,33 +43,33 @@ const StatsPartners = () => {
 
       {/* Get hired in top Companies component starts */}
 
-      <div className="bg-white py-6 sm:py-8 lg:py-12 mt-20">
+      <div className="bg-white py-6 sm:py-8 lg:py-8 mt-20">
   <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
     <h2 className="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-1 lg:text-3xl font-serif">Trusted by the best</h2>
     <div className='bg-blue-900 w-56 h-1 align-center mx-auto'></div>
 
     <marquee behavior="scroll" direction="left" scrollamount="19" scrolldelay="0">
-      <div className="flex items-center justify-center sm:justify-start sm:flex-wrap gap-12 rounded-lg p-6 sm:h-40 sm:content-evenly md:grid-cols-6 mt-6">
-        <div className="flex justify-center text-indigo-500 object-cover">
-          <img src={abglogo} alt="" className="w-28 sm:w-32 md:w-40 object-cover" />
-        </div>
+    <div className="flex flex-wrap justify-between sm:gap-4 gap-0 sm:justify-start md:justify-between lg:justify-around xl:justify-between items-center p-4 mt-5">
+  <div className="flex justify-center text-indigo-500 object-cover mb-4">
+    <img src={abglogo} alt="" className="w-14 sm:w-14 md:w-20 lg:w-24 object-cover " />
+  </div>
 
-        <div className="flex justify-center text-indigo-500 object-cover">
-          <img src={sbi} alt="" className="w-28 object-cover sm-w-32 " />
-        </div>
+  <div className="flex justify-center text-indigo-500 object-cover mb-4">
+    <img src={sbi} alt="" className="w-14 sm:w-14 md:w-20 lg:w-24 object-cover" />
+  </div>
 
-        <div className="flex justify-center text-indigo-500 object-cover">
-          <img src={agarwal} alt="" className="w-28 object-cover" />
-        </div>
+  <div className="flex justify-center text-indigo-500 object-cover mb-4">
+    <img src={agarwal} alt="" className="w-14 sm:w-14 md:w-20 lg:w-24 object-cover" />
+  </div>
 
-        <div className="flex justify-center text-indigo-500 object-cover">
-          <img src={india} alt="" className="w-28 object-cover" />
-        </div>
+  <div className="flex justify-center text-indigo-500 object-cover mb-4">
+    <img src={india} alt="" className="w-14 sm:w-14 md:w-20 lg:w-24 object-cover" />
+  </div>
 
-        <div className="flex justify-center text-indigo-500 object-cover">
-          <img src={punjab} alt="" className="w-28 object-cover" />
-        </div>
-      </div>
+  <div className="flex justify-center text-indigo-500 object-cover mb-4">
+    <img src={punjab} alt="" className="w-14 sm:w-14 md:w-20 lg:w-24 object-cover" />
+  </div>
+</div>
     </marquee>
   </div>
 </div>
