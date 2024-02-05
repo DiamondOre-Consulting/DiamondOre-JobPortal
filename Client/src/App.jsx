@@ -25,7 +25,7 @@ import PathSearch from "./Pages/HomePage/PathSearch";
 import AboutUs from "./Pages/Navpage/AboutUs";
 import Services from "./Pages/Navpage/Services";
 import Contact from "./Pages/Navpage/Contact";
-import Addjobs from "./Pages/AdminPage/Addjobs";
+import Addjobs from "./Pages/AdminPage/AddJobs";
 import Employeelogin from "./Pages/Employeepage/Employeelogin";
 import Employeedashboard from "./Pages/Employeepage/Employeedashboard";
 
@@ -54,12 +54,12 @@ function App() {
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/admin/all-jobs" element={<AdminAllJobs />} />
-            <Route path='/addjobs' element={<Addjobs/>}/>
+            <Route path='/admin/add-jobs' element={<Addjobs/>}/>
             <Route path="/admin/all-jobs/:id" element={<AdminEachJob />} />
             <Route path="/admin/all-candidates" element={<AdminAllCandidates />} />
             <Route path="/admin/all-candidates/:id" element={<EachCandidate />} />
             <Route path="/update-status/:id1/:id2" element={<UpdateStatus />} />
-            <Route path="/erp-dashboard" element={<AdminERP />} />
+            <Route path="/admin/erp-dashboard" element={<AdminERP />} />
             <Route path="/admin/erp-dashboard/add" element={<AddNewERP />} />
             <Route path='/employee/login'element={<Employeelogin/>}/>
             <Route path='/Empoyeedashboard' element={<Employeedashboard/>}/>

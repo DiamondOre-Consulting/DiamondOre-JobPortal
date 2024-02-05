@@ -19,12 +19,33 @@ const AdminERP = () => {
   const [RnRRecruiter,setRnRRecruiter]=useState(null);
   const [Joinings,setjoinings]=useState(null);
 
+  const token = localStorage.getItem("token");
+  const { decodedToken } = useJwt(localStorage.getItem("token"));
+  const navigate = useNavigate();
+
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/admin-login");
+    } else {
+      const tokenExpiration = decodedToken ? decodedToken.exp * 1000 : 0; // Convert expiration time to milliseconds
+
+      if (tokenExpiration && tokenExpiration < Date.now()) {
+        // Token expired, remove from local storage and redirect to login page
+        localStorage.removeItem("token");
+        navigate("/admin-login");
+      }
+    }
 
     const fetchdata = async () => {
       try{
         const response = await axios.get(
-          "http://localhost:5000/api/admin-confi/erp/all-erp-data"
+          "http://localhost:5000/api/admin-confi/erp/all-erp-data", 
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
         );
         if(response.status===200){
         const lastData = response.data.reverse()[0];
@@ -99,12 +120,13 @@ const AdminERP = () => {
     }
  
     fetchdata()
-  }, []);
+  }, [decodedToken]);
+
   return (
     <div className="mx-5">
-      <Navbar />
+      <AdminNav />
       <h2 className="text-5xl px-10 font-bold text-gray-800">
-        Welcome aboard <span className="text-blue-900"></span>
+        Welcome aboard, <span className="text-blue-900">{decodedToken?.name}</span>
       </h2>
       <div className="px-10 mt-6">
         <Link to={'/admin/erp-dashboard/add'} className="px-6 py-2 text-center text-gray-200 bg-blue-900 rounded-md sm:px-4 hover:bg-blue-950 transition ease-in duration-150">
