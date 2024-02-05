@@ -61,8 +61,8 @@ function App() {
             <Route path="/update-status/:id1/:id2" element={<UpdateStatus />} />
             <Route path="/admin/erp-dashboard" element={<AdminERP />} />
             <Route path="/admin/erp-dashboard/add" element={<AddNewERP />} />
-            <Route path='/employee/login'element={<Employeelogin/>}/>
-            <Route path='/Empoyeedashboard' element={<Employeedashboard/>}/>
+            <Route path='/employee-login'element={<Employeelogin/>}/>
+            <Route path='/Empoyee-dashboard' element={<Employeedashboard/>}/>
           </Route> 
         </Routes>
       </Router>
