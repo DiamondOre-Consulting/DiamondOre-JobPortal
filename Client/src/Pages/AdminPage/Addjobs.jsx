@@ -5,7 +5,7 @@ import axios from "axios";
 import { useJwt } from "react-jwt";
 import { useNavigate } from "react-router-dom";
 
-const Addjobs = () => {
+const AddJobs = () => {
   const [sheet, setsheet] = useState(null);
   const [sheeturl, setsheeturl] = useState(null);
   const [upload, setupload] = useState(null);
@@ -33,9 +33,17 @@ const Addjobs = () => {
   const handleUploadsheet = async (e) => {
     try {
       e.preventDefault();
+
+      const formData = new FormData();
+      formData.append("myFile", sheet);
       const response = await axios.post(
         "https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/upload-ops",
-
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          }
+        }
       );
 
       if (response.status === 400) {
@@ -44,7 +52,7 @@ const Addjobs = () => {
       }
       else{
         console.log(response.data);
-        setsheeturl(response.data.url)
+        setsheeturl(response.data)
       }
     }
     catch (error) {
@@ -114,4 +122,4 @@ const Addjobs = () => {
   )
 }
 
-export default Addjobs
+export default AddJobs
