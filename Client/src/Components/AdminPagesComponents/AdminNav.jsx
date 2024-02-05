@@ -35,7 +35,6 @@ const AdminNav = () => {
         if (response.status == 200) {
           console.log(response.data);
           setUserData(response.data);
-          console.log(userData);
         } else {
           console.log(response.data);
           setUserData("Did not get any response!!!");
@@ -117,7 +116,7 @@ const AdminNav = () => {
                 </Link>
 
                 <Link
-                  to={'/addjobs'}
+                  to={'/admin/add-jobs'}
                   className="cursor-pointer text-md font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
                  
                 >
