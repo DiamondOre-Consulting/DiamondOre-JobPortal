@@ -50,11 +50,10 @@ const AboutUs = () => {
             <section class="bg-blue-950 text-white">
                 <div class="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
                     <div class="mx-auto max-w-lg text-center">
-                        <h2 class="text-3xl font-bold sm:text-4xl fon-serif">Our Features</h2>
+                        <h2 class="text-3xl font-bold sm:text-4xl font-serif">Our Features</h2>
 
                         <p class="mt-4 text-gray-300">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Consequuntur aliquam doloribus
-                            nesciunt eos fugiat. Vitae aperiam fugit consequuntur saepe laborum.
+                        Unleash the power of our job portal with key features designed to revolutionize your hiring process. Experience advanced candidate matching, streamlined application tracking, personalized job alerts, and robust employer branding..
                         </p>
                     </div>
 
@@ -136,7 +135,7 @@ const AboutUs = () => {
                             <h2 class="mt-4 text-xl font-bold text-white">Shorten Hiring Process</h2>
 
                             <p class="mt-1 text-sm text-gray-300">
-                                Simplified Job Search: Enjoy the simplicity of finding your ideal job with our easy-to-use search and filtering options. Your next career move is just a few clicks away.
+                            Unlock the power of swift talent acquisition through our Shorten Hiring Process feature, optimizing your hiring procedures for a quicker, more effective recruitment process.
                             </p>
                         </a>
 
@@ -144,15 +143,13 @@ const AboutUs = () => {
                             class="block rounded-xl border border-gray-800 shadow-lg p-8 shadow-xl bg-white text-black transition hover:border-white-500/10 hover:shadow-white-500/10"
 
                         >
-                            <svg class="h-6 w-6 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
+                           <svg class="h-8 w-8 text-gray-900"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <path d="M4 7v-1a2 2 0 0 1 2 -2h2" />  <path d="M4 17v1a2 2 0 0 0 2 2h2" />  <path d="M16 4h2a2 2 0 0 1 2 2v1" />  <path d="M16 20h2a2 2 0 0 0 2 -2v-1" />  <line x1="5" y1="12" x2="19" y2="12" /></svg>
 
 
-                            <h2 class="mt-4 text-xl font-bold  text-black">Constent Touch With Hr.</h2>
+                            <h2 class="mt-4 text-xl font-bold  text-black">Advanced Candidate Screening.</h2>
 
                             <p class="mt-1 text-sm  text-black">
-                                Our platform keeps you in constant touch with HR representatives, ensuring you're informed at every step. Receive updates, feedback, and communicate seamlessly for a more personalized job application experience.
+                            Enhance your hiring process with sophisticated candidate screening tools, leveraging advanced algorithms to analyze and match candidates with specific skills and qualifications crucial for BFS roles.
                             </p>
                         </a>
 
@@ -287,7 +284,7 @@ const AboutUs = () => {
                 </div>
 
 
-                <div className='w-96'>
+                <div className='w-auto'>
                     <img src="https://media.licdn.com/dms/image/C4E03AQEZ_yJc3ebHOA/profile-displayphoto-shrink_800_800/0/1607527021305?e=1712793600&v=beta&t=7yQCc4QFgHkH7bY0EGCIId5I7i7wGqdzA9ONANU3_UA" alt="Rounded" className="rounded-full shadow-md mb-2" />
                     <h2 className="text-sm md:text-xl font-bold  text-blue-950  text-center font-serif"> The Director</h2>
                 </div>

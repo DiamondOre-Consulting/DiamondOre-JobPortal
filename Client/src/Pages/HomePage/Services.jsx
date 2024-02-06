@@ -2,48 +2,28 @@ import React from 'react'
 import Navbar from './Navbar'
 import potrait from '../../assets/potrait.png'
 import Footer from './Footer'
+import serpage from '../../assets/servicepage.png'
 
 const Services = () => {
     return (
         <div>
 
             <Navbar />
-            <section className="px-12 sm:px-6 overflow-hidden flex flex-between sm:grid sm:grid-cols-2">
-        <div className="p-8 md:p-12 lg:px-16 lg:py-24 mr-0 xxs:mr-0">
-          <div className="mx-auto max-w-xl text-left ltr:sm:text-left rtl:sm:text-right">
-            <h2 className="text-5xl font-bold text-gray-700 md:text-5xl sm:text-2xl font-serif">
-            <span className="text-blue-950">Diamond Ore Consulting Pvt Ltd</span>
-            </h2>
+            <div className="h-96 sm:h-block md:h-96 lg:h-96 bg-cover bg-center overflow-hidden" style={{ backgroundImage: `url(${serpage})`, backgroundPosition: "top" }}>
+                <div className=" inset-0 bg-black opacity-50"></div>
+                <div className=" inset-0 flex items-center justify-center text-gray-900 text-center">
+                    <div>
+                        {/* <h1 className="text-3xl md:text-3xl lg:text-6xl font-bold font-serif ">Diamond Ore Consulting Pvt Ltd</h1> */}
 
-            <p className="text-2xl text-gray-500 md:mt-4">
-            Your dynamic workforce solution partner! 
-            </p>
-
-            <div className="mt-4 md:mt-8">
-              <a
-                href="#"
-                className="inline-block rounded bg-blue-900 px-12 py-3 text-sm font-medium text-white transition hover:bg-blue-950 focus:outline-none focus:ring focus:ring-yellow-400"
-              >
-                Our Services
-              </a>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-
-        <div className="hidden sm:flex justify-center px-10 ">
-        <img
-          alt="Image by Freepik"
-          src={potrait}
-          className="h-56 w-4/6 object-cover rounded-b-full rounded-t-md sm:h-full"
-        />
-        </div>
-      </section>
 
             <div class="bg-white py-6 sm:py-8 lg:py-12">
                 <div class="mx-auto max-w-screen-2xl px-4 md:px-8">
 
                     <div class="mb-10 md:mb-16">
-                        <h2 class="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-6 lg:text-3xl">Our Services</h2>
+                        <h2 class="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-6 lg:text-3xl font-serif">Our Services</h2>
 
                         <p class="mx-auto max-w-screen-md text-center text-gray-500 md:text-lg">This is a section of some simple filler text, also known as placeholder text. It shares some characteristics of a real written text but is random or otherwise generated.</p>
                     </div>
