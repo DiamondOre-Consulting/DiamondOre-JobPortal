@@ -31,7 +31,7 @@ const Employeelogin = () => {
                 console.log("Logged in successfully as Employee");
                 // Redirect to dashboard page
                 setTimeout(() => {
-                    navigate("/Empoyeedashboard");
+                    navigate("/employee-dashboard");
                 }, 1000);
             } else {
                 console.log("Login failed");

@@ -62,7 +62,7 @@ function App() {
             <Route path="/admin/erp-dashboard" element={<AdminERP />} />
             <Route path="/admin/erp-dashboard/add" element={<AddNewERP />} />
             <Route path='/employee-login'element={<Employeelogin/>}/>
-            <Route path='/Empoyee-dashboard' element={<Employeedashboard/>}/>
+            <Route path='/employee-dashboard' element={<Employeedashboard/>}/>
           </Route> 
         </Routes>
       </Router>
