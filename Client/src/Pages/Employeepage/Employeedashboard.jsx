@@ -42,6 +42,7 @@ const Employeedashboard = () => {
     const fetchdata = async () => {
       try{
         const response = await axios.get(
+<<<<<<< HEAD
           "http://localhost:5000/api/employee/all-erp-data", 
           {
             headers: {
@@ -52,6 +53,12 @@ const Employeedashboard = () => {
         )
         if(response.status===200){
         const lastData = response.data.reverse()[0];
+=======
+          "https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/erp/all-erp-data"
+        );
+        if (response.status === 200) {
+          const lastData = response.data.reverse()[0];
+>>>>>>> 997651dee545d7feee33c5f42a871617120810c6
 
         console.log(lastData.EmpOfMonth)
         console.log(response.data.reverse()[0]);
