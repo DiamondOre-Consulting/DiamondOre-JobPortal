@@ -15,6 +15,7 @@ const Employeesignup = () => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
     const [showPass, setShowPass] = useState(false);
+    const [added, setadded] = useState(null);
     
 
     useEffect(() => {
@@ -37,6 +38,7 @@ const Employeesignup = () => {
     const handleSignup = async (e) => {
         e.preventDefault();
         setError(null);
+        setadded(null)
         console.log(name,email,password)
         try {
           const response = await axios.post(
@@ -57,7 +59,8 @@ const Employeesignup = () => {
         
           if (response.status === 201) {
             console.log("User Registered Successfully!!!");
-            navigate('/emploee-login')
+            setadded("Employee Added Sucessfully!!!")
+            navigate('/employee-login')
           } else {
             console.log("Signup failed");
             setError("Some details are wrong!!");
@@ -258,9 +261,15 @@ const Employeesignup = () => {
                     </p>
                 </form>
 
-                {error && (
+                {/* {error && (
                     <div className="flex items-center justify-center bg-red-300 p-4 rounded-md">
                         <p className="text-center text-sm text-red-500">{error}</p>
+                    </div>
+                )} */}
+                
+                {added && (
+                    <div className="flex items-center justify-center bg-green-400 p-4 rounded-md">
+                        <p className="text-center text-sm text-white">{added}</p>
                     </div>
                 )}
             </div>

@@ -21,7 +21,7 @@ const Employeelogin = () => {
                     email,
                     password
                 });
-                console.log("complete response ",response)
+                console.log("complete response ",response.data)
 
             if (response.status === 200) {
                 const token = response.data.token;
@@ -47,7 +47,7 @@ const Employeelogin = () => {
 
     return (
         <div>
-            <Navbar />
+       
             <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
                 <div class="mx-auto max-w-lg text-center">
                     <h1 class="text-2xl font-bold sm:text-3xl text-blue-950 font-serif">Employee Login</h1>
@@ -143,7 +143,7 @@ const Employeelogin = () => {
                     </div>
                 )}
             </div>
-            <Footer />
+          
         </div>
     )
 }

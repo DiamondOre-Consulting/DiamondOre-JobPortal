@@ -48,30 +48,30 @@ const CandidateAllAppliedJobsCards = () => {
   return (
     <div class="bg-white py-4 sm:py-8 lg:py-10">
       <div class="mx-auto max-w-screen-2xl px-4 md:px-8">
-        <h2 class="mb-8 text-center text-2xl font-bold text-gray-800 md:mb-12 lg:text-3xl">
+        <h2 class="mb-8 text-center text-2xl font-bold text-gray-800 md:mb-12 lg:text-3xl font-serif">
           All Applied Jobs
         </h2>
 
         <div class="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
         {appliedJobs.map((appliedJob) => (
               <div
-                class="flex flex-col justify-between h-72 overflow-hidden rounded-lg bg-gray-200 p-4 shadow-lg"
+                class="flex flex-col justify-between h-72 overflow-hidden rounded-lg bg-blue-900 p-4 shadow-lg shadow-blue-900 hover:bg-blue-950 hover:shadow-blue-950"
               >
-                <h3 className="text-2xl text-blue-950 font-bold">
+                <h3 className="text-2xl text-gray-100 font-bold">
                   {appliedJob?.JobTitle}
                 </h3>
-                <p className="text-xl text-gray-600 font-semibold">
-                  Industry - <span className="text-blue-950">{appliedJob?.Industry}</span>
+                <p className="text-xl text-gray-300 font-semibold">
+                  Industry - <span className="text-gray-200">{appliedJob?.Industry}</span>
                 </p>
-                <p className="text-xl text-gray-600 font-semibold">Channel - <span className="text-blue-950">{appliedJob?.Channel}</span></p>
-                <p className="text-xl text-gray-600 font-semibold">
-                  Min. Experience - <span className="text-blue-950">{appliedJob?.MinExperience} Year(s)</span>
+                <p className="text-xl text-gray-300 font-semibold">Channel - <span className="text-gray-300">{appliedJob?.Channel}</span></p>
+                <p className="text-xl text-gray-300 font-semibold">
+                  Min. Experience - <span className="text-gray-200">{appliedJob?.MinExperience} Year(s)</span>
                 </p>
-                <p className="text-xl text-gray-600 font-semibold">
-                  Total Openings - <span className="text-blue-950">{appliedJob?.Vacancies}</span>
+                <p className="text-xl text-gray-300 font-semibold">
+                  Total Openings - <span className="text-gray-200">{appliedJob?.Vacancies}</span>
                 </p>
                 {(appliedJob?.appliedApplicants == decodedToken?.userId) ? (<p className="text-center text-md text-green-500 font-semibold">Already applied</p>) : ""}
-                <Link to={`/all-jobs/${appliedJob?._id}`} class="cursor-pointer w-full flex-col rounded-lg bg-white p-4 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200">
+                <Link to={`/all-jobs/${appliedJob?._id}`} class="cursor-pointer w-full flex-col rounded-lg bg-white p-4 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200 hover:border hover:border-white">
                   <span class="text-md font-bold lg:text-md">
                     Know More
                   </span>

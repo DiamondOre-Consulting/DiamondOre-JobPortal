@@ -61,7 +61,7 @@ const CandidateAllJobsCards = () => {
                   Total Openings - <span className="text-blue-950">{latestJob?.Vacancies}</span>
                 </p>
                 {(latestJob?.appliedApplicants == decodedToken?.userId) ? (<p className="text-center text-md text-green-500 font-semibold">Already applied</p>) : ""}
-                <Link to={`/all-jobs/${latestJob?._id}`} class="cursor-pointer w-full flex-col rounded-lg bg-blue-900 p-4 text-center text-white hover:bg-white hover:text-black-100 hover:text-gray-900 border border-blue-950 mt-6">
+                <Link to={`/all-jobs/${latestJob?._id}`} class="cursor-pointer w-full flex-col rounded-lg bg-blue-900 p-4 text-center text-white hover:bg-white hover:text-black-100 hover:text-gray-900 border border-blue-950 mt-2">
                   <span class="text-md font-bold lg:text-md">
                     Know More
                   </span>

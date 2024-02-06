@@ -117,7 +117,7 @@ const CandidateNav = () => {
             {isDropdownOpen && (
                   <div className="absolute right-8 top-6 mt-12 py-2 w-lg bg-white shadow-gray-300 rounded-md shadow-lg">
                     <Link
-                      
+                      to={'/candidate/profile'}
                       className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
                       onClick={toggleDropdown}
                     >
