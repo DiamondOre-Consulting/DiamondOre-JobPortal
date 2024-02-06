@@ -1,9 +1,8 @@
 import { React, useState } from 'react'
 import Navbar from '../HomePage/Navbar'
 import Footer from '../HomePage/Footer'
-import {useNavigate } from "react-router-dom";
+import {useNavigate,Link } from "react-router-dom";
 import axios from "axios";
-
 const Employeelogin = () => {
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
@@ -126,7 +125,7 @@ const Employeelogin = () => {
                     <div class="flex items-center justify-between">
                         <p class="text-sm text-gray-500">
                             No account?
-                            <a class="underline" href="">Sign up</a>
+                            <Link to={'/employee-signup'} class="underline" href="">Sign up</Link>
                         </p>
 
                         <button

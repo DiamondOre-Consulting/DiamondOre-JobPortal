@@ -10,7 +10,7 @@ const EmployeeAuthenticateToken = (req, res, next) => {
   
     try {
       // Verify and decode the token
-      const decoded = jwt.verify(token, process.env.JWT_SECRET.EMPLOYEE);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET_EMPLOYEE);
   
       // Attach the decoded token to the request object
       req.user = decoded;

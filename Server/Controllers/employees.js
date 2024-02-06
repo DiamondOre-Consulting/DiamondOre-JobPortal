@@ -5,6 +5,8 @@ import jwt from "jsonwebtoken";
 import Employees from "../Models/Employees.js";
 import EmployeeAuthenticateToken from "../Middlewares/EmployeeAuthenticateToken.js";
 import ERP from "../Models/ERP.js";
+import AdminAuthenticateToken from "../Middlewares/AdminAuthenticateToken.js";
+import Admin from "../Models/Admin.js";
 
 dotenv.config();
 
@@ -13,9 +15,15 @@ const secretKey = process.env.JWT_SECRET_EMPLOYEE;
 const router = express.Router();
 
 // EMPLOYEE SIGNUP
-router.post("/add-emp", async (req, res) => {
+router.post("/add-emp",AdminAuthenticateToken, async (req, res) => {
     try {
         const { name, email, password } = req.body;
+        const {userId} = req.user;
+
+        const user = await Admin.findById({ _id: userId });
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
 
         const userExists = await Employees.exists({ email });
         if (userExists) {

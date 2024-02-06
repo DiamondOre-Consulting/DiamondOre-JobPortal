@@ -74,17 +74,19 @@ const CandidateNav = () => {
     window.location.href = "/login";
     console.log("Logging out");
   };
+
+  const profilePicUrl = userData?.profilePic ? `${userData.profilePic}?${userData.profilePic}` : 'https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=';
   return (
     <div>
       {/* Header and Nav Section Start */}
       <div className="bg-white pb-6 sm:pb-8 lg:pb-6">
         <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
           <header className="mb-8 flex items-center justify-between py-2 md:mb-12 md:py-2 xl:mb-8">
-            <img className="w-1/6 h-auto" src={Logo} alt="DiamondOre Logo" />
+          <img className='w-3/6 sm:w-2/6 md:w-1/6 h-auto z-40' src={Logo} alt="DiamondOre Logo" />
 
             <div className="flex justify-between items-center gap-8">
               <nav className="hidden gap-16 lg:flex">
-                <Link to={'/dashboard'} className="text-md font-semibold text-blue-950">
+                <Link to={'/dashboard'} className="text-md font-semibold text-blue-950 ">
                   Home
                 </Link>
                 <Link
@@ -108,12 +110,12 @@ const CandidateNav = () => {
               </nav>
 
               <div className="hidden lg:inline-block relative text-left" ref={dropdownRef}>
-                <img onClick={toggleDropdown} className="cursor-pointer rounded-full w-12 h-12 hover:border-4 hover:border-blue-950" src={userData?.profilePic} alt="account" />
+                <img onClick={toggleDropdown} className="border-2 border-blue-900 cursor-pointer rounded-full w-12 h-12 hover:border-2 hover:border-blue-900" src={profilePicUrl} alt="account" />
               </div>
             </div>
 
             {isDropdownOpen && (
-                  <div className="absolute right-8 top-6 mt-12 py-2 w-lg bg-gray-200 rounded-md shadow-lg">
+                  <div className="absolute right-8 top-6 mt-12 py-2 w-lg bg-white shadow-gray-300 rounded-md shadow-lg">
                     <Link
                       
                       className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
@@ -134,7 +136,7 @@ const CandidateNav = () => {
             <button
               type="button"
               onClick={toggleMenu}
-              className="inline-flex items-center gap-2 rounded-lg bg-gray-200 px-2.5 py-2 text-sm font-semibold text-gray-500 ring-indigo-300 hover:bg-gray-300 focus-visible:ring active:text-gray-700 md:text-base lg:hidden"
+              className="inline-flex items-center gap-2 rounded-lg bg-blue-950 px-2.5 py-2 text-sm font-semibold text-gray-100 z-40  md:text-base lg:hidden"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -148,7 +150,7 @@ const CandidateNav = () => {
                   clipRule="evenodd"
                 />
               </svg>
-              Menu
+              
             </button>
           </header>
           <ul
@@ -156,7 +158,7 @@ const CandidateNav = () => {
               menuOpen ? "block" : "hidden"
             } w-full flex flex-col items-center justify-center mb-14`}
           >
-            <a href={"/home-main"}>
+            <a href={"/"}>
               <li
                 className={`${
                   menuOpen ? "block" : "hidden"
@@ -165,34 +167,34 @@ const CandidateNav = () => {
                 Home
               </li>
             </a>
-            <a href={"/aboutus"}>
+            <a href={"/all-jobs"}>
               <li
                 className={`${
                   menuOpen ? "block" : "hidden"
                 } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
-                About Us
+                All jobs
               </li>
             </a>
-            <a href={"/services"}>
+            <a href={"/all-applied-jobs"}>
+              <li
+                className={`${
+                  menuOpen ? "block" : "hidden"
+                } px-24 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+              >
+                Applied jobs
+              </li>
+            </a>
+            <a href={"/"}>
               <li
                 className={`${
                   menuOpen ? "block" : "hidden"
                 } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
-                Services
+                specilised
               </li>
             </a>
-            <a href={"/contactmain"}>
-              <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
-              >
-                Contact Us
-              </li>
-            </a>
-            <a href={"/home-main"}>
+            <a href={"/signup"}>
               <li
                 className={`${
                   menuOpen ? "block" : "hidden"
