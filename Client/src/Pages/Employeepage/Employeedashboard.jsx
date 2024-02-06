@@ -24,7 +24,7 @@ const Employeedashboard = () => {
     const fetchdata = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/admin-confi/erp/all-erp-data"
+          "https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/erp/all-erp-data"
         );
         if (response.status === 200) {
           const lastData = response.data.reverse()[0];
