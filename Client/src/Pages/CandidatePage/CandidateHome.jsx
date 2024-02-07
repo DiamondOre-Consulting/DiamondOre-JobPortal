@@ -35,7 +35,7 @@ const CandidateHome = () => {
     }, [decodedToken])
 
   return (
-    <div className='bg-white mx-5'>
+    <div className='bg-white'>
       <CandidateNav/>
       <h2 className='text-5xl px-10 font-bold text-gray-800 '>Welcome aboard, <span className='text-blue-900 font-serif'>{userName}</span></h2>
       <HomeNewRecommend />

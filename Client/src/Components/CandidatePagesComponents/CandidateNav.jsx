@@ -158,7 +158,7 @@ const CandidateNav = () => {
               menuOpen ? "block" : "hidden"
             } w-full flex flex-col items-center justify-center mb-14`}
           >
-            <a href={"/"}>
+            <a href={"/dashboard"}>
               <li
                 className={`${
                   menuOpen ? "block" : "hidden"
