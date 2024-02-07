@@ -475,6 +475,46 @@ router.get("/all-other-jobs", CandidateAuthenticateToken, async (req, res) => {
   }
 })
 
+// GET FILTERED JOBS
+router.get('/filtered-jobs', CandidateAuthenticateToken, async (req, res) => {
+  try {
+      const { email } = req.user;
+      const user = await Candidates.findOne({ email });
+
+      if (!user) {
+          return res.status(404).json({ message: "User not found" });
+      }
+
+      // Extract filter parameters from the query
+      const { cities, channels, ctcRanges } = req.query;
+
+      // Construct a filter object based on the provided parameters
+      const filter = {};
+      if (cities) {
+          filter.City = { $in: cities.split(',') };
+      }
+      if (channels) {
+          filter.Channel = { $in: channels.split(',') };
+      }
+      if (ctcRanges) {
+          const ctcRangesArray = ctcRanges.split(',');
+          const ctcFilters = ctcRangesArray.map(range => {
+              const [min, max] = range.split('-');
+              return { MaxSalary: { $gte: parseInt(min), $lte: parseInt(max) } };
+          });
+          filter.$or = ctcFilters;
+      }
+
+      // Query the database with the constructed filter
+      const filteredJobs = await Jobs.find(filter);
+
+      res.status(200).json(filteredJobs);
+  } catch (error) {
+      console.error("Error fetching filtered jobs:", error);
+      res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 // FETCHING A PARTICULAR JOB
 router.get("/all-jobs/:id", CandidateAuthenticateToken, async (req, res) => {
   try{
