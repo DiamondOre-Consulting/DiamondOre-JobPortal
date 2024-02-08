@@ -3,7 +3,7 @@ import React from 'react'
 const RnRLeaderboard = ({ RnRinterns, RnRRecruiter }) => {
   return (
     <div>
-      <section className='bg-blue-950'>
+      <section className='bg-gray-50'>
         <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16">
             <div className="relative h-64 overflow-hidden rounded-lg sm:h-80 lg:order-last lg:h-full">
@@ -17,8 +17,8 @@ const RnRLeaderboard = ({ RnRinterns, RnRRecruiter }) => {
             <div className="lg:py-24">
               <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                  <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
+                  <thead class="text-xs text-gray-700 uppercase  dark:bg-gray-700 dark:text-gray-400">
+                    <tr className='bg-blue-900 text-white'>
                       <th scope="col" class="px-6 py-3">
                         Title
                       </th>
@@ -57,7 +57,7 @@ const RnRLeaderboard = ({ RnRinterns, RnRRecruiter }) => {
         </div>
       </section>
 
-      <section className='bg-red-50'>
+      <section className='bg-blue-950'>
         <div class="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
           <div class="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16">
             <div class="relative h-64 overflow-hidden rounded-lg sm:h-80 lg:h-full">
@@ -72,7 +72,7 @@ const RnRLeaderboard = ({ RnRinterns, RnRRecruiter }) => {
               <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                   <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
+                    <tr className='bg-blue-900 text-white'>
                       <th scope="col" class="px-6 py-3">
                         Title
                       </th>

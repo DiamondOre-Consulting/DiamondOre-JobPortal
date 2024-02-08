@@ -37,7 +37,7 @@ const AddJobs = () => {
       const formData = new FormData();
       formData.append("myFile", sheet);
       const response = await axios.post(
-        "https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/upload-ops",
+        "http://localhost:5000/api/admin-confi/upload-job-excel",
         formData,
         {
           headers: {
@@ -66,7 +66,7 @@ const AddJobs = () => {
     setupload(null);
     try {
       const response = await axios.post(
-        "https://diamond-ore-job-portal-backend.vercel.app/apiadmin-confi/upload-job-excel",
+        "http://localhost:5000/api/admin-confi/add-job",
         {
           url: sheeturl,
         },
@@ -107,7 +107,7 @@ const AddJobs = () => {
             <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
             <p class="text-xs text-gray-500 dark:text-gray-400">Only Excel sheets</p>
           </div>
-          <input id="dropzone-file" type="file" class="hidden" name='sheet' onChange={(e) => setSheet(e.target.files[0])} />
+          <input id="dropzone-file" type="file" class="" name='sheet' onChange={(e) => setSheet(e.target.files[0])} />
         </label>
       </div>
       <button type='submit' className='bg-blue-950 text-white p-2 px-12 flex items-center justify-center mx-auto rounded-md' onClick={handleUploadsheet}>upload</button>

@@ -17,6 +17,7 @@ const CandidateAllJobsCards = () => {
   const [cities, setCities] = useState([]);
   const [channels, setChannels] = useState([]);
   const [selectedCtcRange, setSelectedCtcRange] = useState(null);
+  const [showselectedctc,setShowSelectedctc]=useState("Select");
   const [ctcRanges, setCtcRanges] = useState([]);
  
 
@@ -99,6 +100,7 @@ const CandidateAllJobsCards = () => {
     setSelectedChannel(null);
     setShowSelectedcity("City");
     setShowSelectedChannel("Channel");
+    setSelectedCtcRange(null);
     setLatestJobs(allJobs); // Reset to the original list of jobs
   };
 
@@ -106,12 +108,12 @@ const CandidateAllJobsCards = () => {
 
   return (
     <div class="sm:py-8 ">
-    <div className="flex mx-auto mb-16 justify-center">
+    <div className="flex flex-wrap items-center justify-center mx-auto mb-16">
       <div className="relative">
         <h2 className="bg-blue-900 text-white px-4 py-2 text-center mb-1 border-md">City</h2>
         <button
           onClick={toggleDropdownCity}
-          className="border flex align-center border-gray-400 text-black font-bold py-1 px-6 rounded focus:outline-none focus:shadow-outline"
+          className="border flex align-center border-gray-400 text-black font-bold py-1 sm:px-2 md:px-4 lg:px-6 rounded focus:outline-none focus:shadow-outline"
           type="button"
         >
           {showselectedcity}  <svg class="h-5 w-5 text-gray-600 float-right "  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <polyline points="6 9 12 15 18 9" /></svg>
@@ -120,7 +122,7 @@ const CandidateAllJobsCards = () => {
         {isOpenCity && (
           <div className="absolute left-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10 overflow-y-auto max-h-60">
             <ul>
-              <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer" >{showselectedcity}</li>
+              {/* <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">{showselectedcity}</li> */}
             {cities.map((city, index) => (
                   <li
                     key={index}
@@ -178,17 +180,19 @@ const CandidateAllJobsCards = () => {
             className="border mx-2 flex align-center border-gray-400 text-black font-bold py-1 px-6 rounded focus:outline-none focus:shadow-outline"
             type="button"
           >
-            CTC   <svg class="h-5 w-5 text-gray-600 float-right "  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <polyline points="6 9 12 15 18 9" /></svg>
+            {showselectedctc}  <svg class="h-5 w-5 text-gray-600 float-right "  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <polyline points="6 9 12 15 18 9" /></svg>
           </button>
           {isOpenCtc && (
             <div className="absolute left-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10 overflow-y-auto max-h-60">
               <ul>
+                {/* <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer"onClick={setSelectedCtcRange(null)}>{showselectedctc}</li> */}
                 {ctcRanges.map((range, index) => (
                   <li
                     key={index}
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                     onClick={() => {
                       setSelectedCtcRange(range);
+                      setShowSelectedctc(range);
                       toggleDropdownCtc();
                     }}
                   >
@@ -201,14 +205,14 @@ const CandidateAllJobsCards = () => {
         </div>
       <button
           onClick={handleSearch}
-          className="ml-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-0 px-4 rounded focus:outline-none focus:shadow-outline"
+          className="flex justify-center mt-3 h-12 w-12 text-center items-center ml-4 bg-blue-900 hover:bg-blue-950 text-white font-bold py-0 px-4 rounded-full focus:outline-none focus:shadow-outline"
           type="button"
         >
-         <svg class="h-6 w-6 text-gray-900"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <circle cx="11" cy="11" r="8" />  <line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+         <svg class="h-6 w-6 text-white text-center"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <circle cx="11" cy="11" r="8" />  <line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
         </button>
         <button
           onClick={handleClearFilters}
-          className="ml-4 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          className="ml-4 bg-red-500 hover:bg-red-600 mt-3  h-12 text-white font-bold px-4 rounded focus:outline-none focus:shadow-outline"
           type="button"
         >
           Clear Filters
@@ -225,18 +229,18 @@ const CandidateAllJobsCards = () => {
             <div
               class="flex flex-col justify-between h-72 overflow-hidden rounded-lg bg-white shadow-lg shadow-2xl-gray-200 p-4 shadow-lg hover:shadow-2xl "
             >
-              <h3 className="text-2xl text-blue-950 font-bold">
+              <h3 className="text-xl text-blue-950 font-bold">
                 {latestJob?.JobTitle}
               </h3>
-              <div className="w-44 h-0.5 bg-blue-950   md:mb-6 "></div>
-              <p className="text-xl text-gray-600 font-semibold">
+              <div className="w-44 h-0.5 bg-blue-950 md:mb-6 "></div>
+              <p className="text-sm text-gray-600 font-semibold">
                 Industry - <span className="text-blue-950">{latestJob?.Industry}</span>
               </p>
-              <p className="text-xl text-gray-600 font-semibold">Channel - <span className="text-blue-950">{latestJob?.Channel}</span></p>
-              <p className="text-xl text-gray-600 font-semibold">
+              <p className="text-sm text-gray-600 font-semibold">Channel - <span className="text-blue-950">{latestJob?.Channel}</span></p>
+              <p className="text-sm text-gray-600 font-semibold">
                 Min. Experience - <span className="text-blue-950">{latestJob?.MinExperience} Year(s)</span>
               </p>
-              <p className="text-xl text-gray-600 font-semibold">
+              <p className="text-sm text-gray-600 font-semibold">
                 Total Openings - <span className="text-blue-950">{latestJob?.Vacancies}</span>
               </p>
               {(latestJob?.appliedApplicants == decodedToken?.userId) ? (<p className="text-center text-md text-green-500 font-semibold">Already applied</p>) : ""}

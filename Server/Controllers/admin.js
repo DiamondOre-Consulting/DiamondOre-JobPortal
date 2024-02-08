@@ -777,7 +777,7 @@ router.get("/all-messages/:id", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
-router.put("edit-profile", AdminAuthenticateToken, async (req, res) => {
+router.put("/edit-profile", AdminAuthenticateToken, async (req, res) => {
   try {
     const { name, password } = req.body;
     const { email } = req.user;

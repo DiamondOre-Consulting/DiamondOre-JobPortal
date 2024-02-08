@@ -123,7 +123,7 @@ const AdminERP = () => {
   }, [decodedToken]);
 
   return (
-    <div className="mx-5">
+    <div className="">
       <AdminNav />
       <h2 className="text-5xl px-10 font-bold text-gray-800">
         Welcome aboard, <span className="text-blue-900">{decodedToken?.name}</span>

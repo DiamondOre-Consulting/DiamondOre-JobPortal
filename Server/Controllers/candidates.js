@@ -660,7 +660,7 @@ router.post("/help-contact", async (req, res) => {
 })
 
 // EDIT PROFILE (Let Aayush know how this is gonna work)
-router.put("edit-profile", CandidateAuthenticateToken, async (req, res) => {
+router.put("/edit-profile", CandidateAuthenticateToken, async (req, res) => {
   try {
     const { name, phone, password, resume, profilePic } = req.body;
     const { email } = req.user;

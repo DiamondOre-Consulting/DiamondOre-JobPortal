@@ -19,7 +19,7 @@ const AdminLogin = () => {
     setError(null);
     // Perform login logic here
     try {
-      const response= await axios.post("https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/login-admin",
+      const response= await axios.post("http://localhost:5000/api/admin-confi/login-admin",
       {
         email,
         password

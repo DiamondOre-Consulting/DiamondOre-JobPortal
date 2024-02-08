@@ -23,7 +23,7 @@ const CandidateAllAppliedJobsCards = () => {
   
           // Fetch associates data from the backend
           const response = await axios.get(
-            "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/all-applied-jobs",
+            "http://localhost:5000/api/candidates/all-applied-jobs",
             {
                 headers: {
                   Authorization: `Bearer ${token}`,
@@ -57,17 +57,18 @@ const CandidateAllAppliedJobsCards = () => {
               <div
                 class="flex flex-col justify-between h-72 overflow-hidden rounded-lg bg-blue-900 p-4 shadow-lg shadow-blue-900 hover:bg-blue-950 hover:shadow-blue-950"
               >
-                <h3 className="text-2xl text-gray-100 font-bold">
+                <h3 className="text-xl text-gray-100 font-bold">
                   {appliedJob?.JobTitle}
                 </h3>
-                <p className="text-xl text-gray-300 font-semibold">
+                <div className="w-44 h-0.5 bg-white md:mb-4 "></div>
+                <p className="text-sm text-gray-300 font-semibold">
                   Industry - <span className="text-gray-200">{appliedJob?.Industry}</span>
                 </p>
-                <p className="text-xl text-gray-300 font-semibold">Channel - <span className="text-gray-300">{appliedJob?.Channel}</span></p>
-                <p className="text-xl text-gray-300 font-semibold">
+                <p className="text-sm text-gray-300 font-semibold">Channel - <span className="text-gray-300">{appliedJob?.Channel}</span></p>
+                <p className="text-sm text-gray-300 font-semibold">
                   Min. Experience - <span className="text-gray-200">{appliedJob?.MinExperience} Year(s)</span>
                 </p>
-                <p className="text-xl text-gray-300 font-semibold">
+                <p className="text-sm text-gray-300 font-semibold">
                   Total Openings - <span className="text-gray-200">{appliedJob?.Vacancies}</span>
                 </p>
                 {(appliedJob?.appliedApplicants == decodedToken?.userId) ? (<p className="text-center text-md text-green-500 font-semibold">Already applied</p>) : ""}

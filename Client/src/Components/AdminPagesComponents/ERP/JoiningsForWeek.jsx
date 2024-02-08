@@ -14,14 +14,14 @@ const JoiningsForWeek = ({ Joinings }) => {
             />
           </div> */}
 
-          <h2 className="text-3xl mb-6 text-center px-10 font-bold text-gray-800">
+          <h2 className="text-3xl mb-6 text-center px-10 font-bold text-gray-800 font-serif">
             This week's Joinings
           </h2>
           <div className="lg:py-18">
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
               <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                  <tr>
+                  <tr className="bg-blue-950 text-white">
                     <th scope="col" class="px-6 py-3">
                       position
                     </th>

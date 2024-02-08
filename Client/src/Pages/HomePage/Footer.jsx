@@ -95,7 +95,7 @@ const Footer = () => {
 
         <div className="bg-gray-100">
             <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
-            <div className="flex items-center align-center justify-between gap-4 py-8">
+            <div className="flex items-center align-center justify-between gap-4 ">
                 <span className="text-sm text-gray-400"> © 2024 - Diamond Ore Pvt Ltd . All rights reserved. </span>
 
                 <div className="flex gap-4">
