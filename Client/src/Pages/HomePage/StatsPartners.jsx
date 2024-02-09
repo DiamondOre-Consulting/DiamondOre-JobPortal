@@ -48,7 +48,7 @@ const StatsPartners = () => {
     <h2 className="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-1 lg:text-3xl font-serif">Trusted by the best</h2>
     <div className='bg-blue-900 w-56 h-1 align-center mx-auto'></div>
 
-    <marquee behavior="scroll" direction="left" scrollamount="19" scrolldelay="0">
+    <marquee behavior="scroll" direction="left" scrollamount="12" scrolldelay="0">
     <div className="flex flex-wrap justify-between sm:gap-4 gap-0 sm:justify-start md:justify-between lg:justify-around xl:justify-between items-center p-4 mt-5">
   <div className="flex justify-center text-indigo-500 object-cover mb-4">
     <img src={abglogo} alt="" className="w-14 sm:w-14 md:w-20 lg:w-24 object-cover " />
