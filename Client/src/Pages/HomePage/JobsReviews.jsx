@@ -185,17 +185,88 @@ const JobsReviews = () => {
                       </div>
 
                       <div className="mt-4">
-                        <p className="text-2xl font-bold text-blue-950 sm:text-3xl">Oliver Bennett</p>
+                        <p className="text-2xl font-bold text-blue-950 sm:text-3xl">NavJot S. Miglani</p>
 
                         <p className="mt-4 leading-relaxed text-gray-700">
-                          "Exceptional service! <span className='text-blue-950 font-bold '>Diamond Ore Consulting Pvt Ltd</span> surpassed our expectations with their unparalleled expertise and dedication. Their team consistently delivers results that propel our business forward. Partnering with them has been a game-changer for our success
+                          <span className='text-blue-950 font-bold '>"Diamond Ore Consulting Pvt Ltd</span> has been ably supporting us in hiring across verticals. DOC has deep understanding of insurance business and it helps in service delivery . they focus on customer services and have helped closed number of critical positions.
                         </p>
                       </div>
                     </div>
 
-                    <footer className="mt-4 text-sm font-medium text-gray-700 sm:mt-6">
-                      &mdash; Michael Scott
-                    </footer>
+                  </blockquote>
+                </div>
+
+                <div className="keen-slider__slide shadow-lg shadow-gray-400">
+                  <blockquote
+                    className="flex h-full flex-col justify-between bg-white p-6 shadow-sm sm:p-8 lg:p-12"
+                  >
+                    <div>
+                      <div className="flex gap-0.5 text-yellow-500">
+                        <svg
+                          className="h-5 w-5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                          />
+                        </svg>
+
+                        <svg
+                          className="h-5 w-5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                          />
+                        </svg>
+
+                        <svg
+                          className="h-5 w-5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                          />
+                        </svg>
+
+                        <svg
+                          className="h-5 w-5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                          />
+                        </svg>
+
+                        <svg
+                          className="h-5 w-5"
+                          fill="gray"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                          />
+                        </svg>
+                      </div>
+
+                      <div className="mt-4">
+                        <p className="text-2xl font-bold text-blue-950 sm:text-3xl">Apoorve Anand</p>
+
+                        <p className="mt-4 leading-relaxed text-gray-700">
+                          <span className='text-blue-950 font-bold '>Diamond Ore Consulting Pvt Ltd</span> is one of the Most Successfull consultency  I am saying this because of my personal experience the way they guide in every steps you wil feel like your brother sister guiding you for the inteview .they explained everything for your benifit so just go for it ... Best Consultancy
+                        </p>
+                      </div>
+                    </div>
+
                   </blockquote>
                 </div>
 
@@ -262,94 +333,14 @@ const JobsReviews = () => {
                       </div>
 
                       <div className="mt-4">
-                        <p className="text-2xl font-bold text-blue-950 sm:text-3xl">Stayin' Alive</p>
+                        <p className="text-2xl font-bold text-blue-950 sm:text-3xl">Murali Iyer</p>
 
                         <p className="mt-4 leading-relaxed text-gray-700">
-                          my experience with <span className='text-blue-950 font-bold '>Diamond Ore Consulting Pvt Ltd</span> has been truly outstanding. The team's commitment to excellence is evident in every project they undertake. Their professionalism, combined with a keen understanding of our needs, has made them an invaluable partner in our journey to success
+                          <span className='text-blue-950 font-bold '>Diamond Ore Consulting Pvt Ltd</span> they are having the rare ability to plain the work and than work the plan .Rahul mathus is a erson with a strategic bend of min his strength is also imaplementation . this make him potent force as a senior front line manager leading a laarge team of people a cool head and great man management sklls is a winning combination that alway kept him ahead of his peers ...
                         </p>
                       </div>
                     </div>
 
-                    <footer className="mt-4 text-sm font-medium text-gray-700 sm:mt-6">
-                      &mdash; Michael Scott
-                    </footer>
-                  </blockquote>
-                </div>
-
-                <div className="keen-slider__slide shadow-lg shadow-gray-400">
-                  <blockquote
-                    className="flex h-full flex-col justify-between bg-white p-6 shadow-sm sm:p-8 lg:p-12"
-                  >
-                    <div>
-                      <div className="flex gap-0.5 text-yellow-500">
-                        <svg
-                          className="h-5 w-5"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                          />
-                        </svg>
-
-                        <svg
-                          className="h-5 w-5"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                          />
-                        </svg>
-
-                        <svg
-                          className="h-5 w-5"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                          />
-                        </svg>
-
-                        <svg
-                          className="h-5 w-5"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                          />
-                        </svg>
-
-                        <svg
-                          className="h-5 w-5"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                          />
-                        </svg>
-                      </div>
-
-                      <div className="mt-4">
-                        <p className="text-2xl font-bold text-blue-950 sm:text-3xl">Eleanor Thompson</p>
-
-                        <p className="mt-4 leading-relaxed text-gray-700">
-                          Choosing <span className='text-blue-950 font-bold '>Diamond Ore Consulting Pvt Ltd</span> was a game-changer for us. Their dedication to delivering top-notch solutions and unparalleled customer service exceeded our expectations. Collaborating with them has significantly contributed to the growth and success of our business.
-                        </p>
-                      </div>
-                    </div>
-
-                    <footer className="mt-4 text-sm font-medium text-gray-700 sm:mt-6">
-                      &mdash; Michael Scott
-                    </footer>
                   </blockquote>
                 </div>
               </div>

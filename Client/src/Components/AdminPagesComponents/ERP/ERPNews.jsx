@@ -60,20 +60,20 @@ const HomeNews = ({ empofthemonth, latestnews, hrname }) => {
       <h2 className="text-3xl mb-6 text-center px-10 font-bold text-gray-800 font-serif">
         Breaking News & Announcements
       </h2>
-      <marquee behavior="scroll" direction="left" >
+      
       <div className="space-y-4">
         {latestnews?.map((newNews) => (
           <details className="group">
-            <summary className="flex cursor-pointer items-center shadow-lg shadow-gray-400 justify-start gap-5 rounded-md bg-green-400 px-4 py-2">
-              <p className="font-semibold text-gray-100">{newNews.serialNumber}</p>
-              <h2 className="font-medium text-gray-100">
+            <summary className="flex cursor-pointer items-center shadow-lg shadow-gray-200 justify-start gap-5 rounded-md bg-blue-950 px-4 py-3">
+              <p className="font-semibold text-gray-200">{newNews.serialNumber}</p>
+              <h2 className="font-medium text-gray-200">
                 {newNews.news}
               </h2>
             </summary>
           </details>
         ))}
       </div>
-      </marquee>
+ 
     </div>
   );
 };

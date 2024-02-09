@@ -1,4 +1,6 @@
 import React from 'react'
+import RNRintern from '..//..//..//assets/R & R _ Intern 1 BG r.png'
+import RNRrecuiter from '..//..//..//assets/R & R _ Recruiter bg.png'
 
 const RnRLeaderboard = ({ RnRinterns, RnRRecruiter }) => {
   return (
@@ -9,7 +11,7 @@ const RnRLeaderboard = ({ RnRinterns, RnRRecruiter }) => {
             <div className="relative h-64 overflow-hidden rounded-lg sm:h-80 lg:order-last lg:h-full">
               <img
                 alt="Party"
-                src="https://s3.tebi.io/generalpics/R%20%26%20R%20_%20Intern_2.png"
+                src={RNRintern}
                 className="absolute inset-0 h-full w-full object-cover"
               />
             </div>
@@ -57,13 +59,13 @@ const RnRLeaderboard = ({ RnRinterns, RnRRecruiter }) => {
         </div>
       </section>
 
-      <section className='bg-blue-950'>
+      <section className='bg-gray-200'>
         <div class="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
           <div class="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16">
             <div class="relative h-64 overflow-hidden rounded-lg sm:h-80 lg:h-full">
               <img
                 alt="Party"
-                src="https://s3.tebi.io/generalpics/R%20%26%20R%20_%20Recruiter_2.png"
+                src={RNRrecuiter}
                 class="absolute inset-0 h-full w-full object-cover"
               />
             </div>

@@ -1,114 +1,101 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import Logo from '../../assets/Logo.png'
 
 const AdminFooter = () => {
   return (
     <div>
-      <div className="bg-white pt-4 sm:pt-10 lg:pt-12 my-8 mb-12">
-        <footer className="mx-auto  md:px-8">
-            <div className=" grid grid-cols-2 gap-12 border-t pt-10 md:grid-cols-4 lg:grid-cols-6 lg:gap-8 lg:pt-12">
-            <div className="col-span-full lg:col-span-2">
-            <div className="mb-4 w-3/4">
-                    <img src={Logo} alt="Diamondore logo" />
+      <footer className="bg-white">
+        <div className="pb-16 pt-4 sm:pt-10 lg:pt-12">
+            <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
+            <div className="grid grid-cols-2 gap-12 border-t pt-10 md:grid-cols-4 lg:grid-cols-6 lg:gap-8 lg:pt-12">
+                <div className="col-span-full lg:col-span-2">
+                <div className="mb-4 w-3/4">
+                    <img src={Logo} alt="" />
                 </div>
 
-                <p className="mb-6 text-gray-500 sm:pr-8 text-left">Filler text is dummy text which has no meaning however looks very similar to real text.</p>
+                <p className="text-gray-500 sm:pr-8">Empowering Success, Enriching Lives. Your journey starts here with <b>Diamond Ore consolting Pvt Ltd.</b>".</p>
+                </div>
 
                 <div>
-
-                </div>
-            </div>
-
-            <div>
                 <div className="mb-4 font-bold uppercase tracking-widest text-gray-800">Products</div>
 
                 <nav className="flex flex-col gap-4">
-                <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Overview</a>
-                </div>
+                    <div>
+                    <Link to={'/all-jobs'} href="#" className="text-gray-500 transition duration-100 hover:text-blue-950 active:text-bg blue-950 ">Jobs</Link>
+                    </div>
 
-                <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Solutions</a>
-                </div>
+                    <div>
+                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">CV genie</a>
+                    </div>
 
-                <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Pricing</a>
-                </div>
+                    <div>
+                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Be Our Client</a>
+                    </div>
 
-                <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Customers</a>
-                </div>
                 </nav>
-            </div>
+                </div>
 
-            <div>
+                <div>
                 <div className="mb-4 font-bold uppercase tracking-widest text-gray-800">Company</div>
 
                 <nav className="flex flex-col gap-4">
-                <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">About</a>
-                </div>
+                    <div>
+                    <Link to={'/about'} className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">About</Link>
+                    </div>
 
-                <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Investor Relations</a>
-                </div>
+                    <div>
+                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Team</a>
+                    </div>
 
-                <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Jobs</a>
-                </div>
+                    <div>
+                    <Link to={'/admin-login'} className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Admin login</Link>
+                    </div>
 
-                <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Blogs</a>
-                </div>
-
+                    <div>
+                    <Link to={'/employee-login'} className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Employee login</Link>
+                    </div>
                 </nav>
-            </div>
+                </div>
+                
 
-            <div>
+                <div>
                 <div className="mb-4 font-bold uppercase tracking-widest text-gray-800">Support</div>
 
                 <nav className="flex flex-col gap-4">
-                <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Contact</a>
-                </div>
+                    <div>
+                    <Link to={'/contact'} href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Contact Us</Link>
+                    </div>
 
-                <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Documentation</a>
-                </div>
-
-                <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Chat</a>
-                </div>
-
-                <div>
+                    <div>
                     <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">FAQ</a>
-                </div>
+                    </div> 
                 </nav>
-            </div>
+                </div>
+                
 
-            <div>
+                <div>
                 <div className="mb-4 font-bold uppercase tracking-widest text-gray-800">Legal</div>
 
                 <nav className="flex flex-col gap-4">
-                <div>
+                    <div>
                     <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Terms of Service</a>
-                </div>
+                    </div>
 
-                <div>
+                    <div>
                     <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Privacy Policy</a>
-                </div>
+                    </div>
 
-                <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Cookie settings</a>
-                </div>
+                   
                 </nav>
+                </div>
             </div>
             </div>
-           
-        </footer>
+        </div>
+
         <div className="bg-gray-100">
-            <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
-            <div className="flex items-center align-center justify-between gap-4 py-8">
+            <div className="mx-auto max-w-screen-2xl px-4 py-2 mb-2 md:px-8">
+            <div className="flex items-center align-center justify-between gap-4 ">
                 <span className="text-sm text-gray-400"> © 2024 - Diamond Ore Pvt Ltd . All rights reserved. </span>
 
                 <div className="flex gap-4">
@@ -129,7 +116,7 @@ const AdminFooter = () => {
             </div>
             </div>
         </div>
-        </div>
+    </footer>
     </div>
   )
 }

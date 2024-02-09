@@ -30,6 +30,7 @@ import Employeedashboard from "./Pages/Employeepage/Employeedashboard";
 import AddJobs from "./Pages/AdminPage/Addjobs";
 import Employeesignup from "./Pages/AdminPage/Employeesignup";
 import CandidateEditprofile from "./Components/CandidatePagesComponents/CandidateEditprofile";
+import AdminEditprofile from "./Components/AdminPagesComponents/AdminEditprofile";
 
 
 function App() {
@@ -54,6 +55,7 @@ function App() {
             <Route path="/all-banca-jobs" element={<AllBancaJobs />} />
             <Route path="/all-other-jobs" element={<AllOtherJobs />} />
             <Route path='/edit/profile-page' element={<CandidateEditprofile/>}/>
+            <Route path='/admin/edit-profile'element={<AdminEditprofile/>} />
             <Route path="/admin-signup" element={<AdminSignup />} />
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />

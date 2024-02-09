@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 const AddJobs = () => {
   const [sheet, setSheet] = useState(null);
   const [sheeturl, setsheeturl] = useState(null);
-  const [upload, setupload] = useState(null);
+  // const [upload, setupload] = useState(null);
 
   const token = localStorage.getItem("token");
   const { decodedToken } = useJwt(localStorage.getItem("token"));
@@ -36,19 +36,19 @@ const AddJobs = () => {
 
       const formData = new FormData();
       formData.append("myFile", sheet);
+      console.log(sheet);
       const response = await axios.post(
-        "http://localhost:5000/api/admin-confi/upload-job-excel",
+        "http://localhost:5000/api/jobs/upload-ops",
         formData,
         {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          }
-        }
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
       );
 
       if (response.status === 400) {
-        console.log("error");
-        
+        console.log("error",e); 
       }
       else{
         console.log(response.data);
@@ -63,10 +63,11 @@ const AddJobs = () => {
 
   const handlesubmit = async (e) => {
     e.preventDefault();
-    setupload(null);
     try {
+      const token = localStorage.getItem("token");
+      console.log(sheeturl)
       const response = await axios.post(
-        "http://localhost:5000/api/admin-confi/add-job",
+        "http://localhost:5000/api/jobs/upload-job-excel",
         {
           url: sheeturl,
         },
@@ -76,17 +77,17 @@ const AddJobs = () => {
           },
         }
       );
-
-      if (response.status === 201) {
+        // console.log(url)
+      if (response.status === 200) {
         console.log("Successfully!!!");
-        navigate('/dashboard')
-        setupload("uploaded sucessfully")
+        alert("Jobs added Successfully")
+        // navigate('/dashboard')
       } else {
         console.log("failed");
         // Handle signup error
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error:", error.message);
     }
   };
 
@@ -107,16 +108,23 @@ const AddJobs = () => {
             <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
             <p class="text-xs text-gray-500 dark:text-gray-400">Only Excel sheets</p>
           </div>
-          <input id="dropzone-file" type="file" class="" name='sheet' onChange={(e) => setSheet(e.target.files[0])} />
+          <input
+          type="file"
+          id="myFile"
+          name="myFile"
+          accept=".pdf,.doc,.docx,.xlxs"
+          onChange={(e) => setSheet(e.target.files[0])}
+          className="p-2"
+        />
         </label>
       </div>
       <button type='submit' className='bg-blue-950 text-white p-2 px-12 flex items-center justify-center mx-auto rounded-md' onClick={handleUploadsheet}>upload</button>
       </div>
-      {upload && (
+      {/* {upload && (
         <div className="flex items-center justify-center bg-red-300 p-4 rounded-md">
           <p className="text-center text-sm text-red-500">{upload}</p>
         </div>
-      )}
+      )} */}
       <button type='submit' className='bg-blue-950 text-white p-2 px-12 flex items-center justify-center mx-auto rounded-md mt-1' onClick={handlesubmit}>Submit</button>
 
       <AdminFooter />

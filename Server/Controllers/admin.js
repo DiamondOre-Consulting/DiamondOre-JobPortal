@@ -779,7 +779,7 @@ router.get("/all-messages/:id", AdminAuthenticateToken, async (req, res) => {
 
 router.put("/edit-profile", AdminAuthenticateToken, async (req, res) => {
   try {
-    const { name, password } = req.body;
+    const { name, password ,profilePic} = req.body;
     const { email } = req.user;
 
     const user = await Admin.findOne({ email });
@@ -798,6 +798,11 @@ router.put("/edit-profile", AdminAuthenticateToken, async (req, res) => {
 
       await user.save();
     }
+    if (profilePic) {
+      user.profilePic = profilePic;
+      await user.save();
+    }
+
 
     res.status(201).json({ message: "Edit profile successful!!!", user });
   } catch (error) {

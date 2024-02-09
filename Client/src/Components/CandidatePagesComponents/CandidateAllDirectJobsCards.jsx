@@ -55,23 +55,24 @@ const CandidateAllDirectJobsCards = () => {
         <div class="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
         {directJobs.map((directJob) => (
               <div
-                class="flex flex-col justify-between h-72 overflow-hidden rounded-lg bg-gray-200 p-4 shadow-lg"
+                class="flex flex-col justify-between h-72 overflow-hidden rounded-lg bg-white shadow-lg shadow-2xl-gray-200 p-4 shadow-lg hover:shadow-2xl"
               >
-                <h3 className="text-2xl text-blue-950 font-bold">
+                <h3 className="text-xl text-blue-950 font-bold">
                   {directJob?.JobTitle}
                 </h3>
-                <p className="text-xl text-gray-600 font-semibold">
+                <div className="w-44 h-0.5 bg-blue-950 md:mb-6 "></div>
+                <p className="text-sm text-gray-600 font-semibold">
                   Industry - <span className="text-blue-950">{directJob?.Industry}</span>
                 </p>
-                <p className="text-xl text-gray-600 font-semibold">Channel - <span className="text-blue-950">{directJob?.Channel}</span></p>
-                <p className="text-xl text-gray-600 font-semibold">
+                <p className="text-sm text-gray-600 font-semibold">Channel - <span className="text-blue-950">{directJob?.Channel}</span></p>
+                <p className="text-sm text-gray-600 font-semibold">
                   Min. Experience - <span className="text-blue-950">{directJob?.MinExperience} Year(s)</span>
                 </p>
-                <p className="text-xl text-gray-600 font-semibold">
+                <p className="text-sm text-gray-600 font-semibold">
                   Total Openings - <span className="text-blue-950">{directJob?.Vacancies}</span>
                 </p>
                 {(directJob?.appliedApplicants == decodedToken?.userId) ? (<p className="text-center text-md text-green-500 font-semibold">Already applied</p>) : ""}
-                <Link to={`/all-jobs/${directJob?._id}`} class="cursor-pointer w-full flex-col rounded-lg bg-white p-4 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200">
+                <Link to={`/all-jobs/${directJob?._id}`} class="cursor-pointer w-full flex-col rounded-lg bg-blue-900 p-4 text-center text-white hover:bg-white hover:text-black-100 hover:text-gray-900 border border-blue-950 mt-2">
                   <span class="text-md font-bold lg:text-md">
                     Know More
                   </span>

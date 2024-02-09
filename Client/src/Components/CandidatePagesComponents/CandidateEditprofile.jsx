@@ -49,16 +49,7 @@ const CandidateEditprofile = () => {
     }));
   };
 
-  const handleFileChange = (e) => {
-    const { name, files } = e.target;
-    console.log('Selected file:', files[0]); // Check if the file is correctly selected
-    setUserData((prevState) => ({
-      ...prevState,
-      [name]: files[0],
-      
-    }));
-    console.log('Set file:', files[0]);
-  };
+ 
 
   const handleUploadImage = async (e) => {
     try {
