@@ -6,6 +6,7 @@ import JobsReviews from './JobsReviews'
 import StatsPartners from './StatsPartners'
 import HeroNav from './HeroNav'
 import axios from "axios";
+import Chatboot from './Chatboot'
 
 const Homemain = () => {
   const [latestJobs, setLatestJobs] = useState([]);
@@ -39,6 +40,7 @@ const Homemain = () => {
       <PathSearch latestJobs={latestJobs}/>
       <JobsReviews/>
       <Footer/>
+      <Chatboot/>
     </div>
   )
 }

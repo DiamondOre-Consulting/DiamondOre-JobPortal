@@ -15,6 +15,7 @@ import AdminAuthenticateToken from "../Middlewares/AdminAuthenticateToken.js";
 import Status from "../Models/Status.js";
 import Jobs from "../Models/Jobs.js";
 import CandidateContact from "../Models/CandidateContact.js";
+import Employees from '../Models/Employees.js'
 
 dotenv.config();
 
@@ -808,6 +809,51 @@ router.put("/edit-profile", AdminAuthenticateToken, async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Something went wrong!!!" });
+  }
+});
+
+// FETCHING ALL employees
+router.get("/all-employees", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { email } = req.user;
+
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const allEmployees = await Employees.find({}, { password: 0 });
+
+    console.log(allEmployees);
+
+    return res.status(200).json(allEmployees);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong!!!" });
+  }
+});
+
+// FETCHING A Employee
+router.get("/all-employees/:id", AdminAuthenticateToken, async (req, res) => {
+  try {
+    // const { email } = req.user;
+     const { id } = req.params;
+
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const oneEmployee = await Employees.findById(
+      { _id: id },
+      { password: 0 }
+    );
+    console.log(oneEmployee);
+
+    return res.status(201).json(oneEmployee);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong!!!" });
   }
 });
 

@@ -31,6 +31,11 @@ import AddJobs from "./Pages/AdminPage/Addjobs";
 import Employeesignup from "./Pages/AdminPage/Employeesignup";
 import CandidateEditprofile from "./Components/CandidatePagesComponents/CandidateEditprofile";
 import AdminEditprofile from "./Components/AdminPagesComponents/AdminEditprofile";
+import EmployeeLeaves from "./Pages/Employeepage/EmployeeLeaves";
+import AdminEmployeeAttendence from "./Components/AdminPagesComponents/AdminEmployeeAttendence";
+import AdminEditAttendence from "./Components/AdminPagesComponents/AdminEditAttendence";
+import AdminEditPerfomence from "./Components/AdminPagesComponents/AdminEditPerfomence";
+import Beourclient from "./Pages/HomePage/Beourclient";
 
 
 function App() {
@@ -46,6 +51,7 @@ function App() {
             <Route path="/contact" element={<Contact/>}/>
             <Route path="/signup" element={<Signup/>} />
             <Route path="/login" element={<Login/>} />
+            <Route path='/be-our-client' element={<Beourclient/>}/>
             <Route path="/dashboard" element={<CandidateHome/>}/>
             <Route path="/all-jobs" element={<CandidateAllJobs/>} />
             <Route path="/all-jobs/:id" element={<EachJob />} />
@@ -67,9 +73,13 @@ function App() {
             <Route path="/update-status/:id1/:id2" element={<UpdateStatus />} />
             <Route path="/admin/erp-dashboard" element={<AdminERP />} />
             <Route path="/admin/erp-dashboard/add" element={<AddNewERP />} />
+            <Route path='/admin-all-employee'element={<AdminEmployeeAttendence/>}/>
+            <Route path='/admin-all-employee/attendence/:id'element={<AdminEditAttendence/>}/>
+            <Route path='/admin-all-employee/performence/:id'element={<AdminEditPerfomence/>}/>
             <Route path='/employee-signup' element={<Employeesignup/>}/>
             <Route path='/employee-login'element={<Employeelogin/>}/>
             <Route path='/employee-dashboard' element={<Employeedashboard/>}/>
+            <Route path='/employee-leaves' element={<EmployeeLeaves/>}/>
           </Route> 
         </Routes>
       </Router>

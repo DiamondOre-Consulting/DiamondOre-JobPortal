@@ -16,7 +16,7 @@ const Employeelogin = () => {
         // Perform login logic here
         try {
             console.log(email, password)
-            const response = await axios.post("https://diamond-ore-job-portal-backend.vercel.app/api/employee/login",
+            const response = await axios.post("http://localhost:5000/api/employee/login",
                 {
                     email,
                     password

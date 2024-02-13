@@ -98,7 +98,7 @@ const EmployeeNavbar = () => {
                 Home
               </Link>
               <Link
-                to={"/"}
+                to={"/employee-leaves"}
                 className="text-md font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
               >
                Leaves
@@ -192,50 +192,31 @@ const EmployeeNavbar = () => {
               Home
             </li>
           </a>
-          <a href={"/all-jobs"}>
+          <a href={"/"}>
             <li
               className={`${
                 menuOpen ? "block" : "hidden"
               } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
             >
-             Add Jobs
+            Leaves
             </li>
           </a>
-          <a href={"/all-candidates"}>
+          <a href={"/"}>
             <li
               className={`${
                 menuOpen ? "block" : "hidden"
               } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
             >
-              All Candidates
+              Performence
             </li>
           </a>
-          <a href={"/admin/erp-dashboard"}>
+          <a href={"/"}>
             <li
               className={`${
                 menuOpen ? "block" : "hidden"
               } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
             >
-              Erp
-            </li>
-          </a>
-
-          <a href={"/employee-signup"}>
-            <li
-              className={`${
-                menuOpen ? "block" : "hidden"
-              } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
-            >
-              AddEmployee
-            </li>
-          </a>
-          <a href={"/admin-signup"}>
-            <li
-              className={`${
-                menuOpen ? "block" : "hidden"
-              } px-32 py-3 text-lg font-semibold bg-blue-900 text-white hover:bg-blue-950 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
-            >
-              Signin
+             Logout
             </li>
           </a>
         </ul>
