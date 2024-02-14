@@ -135,8 +135,9 @@ const Navbar = () => {
                 Contact Us
               </li>
             </Link>
-            <a href={"/home-main"}>
+            <a href='#'>
               <li
+                onClick={handleSignup}
                 className={`${menuOpen ? "block" : "hidden"
                   } px-32 py-3 text-lg font-semibold bg-blue-900 text-white hover:bg-blue-950 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
