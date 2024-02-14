@@ -98,10 +98,11 @@ const AdminEachJob = () => {
     <div className="bg-white mx-5">
       <AdminNav />
       <div>
-        <h1 className="text-center text-5xl text-bold py-lg">Each Job</h1>
+        <h1 className="text-center text-5xl text-bold py-lg font-bold font-serif">Each Job</h1>
+        <div className="w-44 h-1 bg-blue-950 mx-auto"></div>
         <div className="bg-white py-6 sm:py-8 lg:py-12">
           <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
-            <div className="flex flex-col overflow-hidden rounded-lg bg-gray-200 lg:h-90 md:h-90">
+            <div className="flex flex-col overflow-hidden rounded-lg bg-gray-100 lg:h-90 md:h-90 shadow-lg shadow-gray-300">
               <div className="flex w-full flex-col p-4 sm:w-1/2 sm:p-8 lg:w-3/5">
                 <h2 className="mb-4 text-xl font-bold text-gray-800 md:text-2xl lg:text-4xl">
                   {jobDetails?.JobTitle}

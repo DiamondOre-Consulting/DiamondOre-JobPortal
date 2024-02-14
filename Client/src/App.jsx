@@ -36,6 +36,7 @@ import AdminEmployeeAttendence from "./Components/AdminPagesComponents/AdminEmpl
 import AdminEditAttendence from "./Components/AdminPagesComponents/AdminEditAttendence";
 import AdminEditPerfomence from "./Components/AdminPagesComponents/AdminEditPerfomence";
 import Beourclient from "./Pages/HomePage/Beourclient";
+import PrefrenceForm from "./Components/CandidatePagesComponents/PrefrenceForm";
 
 
 function App() {
@@ -52,6 +53,7 @@ function App() {
             <Route path="/signup" element={<Signup/>} />
             <Route path="/login" element={<Login/>} />
             <Route path='/be-our-client' element={<Beourclient/>}/>
+            <Route path='/prefrence-form' element={<PrefrenceForm/>}/>
             <Route path="/dashboard" element={<CandidateHome/>}/>
             <Route path="/all-jobs" element={<CandidateAllJobs/>} />
             <Route path="/all-jobs/:id" element={<EachJob />} />

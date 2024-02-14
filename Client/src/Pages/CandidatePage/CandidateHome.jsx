@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useJwt } from "react-jwt";
 import CandidateNav from '../../Components/CandidatePagesComponents/CandidateNav'
 import CandidateFooter from '../../Components/CandidatePagesComponents/CandidateFooter'
 import HomeNewRecommend from '../../Components/CandidatePagesComponents/HomeNewRecommend'
 import HomeChannelwise from '../../Components/CandidatePagesComponents/HomeChannelwise'
+import Banner from '../../Components/CandidatePagesComponents/Banner';
 
 const CandidateHome = () => {
   const navigate = useNavigate();
@@ -37,6 +38,7 @@ const CandidateHome = () => {
   return (
     <div className='bg-white'>
       <CandidateNav/>
+      <Link to={'/prefrence-form'}><Banner/></Link>
       <h2 className='text-5xl px-10 font-bold text-gray-800 '>Welcome aboard, <span className='text-blue-900 font-serif'>{userName}</span></h2>
       <HomeNewRecommend />
       <HomeChannelwise />

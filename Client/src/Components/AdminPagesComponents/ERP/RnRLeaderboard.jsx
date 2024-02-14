@@ -12,7 +12,7 @@ const RnRLeaderboard = ({ RnRinterns, RnRRecruiter }) => {
               <img
                 alt="Party"
                 src={RNRintern}
-                className="absolute inset-0 h-full w-full object-cover"
+                className="absolute inset-0 h-full w-full object-cover object-top"
               />
             </div>
 
@@ -66,7 +66,7 @@ const RnRLeaderboard = ({ RnRinterns, RnRRecruiter }) => {
               <img
                 alt="Party"
                 src={RNRrecuiter}
-                class="absolute inset-0 h-full w-full object-cover"
+                class="absolute inset-0 h-full w-full object-cover object-top"
               />
             </div>
 

@@ -12,7 +12,7 @@ const ERPTop5s = ({ hrname, client }) => {
               <img
                 alt="Party"
                 src={top5hr}
-                className="absolute inset-0 h-full w-full object-cover"
+                className="absolute inset-0 h-full w-full object-cover object-top"
               />
             </div>
 
@@ -57,7 +57,7 @@ const ERPTop5s = ({ hrname, client }) => {
               <img
                 alt="Party"
                 src={top5client}
-                class="absolute inset-0 h-full w-full object-cover"
+                class="absolute inset-0 h-full w-full object-cover object-top"
               />
             </div>
 

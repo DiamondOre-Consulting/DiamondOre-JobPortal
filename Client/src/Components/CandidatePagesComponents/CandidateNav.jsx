@@ -10,42 +10,42 @@ const CandidateNav = () => {
   const [userData, setUserData] = useState(null);
   const dropdownRef = useRef(null);
 
-    useEffect(() => {
-      const fetchUserData = async () => {
-        try {
-          const token = localStorage.getItem("token");
-  
-          if (!token) {
-            // Token not found in local storage, handle the error or redirect to the login page
-            console.error("No token found");
-            navigate("/login");
-            return;
-          }
-  
-          // Fetch associates data from the backend
-          const response = await axios.get(
-            "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/user-data",
-            {
-              headers: {
-                Authorization: `Bearer ${token}`
-              }
-            }
-          );
-          if(response.status==200) {
-            console.log(response.data);
-            setUserData(response.data);
-          } else {
-            console.log(response.data);
-            setUserData("Did not get any response!!!")
-          }
-        } catch (error) {
-          console.error("Error fetching associates:", error);
-          // Handle error and show appropriate message
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          // Token not found in local storage, handle the error or redirect to the login page
+          console.error("No token found");
+          navigate("/login");
+          return;
         }
-      };
-  
-      fetchUserData();
-    }, [])
+
+        // Fetch associates data from the backend
+        const response = await axios.get(
+          "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/user-data",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+        if (response.status == 200) {
+          console.log(response.data);
+          setUserData(response.data);
+        } else {
+          console.log(response.data);
+          setUserData("Did not get any response!!!")
+        }
+      } catch (error) {
+        console.error("Error fetching associates:", error);
+        // Handle error and show appropriate message
+      }
+    };
+
+    fetchUserData();
+  }, [])
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -79,10 +79,10 @@ const CandidateNav = () => {
   return (
     <div>
       {/* Header and Nav Section Start */}
-      <div className="bg-white pb-6 sm:pb-8 lg:pb-6">
+      <div className="bg-white pb-2 sm:pb-2 lg:pb-2">
         <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
           <header className="mb-8 flex items-center justify-between py-2 md:mb-12 md:py-2 xl:mb-8">
-          <img className='w-3/6 sm:w-2/6 md:w-1/6 h-auto z-40' src={Logo} alt="DiamondOre Logo" />
+            <img className='w-3/6 sm:w-2/6 md:w-1/6 h-auto z-40' src={Logo} alt="DiamondOre Logo" />
 
             <div className="flex justify-between items-center gap-8">
               <nav className="hidden gap-16 lg:flex">
@@ -115,23 +115,23 @@ const CandidateNav = () => {
             </div>
 
             {isDropdownOpen && (
-                  <div className="absolute right-8 top-6 mt-12 py-2 w-lg bg-white shadow-gray-300 rounded-md shadow-lg">
-                    <Link
-                      to={'/edit/profile-page'}
-                      className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
-                      onClick={toggleDropdown}
-                    >
-                      Edit Profile
-                    </Link>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
-                      onClick={handleLogout}
-                    >
-                      Logout
-                    </a>
-                  </div>
-                )}
+              <div className="absolute right-8 top-6 mt-12 py-2 w-lg bg-white shadow-gray-300 rounded-md shadow-lg z-50">
+                <Link
+                  to={'/edit/profile-page'}
+                  className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
+                  onClick={toggleDropdown}
+                >
+                  Edit Profile
+                </Link>
+                <a
+                  href="#"
+                  className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </a>
+              </div>
+            )}
 
             <button
               type="button"
@@ -150,55 +150,64 @@ const CandidateNav = () => {
                   clipRule="evenodd"
                 />
               </svg>
-              
+
             </button>
           </header>
           <ul
-            className={`gap-10 ${
-              menuOpen ? "block" : "hidden"
-            } w-full flex flex-col items-center justify-center mb-14`}
+            className={`gap-10 ${menuOpen ? "block" : "hidden"
+              } w-full flex flex-col items-center justify-center mb-14`}
           >
             <a href={"/dashboard"}>
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } transition ease-in-out delay-150 px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } transition ease-in-out delay-150 px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Home
               </li>
             </a>
             <a href={"/all-jobs"}>
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 All jobs
               </li>
             </a>
             <a href={"/all-applied-jobs"}>
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } px-24 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-24 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Applied jobs
               </li>
             </a>
             <a href={"/"}>
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 specilised
               </li>
             </a>
+            <a href={"/edit/profile-page"}>
+              <li
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+              >
+                Edit Profile
+              </li>
+            </a>
+            <a
+              href="#"
+              className="px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250"
+              onClick={handleLogout}
+            >
+              Logout
+            </a>
             <a href={"/signup"}>
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-lg font-semibold bg-blue-900 text-white hover:bg-blue-950 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-32 py-3 text-lg font-semibold bg-blue-900 text-white hover:bg-blue-950 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Signin
               </li>

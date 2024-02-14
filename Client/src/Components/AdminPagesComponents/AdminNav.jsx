@@ -118,27 +118,13 @@ const AdminNav = () => {
                 <Link
                   to={'/admin/add-jobs'}
                   className="cursor-pointer text-md font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
-                 
+
                 >
                   AddJobs
                 </Link>
 
-                <Link
-                  to={'/employee-signup'}
-                  className="cursor-pointer text-md font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
-                 
-                >
-                  AddEmployee
-                </Link>
 
-                <Link
-                  to={'/admin-all-employee'}
-                  className="cursor-pointer text-md font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
-                 
-                >
-                  All Employee
-                </Link>
-               
+
               </nav>
 
               <div
@@ -156,6 +142,21 @@ const AdminNav = () => {
 
             {isDropdownOpen && (
               <div className="absolute right-8 top-6 mt-12 py-2 w-lg bg-white shadow-gray-200 rounded-md shadow-lg">
+                <Link
+                  to={'/employee-signup'}
+                  className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
+
+                >
+                  AddEmployee
+                </Link>
+
+                <Link
+                  to={'/admin-all-employee'}
+                  className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
+
+                >
+                  All Employee
+                </Link>
                 <Link to={'/admin/edit-profile'}
                   className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
                   onClick={toggleDropdown}
@@ -207,46 +208,41 @@ const AdminNav = () => {
                   clipRule="evenodd"
                 />
               </svg>
-            
+
             </button>
           </header>
           <ul
-            className={`gap-10 ${
-              menuOpen ? "block" : "hidden"
-            } w-full flex flex-col items-center justify-center mb-14`}
+            className={`gap-10 ${menuOpen ? "block" : "hidden"
+              } w-full flex flex-col items-center justify-center mb-14`}
           >
             <a href={"/admin-dashboard"}>
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } transition ease-in-out delay-150 px-22 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } transition ease-in-out delay-150 px-22 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Home
               </li>
             </a>
             <a href={"/all-jobs"}>
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-32 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
-               Add Jobs
+                Add Jobs
               </li>
             </a>
             <a href={"/all-candidates"}>
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } px-12 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-12 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 All Candidates
               </li>
             </a>
             <a href={"/admin/erp-dashboard"}>
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-32 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Erp
               </li>
@@ -254,22 +250,45 @@ const AdminNav = () => {
 
             <a href={"/employee-signup"}>
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-32 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 AddEmployee
               </li>
             </a>
+            <a href={"/admin-all-employee"}>
+              <li
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-24 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+              >
+                All Employees
+              </li>
+            </a>
+            <a href={"/admin/edit-profile"}>
+              <li
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-28 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+              >
+                Edit Profile
+              </li>
+            </a>
+            <a
+              href="#"
+              className="px-32 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250"
+              onClick={handleLogout}
+            >
+              Logout
+            </a>
             <a href={"/admin-signup"}>
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-lg font-semibold bg-blue-900 text-white hover:bg-blue-950 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-32 py-1 text-lg font-semibold bg-blue-900 text-white hover:bg-blue-950 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Signin
               </li>
             </a>
+
+
           </ul>
         </div>
       </div>
