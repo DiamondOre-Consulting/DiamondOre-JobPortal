@@ -23,7 +23,7 @@ const AdminAllJobsCards = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "http://localhost:5000/api/admin-confi/all-jobs"
+          "https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/all-jobs"
         );
         if(response.status==200) {
           console.log(response.data);

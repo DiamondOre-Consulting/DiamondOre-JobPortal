@@ -60,7 +60,7 @@ const PrefrenceForm = () => {
 
                 // Fetch associates data from the backend
                 const response = await axios.get(
-                    "http://localhost:5000/api/candidates/all-jobs"
+                    "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/all-jobs"
                 );
                 console.log(response.data)
 

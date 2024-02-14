@@ -45,7 +45,7 @@ const AdminEditAttendence = () => {
 
                 // Fetch associates data from the backend
                 const response = await axios.get(
-                    `http://localhost:5000/api/admin-confi/all-employees/${id}`,
+                    `https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/all-employees/${id}`,
                     {
                       headers: {
                         Authorization: `Bearer ${token}`,

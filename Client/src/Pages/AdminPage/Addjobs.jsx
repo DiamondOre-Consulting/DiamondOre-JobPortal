@@ -38,7 +38,7 @@ const AddJobs = () => {
       formData.append("myFile", sheet);
       console.log(sheet);
       const response = await axios.post(
-        "http://localhost:5000/api/jobs/upload-ops",
+        "https://diamond-ore-job-portal-backend.vercel.app/api/jobs/upload-ops",
         formData,
         {
         headers: {
@@ -67,7 +67,7 @@ const AddJobs = () => {
       const token = localStorage.getItem("token");
       console.log(sheeturl)
       const response = await axios.post(
-        "http://localhost:5000/api/jobs/upload-job-excel",
+        "https://diamond-ore-job-portal-backend.vercel.app/api/jobs/upload-job-excel",
         {
           url: sheeturl,
         },

@@ -26,7 +26,7 @@ const CandidateEditprofile = () => {
         return;
       }
       try {
-        const response = await axios.get("http://localhost:5000/api/candidates/user-data", {
+        const response = await axios.get("https://diamond-ore-job-portal-backend.vercel.app/api/candidates/user-data", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -58,7 +58,7 @@ const CandidateEditprofile = () => {
       const formData = new FormData();
       formData.append("myFileImage", profilePic);
       const response = await axios.post(
-        "http://localhost:5000/api/candidates/upload-profile-pic",
+        "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/upload-profile-pic",
         formData,
         {
           headers: {
@@ -83,7 +83,7 @@ const CandidateEditprofile = () => {
       const formData = new FormData();
       formData.append("myFileResume", resume);
       const response = await axios.post(
-        "http://localhost:5000/api/candidates/upload-resume",
+        "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/upload-resume",
         formData,
         {
           headers: {
@@ -115,7 +115,7 @@ const CandidateEditprofile = () => {
       
       //  console.log(userData.profilePic); 
       const token = localStorage.getItem("token");
-      await axios.put('http://localhost:5000/api/candidates/edit-profile', formData, {
+      await axios.put('https://diamond-ore-job-portal-backend.vercel.app/api/candidates/edit-profile', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',

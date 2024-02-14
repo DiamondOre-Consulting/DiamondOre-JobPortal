@@ -70,7 +70,7 @@ const AdminSignup = ({ toggleForm }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/admin-confi/signup-admin",
+        "https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/signup-admin",
         {
           name,
           email,
