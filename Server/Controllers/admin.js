@@ -15,7 +15,9 @@ import AdminAuthenticateToken from "../Middlewares/AdminAuthenticateToken.js";
 import Status from "../Models/Status.js";
 import Jobs from "../Models/Jobs.js";
 import CandidateContact from "../Models/CandidateContact.js";
-import Employees from '../Models/Employees.js'
+import Employees from "../Models/Employees.js";
+import LeaveReport from "../Models/LeaveReport.js";
+import PerformanceReport from "../Models/PerformanceReport.js";
 
 dotenv.config();
 
@@ -272,7 +274,7 @@ router.get("/all-jobs", async (req, res) => {
 
     console.log(allJobs);
 
-    return res.status(200).json( allJobs );
+    return res.status(200).json(allJobs);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Something went wrong!!!" });
@@ -435,7 +437,7 @@ router.get(
         return res.status(404).json({ message: "User not found" });
       }
 
-      const statusData = await Status.findOne({candidateId: id1, jobId: id2});
+      const statusData = await Status.findOne({ candidateId: id1, jobId: id2 });
 
       // console.log(statusData);
       return res.status(200).json(statusData);
@@ -780,7 +782,7 @@ router.get("/all-messages/:id", AdminAuthenticateToken, async (req, res) => {
 
 router.put("/edit-profile", AdminAuthenticateToken, async (req, res) => {
   try {
-    const { name, password ,profilePic} = req.body;
+    const { name, password, profilePic } = req.body;
     const { email } = req.user;
 
     const user = await Admin.findOne({ email });
@@ -803,7 +805,6 @@ router.put("/edit-profile", AdminAuthenticateToken, async (req, res) => {
       user.profilePic = profilePic;
       await user.save();
     }
-
 
     res.status(201).json({ message: "Edit profile successful!!!", user });
   } catch (error) {
@@ -837,17 +838,14 @@ router.get("/all-employees", AdminAuthenticateToken, async (req, res) => {
 router.get("/all-employees/:id", AdminAuthenticateToken, async (req, res) => {
   try {
     // const { email } = req.user;
-     const { id } = req.params;
+    const { id } = req.params;
 
     const user = await Admin.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const oneEmployee = await Employees.findById(
-      { _id: id },
-      { password: 0 }
-    );
+    const oneEmployee = await Employees.findById({ _id: id }, { password: 0 });
     console.log(oneEmployee);
 
     return res.status(201).json(oneEmployee);
@@ -856,5 +854,149 @@ router.get("/all-employees/:id", AdminAuthenticateToken, async (req, res) => {
     return res.status(500).json({ message: "Something went wrong!!!" });
   }
 });
+
+// EMPLOYEE LEAVE REPORT
+// Function to get month name
+function getMonthName(month) {
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  return months[month - 1];
+}
+
+// ADD LEAVE REPORT
+router.post("/add-leave-report/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { month, year, absentDays, lateDays, halfDays, adjustedLeaves } =
+      req.body;
+
+    // Find the existing report for the given month and year
+    const reportExists = await LeaveReport.findOne({ employeeId: id, month: month, year: year });
+    if (reportExists) {
+      return res.status(409).json({ message: "This month's or year's report already exists" });
+    }
+
+    const currentReport = await LeaveReport.findOne({employeeId: id});
+
+    let newReport = {};
+    if(currentReport) {
+      let currentLeaves = currentReport.totalLeaves;
+      if(month=="April" || month=="Apr") {
+        newReport = new LeaveReport({
+          employeeId: id,
+          month,
+          year,
+          absentDays,
+          lateDays,
+          halfDays,
+          adjustedLeaves,
+          totalLeaves: currentLeaves - adjustedLeaves + 16
+        })
+      } else {
+        newReport = new LeaveReport({
+          employeeId: id,
+          month,
+          year,
+          absentDays,
+          lateDays,
+          halfDays,
+          adjustedLeaves,
+          totalLeaves: currentLeaves - adjustedLeaves
+        })
+      }
+      await newReport.save();
+    } else {
+      newReport = new LeaveReport({
+        employeeId: id,
+        month,
+        year,
+        absentDays,
+        lateDays,
+        halfDays,
+        adjustedLeaves,
+        totalLeaves: 16 - adjustedLeaves
+      })
+
+      await newReport.save();
+    }
+
+    res
+      .status(200)
+      .json({ message: "Leave report submitted successfully!!!", newReport });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// ADD PERFORMANCE REPORT
+router.post("/add-performance-report/:id", async (req, res) => {
+  try {
+    const {id} = req.params;
+    const {month, year, multipleOf4x, monthlyIncentive, kpiScore} = req.body;
+
+    const reportExists = await PerformanceReport.findOne({ employeeId: id, month: month, year: year });
+    if (reportExists) {
+      return res.status(409).json({ message: "This month's or year's report already exists" });
+    }
+
+    const currentReport = await PerformanceReport.findOne({employeeId: id});
+
+    let newReport = {};
+    if(currentReport) {
+      let currentLeaves = currentReport.totalLeaves;
+      if(month=="April" || month=="Apr") {
+        newReport = new PerformanceReport({
+          employeeId: id,
+          month,
+          year,
+          multipleOf4x,
+          monthlyIncentive,
+          kpiScore
+        })
+      } else {
+        newReport = new PerformanceReport({
+          employeeId: id,
+          month,
+          year,
+          multipleOf4x,
+          monthlyIncentive,
+          kpiScore
+        })
+      }
+      await newReport.save();
+    } else {
+      newReport = new PerformanceReport({
+        employeeId: id,
+        month,
+        year,
+        multipleOf4x,
+        monthlyIncentive,
+        kpiScore
+      })
+
+      await newReport.save();
+    }
+
+    res
+    .status(200)
+    .json({ message: "Performance report submitted successfully!!!", newReport });
+  }  catch(error) {
+    console.error(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+})
 
 export default router;
