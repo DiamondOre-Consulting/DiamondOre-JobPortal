@@ -135,7 +135,7 @@ router.get("/all-erp-data", EmployeeAuthenticateToken, async (req, res) => {
 });
 
 // GET LEAVE REPORT
-router.get("/leave-report", EmployeeAuthenticateToken, async (req, res) => {w
+router.get("/leave-report", EmployeeAuthenticateToken, async (req, res) => {
   try {
     const { userId, email } = req.user;
 
@@ -145,9 +145,7 @@ router.get("/leave-report", EmployeeAuthenticateToken, async (req, res) => {w
       return res.status(404).json({ message: "User not found" });
     }
 
-    const latestData = await LeaveReport.findOne({employeeId: userId})
-      .sort({ timestampField: -1 })
-      .limit(1);
+    const latestData = await LeaveReport.find({employeeId: userId});
 
     if (!latestData) {
       return res.status(404).json({ message: "No Leave Report data found" });
@@ -171,9 +169,7 @@ router.get("/performance-report", EmployeeAuthenticateToken, async (req, res) =>
           return res.status(404).json({ message: "User not found" });
         }
     
-        const latestData = await PerformanceReport.findOne({employeeId: userId})
-          .sort({ timestampField: -1 })
-          .limit(1);
+        const latestData = await PerformanceReport.find({employeeId: userId});
     
         if (!latestData) {
           return res.status(404).json({ message: "No Performance Report data found" });
