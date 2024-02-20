@@ -999,4 +999,54 @@ router.post("/add-performance-report/:id", async (req, res) => {
   }
 })
 
+// GET LEAVE REPORT OF AN EMPLOYEE
+router.get("/leave-report/:id", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const {id} = req.params;
+    const { email } = req.user;
+
+    // Find the user in the database
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const latestData = await LeaveReport.find({employeeId: id});
+
+    if (!latestData) {
+      return res.status(404).json({ message: "No Leave Report data found" });
+    }
+
+    res.status(200).json(latestData);
+  } catch (error) {
+    console.log(error, "Something went wrong!!!");
+    res.status(500).json("Something went wrong!!!", error);
+  }
+});
+
+// GET PERFORMANCE REPORT OF AN EMPLOYEE
+router.get("/performance-report/:id", AdminAuthenticateToken, async (req, res) => {
+    try {
+      const {id} = req.params;
+      const { email } = req.user;
+  
+      // Find the user in the database
+      const user = await Admin.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+    
+        const latestData = await PerformanceReport.find({employeeId: id});
+    
+        if (!latestData) {
+          return res.status(404).json({ message: "No Performance Report data found" });
+        }
+    
+        res.status(200).json(latestData);
+    } catch(error) {
+        console.error(err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+})
+
 export default router;
