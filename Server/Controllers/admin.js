@@ -856,25 +856,6 @@ router.get("/all-employees/:id", AdminAuthenticateToken, async (req, res) => {
 });
 
 // EMPLOYEE LEAVE REPORT
-// Function to get month name
-function getMonthName(month) {
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  return months[month - 1];
-}
-
 // ADD LEAVE REPORT
 router.post("/add-leave-report/:id", async (req, res) => {
   try {
@@ -1047,6 +1028,47 @@ router.get("/performance-report/:id", AdminAuthenticateToken, async (req, res) =
         console.error(err);
         res.status(500).json({ error: "Internal server error" });
     }
+});
+
+// CHATBOT RECIEVE MESSAGE
+router.post("/send-chatbot", async (req, res) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "helpdesk2.rasonline@gmail.com",
+        pass: "fnhwhrbfgjctngwg",
+      },
+    });
+    const userName = req.body.name;
+    const userEmailAddress = req.body.email; // Assuming the form has an email input
+    const userPhone = req.body.phone;
+    const preferredCity = req.body.preferredCity;
+    const preferredChannel = req.body.preferredChannel;
+    const currentCTC = req.body.currentCTC;
+
+        // Compose the email
+        const mailOptions = {
+          from: "DOC_RoboRecruiter <helpdesk2.rasonline@gmail.com>",
+          to: "helpdesk2.rasonline@gmail.com",
+          subject: `ROBO_RECRUITER: New message received from ${userName}`,
+          text: `A new message has been recieved by ${userName}.`,
+          html: `<h3 style="font-size:1.7rem; display:flex; justify-content: center;">Job Seeker's name: ${userName}</h3> </br>
+                    <h4 style="font-size:1.7rem; display:flex; justify-content: center;">Job Seeker's email-id: ${userEmailAddress}</h4> </br>
+                    <h4 style="font-size:1.7rem; display:flex; justify-content: center;">Job Seeker's phone: ${userPhone}</h4> </br>
+                    <h4 style="font-size:1.7rem; display:flex; justify-content: center;">Job Seeker's preferred city: ${preferredCity}</h4> </br>
+                    <h4 style="font-size:1.7rem; display:flex; justify-content: center;">Job Seeker's preferred channel: ${preferredChannel}</h4> </br>
+                    <h4 style="font-size:1.7rem; display:flex; justify-content: center;">Job Seeker's current CTC: ${currentCTC}</h4> </br>`,
+        };
+    
+        const info = await transporter.sendMail(mailOptions);
+        console.log("Email sent: " + info.response);
+
+        res.status(201).json({ message: "Chat Sent Successfully!!!" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred" });
+  }
 })
 
 export default router;
