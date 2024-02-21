@@ -215,9 +215,10 @@ const CandidateNav = () => {
           </ul>
         </div>
       </div>
-      {/* Header and Nav Section End */}
+                                                   
     </div>
   );
 };
 
 export default CandidateNav;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      

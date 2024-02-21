@@ -837,18 +837,17 @@ router.get("/all-employees", AdminAuthenticateToken, async (req, res) => {
 // FETCHING A Employee
 router.get("/all-employees/:id", AdminAuthenticateToken, async (req, res) => {
   try {
-    // const { email } = req.user;
     const { id } = req.params;
 
-    const user = await Admin.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    const user =await Admin.findOne({email})
+    if(!user){
+      return res.status(404).json({message:'user not Found'})
     }
 
-    const oneEmployee = await Employees.findById({ _id: id }, { password: 0 });
+    const oneEmployee = await Employees.findById({_id : id}, { password: 0 });
     console.log(oneEmployee);
-
     return res.status(201).json(oneEmployee);
+  
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Something went wrong!!!" });
@@ -994,7 +993,7 @@ router.post("/add-performance-report/:id", async (req, res) => {
     .status(200)
     .json({ message: "Performance report submitted successfully!!!", newReport });
   }  catch(error) {
-    console.error(err);
+    console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 })
@@ -1044,7 +1043,7 @@ router.get("/performance-report/:id", AdminAuthenticateToken, async (req, res) =
     
         res.status(200).json(latestData);
     } catch(error) {
-        console.error(err);
+        console.error(error);
         res.status(500).json({ error: "Internal server error" });
     }
 })

@@ -5,135 +5,245 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 const AdminEditAttendence = () => {
     const [employeeDetails, setEmployeeDetails] = useState(null);
+    const [record, setRecord] = useState([]);
     const navigate = useNavigate();
+    const [totalLeaves, setTotalLeaves] = useState(null);
     const { id } = useParams();
-    console.log(id);
+    const [formData, setFormData] = useState({
+        month: '',
+        year: new Date().getFullYear().toString(),
+        absentDays: '',
+        lateDays: '',
+        halfDays: '',
+        adjustedLeaves: ''
+    });
 
+    // Use useJwt directly inside the functional component
     const { decodedToken } = useJwt(localStorage.getItem("token"));
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/admin-login"); // Redirect to login page if not authenticated
-      return;
-    }
+    console.log('Decoded token:', decodedToken);
+
 
 
     useEffect(() => {
-          const token = localStorage.getItem("token");
-          if (!token) {
-            // No token found, redirect to login page
-            navigate("/admin-login");
-          } else {
-            const tokenExpiration = decodedToken ? decodedToken.exp * 1000 : 0; // Convert expiration time to milliseconds
-
-            if (tokenExpiration && tokenExpiration < Date.now()) {
-              // Token expired, remove from local storage and redirect to login page
-              localStorage.removeItem("token");
-              navigate("/admin-login");
-            }
-          }
-
-        const fetchEmployee = async () => {
+        const fetchEmployeeDetails = async () => {
             try {
-                  const token = localStorage.getItem("token");
-
-                  if (!token) {
-                    // Token not found in local storage, handle the error or redirect to the login page
-                    console.error("No token found");
+                const token = localStorage.getItem("token");
+                if (!token) {
                     navigate("/admin-login");
                     return;
-                  }
+                }
 
-                // Fetch associates data from the backend
                 const response = await axios.get(
-                    `https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/all-employees/${id}`,
+                    `http://localhost:5000/api/admin-confi/all-employees/${id}`,
                     {
-                      headers: {
-                        Authorization: `Bearer ${token}`,
-                      },
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
                     }
                 );
-                if (response.status == 201) {
-                    console.log(response.data);
+
+                if (response.status === 201) {
+                    console.log('single emp', response.data);
                     setEmployeeDetails(response.data);
                 }
             } catch (error) {
-                console.log(error);
+                console.log('Error fetching employee details:', error);
             }
         };
 
-        fetchEmployee();
-    }, []);
+        fetchEmployeeDetails();
+    }, [id, navigate]);
 
 
-    const initialMonthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    useEffect(() => {
+        const fetchEmployeeAndLeaveReport = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    navigate("/admin-login");
+                    return;
+                }
 
-    const [months, setMonths] = useState(() => {
-        return [{ name: 'January', absent: '', late: '', halfDay: '', adjustment: '' }];
-    });
 
+                // Fetch leave report
 
-    const handleInputChange = (index, fieldName, value) => {
-        const updatedMonths = [...months];
-        updatedMonths[index][fieldName] = value;
-        setMonths(updatedMonths);
+                const leaveReportResponse = await axios.get(
+                    `http://localhost:5000/api/admin-confi/leave-report/${id}`,
+
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+
+                    }
+                );
+                if (leaveReportResponse.status === 200) {
+                    console.log(leaveReportResponse.data)
+                    // setRecord(leaveReportResponse.data);
+                    // const rec = leaveReportResponse.data;
+                    // if (rec.length > 0) {
+                    //     const lastRecord = rec[rec.length - 1];
+                    //     const leaves = lastRecord.totalLeaves;
+                    //     setTotalLeaves(leaves);
+                    //     console.log("this is total leaves ", leaves);
+                    // } else {
+                    //     console.log("No records found");
+                    // }
+                }
+            }
+            catch (error) {
+                console.log('Error fetching data:', error);
+            }
+        };
+
+        fetchEmployeeAndLeaveReport();
+    }, [id, navigate,]);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
     };
 
-   
-    const handleAddRow = () => {
-        const newMonthIndex = months.length;
-        const newMonthName = initialMonthNames[newMonthIndex];
-        setMonths([...months, { name: newMonthName, absent: '', late: '', halfDay: '', adjustment: '' }]);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        totalLeaves(null);
+        try {
+            const { month, year, absentDays, lateDays, halfDays, adjustedLeaves } = formData;
+
+            // Save form data
+            const response = await axios.post(
+                `http://localhost:5000/api/admin-confi/add-leave-report/${id}`,
+                {
+                    month,
+                    year,
+                    absentDays,
+                    lateDays,
+                    halfDays,
+                    adjustedLeaves
+                }
+            );
+
+
+            console.log('Response:', response.data);
+
+
+            // Update record state with new data
+            setRecord(prevRecord => [
+                ...prevRecord,
+                {
+                    name: month,
+                    absent: absentDays,
+                    late: lateDays,
+                    halfDay: halfDays,
+                    adjustment: adjustedLeaves
+                }
+            ]);
+
+            // Clear form data
+            setFormData({
+                month: '',
+                year: '',
+                absentDays: '',
+                lateDays: '',
+                halfDays: '',
+                adjustedLeaves: ''
+            });
+        }
+
+        catch (error) {
+            if (error.response && error.response.status === 409) {
+                window.alert("This month's or year's report already exists");
+                setFormData({
+                    month: '',
+                    year: '',
+                    absentDays: '',
+                    lateDays: '',
+                    halfDays: '',
+                    adjustedLeaves: ''
+                });
+            }
+            console.error('Error submitting form:', error);
+        }
     };
+
     return (
         <div>
-            <h1 className='text-3xl font-bold font-serif text-center my-12'>Employee Attendence</h1>
-            <div class="flex justify-center">
-                <div class="max-w-md w-full mx-4">
-                    <div class="bg-white shadow-md shadow-gray-400 rounded-lg p-6 flex flex-col items-center justify-center">
-                        <img class="w-24 h-24 rounded-full mb-4" src={employeeDetails?.profilePic} alt="Employee Image" />
-                        <h2 class="text-xl font-semibold mb-2">{employeeDetails?.name}</h2>
-                        <p class="text-gray-700 text-sm">{employeeDetails?.email}</p>
-                        
+            <h1 className='text-center text-2xl font-bold my-4'>Add Leave Report</h1>
+            <form onSubmit={handleSubmit} className='w-full max-w-md mx-auto my-8 p-6 bg-gray-50 shadow-lg rounded-lg shadow-lg'>
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label className="block text-gray-700">Month:</label>
+                        <select name="month" value={formData.month} onChange={handleChange} className="w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 rounded-lg focus:outline-none focus:bg-white">
+                            <option value="">Select Month</option>
+                            <option value="January">January</option>
+                            <option value="February">February</option>
+                            <option value="March">March</option>
+                            <option value="April">April</option>
+                            <option value="May">May</option>
+                            <option value="June">June</option>
+                            <option value="July">July</option>
+                            <option value="August">August</option>
+                            <option value="September">September</option>
+                            <option value="October">October</option>
+                            <option value="November">November</option>
+                            <option value="December">December</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block text-gray-700">Year:</label>
+                        <input type="text" name="year" value={formData.year} onChange={handleChange} className="w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 rounded-lg focus:outline-none focus:bg-white" />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700">Absent Days:</label>
+                        <input type="text" name="absentDays" value={formData.absentDays} onChange={handleChange} className="w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 rounded-lg focus:outline-none focus:bg-white" />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700">Late Days:</label>
+                        <input type="text" name="lateDays" value={formData.lateDays} onChange={handleChange} className="w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 rounded-lg focus:outline-none focus:bg-white" />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700">Half Days:</label>
+                        <input type="text" name="halfDays" value={formData.halfDays} onChange={handleChange} className="w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 rounded-lg focus:outline-none focus:bg-white" />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700">Adjusted Leaves:</label>
+                        <input type="text" name="adjustedLeaves" value={formData.adjustedLeaves} onChange={handleChange} className="w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 rounded-lg focus:outline-none focus:bg-white" />
                     </div>
                 </div>
-            </div>
-            <div className="overflow-hidden border-b border-gray-200 p-8 text-center px-16">
-                <table className="min-w-full text-center">
-                    <thead className="bg-blue-950 text-center">
-                        <tr className='text-center'>
-                            <th scope="col" className="px-2 py-3 text-center text-xs font-medium text-gray-100 uppercase tracking-wider">Month</th>
-                            <th scope="col" className="px-2 py-3 text-center text-xs font-medium text-gray-100 uppercase tracking-wider">Absent</th>
-                            <th scope="col" className="px-2 py-3 text-center text-xs font-medium text-gray-100 uppercase tracking-wider">Late</th>
-                            <th scope="colgroup" className="px-2 py-3 text-center text-xs font-medium text-gray-100 uppercase tracking-wider">HalfDay</th>
-                            <th scope="colgroup" className="px-2 py-3 text-center text-xs font-medium text-gray-100 uppercase tracking-wider">Adjectment</th>
-                            <th scope="colgroup" className="px-2 py-3 text-center text-xs font-medium text-gray-100 uppercase tracking-wider">Save</th>
-                            <th scope="colgroup" className="px-2 py-3 text-center text-xs font-medium text-gray-100 uppercase tracking-wider">Rows</th>
+                <button type="submit" className="w-full px-4 py-2 mt-4 text-white bg-blue-900 rounded-lg hover:bg-blue-950 focus:outline-none">Submit</button>
+            </form>
 
 
+            {/* Table */}
+            <div className="overflow-x-auto rounded-lg border border-gray-200 px-8 my-4 ">
+                <p>totalleaves:- {totalLeaves}</p>
+                <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
+                    <thead className="ltr:text-left rtl:text-right bg-blue-950">
+                        <tr>
+                            <th className="whitespace-nowrap px-2 py-2 font-medium text-white border ">Month</th>
+                            <th className="whitespace-nowrap px-2 py-2 font-medium text-white border ">Absent</th>
+                            <th className="whitespace-nowrap px-2 py-2 font-medium text-white border ">Late</th>
+                            <th className="whitespace-nowrap px-2 py-2 font-medium text-white border ">Half Day</th>
+                            <th className="whitespace-nowrap px-2 py-2 font-medium text-white border ">Adjustment</th>
                         </tr>
                     </thead>
-                    <tbody className="bg-white border ">
-                        {months.map((month, index) => (
-                            <tr key={index} className='border border-1 border-blue-950'>
-                                <td className="px-2 py-2 whitespace-nowrap">{month.name}</td>
-                                <td className="px-2 py-2 whitespace-nowrap">
-                                    <input type='number' value={month.absent} onChange={(e) => handleInputChange(index, 'absent', e.target.value)} />
-                                </td>
-                                <td className="px-2 py-2 whitespace-nowrap">
-                                    <input type='number' value={month.late} onChange={(e) => handleInputChange(index, 'late', e.target.value)} />
-                                </td>
-                                <td className="px-2 py-2 whitespace-nowrap">
-                                    <input type='number' value={month.halfDay} onChange={(e) => handleInputChange(index, 'halfDay', e.target.value)} />
-                                </td>
-                                <td className="px-2 py-2 whitespace-nowrap">
-                                    <input type='number' value={month.adjustment} onChange={(e) => handleInputChange(index, 'adjustment', e.target.value)} />
-                                </td>
-                                <td className="px-2 py-2 whitespace-nowrap">
-                                    <button type='submit' className='bg-blue-950 text-white p-2 rounded-md' >Save Data</button>
-                                </td>
-                                <td className="px-2 py-2 whitespace-nowrap">
-                                    <button type='submit' className='bg-blue-950 text-white p-2 rounded-md' onClick={handleAddRow}>Add Rows</button>
-                                </td>
+
+                    <tbody className="divide-y divide-gray-200">
+                        {record.map((rec, index) => (
+                            <tr key={index} className='text-center '>
+                                <td className="whitespace-nowrap px-4 py-2 font-medium text-black">{rec.month}</td>
+                                <td className="whitespace-nowrap px-4 py-2 font-medium text-black">{rec.absentDays
+                                }</td>
+                                <td className="whitespace-nowrap px-4 py-2 font-medium text-black">{rec.
+                                    lateDays
+                                }</td>
+                                <td className="whitespace-nowrap px-4 py-2 font-medium text-black">{rec.halfDays
+                                }</td>
+                                <td className="whitespace-nowrap px-4 py-2 font-medium text-black">{rec.adjustedLeaves
+                                }</td>
                             </tr>
                         ))}
                     </tbody>

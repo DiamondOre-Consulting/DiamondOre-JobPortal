@@ -126,7 +126,7 @@ const Chatboot = () => {
                 )}
             </div>
             {isOpen && (
-                <div className="chatbox bg-white shadow-lg rounded-lg p-4 w-72">
+                <div className="chatbox bg-white shadow-lg shadow-gray-400 rounded-lg p-4 w-72">
                     <div className="chatbox-header flex justify-between items-center border-b-2 border-gray-200 pb-2 mb-2">
                         <span className="text-lg font-bold font-serif">Welcome</span>
                         <button className="text-red-500 hover:text-red-700" onClick={closeChatbox}>Close</button>

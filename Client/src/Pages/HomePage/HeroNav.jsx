@@ -7,12 +7,12 @@ const HeroNav = () => {
       <section className="overflow-hidden flex flex-between sm:grid sm:grid-cols-2">
         <div className="p-8 md:p-12 lg:px-16 lg:py-24 mr-0 xxs:mr-0">
           <div className="mx-auto max-w-xl text-left ltr:sm:text-left rtl:sm:text-right">
-            <h2 className="text-5xl font-bold text-gray-700 md:text-5xl sm:text-2xl font-serif">
-            Welcome to <span className="text-blue-950">Diamond Ore Consulting Pvt Ltd</span>
+            <h2 className="text-5xl font-bold text-gray-700 md:text-5xl sm:text-3xl font-serif">
+            <span className="text-gray-900">Seize the Job You Deserve,<br></br>Reght Here!</span>
             </h2>
 
-            <p className="text-2xl text-gray-500 md:mt-4">
-            Your dynamic workforce solution partner! 
+            <p className="text-sm text-gray-500 md:mt-4 mt-4">
+            Explore Endless Opportunities with <span className="text-blue-900 font-bold">Diamond Ore Consulting</span> Your Gateway to Career. Success, Discover, Connect, Excel,<br></br>Choose us, Choose Your Future
             </p>
 
             <div className="mt-4 md:mt-8">

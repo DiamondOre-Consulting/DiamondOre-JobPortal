@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from 'axios';
 
 const AdminSignup = ({ toggleForm }) => {
   const [name, setName] = useState("");
@@ -19,10 +20,10 @@ const AdminSignup = ({ toggleForm }) => {
     try {
         e.preventDefault();
   
-        const formData = new FormData();
+       const formData = new FormData();
         formData.append("myFileImage", profilePic);
         const response = await axios.post(
-          "http://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/upload-profile-pic",
+          "http://localhost:5000/api/admin-confi/upload-profile-pic",
           formData,
           {
             headers: {
@@ -48,7 +49,7 @@ const AdminSignup = ({ toggleForm }) => {
     try {
       // Simulate OTP sent successfully
       // For demonstration purposes, setting OTP sent to true after a delay
-      const response = await axios.post("https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/send-otp", {
+      const response = await axios.post("http://localhost:5000/api/admin-confi/send-otp", {
         email
       })
 
@@ -70,7 +71,7 @@ const AdminSignup = ({ toggleForm }) => {
 
     try {
       const response = await axios.post(
-        "https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/signup-admin",
+        "http://localhost:5000/api/admin-confi/signup-admin",
         {
           name,
           email,

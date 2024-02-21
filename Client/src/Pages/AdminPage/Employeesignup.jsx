@@ -4,6 +4,7 @@ import { useJwt } from "react-jwt";
 import axios from "axios";
 
 const Employeesignup = () => {
+    const navigate = useNavigate();
     const { decodedToken } = useJwt(localStorage.getItem("token"));
     const token = localStorage.getItem("token");
     if (!token) {
@@ -17,7 +18,7 @@ const Employeesignup = () => {
     const [showPass, setShowPass] = useState(false);
     const [added, setadded] = useState(null);
     
-
+   
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (!token) {
