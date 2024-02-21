@@ -982,21 +982,10 @@ router.post("/add-performance-report/:id", async (req, res) => {
       await newReport.save();
     }
 
-    res
-<<<<<<< HEAD
-    .status(200)
-    .json({ message: "Performance report submitted successfully!!!", newReport });
-  }  catch(error) {
-    console.error(error);
-=======
-      .status(200)
-      .json({
-        message: "Performance report submitted successfully!!!",
-        newReport,
-      });
-  } catch (error) {
-    console.error(err);
->>>>>>> 9ab014d34f069682beb651f1c3c0d1b93a7a2b08
+    res.status(200).json({message: "Performance report submitted successfully!!!", newReport})
+  } 
+  catch(error) {
+    console.log(error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -1041,19 +1030,6 @@ router.get(
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-<<<<<<< HEAD
-    
-        const latestData = await PerformanceReport.find({employeeId: id});
-    
-        if (!latestData) {
-          return res.status(404).json({ message: "No Performance Report data found" });
-        }
-    
-        res.status(200).json(latestData);
-    } catch(error) {
-        console.error(error);
-        res.status(500).json({ error: "Internal server error" });
-=======
 
       const latestData = await PerformanceReport.find({ employeeId: id });
 
@@ -1067,7 +1043,6 @@ router.get(
     } catch (error) {
       console.error(err);
       res.status(500).json({ error: "Internal server error" });
->>>>>>> 9ab014d34f069682beb651f1c3c0d1b93a7a2b08
     }
   }
 );
