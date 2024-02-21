@@ -1006,6 +1006,7 @@ router.get("/leave-report/:id", AdminAuthenticateToken, async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+    
 
     const latestData = await LeaveReport.find({ employeeId: id });
 
