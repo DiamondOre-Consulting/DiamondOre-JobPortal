@@ -13,7 +13,7 @@ const Services = () => {
                 <div className=" inset-0 bg-black opacity-50"></div>
                 <div className=" inset-0 flex items-center justify-center text-gray-900 text-center">
                     <div>
-                        {/* <h1 className="text-3xl md:text-3xl lg:text-6xl font-bold font-serif ">Diamond Ore Consulting Pvt Ltd</h1> */}
+                        {/* <h1 className="text-3xl md:text-3xl lg:text-6xl font-bold  ">Diamond Ore Consulting Pvt Ltd</h1> */}
 
                     </div>
                 </div>
@@ -23,7 +23,7 @@ const Services = () => {
                 <div class="mx-auto max-w-screen-2xl px-4 md:px-8">
 
                     <div class="mb-10 md:mb-16">
-                        <h2 class="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-6 lg:text-3xl font-serif">Our Services</h2>
+                        <h2 class="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-6 lg:text-3xl ">Our Services</h2>
 
                         <p class="mx-auto max-w-screen-md text-center text-gray-500 md:text-lg">This is a section of some simple filler text, also known as placeholder text. It shares some characteristics of a real written text but is random or otherwise generated.</p>
                     </div>

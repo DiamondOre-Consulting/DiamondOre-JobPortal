@@ -219,7 +219,7 @@ const CandidateAllJobsCards = () => {
         </button>
     </div>
       <div class="mx-auto max-w-screen-2xl px-4 md:px-8">
-        <h2 class="mb-1 text-center text-2xl font-bold text-blue-950  lg:text-3xl font-serif">
+        <h2 class="mb-1 text-center text-2xl font-bold text-blue-950  lg:text-3xl ">
           All Job Openings
         </h2>
         <div className="w-44 h-1 bg-blue-950 mx-auto  md:mb-12 mb-8"></div>

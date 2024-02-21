@@ -2,6 +2,8 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useJwt } from "react-jwt";
 import { useNavigate, useParams } from 'react-router-dom';
+import AdminNav from './AdminNav';
+import Footer from '../../Pages/HomePage/Footer';
 
 const AdminEditPerfomence = () => {
     const [employeeDetails, setEmployeeDetails] = useState(null);
@@ -30,9 +32,9 @@ const AdminEditPerfomence = () => {
                     navigate("/admin-login");
                     return;
                 }
-                console.log("userId",id);
+               
                 const response = await axios.get(
-                    `http://localhost:5000/api/admin-confi/all-employees/${id}`,
+                    `https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/all-employees/${id}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -50,7 +52,7 @@ const AdminEditPerfomence = () => {
         };
 
         fetchEmployeeDetails();
-    }, [id, navigate]);
+    }, [id]);
 
     useEffect(() => {
         const fetchEmployeeAndPerformenceReport = async () => {
@@ -65,7 +67,7 @@ const AdminEditPerfomence = () => {
                 // Fetch leave report
 
                 const leaveReportResponse = await axios.get(
-                    `http://localhost:5000/api/admin-confi/performance-report/${id}`,
+                    `https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/performance-report/${id}`,
 
                     {
                         headers: {
@@ -76,7 +78,7 @@ const AdminEditPerfomence = () => {
                 );
                 if (leaveReportResponse.status === 200) {
                     console.log(leaveReportResponse.data)
-                    // setRecord(leaveReportResponse.data);
+                    setRecord(leaveReportResponse.data);
                     // const rec = leaveReportResponse.data;
                     // if (rec.length > 0) {
                     //     const lastRecord = rec[rec.length - 1];
@@ -114,7 +116,7 @@ const AdminEditPerfomence = () => {
 
             // Save form data
             const response = await axios.post(
-                `http://localhost:5000/api/admin-confi/add-performance-report/${id}`,
+                `https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/add-performance-report/${id}`,
                 {
                     month,
                     year,
@@ -133,7 +135,7 @@ const AdminEditPerfomence = () => {
             setRecord(prevRecord => [
                 ...prevRecord,
                 {
-                    name: month,
+                    month: month,
                     multipleOf4x: multipleOf4x,
                     monthlyIncentive: monthlyIncentive,
                     kpiScore: kpiScore
@@ -168,6 +170,7 @@ const AdminEditPerfomence = () => {
 
     return (
         <div>
+            <AdminNav/>
             <h1 className='text-center text-2xl font-bold my-4'>Add Performence Report</h1>
             <form onSubmit={handleSubmit} className='w-full max-w-md mx-auto my-8 p-6 bg-gray-50 shadow-lg rounded-lg shadow-lg'>
                 <div className="grid grid-cols-2 gap-4">
@@ -241,6 +244,7 @@ const AdminEditPerfomence = () => {
                     </tbody>
                 </table>
             </div>
+            <Footer/>
         </div>
     )
 }

@@ -81,7 +81,7 @@ const Employeesignup = () => {
     return (
         <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-lg">
-                <h1 className="text-center text-2xl font-bold text-blue-950 sm:text-3xl font-serif">
+                <h1 className="text-center text-2xl font-bold text-blue-950 sm:text-3xl ">
                     Get Started Today
                 </h1>
                 <div className="mx-auto h-0.5 w-24 bg-blue-950 border-rounded"></div>
@@ -90,7 +90,7 @@ const Employeesignup = () => {
                     onSubmit={handleSignup}
                     className="mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8 bg-white shadow-gray-300"
                 >
-                    <p className="text-center text-lg font-medium font-serif">
+                    <p className="text-center text-lg font-medium ">
                         Add Employee
                     </p>
 

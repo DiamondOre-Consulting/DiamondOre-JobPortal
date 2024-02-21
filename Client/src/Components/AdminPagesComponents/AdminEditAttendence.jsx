@@ -2,12 +2,14 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useJwt } from "react-jwt";
 import { useNavigate, useParams } from 'react-router-dom';
+import AdminNav from './AdminNav';
+import Footer from '../../Pages/HomePage/Footer';
 
 const AdminEditAttendence = () => {
     const [employeeDetails, setEmployeeDetails] = useState(null);
     const [record, setRecord] = useState([]);
     const navigate = useNavigate();
-    const [totalLeaves, setTotalLeaves] = useState(null);
+    // const [totalLeaves, setTotalLeaves] = useState(null);
     const { id } = useParams();
     const [formData, setFormData] = useState({
         month: '',
@@ -20,8 +22,6 @@ const AdminEditAttendence = () => {
 
     // Use useJwt directly inside the functional component
     const { decodedToken } = useJwt(localStorage.getItem("token"));
-    console.log('Decoded token:', decodedToken);
-
 
 
     useEffect(() => {
@@ -34,9 +34,10 @@ const AdminEditAttendence = () => {
                 }
 
                 const response = await axios.get(
-                    `http://localhost:5000/api/admin-confi/all-employees/${id}`,
+                    `https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/all-employees/${id}`,
                     {
-                        headers: {
+                        headers:
+                        {
                             Authorization: `Bearer ${token}`,
                         },
                     }
@@ -46,13 +47,16 @@ const AdminEditAttendence = () => {
                     console.log('single emp', response.data);
                     setEmployeeDetails(response.data);
                 }
+                
+                
             } catch (error) {
+                
                 console.log('Error fetching employee details:', error);
             }
         };
 
         fetchEmployeeDetails();
-    }, [id, navigate]);
+    }, [id]);
 
 
     useEffect(() => {
@@ -68,7 +72,7 @@ const AdminEditAttendence = () => {
                 // Fetch leave report
 
                 const leaveReportResponse = await axios.get(
-                    `http://localhost:5000/api/admin-confi/leave-report/${id}`,
+                    `https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/leave-report/${id}`,
 
                     {
                         headers: {
@@ -79,16 +83,8 @@ const AdminEditAttendence = () => {
                 );
                 if (leaveReportResponse.status === 200) {
                     console.log(leaveReportResponse.data)
-                    // setRecord(leaveReportResponse.data);
-                    // const rec = leaveReportResponse.data;
-                    // if (rec.length > 0) {
-                    //     const lastRecord = rec[rec.length - 1];
-                    //     const leaves = lastRecord.totalLeaves;
-                    //     setTotalLeaves(leaves);
-                    //     console.log("this is total leaves ", leaves);
-                    // } else {
-                    //     console.log("No records found");
-                    // }
+                    setRecord(leaveReportResponse.data);
+                   
                 }
             }
             catch (error) {
@@ -109,13 +105,13 @@ const AdminEditAttendence = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        totalLeaves(null);
+        // totalLeaves(null);
         try {
             const { month, year, absentDays, lateDays, halfDays, adjustedLeaves } = formData;
 
             // Save form data
             const response = await axios.post(
-                `http://localhost:5000/api/admin-confi/add-leave-report/${id}`,
+                `https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/add-leave-report/${id}`,
                 {
                     month,
                     year,
@@ -171,6 +167,7 @@ const AdminEditAttendence = () => {
 
     return (
         <div>
+            <AdminNav/>
             <h1 className='text-center text-2xl font-bold my-4'>Add Leave Report</h1>
             <form onSubmit={handleSubmit} className='w-full max-w-md mx-auto my-8 p-6 bg-gray-50 shadow-lg rounded-lg shadow-lg'>
                 <div className="grid grid-cols-2 gap-4">
@@ -219,7 +216,7 @@ const AdminEditAttendence = () => {
 
             {/* Table */}
             <div className="overflow-x-auto rounded-lg border border-gray-200 px-8 my-4 ">
-                <p>totalleaves:- {totalLeaves}</p>
+                {/* <p>totalleaves:- {totalLeaves}</p> */}
                 <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
                     <thead className="ltr:text-left rtl:text-right bg-blue-950">
                         <tr>
@@ -249,6 +246,7 @@ const AdminEditAttendence = () => {
                     </tbody>
                 </table>
             </div>
+            <Footer/>
         </div>
     )
 }

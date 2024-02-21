@@ -95,7 +95,7 @@ const AddJobs = () => {
   return (
     <div>
       <AdminNav />
-      <h1 className='text-3xl font-serif text-blue-950 text-center'>Upload youe Excel Sheet</h1>
+      <h1 className='text-3xl  text-blue-950 text-center'>Upload youe Excel Sheet</h1>
       <div className='w-48 bg-blue-950 h-0.5 text-center mx-auto  my-3'></div>
 
       <div>

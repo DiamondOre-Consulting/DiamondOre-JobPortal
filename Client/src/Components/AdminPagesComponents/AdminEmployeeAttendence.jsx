@@ -4,12 +4,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import AdminNav from './AdminNav';
 import Footer from '../../Pages/HomePage/Footer';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 
 const AdminEmployeeAttendence = () => {
+    const { id } = useParams();
+    const [employeeDetails, setEmployeeDetails] = useState(null);
+    const [record, setRecord] = useState([]);
+    const [performenceRecord, setPerformenceRecord] = useState([]);
     const [open, setOpen] = React.useState(false);
     const [selectedEmployee, setSelectedEmployee] = useState(null);
-    const Month = ["details", 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const Month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'Auguest', 'September', 'October', 'November', 'December'];
     const handleOpen = (employee) => {
         setSelectedEmployee(employee);
         setOpen(true);
@@ -53,11 +58,141 @@ const AdminEmployeeAttendence = () => {
 
         fetchAllEmployee();
     }, []);
+    // fetch emp by id 
+    useEffect(() => {
+        const fetchEmployeeDetails = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    navigate("/admin-login");
+                    return;
+                }
+
+                if (selectedEmployee) {
+
+                    const response = await axios.get(
+                        `https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/all-employees/${selectedEmployee._id}`,
+                        {
+                            headers:
+                            {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        }
+                    );
+
+                    if (response.status === 201) {
+                        console.log('single emp', response.data);
+                        setEmployeeDetails(response.data);
+                    }
+                } else {
+                    console.log('No employee selected');
+                }
+
+
+            } catch (error) {
+
+                console.log('Error fetching employee details:', error);
+            }
+        };
+
+        fetchEmployeeDetails();
+    }, [selectedEmployee]);
+
+
+
+
+
+    // fetch leave report 
+
+    // fetch emp by id 
+    useEffect(() => {
+        const fetchEmployeeAndLeaveReport = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    navigate("/admin-login");
+                    return;
+                }
+
+                if (selectedEmployee) {
+
+                    const response = await axios.get(
+                        `https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/leave-report/${selectedEmployee._id}`,
+                        {
+                            headers:
+                            {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        }
+                    );
+
+                    if (response.status === 200) {
+                        console.log(response.data)
+                        setRecord(response.data);
+                    }
+                } else {
+                    console.log('No records found');
+                }
+
+
+            } catch (error) {
+
+                console.log('Error fetching employee details:', error);
+            }
+        };
+
+        fetchEmployeeAndLeaveReport();
+    }, [selectedEmployee]);
+
+
+    // fetch performence report 
+
+    useEffect(() => {
+        const fetchEmployeeAndPerformenceReport = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    navigate("/admin-login");
+                    return;
+                }
+
+
+                // Fetch leave report
+
+                if (selectedEmployee) {
+
+                    const response = await axios.get(
+                        `https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/performance-report/${selectedEmployee._id}`,
+                        {
+                            headers:
+                            {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        }
+                    );
+
+                    if (response.status === 200) {
+                        console.log("Performence Record", response.data)
+                        setPerformenceRecord(response.data);
+                    }
+                } else {
+                    console.log('No records found');
+                }
+            }
+
+            catch (error) {
+                console.log('Error fetching data:', error);
+            }
+        };
+
+        fetchEmployeeAndPerformenceReport();
+    }, [selectedEmployee]);
 
     return (
 
         <div>
-            <h1 className='text-bold font-serif text-center text-3xl my-8'> Employee Details</h1>
+            <AdminNav/>
+            <h1 className='text-bold  text-center text-3xl my-8'> Employee Details</h1>
             <div class="overflow-x-auto px-12 py-8 border border-1">
                 <table class="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
                     <thead class="ltr:text-left rtl:text-right bg-blue-950 text-white">
@@ -88,7 +223,7 @@ const AdminEmployeeAttendence = () => {
                                         </Link>
                                     </td>
                                     <td class="whitespace-nowrap px-4 py-2">
-                                        <Link to={`/admin-all-employee/performence/s${emp._id}`}
+                                        <Link to={`/admin-all-employee/performence/${emp._id}`}
                                             href="#"
                                             class="inline-block rounded bg-blue-900 px-4 py-4 text-xs font-medium text-white hover:bg-blue-950"
                                         >
@@ -109,6 +244,7 @@ const AdminEmployeeAttendence = () => {
                         <div className='flex items-center justify-center text-center flex-col'>
                             <img src={selectedEmployee.profilePic} alt={selectedEmployee.name} className='w-24 flex  justify-center' />
                             <h1>
+                                <p>id :- {selectedEmployee._id}</p>
                                 <p>Name: {selectedEmployee.name}</p>
                                 <p>Email: {selectedEmployee.email}</p>
                                 {/* Add more details as needed */}
@@ -116,132 +252,115 @@ const AdminEmployeeAttendence = () => {
                         </div>
                         <div class="grid grid-cols-1 gap-4 ">
                             <div>
-                                <h2 className='text-center font-bold font-serif mb-1 text-2xl mt-2 text-blue-950'>Attendence</h2>
+                                <h2 className='text-center font-bold  mb-1 text-2xl mt-2 text-blue-950'>Attendence</h2>
                                 <div class="relative overflow-x-auto">
-                                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 bg-gray-50">
                                         <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
 
                                             <tr>
-                                                {Month.map((month, index) => (
-                                                    <th key={index} scope="col" className="px-6 py-3 rounded-s-lg mr-4">
-                                                        {month}
-                                                    </th>
-                                                ))}
+                                                <th scope="col" className="px-6 py-3 rounded-s-lg ">
+                                                    Details
+                                                </th>
+
+                                                <th scope="col" className="px-6 py-3 rounded-s-lg ">
+                                                    Absent
+                                                </th>
+                                                <th scope="col" className="px-6 py-3 rounded-s-lg ">
+                                                    Late
+                                                </th>
+                                                <th scope="col" className="px-6 py-3 rounded-s-lg ">
+                                                    Half Day
+                                                </th>
+                                                <th scope="col" className="px-6 py-3 rounded-s-lg">
+                                                    Adjectment
+                                                </th>
+
 
 
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr class="bg-white dark:bg-gray-800">
-                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    Absent
-                                                </th>
-                                                <td class="px-6 py-4">
-                                                    1
-                                                </td>
+                                            {Month.map((month, index) => (
+                                                <tr key={index}>
+                                                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                        {month}
+                                                    </th>
+                                                    {/* Display attendance details for each month */}
+                                                    <td className="px-6 py-4">
+                                                        {record.find(rec => rec.month === month && rec.year === new Date().getFullYear())?.absentDays || '-'}
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        {record.find(rec => rec.month === month && rec.year === new Date().getFullYear())?.lateDays || '-'}
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        {record.find(rec => rec.month === month && rec.year === new Date().getFullYear())?.halfDays || '-'}
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        {record.find(rec => rec.month === month && rec.year === new Date().getFullYear())?.adjustedLeaves || '-'}
+                                                    </td>
+                                                </tr>
+                                            ))}
 
-                                            </tr>
-                                            <tr class="bg-white dark:bg-gray-800">
-                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    Late
-                                                </th>
-                                                <td class="px-6 py-4">
-                                                    1
-                                                </td>
 
-                                            </tr>
-                                            <tr class="bg-white dark:bg-gray-800">
-                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    HalfDay
-                                                </th>
-                                                <td class="px-6 py-4">
-                                                    1
-                                                </td>
 
-                                            </tr>
-                                            <tr class="bg-white dark:bg-gray-800">
-                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    Adjctment
-                                                </th>
-                                                <td class="px-6 py-4">
-                                                    1
-                                                </td>
 
-                                            </tr>
                                         </tbody>
-                                        <tfoot>
-                                            <tr class="font-semibold text-gray-900 dark:text-white">
-                                                <th scope="row" class="px-6 py-3 text-base">Total</th>
-                                                <td class="px-6 py-3">3</td>
-                                                <td class="px-6 py-3">21,000</td>
-                                            </tr>
-                                        </tfoot>
+
                                     </table>
                                 </div>
 
                             </div>
 
                             <div>
-                                <h2 className='text-center font-bold font-serif mb-1 mb-1 text-2xl mt-2 text-blue-950'>Performence</h2>
+                                <h2 className='text-center font-bold  mb-1 mb-1 text-2xl mt-2 text-blue-950'>Performence</h2>
                                 <div class="relative overflow-x-auto">
-                                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 bg-gray-50">
                                         <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
 
                                             <tr>
-                                                {Month.map((month, index) => (
-                                                    <th key={index} scope="col" className="px-6 py-3 rounded-s-lg">
-                                                        {month}
-                                                    </th>
-                                                ))}
+                                                <th scope="col" className="px-6 py-3 rounded-s-lg ">
+                                                    Details
+                                                </th>
+
+                                                <th scope="col" className="px-6 py-3 rounded-s-lg ">
+                                                    multiply of 4x
+                                                </th>
+                                                <th scope="col" className="px-6 py-3 rounded-s-lg ">
+                                                    Monthly Incentive
+                                                </th>
+                                                <th scope="col" className="px-6 py-3 rounded-s-lg ">
+                                                    Kpi Score
+                                                </th>
+
 
 
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr class="bg-white dark:bg-gray-800">
-                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    Absent
-                                                </th>
-                                                <td class="px-6 py-4">
-                                                    1
-                                                </td>
+                                            {Month.map((month, index) => (
+                                                <tr key={index}>
+                                                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                        {month}
+                                                    </th>
+                                                    {/* Display attendance details for each month */}
+                                                    <td className="px-6 py-4">
+                                                        {performenceRecord.find(rec => rec.month === month && rec.year === new Date().getFullYear())?.multipleOf4x || '-'}
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        {performenceRecord.find(rec => rec.month === month && rec.year === new Date().getFullYear())?.monthlyIncentive || '-'}
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        {performenceRecord.find(rec => rec.month === month && rec.year === new Date().getFullYear())?.kpiScore || '-'}
+                                                    </td>
 
-                                            </tr>
-                                            <tr class="bg-white dark:bg-gray-800">
-                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    Late
-                                                </th>
-                                                <td class="px-6 py-4">
-                                                    1
-                                                </td>
+                                                </tr>
+                                            ))}
 
-                                            </tr>
-                                            <tr class="bg-white dark:bg-gray-800">
-                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    HalfDay
-                                                </th>
-                                                <td class="px-6 py-4">
-                                                    1
-                                                </td>
 
-                                            </tr>
-                                            <tr class="bg-white dark:bg-gray-800">
-                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    Adjctment
-                                                </th>
-                                                <td class="px-6 py-4">
-                                                    1
-                                                </td>
 
-                                            </tr>
+
                                         </tbody>
-                                        <tfoot>
-                                            <tr class="font-semibold text-gray-900 dark:text-white">
-                                                <th scope="row" class="px-6 py-3 text-base">Total</th>
-                                                <td class="px-6 py-3">3</td>
-                                                <td class="px-6 py-3">21,000</td>
-                                            </tr>
-                                        </tfoot>
+
                                     </table>
                                 </div>
                             </div>
@@ -254,7 +373,7 @@ const AdminEmployeeAttendence = () => {
                     </div>
                 )}
             </div>
-
+          <Footer/>
         </div>
 
     )

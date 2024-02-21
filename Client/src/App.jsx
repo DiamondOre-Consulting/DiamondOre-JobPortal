@@ -37,6 +37,7 @@ import AdminEditAttendence from "./Components/AdminPagesComponents/AdminEditAtte
 import AdminEditPerfomence from "./Components/AdminPagesComponents/AdminEditPerfomence";
 import Beourclient from "./Pages/HomePage/Beourclient";
 import PrefrenceForm from "./Components/CandidatePagesComponents/PrefrenceForm";
+import EmployeePerformence from "./Pages/Employeepage/EmployeePerformence";
 
 
 function App() {
@@ -82,6 +83,7 @@ function App() {
             <Route path='/employee-login'element={<Employeelogin/>}/>
             <Route path='/employee-dashboard' element={<Employeedashboard/>}/>
             <Route path='/employee-leaves' element={<EmployeeLeaves/>}/>
+            <Route path='/employee-performence'element={<EmployeePerformence/>}/>
           </Route> 
         </Routes>
       </Router>

@@ -5,7 +5,7 @@ const HomeNews = ({ empofthemonth, latestnews, hrname }) => {
   return (
     <div className="mx-10 my-16">
       {/* Employee of the month */}
-      <h2 className="text-3xl sm:text-sm mb-6 lg:text-3xl text-center px-10 font-bold text-gray-800 font-bold font-serif">
+      <h2 className="text-3xl sm:text-sm mb-6 lg:text-3xl text-center px-10 font-bold text-gray-800 font-bold ">
         Employee Of The Month
       </h2>
       <div className="flex justify-center mb-16">
@@ -57,7 +57,7 @@ const HomeNews = ({ empofthemonth, latestnews, hrname }) => {
       </div>
 
       {/* Announcements */}
-      <h2 className="text-3xl mb-6 text-center px-10 font-bold text-gray-800 font-serif">
+      <h2 className="text-3xl mb-6 text-center px-10 font-bold text-gray-800 ">
         Breaking News & Announcements
       </h2>
       

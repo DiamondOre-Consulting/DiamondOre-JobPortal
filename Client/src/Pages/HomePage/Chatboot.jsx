@@ -128,7 +128,7 @@ const Chatboot = () => {
             {isOpen && (
                 <div className="chatbox bg-white shadow-lg shadow-gray-400 rounded-lg p-4 w-72">
                     <div className="chatbox-header flex justify-between items-center border-b-2 border-gray-200 pb-2 mb-2">
-                        <span className="text-lg font-bold font-serif">Welcome</span>
+                        <span className="text-lg font-bold ">Welcome</span>
                         <button className="text-red-500 hover:text-red-700" onClick={closeChatbox}>Close</button>
                     </div>
                     <div className="chatbox-body h-64 overflow-y-auto mb-4  scrollbar-none" style={{ scrollbarWidth: "none" }} ref={chatboxBodyRef}>

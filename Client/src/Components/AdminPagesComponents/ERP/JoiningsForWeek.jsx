@@ -14,7 +14,7 @@ const JoiningsForWeek = ({ Joinings }) => {
             />
           </div> */}
 
-          <h2 className="text-3xl mb-6 text-center px-10 font-bold text-gray-800 font-serif">
+          <h2 className="text-3xl mb-6 text-center px-10 font-bold text-gray-800 ">
             This week's Joinings
           </h2>
           <div className="lg:py-18">
