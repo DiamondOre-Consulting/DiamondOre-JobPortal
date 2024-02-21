@@ -88,7 +88,7 @@ const PrefrenceForm = () => {
     return (
         <div className=''>
             <Navbar />
-            <h1 className='text-3xl font-bold font-serif mx-auto text-center'>Fill Your Prefrence</h1>
+            <h1 className='text-3xl font-bold  mx-auto text-center'>Fill Your Prefrence</h1>
             <div className='w-44 h-1 bg-blue-900 mx-auto'></div>
             <div className="max-w-screen-md mx-auto mt-2 px-8  mt-2 shadow-lg shadow-gray-500 pb-8 pt-4">
                 <form onSubmit={handleSubmit}>

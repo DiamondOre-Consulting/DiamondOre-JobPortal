@@ -43,7 +43,7 @@ const AdminAllJobsCards = () => {
   return (
     <div className="bg-white py-4 sm:py-8 lg:py-10">
       <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
-        <h2 className="mb-8 text-center text-2xl font-bold text-gray-800 md:mb-12 lg:text-3xl font-serif">
+        <h2 className="mb-8 text-center text-2xl font-bold text-gray-800 md:mb-12 lg:text-3xl ">
           All Job Openings
         </h2>
 

@@ -48,7 +48,7 @@ const CandidateAllAppliedJobsCards = () => {
   return (
     <div class="bg-white py-4 sm:py-8 lg:py-10">
       <div class="mx-auto max-w-screen-2xl px-4 md:px-8">
-        <h2 class="mb-8 text-center text-2xl font-bold text-gray-800 md:mb-12 lg:text-3xl font-serif">
+        <h2 class="mb-8 text-center text-2xl font-bold text-gray-800 md:mb-12 lg:text-3xl ">
           All Applied Jobs
         </h2>
 

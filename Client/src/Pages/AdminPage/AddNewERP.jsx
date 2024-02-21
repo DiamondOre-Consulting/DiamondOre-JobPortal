@@ -107,7 +107,7 @@ const AddERPForm = () => {
     <div className="mx-5 ">
       <AdminNav/>
     
-      <h1 className="mx-auto text-center text-3xl my-2 font-serif">Employee of the month</h1>
+      <h1 className="mx-auto text-center text-3xl my-2 ">Employee of the month</h1>
       <div className="w-44 h-0.5 bg-blue-900 justify-center mx-auto"></div>
     <form className="mx-auto grid max-w-screen-md gap-4 sm:grid-cols-2 shadow-lg p-5">
       <div>

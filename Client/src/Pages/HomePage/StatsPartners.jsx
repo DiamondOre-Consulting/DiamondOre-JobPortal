@@ -12,9 +12,9 @@ const StatsPartners = () => {
       <div class=" py-6 sm:py-8 lg:py-18 bg-gray-50">
         <div class="mx-auto max-w-screen-xl px-4 md:px-8">
           <div class="mb-10 md:mb-16">
-            <h2 class="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-6 lg:text-3xl font-serif">Our Work By Numbers</h2>
+            <h2 class="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-6 lg:text-3xl ">Our Work By Numbers</h2>
 
-            <p class="mx-auto max-w-screen-md text-center text-gray-500 md:text-lg"style={{fontFamily: "'Roboto', sans-serif"}}>we partner with to the vacancies eagerly awaiting talented individuals. As each position is filled, our numerical narrative transforms, reflecting the continual influx of talent that propels our collective success.</p>
+            <p class="mx-auto max-w-screen-md text-center text-gray-500 md:text-lg"style={{}}>we partner with to the vacancies eagerly awaiting talented individuals. As each position is filled, our numerical narrative transforms, reflecting the continual influx of talent that propels our collective success.</p>
           </div>
 
           <div class="grid grid-cols-2 gap-8 md:grid-cols-4 md:gap-0 md:divide-x">
@@ -45,7 +45,7 @@ const StatsPartners = () => {
 
       <div className="bg-white py-6 sm:py-8 lg:py-8 mt-20">
   <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
-    <h2 className="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-1 lg:text-3xl font-serif">Trusted by the best</h2>
+    <h2 className="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-1 lg:text-3xl ">Trusted by the best</h2>
     <div className='bg-blue-900 w-56 h-1 align-center mx-auto'></div>
 
     <marquee behavior="scroll" direction="left" scrollamount="12" scrolldelay="0">

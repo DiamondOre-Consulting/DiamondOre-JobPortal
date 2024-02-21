@@ -135,7 +135,7 @@ const Signup = ({ toggleForm }) => {
   return (
     <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-lg">
-        <h1 className="text-center text-2xl font-bold text-blue-950 sm:text-3xl font-serif">
+        <h1 className="text-center text-2xl font-bold text-blue-950 sm:text-3xl ">
           Get Started Today
         </h1>
         <div className="mx-auto h-0.5 w-24 bg-blue-950 border-rounded"></div>
@@ -144,7 +144,7 @@ const Signup = ({ toggleForm }) => {
           onSubmit={handleSignup}
           className="mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8 bg-white shadow-gray-300"
         >
-          <p className="text-center text-lg font-medium font-serif">
+          <p className="text-center text-lg font-medium ">
             Sign up to your account
           </p>
 
@@ -344,7 +344,7 @@ const Signup = ({ toggleForm }) => {
           <div className="mt-1 flex items-center space-x-4">
             <div className="w-full relative">
 
-              <label class="block mb-2 text-md font-medium text-gray-900 dark:text-white font-serif" for="file_input">Upload File</label>
+              <label class="block mb-2 text-md font-medium text-gray-900 dark:text-white " for="file_input">Upload File</label>
               <input
                 className="w-full rounded-md border-0 p-4 pe-12 text-sm shadow-sm "
                 type="file"

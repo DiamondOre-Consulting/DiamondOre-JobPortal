@@ -71,7 +71,7 @@ const Contact = () => {
 
                         <div class="rounded-md bg-blue-950 shadow-xl  lg:col-span-3 lg:p-12">
                             <form class="space-y-3 p-4">
-                                <h1 className='text-center font-serif text-3xl text-white mb-6'>Reach out to us</h1>
+                                <h1 className='text-center  text-3xl text-white mb-6'>Reach out to us</h1>
                                 <div>
                                     <label class="sr-only" for="name">Name</label>
                                     <input

@@ -98,7 +98,7 @@ const AdminEachJob = () => {
     <div className="bg-white mx-5">
       <AdminNav />
       <div>
-        <h1 className="text-center text-5xl text-bold py-lg font-bold font-serif">Each Job</h1>
+        <h1 className="text-center text-5xl text-bold py-lg font-bold ">Each Job</h1>
         <div className="w-44 h-1 bg-blue-950 mx-auto"></div>
         <div className="bg-white py-6 sm:py-8 lg:py-12">
           <div className="mx-auto max-w-screen-2xl px-4 md:px-8">

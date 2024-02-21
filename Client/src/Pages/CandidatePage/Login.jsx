@@ -58,7 +58,7 @@ const Login = () => {
   return (
     <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-lg">
-        <h1 className="text-center text-2xl font-bold text-blue-900 font-serif sm:text-3xl">
+        <h1 className="text-center text-2xl font-bold text-blue-900  sm:text-3xl">
           Login to your account!
         </h1>
 
@@ -88,7 +88,7 @@ const Login = () => {
               <span class="sr-only">Loading...</span>
             </div>
           )}
-          <p className="text-center text-lg font-medium font-serif">
+          <p className="text-center text-lg font-medium ">
             Sign in to your account
           </p>
 

@@ -1,84 +1,125 @@
-import React, { useEffect, useState } from 'react'
-import EmployeeNavbar from './EmployeeNavbar'
-import Footer from '../HomePage/Footer'
-import { useJwt } from "react-jwt";
 import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import { useJwt } from "react-jwt";
+import { useNavigate, useParams } from 'react-router-dom';
+import EmployeeNavbar from './EmployeeNavbar';
+import Footer from '../HomePage/Footer';
 
 const EmployeeLeaves = () => {
 
+  const Month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'Auguest', 'September', 'October', 'November', 'December'];
+  const [record, setRecord] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+ const { decodedToken } = useJwt(localStorage.getItem("token"));
+ console.log("token",decodedToken)
+  const userId = decodedToken?.userId; // Accessing the ID from decoded token
+  console.log(userId)
+  
+
+
   useEffect(() => {
-    const fetchAllEmployee = async () => {
-      try {
-        // Fetch associates data from the backend
-        const response = await axios.get(
-          // "https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/all-employees",
-          
-        );
-        if (response.status == 200) {
-          console.log(response.data);
-          setEmployees(response.data)
+    const fetchEmployeeAndLeaveReport = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                navigate("/employee-login");
+                return;
+            }
+
+            // Fetch leave report
+
+            const leaveReportResponse = await axios.get(
+                `https://diamond-ore-job-portal-backend.vercel.app/api/employee/leave-report`,
+
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+
+                }
+            );
+            if (leaveReportResponse.status === 200) {
+                console.log(leaveReportResponse.data)
+                setRecord(leaveReportResponse.data);
+                
+            }
         }
-      } catch (error) {
-        console.error("Error fetching associates:", error);
-        // Handle error and show appropriate message
-      }
+        catch (error) {
+            console.log('Error fetching data:', error);
+        }
     };
 
-    fetchAllEmployee();
-  }, []);
+    fetchEmployeeAndLeaveReport();
+}, [id, navigate,]);
 
   return (
     <>
-      {employees.map((emp) => {
-        return (
-          <tr>
-            <td class="whitespace-nowrap px-4 py-2 text-gray-700 object-cover w-4 cursor-pointer"><img onClick={() => handleOpen(emp)} src={emp.profilePic} /></td>
-            <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{emp.name}</td>
-            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{emp.email}</td>
-          </tr>
 
-        )
-      })}
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
-          <thead className="bg-blue-950 text-center">
-            <tr className='text-center'>
-              <th scope="col" className="px-2 py-3 text-center text-xs font-medium text-gray-100 uppercase tracking-wider">Month</th>
-              <th scope="col" className="px-2 py-3 text-center text-xs font-medium text-gray-100 uppercase tracking-wider">Absent</th>
-              <th scope="col" className="px-2 py-3 text-center text-xs font-medium text-gray-100 uppercase tracking-wider">Late</th>
-              <th scope="colgroup" className="px-2 py-3 text-center text-xs font-medium text-gray-100 uppercase tracking-wider">HalfDay</th>
-              <th scope="colgroup" className="px-2 py-3 text-center text-xs font-medium text-gray-100 uppercase tracking-wider">Adjectment</th>
+      <EmployeeNavbar/>
+      
+      <div className='p-4'>
+        <h2 className='text-center font-bold  mb-1 text-2xl mt-2 text-blue-950 mb-8'>Attendence</h2>
+        <div class="relative overflow-x-auto">
+          <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 bg-gray-50">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+
+              <tr>
+                <th scope="col" className="px-6 py-3 rounded-s-lg ">
+                  Details
+                </th>
+
+                <th scope="col" className="px-6 py-3 rounded-s-lg ">
+                  Absent
+                </th>
+                <th scope="col" className="px-6 py-3 rounded-s-lg ">
+                  Late
+                </th>
+                <th scope="col" className="px-6 py-3 rounded-s-lg ">
+                  Half Day
+                </th>
+                <th scope="col" className="px-6 py-3 rounded-s-lg">
+                  Adjectment
+                </th>
 
 
 
-            </tr>
-          </thead>
+              </tr>
+            </thead>
+            <tbody>
+              {Month.map((month, index) => (
+                <tr key={index}>
+                  <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    {month}
+                  </th>
+                  {/* Display attendance details for each month */}
+                  <td className="px-6 py-4">
+                    {record.find(rec => rec.month === month && rec.year === new Date().getFullYear())?.absentDays || '-'}
+                  </td>
+                  <td className="px-6 py-4">
+                    {record.find(rec => rec.month === month && rec.year === new Date().getFullYear())?.lateDays || '-'}
+                  </td>
+                  <td className="px-6 py-4">
+                    {record.find(rec => rec.month === month && rec.year === new Date().getFullYear())?.halfDays || '-'}
+                  </td>
+                  <td className="px-6 py-4">
+                    {record.find(rec => rec.month === month && rec.year === new Date().getFullYear())?.adjustedLeaves || '-'}
+                  </td>
+                </tr>
+              ))}
 
-          <tbody class="divide-y divide-gray-200">
-            <tr class="odd:bg-gray-50 text-center">
-              <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">John Doe</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">24/05/1995</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">Web Developer</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">$120,000</td>
-            </tr>
 
-            <tr class="odd:bg-gray-50 text-center">
-              <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Jane Doe</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">04/11/1980</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">Web Designer</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">$100,000</td>
-            </tr>
 
-            <tr class="odd:bg-gray-50 text-center">
-              <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Gary Barlow</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">24/05/1995</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">Singer</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">$20,000</td>
-            </tr>
-          </tbody>
-        </table>
+
+            </tbody>
+
+          </table>
+        </div>
+
       </div>
+      <Footer/>
     </>
 
   )

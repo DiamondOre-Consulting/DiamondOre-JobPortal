@@ -16,14 +16,14 @@ const AboutUs = () => {
                 <div className=" inset-0 bg-black opacity-50"></div>
                 <div className=" inset-0 flex items-center justify-center text-gray-900 text-center">
                     <div>
-                        {/* <h1 className="text-3xl md:text-3xl lg:text-6xl font-bold font-serif ">Diamond Ore Consulting Pvt Ltd</h1> */}
+                        {/* <h1 className="text-3xl md:text-3xl lg:text-6xl font-bold  ">Diamond Ore Consulting Pvt Ltd</h1> */}
 
                     </div>
                 </div>
             </div>
 
             <div>
-                <h2 className='text-center font-serif text-5xl font-bold mt-8'>About Us</h2>
+                <h2 className='text-center  text-5xl font-bold mt-8'>About Us</h2>
                 <div className="container  mx-auto my-10 p-8  justify-between grid grid-cols-1 md:grid-cols-2 gap-8 flex items-center ">
                     <div className='bg-blue-950 p-8 text-white hover:bg-white hover:text-black border-blue-950 shadow-2xl shadow-blue-950'>
                         <p className="mb-4">
@@ -50,7 +50,7 @@ const AboutUs = () => {
             <section class="bg-blue-950 text-white">
                 <div class="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
                     <div class="mx-auto max-w-lg text-center">
-                        <h2 class="text-3xl font-bold sm:text-4xl font-serif">Our Features</h2>
+                        <h2 class="text-3xl font-bold sm:text-4xl ">Our Features</h2>
 
                         <p class="mt-4 text-gray-300">
                         Unleash the power of our job portal with key features designed to revolutionize your hiring process. Experience advanced candidate matching, streamlined application tracking, personalized job alerts, and robust employer branding..
@@ -286,7 +286,7 @@ const AboutUs = () => {
 
                 <div className='w-auto'>
                     <img src="https://media.licdn.com/dms/image/C4E03AQEZ_yJc3ebHOA/profile-displayphoto-shrink_800_800/0/1607527021305?e=1712793600&v=beta&t=7yQCc4QFgHkH7bY0EGCIId5I7i7wGqdzA9ONANU3_UA" alt="Rounded" className="rounded-full shadow-md mb-2" />
-                    <h2 className="text-sm md:text-xl font-bold  text-blue-950  text-center font-serif"> The Director</h2>
+                    <h2 className="text-sm md:text-xl font-bold  text-blue-950  text-center "> The Director</h2>
                 </div>
             </div>
 

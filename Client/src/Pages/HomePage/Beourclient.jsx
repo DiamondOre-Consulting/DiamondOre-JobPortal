@@ -47,10 +47,10 @@ const Beourclient = () => {
             <Navbar />
             <div className='flex flex-col justify-center items-center bg-gray-100 p-4'>
                 
-               <div className='bg-blue-950 px-28 rounded-tl-3xl rounded-br-3xl mb-4'><h1 className='text-5xl font-bold font-serif my-4 text-white '>Be Our Client</h1></div> 
+               <div className='bg-blue-950 px-28 rounded-tl-3xl rounded-br-3xl mb-4'><h1 className='text-5xl font-bold  my-4 text-white '>Be Our Client</h1></div> 
                 <div class="rounded-md bg-white shadow-gray-500 shadow-xl  lg:col-span-3 lg:p-12">
                     <form class="space-y-3 p-4">
-                        <h1 className='text-center font-serif text-3xl text-black mb-6'>Reach out to us</h1>
+                        <h1 className='text-center  text-3xl text-black mb-6'>Reach out to us</h1>
                         <div>
                             <label class="sr-only" for="name">Name</label>
                             <input

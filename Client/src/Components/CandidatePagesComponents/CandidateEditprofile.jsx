@@ -131,7 +131,7 @@ const CandidateEditprofile = () => {
 
   return (
     <div className='py-6 bg-gray-50 px-4'>
-    <h2 className='text-center text-2xl font-bold font-serif'>Edit Profile image</h2>
+    <h2 className='text-center text-2xl font-bold '>Edit Profile image</h2>
     <div className='w-28 h-1 bg-blue-950 mx-auto'></div>
     <form className="max-w-md mx-auto  p-8 shadow-lg shadow-gray-500 my-2 bg-white border border-md">
       <div className="grid md:grid-cols-2 md:gap-6 mb-2">
@@ -182,7 +182,7 @@ const CandidateEditprofile = () => {
         </div>
       </div>
       <div className="relative z-0 w-full mb-5 group">
-        <span className='font-bold font-serif'> Reupload resume:-</span><input
+        <span className='font-bold '> Reupload resume:-</span><input
           type="file"
           id="resume"
           name="resume"
@@ -192,7 +192,7 @@ const CandidateEditprofile = () => {
         />
          <button type='submit'   onClick={handleUploadResume} className="text-white bg-blue-950 hover:bg-blue-950 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">upload Resume</button>
          <br></br>
-        <span className='font-bold font-serif'> Reupload Profile picture:-</span>
+        <span className='font-bold '> Reupload Profile picture:-</span>
         <input
           type="file"
           id="profilePic"
