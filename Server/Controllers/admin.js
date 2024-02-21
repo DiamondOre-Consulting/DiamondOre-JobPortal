@@ -993,19 +993,11 @@ router.post("/add-performance-report/:id", async (req, res) => {
       await newReport.save();
     }
 
-<<<<<<< HEAD
-    res
-    .status(200)
-    .json({ message: "Performance report submitted successfully!!!", newReport });
-  }  catch(error) {
-    console.error(error);
-=======
-    res.status(200).json({message: "Performance report submitted successfully!!!", newReport})
-  } 
-  catch(error) {
-    console.log(error);
->>>>>>> 26a74826572866f01c37fbc9d06a630af3c412cf
-    res.status(500).json({ error: "Internal server error" });
+    res.status(200).json({message: "Performance report submitted", newReport})
+
+  } catch(error) {
+    console.log(error, "Something went wrong!!!");
+    res.status(500).json("Something went wrong!!!", error);
   }
 })
 
@@ -1045,19 +1037,6 @@ router.get("/performance-report/:id", AdminAuthenticateToken, async (req, res) =
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-<<<<<<< HEAD
-    
-        const latestData = await PerformanceReport.find({employeeId: id});
-    
-        if (!latestData) {
-          return res.status(404).json({ message: "No Performance Report data found" });
-        }
-    
-        res.status(200).json(latestData);
-    } catch(error) {
-        console.error(error);
-        res.status(500).json({ error: "Internal server error" });
-=======
 
       const latestData = await PerformanceReport.find({ employeeId: id });
 
@@ -1071,7 +1050,6 @@ router.get("/performance-report/:id", AdminAuthenticateToken, async (req, res) =
     } catch (error) {
       console.error(err);
       res.status(500).json({ error: "Internal server error" });
->>>>>>> 26a74826572866f01c37fbc9d06a630af3c412cf
     }
 })
 
