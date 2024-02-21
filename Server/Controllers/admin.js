@@ -18,6 +18,7 @@ import CandidateContact from "../Models/CandidateContact.js";
 import Employees from "../Models/Employees.js";
 import LeaveReport from "../Models/LeaveReport.js";
 import PerformanceReport from "../Models/PerformanceReport.js";
+import ChatBotMessages from "../Models/ChatBotMessages.js";
 
 dotenv.config();
 
@@ -859,25 +860,6 @@ router.get("/all-employees/:id", AdminAuthenticateToken, async (req, res) => {
 });
 
 // EMPLOYEE LEAVE REPORT
-// Function to get month name
-function getMonthName(month) {
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  return months[month - 1];
-}
-
 // ADD LEAVE REPORT
 router.post("/add-leave-report/:id", async (req, res) => {
   try {
@@ -1052,5 +1034,68 @@ router.get("/performance-report/:id", AdminAuthenticateToken, async (req, res) =
       res.status(500).json({ error: "Internal server error" });
     }
 })
+
+// CHATBOT MESSAGE RECIEVE
+router.post("/send-chatbot", async (req, res) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "helpdesk2.rasonline@gmail.com",
+        pass: "fnhwhrbfgjctngwg",
+      },
+    });
+    const userName = req.body.name;
+    const userEmailAddress = req.body.email; // Assuming the form has an email input
+    const userPhone = req.body.phone;
+    const userPreferredCity = req.body.preferredCity;
+    const userPreferredChannel = req.body.preferredChannel;
+    const userCurrentCTC = req.body.currentCTC;
+
+    const newChatBotMsg = new ChatBotMessages({
+      name: userName,
+      email: userEmailAddress,
+      phone: userPhone,
+      preferredCity: userPreferredCity,
+      preferredChannel: userPreferredChannel,
+      currentCTC: userCurrentCTC
+    })
+
+    await newChatBotMsg.save();
+
+    // Compose the email
+    const mailOptions = {
+      from: "DOC_Labz <helpdesk2.rasonline@gmail.com>",
+      to: "hr@diamondore.in",
+      subject: `ROBO_RECRUITER: New Message Received from ${userName}`,
+      text: `A new message has been submitted by ${userName}.`,
+      html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${userName}</h4> </br>
+                <h4 style="font-size:1rem; display:flex; justify-content: center;">Email Id: ${userEmailAddress}</h4> </br>
+                <h4 style="font-size:1rem; display:flex; justify-content: center;">Phone No: ${userPhone}</h4> </br>
+                <h4 style="font-size:1rem; display:flex; justify-content: center;">Preferred City: ${userPreferredCity}</h4> </br>
+                <h4 style="font-size:1rem; display:flex; justify-content: center;">Preferred Channel: ${userPreferredChannel}</h4> </br>
+                <h4 style="font-size:1rem; display:flex; justify-content: center;">Current CTC: ${userCurrentCTC}</h4> </br>`,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent: " + info.response);
+
+    // Send the email
+    // transporter.sendMail(mailOptions, (error, info) => {
+    //   if (error) {
+    //     console.error(error);
+    //     res.status(500).send("Error sending email");
+    //   } else {
+    //     console.log("Email sent:", info.response);
+    //     res.status(201).send({message: "Email sent successfully!!!"});
+    //   }
+    // });
+
+    res.status(201).json({ message: "ROBO_RECRUITER Sent message successfully!!!" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
 
 export default router;
