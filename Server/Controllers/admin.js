@@ -1038,8 +1038,8 @@ router.post("/send-chatbot", async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "helpdesk2.rasonline@gmail.com",
-        pass: "fnhwhrbfgjctngwg",
+        user: "harshkr2709@gmail.com",
+        pass: "frtohlwnukisvrzh",
       },
     });
     const userName = req.body.name;
@@ -1062,8 +1062,8 @@ router.post("/send-chatbot", async (req, res) => {
 
     // Compose the email
     const mailOptions = {
-      from: "DOC_Labz <helpdesk2.rasonline@gmail.com>",
-      to: "hr@diamondore.in",
+      from: "DOC_Labz <harshkr2709@gmail.com>",
+      to: "zoya.rasonline@gmail.com",
       subject: `ROBO_RECRUITER: New Message Received from ${userName}`,
       text: `A new message has been submitted by ${userName}.`,
       html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${userName}</h4> </br>
