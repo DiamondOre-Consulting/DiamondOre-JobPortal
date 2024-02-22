@@ -75,7 +75,7 @@ const NewlyAddedCandidates = () => {
                   Min. Experience - <span className="text-blue-950">{latestJob?.MinExperience} Year(s)</span>
                 </p>
                 <p className="text-xl text-gray-600 font-semibold">
-                  Total Openings - <span className="text-blue-950">{latestJob?.Vacancies}</span>
+                  
                 </p> */}
                 <Link to={`/admin/all-candidates/${latestCandidate?._id}`} class="cursor-pointer w-full flex-col rounded-lg bg-blue-900 p-4 text-center text-white hover:bg-white hover:text-black-100 hover:text-gray-900 border border-blue-950 mt-2">
                   <span class="text-md font-bold lg:text-md">

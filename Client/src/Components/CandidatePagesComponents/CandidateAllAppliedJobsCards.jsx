@@ -55,7 +55,7 @@ const CandidateAllAppliedJobsCards = () => {
         <div class="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
         {appliedJobs.map((appliedJob) => (
               <div
-                class="flex flex-col justify-between h-72 overflow-hidden rounded-lg bg-blue-900 p-4 shadow-lg shadow-blue-900 hover:bg-blue-950 hover:shadow-blue-950"
+                class="flex flex-col justify-between h-64 overflow-hidden rounded-lg bg-blue-900 p-4 shadow-lg shadow-blue-900 hover:bg-blue-950 hover:shadow-blue-950"
               >
                 <h3 className="text-xl text-gray-100 font-bold">
                   {appliedJob?.JobTitle}

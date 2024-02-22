@@ -4,7 +4,7 @@ import Footer from './Footer'
 import empimage from '../../assets/Asset.png'
 import boy from '../../assets/Boyimage.jpg'
 import rahulmathursir from '../../assets/20240201_105248.jpg'
-import sakshimaam from '../../assets/sakshi maam.jpeg'
+import sakshimaam from '../../assets/sakshi maam.jpg'
 import neetumaam from '../../assets/neetu maam.jpeg'
 
 
@@ -94,7 +94,7 @@ const AboutUs = () => {
                             </svg>
 
 
-                            <h2 class="mt-4 text-xl font-bold  text-black">Constent Touch With Hr.</h2>
+                            <h2 class="mt-4 text-xl font-bold  text-black">Constant Touch With HR</h2>
 
                             <p class="mt-1 text-sm  text-black">
                                 Our platform keeps you in constant touch with HR representatives, ensuring you're informed at every step. Receive updates, feedback, and communicate seamlessly for a more personalized job application experience.
@@ -146,7 +146,7 @@ const AboutUs = () => {
                            <svg class="h-8 w-8 text-gray-900"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <path d="M4 7v-1a2 2 0 0 1 2 -2h2" />  <path d="M4 17v1a2 2 0 0 0 2 2h2" />  <path d="M16 4h2a2 2 0 0 1 2 2v1" />  <path d="M16 20h2a2 2 0 0 0 2 -2v-1" />  <line x1="5" y1="12" x2="19" y2="12" /></svg>
 
 
-                            <h2 class="mt-4 text-xl font-bold  text-black">Advanced Candidate Screening.</h2>
+                            <h2 class="mt-4 text-xl font-bold  text-black">Advanced Candidate Screening</h2>
 
                             <p class="mt-1 text-sm  text-black">
                             Enhance your hiring process with sophisticated candidate screening tools, leveraging advanced algorithms to analyze and match candidates with specific skills and qualifications crucial for BFS roles.
@@ -223,7 +223,7 @@ const AboutUs = () => {
 
                         <div class="flex flex-col items-center">
                             <div class="mb-2 h-24 w-24 overflow-hidden rounded-full bg-gray-100 shadow-lg md:mb-4 md:h-32 md:w-32">
-                                <img src={neetumaam} loading="lazy" alt="Photo by Ayo Ogunseinde" class="h-full w-full object-cover object-center" />
+                                <img src={neetumaam} loading="lazy" alt="Photo by Ayo Ogunseinde" class="h-full w-full object-cover object-center object-top" />
                             </div>
 
                             <div>
@@ -231,7 +231,7 @@ const AboutUs = () => {
                                 <div class="flex justify-center">
                                     <div class="flex gap-4">
                                         <p class="mb-3 text-center text-sm text-blue-950 md:mb-4 md:text-base">Manager</p>
-                                        <a href="https://www.linkedin.com/in/rahul-mathur-69017516/" target="_blank" class="text-blue-900 transition duration-100 hover:text-blue-950 active:text-gray-600">
+                                        <a href="https://www.linkedin.com/in/neetu-tomar-756ab818?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" class="text-blue-900 transition duration-100 hover:text-blue-950 active:text-gray-600">
                                             <svg class="h-5 w-5" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                                             </svg>

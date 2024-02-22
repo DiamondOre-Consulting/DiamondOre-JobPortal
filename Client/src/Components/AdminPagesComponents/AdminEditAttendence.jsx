@@ -9,7 +9,7 @@ const AdminEditAttendence = () => {
     const [employeeDetails, setEmployeeDetails] = useState(null);
     const [record, setRecord] = useState([]);
     const navigate = useNavigate();
-    // const [totalLeaves, setTotalLeaves] = useState(null);
+    const [totalLeavesis, setTotalLeavesis] = useState(0);
     const { id } = useParams();
     const [formData, setFormData] = useState({
         month: '',
@@ -47,10 +47,10 @@ const AdminEditAttendence = () => {
                     console.log('single emp', response.data);
                     setEmployeeDetails(response.data);
                 }
-                
-                
+
+
             } catch (error) {
-                
+
                 console.log('Error fetching employee details:', error);
             }
         };
@@ -82,9 +82,16 @@ const AdminEditAttendence = () => {
                     }
                 );
                 if (leaveReportResponse.status === 200) {
-                    console.log(leaveReportResponse.data)
+                    console.log("leave report response", leaveReportResponse.data);
+                    console.log(leaveReportResponse.data);
+                    const all = leaveReportResponse.data;
+                    const latest = all.slice(-1);
+                    console.log(latest);
+                    setTotalLeavesis(latest[0]);
+
+                    console.log("latest",totalLeavesis.totalLeaves);
                     setRecord(leaveReportResponse.data);
-                   
+
                 }
             }
             catch (error) {
@@ -167,7 +174,7 @@ const AdminEditAttendence = () => {
 
     return (
         <div>
-            <AdminNav/>
+            <AdminNav />
             <h1 className='text-center text-2xl font-bold my-4'>Add Leave Report</h1>
             <form onSubmit={handleSubmit} className='w-full max-w-md mx-auto my-8 p-6 bg-gray-50 shadow-lg rounded-lg shadow-lg'>
                 <div className="grid grid-cols-2 gap-4">
@@ -215,9 +222,9 @@ const AdminEditAttendence = () => {
 
 
             {/* Table */}
-            <div className="overflow-x-auto rounded-lg border border-gray-200 px-8 my-4 ">
-                {/* <p>totalleaves:- {totalLeaves}</p> */}
-                <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
+            <div className="overflow-x-auto rounded-lg border border-gray-200 px-8 mt-6 pt-4 ">
+              <span className='bg-blue-950 shadow-lg text-white  rounded-lg p-2 border-black m-4'>totalleaves:- {totalLeavesis.totalLeaves}</span>
+                <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm mt-4">
                     <thead className="ltr:text-left rtl:text-right bg-blue-950">
                         <tr>
                             <th className="whitespace-nowrap px-2 py-2 font-medium text-white border ">Month</th>
@@ -246,7 +253,7 @@ const AdminEditAttendence = () => {
                     </tbody>
                 </table>
             </div>
-            <Footer/>
+            <Footer />
         </div>
     )
 }

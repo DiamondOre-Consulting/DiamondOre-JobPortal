@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Logo from "../../assets/Logo.png";
 import axios from "axios";
 
+
+
 const EmployeeNavbar = () => {
 
     const navigate = useNavigate();
@@ -20,13 +22,13 @@ const EmployeeNavbar = () => {
           if (!token) {
             // Token not found in local storage, handle the error or redirect to the login page
             console.error("No token found");
-            navigate("/admin-login");
+            navigate("/employee-login");
             return;
           }
   
           // Fetch associates data from the backend
           const response = await axios.get(
-            "https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/user-data",
+            "https://diamond-ore-job-portal-backend.vercel.app/api/employee/user-data",
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -41,7 +43,7 @@ const EmployeeNavbar = () => {
             setUserData("Did not get any response!!!");
           }
         } catch (error) {
-          console.error("Error fetching admin data:", error);
+          console.error("Error fetching employee data:", error);
           // Handle error and show appropriate message
         }
       };
@@ -77,7 +79,7 @@ const EmployeeNavbar = () => {
   
     const handleLogout = () => {
       localStorage.removeItem("token");
-      window.location.href = "/admin-login";
+      window.location.href = "/employee-login";
       console.log("Logging out");
     };
   return (
@@ -192,7 +194,7 @@ const EmployeeNavbar = () => {
               Home
             </li>
           </a>
-          <a href={"/"}>
+          <a href={"/employee-leaves"}>
             <li
               className={`${
                 menuOpen ? "block" : "hidden"
@@ -210,7 +212,7 @@ const EmployeeNavbar = () => {
               Performence
             </li>
           </a>
-          <a href={"/"}>
+          <a href={"/employee-performence"}>
             <li
               className={`${
                 menuOpen ? "block" : "hidden"

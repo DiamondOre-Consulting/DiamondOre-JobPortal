@@ -122,12 +122,7 @@ const AdminEachJob = () => {
                   </span>
                 </p>
 
-                <p className="mb-8 max-w-md text-gray-800 text-xl">
-                  No. of openings:{" "}
-                  <span className="text-blue-950 font-semibold">
-                    {jobDetails?.Vacancies}
-                  </span>
-                </p>
+              
 
                 <p className="mb-8 max-w-md text-gray-800 text-xl">
                   Min. Experience:{" "}
@@ -159,15 +154,15 @@ const AdminEachJob = () => {
         <h1 className="text-center text-5xl text-bold py-lg">
           Applicants Applied For This Position
         </h1>
-        <div class="mt-10 mx-10 grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+        <div class="mt-10 mx-10 grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-3">
           {jobsApplied?.map((jobs) => (
             <div>
               <div
                 href="#"
-                class="flex flex-col justify-between h-72 overflow-hidden rounded-lg bg-gray-200 p-4 shadow-lg"
+                class="flex flex-col justify-between h-72 overflow-hidden rounded-lg bg-gray-100 p-4 shadow-lg"
               >
-                <h3 className="text-2xl text-blue-950 font-bold text-wrap">
-                  Name -{" "}
+                <h3 className="text-xl text-blue-950 font-bold text-wrap">
+                  Name -{" "}  
                   <span className="text-blue-950">{jobs?.name}</span>
                 </h3>
                 <p className="text-xl text-gray-600 font-semibold flex flex-wrap">

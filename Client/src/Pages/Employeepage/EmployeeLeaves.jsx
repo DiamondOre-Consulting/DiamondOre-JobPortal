@@ -10,60 +10,70 @@ const EmployeeLeaves = () => {
   const Month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'Auguest', 'September', 'October', 'November', 'December'];
   const [record, setRecord] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const [totalLeavesis, setTotalLeavesis] = useState(0);
   const navigate = useNavigate();
   const { id } = useParams();
 
- const { decodedToken } = useJwt(localStorage.getItem("token"));
- console.log("token",decodedToken)
+  const { decodedToken } = useJwt(localStorage.getItem("token"));
+  console.log("token", decodedToken)
   const userId = decodedToken?.userId; // Accessing the ID from decoded token
   console.log(userId)
-  
+
 
 
   useEffect(() => {
     const fetchEmployeeAndLeaveReport = async () => {
-        try {
-            const token = localStorage.getItem("token");
-            if (!token) {
-                navigate("/employee-login");
-                return;
-            }
-
-            // Fetch leave report
-
-            const leaveReportResponse = await axios.get(
-                `https://diamond-ore-job-portal-backend.vercel.app/api/employee/leave-report`,
-
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-
-                }
-            );
-            if (leaveReportResponse.status === 200) {
-                console.log(leaveReportResponse.data)
-                setRecord(leaveReportResponse.data);
-                
-            }
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          navigate("/employee-login");
+          return;
         }
-        catch (error) {
-            console.log('Error fetching data:', error);
+
+        // Fetch leave report
+
+        const leaveReportResponse = await axios.get(
+          `https://diamond-ore-job-portal-backend.vercel.app/api/employee/leave-report`,
+
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+
+          }
+        );
+        if (leaveReportResponse.status === 200) {
+          console.log("leave report response", leaveReportResponse.data);
+          console.log(leaveReportResponse.data);
+          const all = leaveReportResponse.data;
+          const latest = all.slice(-1);
+          console.log(latest);
+          setTotalLeavesis(latest[0]);
+
+          console.log("latest", totalLeavesis.totalLeaves);
+          console.log(leaveReportResponse.data)
+          setRecord(leaveReportResponse.data);
+
         }
+      }
+      catch (error) {
+        console.log('Error fetching data:', error);
+      }
     };
 
     fetchEmployeeAndLeaveReport();
-}, [id, navigate,]);
+  }, [id, navigate,]);
 
   return (
     <>
 
-      <EmployeeNavbar/>
-      
+      <EmployeeNavbar />
+
       <div className='p-4'>
-        <h2 className='text-center font-bold  mb-1 text-2xl mt-2 text-blue-950 mb-8'>Attendence</h2>
-        <div class="relative overflow-x-auto">
-          <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 bg-gray-50">
+        <h2 className='text-center font-bold  mb-1 text-2xl mt-2 text-blue-950 mb-4 font-bold'>Attendence</h2>
+        <div class="relative overflow-x-auto mt-8 pt-8 mb-4 px-16">
+        <span className='bg-blue-950 shadow-lg text-white  rounded-lg p-2 border-black m-4 '>totalleaves:- {totalLeavesis.totalLeaves}</span>
+          <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 bg-gray-50 mt-4">
             <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
 
               <tr>
@@ -119,7 +129,7 @@ const EmployeeLeaves = () => {
         </div>
 
       </div>
-      <Footer/>
+      <Footer />
     </>
 
   )

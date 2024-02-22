@@ -21,10 +21,11 @@ const Employeelogin = () => {
                     email,
                     password
                 });
-                console.log("complete response ",response.data)
+                // console.log("complete response ",response.data)
 
             if (response.status === 200) {
                 const token = response.data.token;
+                console.log(token)
                 // Store the token in local storage
                 localStorage.setItem("token", token);
                 console.log("Logged in successfully as Employee");

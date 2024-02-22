@@ -244,7 +244,7 @@ const AdminEmployeeAttendence = () => {
                         <div className='flex items-center justify-center text-center flex-col'>
                             <img src={selectedEmployee.profilePic} alt={selectedEmployee.name} className='w-24 flex  justify-center' />
                             <h1>
-                                <p>id :- {selectedEmployee._id}</p>
+                               
                                 <p>Name: {selectedEmployee.name}</p>
                                 <p>Email: {selectedEmployee.email}</p>
                                 {/* Add more details as needed */}

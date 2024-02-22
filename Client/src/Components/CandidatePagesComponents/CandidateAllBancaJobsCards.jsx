@@ -55,7 +55,7 @@ const CandidateAllBancaJobsCards = () => {
         <div class="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
         {bancaJobs.map((bancaJob) => (
               <div
-                class="flex flex-col justify-between h-72 overflow-hidden rounded-lg bg-white shadow-lg shadow-2xl-gray-200 p-4 shadow-lg hover:shadow-2xl"
+                class="flex flex-col justify-between h-64 overflow-hidden rounded-lg bg-white shadow-lg shadow-2xl-gray-200 p-4 shadow-lg hover:shadow-2xl"
               >
                 <h3 className="text-xl text-blue-950 font-bold">
                   {bancaJob?.JobTitle}

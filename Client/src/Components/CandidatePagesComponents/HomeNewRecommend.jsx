@@ -57,7 +57,7 @@ const HomeNewRecommend = () => {
             <div>
               <div
                 href="#"
-                class="flex flex-col justify-between h-72 overflow-hidden rounded-lg bg-white shadow-lg shadow-2xl-gray-200 p-4 shadow-lg hover:shadow-2xl"
+                class="flex flex-col justify-between h-64 overflow-hidden rounded-lg bg-white shadow-lg shadow-2xl-gray-200 p-4 shadow-lg hover:shadow-2xl"
               >
                 <h3 className="text-xl text-blue-950 font-bold">
                   {latestJob?.JobTitle}
@@ -71,7 +71,7 @@ const HomeNewRecommend = () => {
                   Min. Experience - <span className="text-blue-950">{latestJob?.MinExperience} Year(s)</span>
                 </p>
                 <p className="text-sm text-gray-600 font-semibold">
-                  Total Openings - <span className="text-blue-950">{latestJob?.Vacancies}</span>
+                  
                 </p>
                 {(latestJob?.appliedApplicants == decodedToken?.userId) ? (<p className="text-center text-md text-green-500 font-semibold">Already applied</p>) : ""}
                 <Link to={`/all-jobs/${latestJob?._id}`} class="cursor-pointer w-full flex-col rounded-lg bg-blue-900 p-4 text-center text-white hover:bg-white hover:text-black-100 hover:text-gray-900 border border-blue-950 mt-2">
@@ -85,7 +85,7 @@ const HomeNewRecommend = () => {
 
           <div>
             <div
-              class="flex flex-col justify-center h-72 overflow-hidden rounded-lg bg-gray-200 p-4 shadow-lg"
+              class="flex flex-col justify-center h-64 overflow-hidden rounded-lg bg-gray-200 p-4 shadow-lg"
             >
                 <Link to={`/all-jobs`} class="cursor-pointer w-full flex-col rounded-lg bg-white p-4 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200">
                   <span class="text-md font-bold lg:text-md">

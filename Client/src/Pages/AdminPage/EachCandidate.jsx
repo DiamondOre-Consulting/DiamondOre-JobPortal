@@ -123,7 +123,7 @@ const EachCandidate = () => {
 
                 <a
                   href={candidateDetails?.resume}
-                  class="inline-block items-left rounded-lg bg-gray-500 px-8 py-3 text-center text-sm font-semibold text-gray-100 outline-none ring-indigo-300 transition duration-100 hover:bg-gray-600 focus-visible:ring active:text-gray-700 md:text-base"
+                  class="inline-block items-left rounded-lg bg-blue-950 px-8 py-3 text-center text-sm font-semibold text-gray-100  transition duration-100 hover:bg-blue-950 focus-visible:ring active:text-gray-700 md:text-base"
                 >
                   Download Resume
                 </a>
@@ -145,23 +145,22 @@ const EachCandidate = () => {
             Jobs Applied By <span className="text-blue-950">{candidateDetails?.name}</span>
           </h2>
           <div class="mx-auto max-w-screen-2xl px-4 md:px-8">
-            <div class="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+            <div class="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-3">
               {candidateApplied?.map((job) => (
-                 <div>
+                 <div className="float-left">
                  <div
                    href="#"
-                   class="flex flex-col justify-between h-72 overflow-hidden rounded-lg bg-gray-200 p-4 shadow-lg"
+                   class="flex flex-col justify-between items-start h-64 overflow-hidden rounded-lg bg-gray-100 p-4 shadow-lg hover:shadow-2xl"
                  >
                    <h3 className="text-2xl text-blue-950 font-bold">
                      {job?.JobTitle}
                    </h3>
+
                    <p className="text-xl text-gray-600 font-semibold">
                      Industry - <span className="text-blue-950">{job?.Industry}</span>
                    </p>
                    <p className="text-xl text-gray-600 font-semibold">Channel - <span className="text-blue-950">{job?.Channel}</span></p>
-                   <p className="text-xl text-gray-600 font-semibold">
-                     Min. Experience - <span className="text-blue-950">{job?.MinExperience} Year(s)</span>
-                   </p>
+                   <p className="text-xl text-gray-600 font-semibold float-left">Min. Experience - <span className="text-blue-950">{job?.MinExperience} Year(s)</span> </p>
                    <p className="text-xl text-gray-600 font-semibold">
                      Total Openings - <span className="text-blue-950">{job?.Vacancies}</span>
                    </p>

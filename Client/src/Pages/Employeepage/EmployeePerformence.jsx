@@ -57,7 +57,7 @@ const EmployeePerformence = () => {
             <EmployeeNavbar />
             <div className='p-4'>
                 <h2 className='text-center font-bold  mb-1 mb-1 text-2xl mt-2 text-blue-950'>Performence</h2>
-                <div class="relative overflow-x-auto">
+                <div class="relative overflow-x-auto mt-8">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 bg-gray-50">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
 
