@@ -16,6 +16,7 @@ import CandidateAuthenticateToken from "../Middlewares/CandidateAuthenticateToke
 import Jobs from "../Models/Jobs.js";
 import Status from "../Models/Status.js";
 import CandidateContact from "../Models/CandidateContact.js";
+import PreferenceForm from "../Models/PreferenceForm.js";
 
 dotenv.config();
 
@@ -355,6 +356,40 @@ router.get("/all-jobs", async (req, res) => {
   } catch (error) {
       console.log(error);
       return res.status(500).json({message: "Something went wrong!!!"})
+  }
+})
+
+// JOB RECOMMENDATIONS
+router.get("/recommended-jobs", CandidateAuthenticateToken, async (req, res) => {
+  try {
+    const { userId, email } = req.user;
+
+    const user = await Candidates.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const prefFormData = await PreferenceForm.findOne({ candidateId: userId });
+
+    if(user.preferredFormStatus == true) {
+      const recommendedJobs = await Jobs.find({
+        maxSalary: {
+          $gte: prefFormData.minExpectedCTC,
+          $lte: prefFormData.maxExpectedCTC
+        }
+      });
+
+      return res.status(200).json( recommendedJobs );
+    } else {
+      const allJobs = await Jobs.find({});
+
+      console.log(allJobs);
+  
+      return res.status(200).json(allJobs);
+    }
+  } catch(error) {
+    console.log(error);
+    res.status(500).json({message: "Something went wrong!!!"});
   }
 })
 
@@ -698,6 +733,41 @@ router.put("/edit-profile", CandidateAuthenticateToken, async (req, res) => {
     }
 
     res.status(201).json({message: "Edit profile successful!!!", user})
+
+  } catch(error) {
+    console.log(error);
+    res.status(500).json({message: "Something went wrong!!!"});
+  }
+})
+
+// PREFERENCE FORM
+router.post("/add-preference", CandidateAuthenticateToken, async (req, res) => {
+  try {
+    const { email } = req.user;
+    const { preferredCity, preferredChannel, expectedCTC } = req.body;
+
+    const user = await Candidates.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const [minECTC, maxECTC] = expectedCTC.split('-');
+
+    const newPrefForm = new PreferrenceForm({
+      preferredCity,
+      preferredChannel,
+      minExpectedCTC: minECTC,
+      maxExpectedCTC: maxECTC
+    });
+
+    await newPrefForm.save();
+
+    if(newPrefForm) {
+      user.preferredFormStatus = true;
+      await user.save();
+    }
+
+    res.status(200).json({message: "Preference form submitted successfully!!! ", newPrefForm})
 
   } catch(error) {
     console.log(error);

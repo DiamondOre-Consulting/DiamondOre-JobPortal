@@ -29,6 +29,10 @@ const candidateSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  preferredFormStatus: {
+    type: Boolean,
+    default: false
+  },
   allAppliedJobs: {
     type: [
       {
