@@ -195,7 +195,7 @@ const Signup = ({ toggleForm }) => {
             </div>
             <button
               onClick={handleSendOtp}
-              className={`ml-4 rounded-lg bg-blue-900 hover:bg-blue-950 px-3 py-2 text-sm font-medium text-white float-right mt-2 mb-2`}
+              className={`ml-4 rounded-lg bg-blue-900 hover:bg-blue-950 px-3 py-2 text-sm font-medium text-white  mt-2 mb-2`}
 
             >
               Send OTP

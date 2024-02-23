@@ -54,7 +54,7 @@ const Chatboot = () => {
 
     const sendMessage = async (userDetails) => {
         try {
-            const response = await axios.post('http://localhost:5000/api/admin-confi/send-chatbot', userDetails);
+            const response = await axios.post('https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/send-chatbot', userDetails);
 
             if (response.status === 201) {
                 setMessages((prevMessages) => [

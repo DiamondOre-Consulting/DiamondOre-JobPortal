@@ -72,7 +72,7 @@ const Footer = () => {
                     </div>
 
                     <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">FAQ</a>
+                    <Link to={'/fAQ'} className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">FAQ</Link>
                     </div> 
                 </nav>
                 </div>
@@ -83,11 +83,11 @@ const Footer = () => {
 
                 <nav className="flex flex-col gap-4">
                     <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Terms of Service</a>
+                    <Link to={'/terms-of-services'} className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Terms of Service</Link>
                     </div>
 
                     <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Privacy Policy</a>
+                    <Link to={'/privicy-policy'} className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Privacy Policy</Link>
                     </div>
 
                    

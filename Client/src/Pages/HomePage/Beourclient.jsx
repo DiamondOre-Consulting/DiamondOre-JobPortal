@@ -6,14 +6,16 @@ import Footer from './Footer';
 const Beourclient = () => {
     const [Name, setName] = useState(null);
     const [Email, setEmail] = useState(null);
-    const [Message, setMsg] = useState(null);
+    const [phoneno,setPhoneno] =useState(null);
+    const [companyname,setCompanyName]=useState(null);
+    const [designation,setDesignation] =useState(null);
     const [sucesss, setsucess] = useState(null);
     const [error, seterror] = useState(null)
 
     const sendmessage = async (e) => {
         e.preventDefault();
 
-        console.log("Sending data:", { Name, Email, Message });
+        console.log("Sending data:", { Name, Email,phoneno,companyname,designation });
         // const formData = { Name, Email, Message };
         try {
             const response = await axios.post(
@@ -21,7 +23,9 @@ const Beourclient = () => {
                 {
                     Name,
                     Email,
-                    Message
+                    phoneno,
+                    companyname,
+                    designation
                 }
             );
 
@@ -32,7 +36,9 @@ const Beourclient = () => {
                 setsucess("Data Sent Sucessfully");
                 setName('');
                 setEmail('');
-                setMsg('');
+                setPhoneno('');
+                setCompanyName('');
+                setDesignation('');
             } else {
                 console.log("error occured");
             }
@@ -76,20 +82,43 @@ const Beourclient = () => {
                                 />
                             </div>
 
-                        </div>
+                            <div>
+                                <label class="sr-only" for="Phone">phone</label>
+                                <input
+                                    class="w-full rounded-lg border-gray-400 bg-gray-50 p-3 text-sm"
+                                    placeholder="Phone no."
+                                    type="number"
+                                    id="phone"
+                                    value={phoneno}
+                                    onChange={(e) => setPhoneno(e.target.value)}
+                                />
+                            </div>
 
-                        <div>
-                            <label class="sr-only" for="message">Message</label>
-
-                            <textarea
-                                class="w-full rounded-lg border-gray-400 bg-gray-50 p-3 text-sm"
-                                placeholder="Message"
-                                rows="8"
-                                id="message"
-                                value={Message}
-                                onChange={(e) => setMsg(e.target.value)}
-                            ></textarea>
                         </div>
+                            <div>
+                                <label class="sr-only" for="Phone">Company Name</label>
+                                <input
+                                    class="w-full rounded-lg border-gray-400 bg-gray-50 p-3 text-sm"
+                                    placeholder="Your Company Name"
+                                    type="text"
+                                    id="companyname"
+                                    value={companyname}
+                                    onChange={(e) => setCompanyName(e.target.value)}
+                                />
+                            </div>
+
+                            <div>
+                                <label class="sr-only" for="Phone">Designation</label>
+                                <input
+                                    class="w-full rounded-lg border-gray-400 bg-gray-50 p-3 text-sm"
+                                    placeholder=" Your Desgnation"
+                                    type="text"
+                                    id="designation"
+                                    value={designation}
+                                    onChange={(e) => setDesignation(e.target.value)}
+                                />
+                            </div>
+
 
                         <div class="mt-4">
                             <button

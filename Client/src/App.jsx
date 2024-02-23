@@ -38,6 +38,9 @@ import AdminEditPerfomence from "./Components/AdminPagesComponents/AdminEditPerf
 import Beourclient from "./Pages/HomePage/Beourclient";
 import PrefrenceForm from "./Components/CandidatePagesComponents/PrefrenceForm";
 import EmployeePerformence from "./Pages/Employeepage/EmployeePerformence";
+import FAQ from "./Pages/HomePage/FAQ";
+import Termsofservices from "./Pages/HomePage/Termsofservices";
+import Privicypolicy from "./Pages/HomePage/Privicypolicy";
 
 
 function App() {
@@ -54,6 +57,9 @@ function App() {
             <Route path="/signup" element={<Signup/>} />
             <Route path="/login" element={<Login/>} />
             <Route path='/be-our-client' element={<Beourclient/>}/>
+            <Route path='/fAQ'element={<FAQ/>}/>
+            <Route path='/terms-of-services'element={<Termsofservices/>}/>
+            <Route path='/privicy-policy'element={<Privicypolicy/>}/>
             <Route path='/prefrence-form' element={<PrefrenceForm/>}/>
             <Route path="/dashboard" element={<CandidateHome/>}/>
             <Route path="/all-jobs" element={<CandidateAllJobs/>} />

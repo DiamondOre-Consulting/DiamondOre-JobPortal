@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../../assets/Logo.png";
 import axios from "axios";
+import Banner from "./Banner";
 
 const CandidateNav = () => {
   const navigate = useNavigate();
@@ -32,8 +33,9 @@ const CandidateNav = () => {
           }
         );
         if (response.status == 200) {
-          console.log(response.data);
+          console.log("fetching user data ", response.data);
           setUserData(response.data);
+
         } else {
           console.log(response.data);
           setUserData("Did not get any response!!!")
@@ -215,10 +217,45 @@ const CandidateNav = () => {
           </ul>
         </div>
       </div>
-                                                   
+
+
+      {
+
+        (userData?.name == 'zoyaji') ?
+          (
+            <>
+              <div class="bg-white pb-6 sm:pb-8 lg:pb-12">
+
+                <div class="relative flex flex-wrap bg-blue-950 px-4 py-3 sm:flex-nowrap sm:items-center sm:justify-center sm:gap-3 sm:pr-8 md:px-8">
+                  <div class="order-1 mb-2 inline-block w-11/12 max-w-screen-sm text-sm text-white sm:order-none sm:mb-0 sm:w-auto md:text-base"><Link to={'/prefrence-form'}><span className='underline'>Click here</span></Link> to Fill the form to get your Job according to your Prefrences</div>
+                </div>
+              </div>
+            </>
+
+          ) :
+          (
+            <>
+              <div class="bg-white pb-6 sm:pb-8 lg:pb-12">
+
+                <div class="relative flex flex-wrap bg-blue-950 px-4 py-3 sm:flex-nowrap sm:items-center sm:justify-center sm:gap-3 sm:pr-8 md:px-8">
+                  <div class="order-1 mb-2 inline-block w-11/12 max-w-screen-sm text-sm text-white sm:order-none sm:mb-0 sm:w-auto md:text-base">Your Prefrences has ben submitted plz click here to <Link to={'/prefrence-form'}><span className='underline'>Edit</span></Link> Your Prefrence</div>
+                </div>
+              </div>
+            </>
+          )
+
+
+
+
+
+
+        // <Link to={'/prefrence-form'}><Banner /></Link> : <h1>notthing</h1>
+      }
+
+
+
     </div>
   );
 };
 
 export default CandidateNav;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      

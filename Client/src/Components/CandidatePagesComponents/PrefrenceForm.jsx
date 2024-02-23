@@ -3,20 +3,22 @@ import React, { useEffect, useState } from 'react'
 import Footer from '../../Pages/HomePage/Footer';
 import Navbar from '../../Pages/HomePage/Navbar';
 import axios from 'axios';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 
 const PrefrenceForm = () => {
-
     const [cities, setCities] = useState([]);
     const [channels, setChannels] = useState([])
     const [formData, setFormData] = useState({
-        preferedcity: '',
-        preferedchannel: '',
-        yrsofexpereance: '',
-        yourcurrentctc: '',
+        preferredCity: '',
+        preferredChannel: '',
+        expectedCTC: '',
     });
     const [userInputs, setUserInputs] = useState([]);
     const [step, setStep] = useState(0);
+
+    const token = localStorage.getItem("token");
+    const navigate =useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -30,19 +32,39 @@ const PrefrenceForm = () => {
         console.log("User inputs:", userInputs);
     }, [userInputs]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setUserInputs(prevInputs => [...prevInputs, formData]);
-        console.log(userInputs)
-        setFormData({
-            preferedcity: '',
-            preferedchannel: '',
-            yrsofexpereance: '',
-            yourcurrentctc: '',
-        });
+        try {
+            const response = await axios.post(
+                "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/add-preference",
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+               
+            );
+            if (response.status === 200) {
+                console.log('posted data',response.data)
+                setUserInputs(prevInputs => [...prevInputs, formData]);
+                console.log(userInputs);
+            }
+            setFormData({
+                preferredCity: '',
+                preferredChannel: '',
+                expectedCTC: '',
+            });
+
+            navigate('/dashboard')
+        } catch (error) {
+            console.error("Error submitting preference form:", error);
+        }
+
+
     };
 
-    const steps = ['preferedcity', 'preferedchannel', 'yrsofexpereance', 'yourcurrentctc'];
+    const steps = ['preferredCity', 'preferredChannel', 'expectedCTC'];
 
     const calculateProgress = () => {
         let filledFields = 0;
@@ -62,7 +84,7 @@ const PrefrenceForm = () => {
                 const response = await axios.get(
                     "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/all-jobs"
                 );
-                console.log(response.data)
+              
 
                 const uniquicities = [...new Set(response.data.map(job => job.City))];
                 const uniquiChannels = [...new Set(response.data.map(job => job.Channel))];
@@ -96,8 +118,8 @@ const PrefrenceForm = () => {
                         <label htmlFor="name" className="block text-gray-700 font-bold mb-2">Prefered Cities</label>
                         <select
                             className='w-full py-2 px-3'
-                            name="preferedcity"
-                            value={formData.preferedcity}
+                            name="preferredCity"
+                            value={formData.preferredCity}
                             onChange={handleChange}
                         >
                             <option>Select Your Prefered City</option>
@@ -118,8 +140,8 @@ const PrefrenceForm = () => {
                         <label htmlFor="email" className="block text-gray-700 font-bold mb-2">Prefered Channels</label>
                         <select
                             className='w-full py-2 px-3'
-                            name="preferedchannel"
-                            value={formData.preferedchannel}
+                            name="preferredChannel"
+                            value={formData.preferredChannel}
                             onChange={handleChange}
                         >
                             <option>Select Your Prefered City</option>
@@ -136,14 +158,25 @@ const PrefrenceForm = () => {
 
                         {/* <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} className="border border-gray-400 rounded w-full py-2 px-3" /> */}
                     </div>
+
                     <div className="mb-4">
-                        <label htmlFor="phone" className="block text-gray-700 font-bold mb-2">Yrs of Experience</label>
-                        <input type="number" id="yrsofexpereance" name="yrsofexpereance" value={formData.yrsofexpereance} onChange={handleChange} className="border border-gray-400 rounded w-full py-2 px-3" />
+                        <label htmlFor="email" className="block text-gray-700 font-bold mb-2">Expected CTC</label>
+                        <select
+                            className='w-full py-2 px-3'
+                            name="expectedCTC"
+                            value={formData.expectedCTC}
+                            onChange={handleChange}
+                        >
+                            <option>Select Your expectedCTC</option>
+                            <option>0-3</option>
+                            <option>3-6</option>
+                            <option>6-9</option>
+                        </select>
+
+                        {/* <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} className="border border-gray-400 rounded w-full py-2 px-3" /> */}
                     </div>
-                    <div className="mb-4">
-                        <label htmlFor="city" className="block text-gray-700 font-bold mb-2">Your Current CTC</label>
-                        <input type="text" id="yourcurrentctc" name="yourcurrentctc" value={formData.yourcurrentctc} onChange={handleChange} className="border border-gray-400 rounded w-full py-2 px-3" />
-                    </div>
+
+
                     <button type="submit" className="bg-blue-950 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Submit</button>
                     <div className="mt-4 mb-6">
                         <div className="bg-gray-200 h-2 rounded-full">

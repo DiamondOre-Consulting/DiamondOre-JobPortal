@@ -225,6 +225,8 @@ router.post('/upload-resume', async (req, res) => {
 // SIGNUP AS CANDIDATE
 router.post("/signup", async (req, res) => {
     const { name, email, phone, password, otp, profilePic, resume } = req.body;
+
+    
     console.log(profilePic);
     console.log(resume);
   
@@ -326,7 +328,8 @@ router.get("/user-data", CandidateAuthenticateToken, async (req, res) => {
       profilePic,
       resume,
       allAppliedJobs,
-      allShortlistedJobs
+      allShortlistedJobs,
+      preferredFormStatus,
     } = user;
 
     res.status(200).json({
@@ -337,8 +340,10 @@ router.get("/user-data", CandidateAuthenticateToken, async (req, res) => {
       profilePic,
       resume,
       allAppliedJobs,
-      allShortlistedJobs
+      allShortlistedJobs,
+      preferredFormStatus,
     });
+    
   } catch (error) {
     console.error("Error fetching user data:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -743,7 +748,7 @@ router.put("/edit-profile", CandidateAuthenticateToken, async (req, res) => {
 // PREFERENCE FORM
 router.post("/add-preference", CandidateAuthenticateToken, async (req, res) => {
   try {
-    const { email } = req.user;
+    const { email,userId } = req.user;
     const { preferredCity, preferredChannel, expectedCTC } = req.body;
 
     const user = await Candidates.findOne({ email });
@@ -753,7 +758,8 @@ router.post("/add-preference", CandidateAuthenticateToken, async (req, res) => {
 
     const [minECTC, maxECTC] = expectedCTC.split('-');
 
-    const newPrefForm = new PreferrenceForm({
+    const newPrefForm = new PreferenceForm({
+      candidateId : userId,
       preferredCity,
       preferredChannel,
       minExpectedCTC: minECTC,
