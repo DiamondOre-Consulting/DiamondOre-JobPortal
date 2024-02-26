@@ -19,6 +19,7 @@ import Employees from "../Models/Employees.js";
 import LeaveReport from "../Models/LeaveReport.js";
 import PerformanceReport from "../Models/PerformanceReport.js";
 import ChatBotMessages from "../Models/ChatBotMessages.js";
+import ClientForm from "../Models/ClientForm.js";
 
 dotenv.config();
 
@@ -1038,8 +1039,8 @@ router.post("/send-chatbot", async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "harshkr2709@gmail.com",
-        pass: "frtohlwnukisvrzh",
+        user: "helpdesk2.rasonline@gmail.com",
+        pass: "fnhwhrbfgjctngwg",
       },
     });
     const userName = req.body.name;
@@ -1062,8 +1063,8 @@ router.post("/send-chatbot", async (req, res) => {
 
     // Compose the email
     const mailOptions = {
-      from: "DOC_Labz <harshkr2709@gmail.com>",
-      to: "zoya.rasonline@gmail.com",
+      from: "DOC_Labz <helpdesk2.rasonline@gmail.com>",
+      to: "helpdesk2.rasonline@gmail.com",
       subject: `ROBO_RECRUITER: New Message Received from ${userName}`,
       text: `A new message has been submitted by ${userName}.`,
       html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${userName}</h4> </br>
@@ -1077,18 +1078,56 @@ router.post("/send-chatbot", async (req, res) => {
     const info = await transporter.sendMail(mailOptions);
     console.log("Email sent: " + info.response);
 
-    // Send the email
-    // transporter.sendMail(mailOptions, (error, info) => {
-    //   if (error) {
-    //     console.error(error);
-    //     res.status(500).send("Error sending email");
-    //   } else {
-    //     console.log("Email sent:", info.response);
-    //     res.status(201).send({message: "Email sent successfully!!!"});
-    //   }
-    // });
-
     res.status(201).json({ message: "ROBO_RECRUITER Sent message successfully!!!" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
+
+// CLIENT MESSAGE RECIEVE
+router.post("/client-form", async (req, res) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "helpdesk2.rasonline@gmail.com",
+        pass: "fnhwhrbfgjctngwg",
+      },
+    });
+    const userName = req.body.name;
+    const userEmail = req.body.email; // Assuming the form has an email input
+    const userPhone = req.body.phone;
+    const userDesignation = req.body.designation;
+    const userCompany = req.body.company;
+
+    const newClientMsg = new ClientForm({
+      name: userName,
+      email: userEmail,
+      phone: userPhone,
+      designation: userDesignation,
+      company: userCompany
+    })
+
+    await newClientMsg.save();
+
+    // Compose the email
+    const mailOptions = {
+      from: "DOC_Labz <helpdesk2.rasonline@gmail.com>",
+      to: "hr@diamondore.in",
+      subject: `DOC_LABZ - New Client: New Message Received from ${userName}`,
+      text: `A new message has been submitted by ${userName}.`,
+      html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${userName}</h4> </br>
+                <h4 style="font-size:1rem; display:flex; justify-content: center;">Email Id: ${userEmail}</h4> </br>
+                <h4 style="font-size:1rem; display:flex; justify-content: center;">Phone No: ${userPhone}</h4> </br>
+                <h4 style="font-size:1rem; display:flex; justify-content: center;">Designation: ${userDesignation}</h4> </br>
+                <h4 style="font-size:1rem; display:flex; justify-content: center;">Company: ${userCompany}</h4> </br>`,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent: " + info.response);
+
+    res.status(201).json({ message: "Client Sent message successfully!!!" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "An error occurred" });
