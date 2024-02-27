@@ -76,7 +76,7 @@ const AdminNav = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    window.location.href = "/admin-login";
+    window.location.to = "/admin-login";
     console.log("Logging out");
   };
   return (
@@ -85,9 +85,9 @@ const AdminNav = () => {
       <div className="bg-white pb-6 sm:pb-8 lg:pb-6">
         <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
           <header className="mb-8 flex items-center justify-between py-2 md:mb-12 md:py-2 xl:mb-8">
-            <a href="/">
+            <Link to="/">
               <img className="w-full h-16" src={Logo} alt="DiamondOre Logo" />
-            </a>
+            </Link>
             <div className="flex justify-between items-center gap-8">
               <nav className="hidden sm:gap-10 md:gap-12 lg:gap-16 lg:flex">
                 <Link
@@ -170,13 +170,13 @@ const AdminNav = () => {
                   Make An Admin
                 </Link>
 
-                <a
-                  href="#"
+                <Link
+                  to="#"
                   className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
                   onClick={handleLogout}
                 >
                   Logout
-                </a>
+                </Link>
               </div>
             )}
 
@@ -188,13 +188,13 @@ const AdminNav = () => {
                 >
                   Latest
                 </Link>
-                <a
-                  href="#"
+                <Link
+                  to="#"
                   className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
                   onClick={handleLogout}
                 >
                   Add New
-                </a>
+                </Link>
               </div>
             )} */}
 
@@ -222,78 +222,78 @@ const AdminNav = () => {
             className={`gap-10 ${menuOpen ? "block" : "hidden"
               } w-full flex flex-col items-center justify-center mb-14`}
           >
-            <a href={"/admin-dashboard"}>
+            <Link to={"/admin-dashboard"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
                   } transition ease-in-out delay-150 px-22 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Home
               </li>
-            </a>
-            <a href={"/all-jobs"}>
+            </Link>
+            <Link to={"/all-jobs"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
                   } px-32 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Add Jobs
               </li>
-            </a>
-            <a href={"/all-candidates"}>
+            </Link>
+            <Link to={"/all-candidates"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
                   } px-12 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 All Candidates
               </li>
-            </a>
-            <a href={"/admin/erp-dashboard"}>
+            </Link>
+            <Link to={"/admin/erp-dashboard"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
                   } px-32 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Erp
               </li>
-            </a>
+            </Link>
 
-            <a href={"/employee-signup"}>
+            <Link to={"/employee-signup"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
                   } px-32 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 AddEmployee
               </li>
-            </a>
-            <a href={"/admin-all-employee"}>
+            </Link>
+            <Link to={"/admin-all-employee"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
                   } px-24 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 All Employees
               </li>
-            </a>
-            <a href={"/admin/edit-profile"}>
+            </Link>
+            <Link to={"/admin/edit-profile"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
                   } px-28 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Edit Profile
               </li>
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              to="#"
               className="px-32 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250"
               onClick={handleLogout}
             >
               Logout
-            </a>
-            <a href={"/admin-signup"}>
+            </Link>
+            <Link to={"/admin-signup"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
                   } px-32 py-1 text-lg font-semibold bg-blue-900 text-white hover:bg-blue-950 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Signin
               </li>
-            </a>
+            </Link>
 
 
           </ul>
