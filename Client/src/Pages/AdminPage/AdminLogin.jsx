@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import simg  from '../../assets/loginimg.svg';
 
 const AdminLogin = () => {
 
@@ -55,15 +56,14 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-lg">
-        <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">
-          Login to your account!
-        </h1>
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+    <div className="max-w-screen-xl sm:max-w-screen-lg md:max-w-screen-md lg:max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 shadow-lg bg-white rounded-md  ">
+
+      <div className="space-y-4 ">
 
         <form
           onSubmit={handleLogin}
-          className="mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8 bg-gray-50"
+          className="mb-0 mt-6 space-y-4 rounded-lg p-4 sm:p-6 lg:p-8 "
         >
           {loading && (
             <div className="absolute inset-0 bg-gray-800 text-gray-300 text-5xl font-bold opacity-75 flex items-center justify-center">
@@ -87,6 +87,9 @@ const AdminLogin = () => {
               <span class="sr-only">Loading...</span>
             </div>
           )}
+          <h1 className="text-2xl font-bold sm:text-3xl text-blue-950">
+          Admin Login
+        </h1>
           <p className="text-center text-lg font-medium">
             Sign in to your account
           </p>
@@ -98,7 +101,7 @@ const AdminLogin = () => {
 
             <div className="relative">
               <input
-                className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
+                className="w-full rounded-lg border-1 p-4 pe-12 text-sm shadow-sm"
                 type="email"
                 placeholder="Email"
                 value={email}
@@ -130,7 +133,7 @@ const AdminLogin = () => {
             </label>
             <div className="relative">
               <input
-                className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
+                className="w-full rounded-lg border-1 p-4 pe-12 text-sm shadow-sm"
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Password"
                 value={password}
@@ -153,12 +156,7 @@ const AdminLogin = () => {
             Sign in
           </button>
 
-          <p className="text-center text-gray-500 my-10">
-            No account?
-            <Link to={'/admin-signup'} className="underline cursor-pointer">
-              Sign up
-            </Link>
-          </p>
+         
           <a
             href={"/"}
             className="text-center text-sm text-gray-500 cursor-pointer"
@@ -171,7 +169,13 @@ const AdminLogin = () => {
             <p className="text-center text-sm text-red-500">{error}</p>
           </div>
         )}
+        </div>
+       <div className="flex items-center justify-center  rounded-lg  ">
+        <div className="hidden md:block">
+          <img src={simg}/>
+        </div>
       </div>
+    </div>
     </div>
   );
 };

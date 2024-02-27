@@ -10,6 +10,7 @@ import JoiningsForWeek from "../../Components/AdminPagesComponents/ERP/JoiningsF
 import RnRLeaderboard from "../../Components/AdminPagesComponents/ERP/RnRLeaderboard";
 import Footer from "../HomePage/Footer";
 import EmployeeNavbar from "./EmployeeNavbar";
+import { EmployeeFooter } from "./EmployeeFooter";
 
 const Employeedashboard = () => {
   const [empofthemonth, setempofthemonth] = useState(null);
@@ -135,7 +136,7 @@ const Employeedashboard = () => {
       <ERPTop5s hrname={hrname} client={client} />
       <RnRLeaderboard RnRinterns={RnRinterns} RnRRecruiter={RnRRecruiter} />
       <JoiningsForWeek Joinings={Joinings} />
-      <Footer/>
+      <EmployeeFooter/>
   
   </div>
   )

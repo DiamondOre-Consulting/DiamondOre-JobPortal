@@ -28,14 +28,23 @@ const HomeNewRecommend = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/all-jobs"
+          "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/recommended-jobs",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
         );
-        console.log(response.data);
-        const all = response.data;
-        const latest = all.slice(-7);
-        // console.log(latestJobs);
-        setLatestJobs(latest.reverse());
-        console.log(latest);
+        if(response.status === 200){
+          console.log("recomended jobs",response.data);
+          const all = response.data;
+          const latest = all.slice(-7);
+          // console.log(latestJobs);
+          setLatestJobs(latest.reverse());
+          console.log("myprefrencejobs",latest);
+        }
+      
+       
       } catch (error) {
         console.error("Error fetching associates:", error);
         // Handle error and show appropriate message

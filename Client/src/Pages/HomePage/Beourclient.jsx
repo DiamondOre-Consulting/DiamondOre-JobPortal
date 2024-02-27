@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import Navbar from './Navbar';
 import Footer from './Footer';
-
+import axios from "axios";
 
 const Beourclient = () => {
-    const [Name, setName] = useState(null);
-    const [Email, setEmail] = useState(null);
-    const [phoneno,setPhoneno] =useState(null);
-    const [companyname,setCompanyName]=useState(null);
+    const [name, setName] = useState(null);
+    const [email, setEmail] = useState(null);
+    const [phone,setPhoneno] =useState(null);
+    const [company,setCompanyName]=useState(null);
     const [designation,setDesignation] =useState(null);
     const [sucesss, setsucess] = useState(null);
     const [error, seterror] = useState(null)
@@ -15,16 +15,16 @@ const Beourclient = () => {
     const sendmessage = async (e) => {
         e.preventDefault();
 
-        console.log("Sending data:", { Name, Email,phoneno,companyname,designation });
+        console.log("Sending data:", { name, email,phone,company,designation });
         // const formData = { Name, Email, Message };
         try {
             const response = await axios.post(
-                'https://diamond-ore-job-portal-backend.vercel.app/api/candidates/help-contact',
+                'https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/client-form',
                 {
-                    Name,
-                    Email,
-                    phoneno,
-                    companyname,
+                    name,
+                    email,
+                    phone,
+                    company,
                     designation
                 }
             );
@@ -64,7 +64,7 @@ const Beourclient = () => {
                                 placeholder="Name"
                                 type="text"
                                 id="name"
-                                value={Name}
+                                value={name}
                                 onChange={(e) => setName(e.target.value)}
                             />
                         </div>
@@ -77,7 +77,7 @@ const Beourclient = () => {
                                     placeholder="Email address"
                                     type="email"
                                     id="email"
-                                    value={Email}
+                                    value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
                             </div>
@@ -89,7 +89,7 @@ const Beourclient = () => {
                                     placeholder="Phone no."
                                     type="number"
                                     id="phone"
-                                    value={phoneno}
+                                    value={phone}
                                     onChange={(e) => setPhoneno(e.target.value)}
                                 />
                             </div>
@@ -101,8 +101,8 @@ const Beourclient = () => {
                                     class="w-full rounded-lg border-gray-400 bg-gray-50 p-3 text-sm"
                                     placeholder="Your Company Name"
                                     type="text"
-                                    id="companyname"
-                                    value={companyname}
+                                    id="company"
+                                    value={company}
                                     onChange={(e) => setCompanyName(e.target.value)}
                                 />
                             </div>

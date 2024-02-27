@@ -41,6 +41,7 @@ import EmployeePerformence from "./Pages/Employeepage/EmployeePerformence";
 import FAQ from "./Pages/HomePage/FAQ";
 import Termsofservices from "./Pages/HomePage/Termsofservices";
 import Privicypolicy from "./Pages/HomePage/Privicypolicy";
+import EditPrefrenceform from "./Components/CandidatePagesComponents/EditPrefrenceform";
 
 
 function App() {
@@ -61,6 +62,7 @@ function App() {
             <Route path='/terms-of-services'element={<Termsofservices/>}/>
             <Route path='/privicy-policy'element={<Privicypolicy/>}/>
             <Route path='/prefrence-form' element={<PrefrenceForm/>}/>
+            <Route path='/edit-prefrence-form' element={<EditPrefrenceform/>}/>
             <Route path="/dashboard" element={<CandidateHome/>}/>
             <Route path="/all-jobs" element={<CandidateAllJobs/>} />
             <Route path="/all-jobs/:id" element={<EachJob />} />

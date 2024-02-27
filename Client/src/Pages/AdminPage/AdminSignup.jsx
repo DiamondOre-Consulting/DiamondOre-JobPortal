@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import simg from '../../assets/4.svg';
 
 const AdminSignup = ({ toggleForm }) => {
   const [name, setName] = useState("");
@@ -100,19 +101,17 @@ const AdminSignup = ({ toggleForm }) => {
   };
 
   return (
-    <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-lg">
-        <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">
-          Get started today
-        </h1>
-
+    <div className="flex items-center justify-center min-h-screen ">
+    <div className="mx-auto max-w-screen-xl px-4  sm:px-6 bg-white rounded-md ">
+      <div className="grid grid-cols-1 md:grid-cols-2">
+        <div className="p-6 space-y-4">
         <form
           onSubmit={handleAdminSignup}
-          className="mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8 bg-gray-50"
+          className="mb-0 mt-6 space-y-4 rounded-lg p-4 sm:p-6 lg:p-8 "
         >
-          <p className="text-center text-lg font-medium">
-            Sign up to your account
-          </p>
+          <h1 className=" text-3xl font-bold sm:text-3xl text-blue-950">
+                Register an Admin
+              </h1>
 
           <div>
             <label htmlFor="name" className="sr-only">
@@ -121,7 +120,7 @@ const AdminSignup = ({ toggleForm }) => {
 
             <div className="relative">
               <input
-                className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
+                className="w-full rounded-lg border-1 p-4 pe-12 text-sm shadow-sm"
                 type="text"
                 id="name"
                 name="name"
@@ -156,7 +155,7 @@ const AdminSignup = ({ toggleForm }) => {
 
             <div className="relative">
               <input
-                className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
+                className="w-full rounded-lg border-1 p-4 pe-12 text-sm shadow-sm"
                 type="email"
                 id="email"
                 name="email"
@@ -184,7 +183,7 @@ const AdminSignup = ({ toggleForm }) => {
             </div>
             <button
                 onClick={handleSendOtp}
-                className={`ml-4 rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white`}
+                className={`ml-4 rounded-lg bg-blue-950 px-3 py-2 text-sm font-medium text-white mt-2`}
                 
               >
                 Send OTP
@@ -198,7 +197,7 @@ const AdminSignup = ({ toggleForm }) => {
               </label>
               <div className="relative">
                 <input
-                  className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
+                  className="w-full rounded-lg border-1 p-4 pe-12 text-sm shadow-sm"
                   type="text"
                   id="otp"
                   name="otp"
@@ -217,7 +216,7 @@ const AdminSignup = ({ toggleForm }) => {
 
             <div className="relative">
               <input
-                className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
+                className="w-full rounded-lg border-1 p-4 pe-12 text-sm shadow-sm"
                 type={showPass ? "text" : "password"}
                 id="password"
                 name="password"
@@ -309,7 +308,7 @@ const AdminSignup = ({ toggleForm }) => {
           <div className="mt-1 flex items-center space-x-4">
             <div className="w-full relative">
               <input
-                className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
+                className="w-full rounded-lg border-1 p-4 pe-12 text-sm shadow-sm"
                 type="file"
                 name="profilePic"
                 onChange={(e) => setProfilePic(e.target.files[0])}
@@ -318,7 +317,7 @@ const AdminSignup = ({ toggleForm }) => {
 
             <button
               onClick={handleUploadImage}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-1 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="bg-blue-950 hover:bg-blue-950 text-white px-1 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               Upload Image
             </button>
@@ -344,7 +343,7 @@ const AdminSignup = ({ toggleForm }) => {
 
           <p className="text-center text-sm text-gray-500">
             Have account already?
-            <Link to={"/login"} className="underline cursor-pointer">
+            <Link to={"/admin-login"} className="underline cursor-pointer">
               Sign in
             </Link>
           </p>
@@ -355,6 +354,13 @@ const AdminSignup = ({ toggleForm }) => {
             <p className="text-center text-sm text-red-500">{error}</p>
           </div>
         )}
+     </div>
+          <div className="flex items-center justify-center  rounded-lg  ">
+            <div className="hidden md:block">
+              <img src={simg} />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

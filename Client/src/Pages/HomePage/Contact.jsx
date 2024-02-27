@@ -133,8 +133,8 @@ const Contact = () => {
             </section>
 
 
-            <div class="relative h-64 w-full sm:w-full lg:h-full lg:w-full px-8">
-                <iframe className='w-full rounded-md' src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d56039.41861215709!2d77.3733795!3d28.6158626!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cef068957c2f1%3A0xe72309664887757f!2sDiamond%20Ore%20Consulting%20Pvt.%20Ltd.!5e0!3m2!1sen!2sin!4v1706784809360!5m2!1sen!2sin" height="450" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <div class="relative  w-full sm:w-full lg:h-full lg:w-full px-8 mb-16">
+                <iframe className='w-full rounded-md border border-blue-950 border-5' src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d56039.41861215709!2d77.3733795!3d28.6158626!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cef068957c2f1%3A0xe72309664887757f!2sDiamond%20Ore%20Consulting%20Pvt.%20Ltd.!5e0!3m2!1sen!2sin!4v1706784809360!5m2!1sen!2sin" height="450" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
             <Footer />
         </div>

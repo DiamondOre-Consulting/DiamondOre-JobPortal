@@ -1,12 +1,10 @@
-
 import React, { useEffect, useState } from 'react'
 import Footer from '../../Pages/HomePage/Footer';
 import Navbar from '../../Pages/HomePage/Navbar';
 import axios from 'axios';
 import { Navigate, useNavigate } from 'react-router-dom';
 
-
-const PrefrenceForm = () => {
+const EditPrefrenceform = () => {
     const [cities, setCities] = useState([]);
     const [channels, setChannels] = useState([])
     const [formData, setFormData] = useState({
@@ -35,8 +33,8 @@ const PrefrenceForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post(
-                "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/add-preference",
+            const response = await axios.put(
+                "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/edit-preference",
                 formData,
                 {
                     headers: {
@@ -45,9 +43,10 @@ const PrefrenceForm = () => {
                 }
                
             );
-            if (response.status === 200) {
-                console.log('posted data',response.data)
-                setUserInputs(response.data);
+            if (response.status === 201) {
+                console.log('pref data',response.data)
+                const all= response.data;
+                setUserInputs(all);
                 console.log("user input is ",userInputs);
                 setFormData({
                     preferredCity: '',
@@ -110,10 +109,10 @@ const PrefrenceForm = () => {
     }, []);
 
 
-    return (
-        <div className=''>
+  return (
+    <div className=''>
             <Navbar />
-            <h1 className='text-3xl font-bold  mx-auto text-center'>Fill Your Prefrence</h1>
+            <h1 className='text-3xl font-bold  mx-auto text-center'>Edit Your Prefrence</h1>
             <div className='w-44 h-1 bg-blue-900 mx-auto'></div>
             <div className="max-w-screen-md mx-auto mt-2 px-8  mt-2 shadow-lg shadow-gray-500 pb-8 pt-4">
                 <form onSubmit={handleSubmit}>
@@ -191,7 +190,7 @@ const PrefrenceForm = () => {
             <Footer />
         </div>
 
-    );
-};
+  )
+}
 
-export default PrefrenceForm
+export default EditPrefrenceform

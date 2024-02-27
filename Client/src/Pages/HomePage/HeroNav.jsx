@@ -1,5 +1,8 @@
 import React from "react";
 import Boyimage from "../../assets/Boyimage.jpg";
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
+
 
 const HeroNav = () => {
   return (
@@ -8,7 +11,7 @@ const HeroNav = () => {
         <div className="p-8 md:p-12 lg:px-16 lg:py-24 mr-0 xxs:mr-0">
           <div className="mx-auto max-w-xl text-left ltr:sm:text-left rtl:sm:text-right">
             <h2 className="text-5xl font-bold text-gray-700 md:text-5xl sm:text-3xl ">
-            <span className="text-gray-900">Seize the Job You Deserve,<br></br>Reght Here!</span>
+            <span className="text-gray-900">Seize the Job You Deserve,<br></br>Right Here!</span>
             </h2>
 
             <p className="text-sm text-gray-500 md:mt-4 mt-4">
@@ -27,11 +30,14 @@ const HeroNav = () => {
         </div>
 
         <div className="hidden sm:flex justify-center px-10 ">
-        <img
+        <LazyLoadImage
+        
           alt="Image by Freepik"
+          effect="blur"
           src={Boyimage}
           className="h-56 w-full object-cover rounded-b-full rounded-t-md sm:h-full"
         />
+       
         </div>
       </section>
     </div>

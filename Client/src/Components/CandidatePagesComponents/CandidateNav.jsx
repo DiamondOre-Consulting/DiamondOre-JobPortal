@@ -125,6 +125,16 @@ const CandidateNav = () => {
                 >
                   Edit Profile
                 </Link>
+
+                <Link
+                  to={'/edit-prefrence-form'}
+                  className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
+                  onClick={toggleDropdown}
+                >
+                  Edit Prefrence form
+                </Link>
+
+                
                 <a
                   href="#"
                   className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
@@ -221,7 +231,8 @@ const CandidateNav = () => {
 
       {
 
-        (userData?.name == 'zoyaji') ?
+        (userData?.
+          preferredFormStatus === false) ?
           (
             <>
               <div class="bg-white pb-6 sm:pb-8 lg:pb-12">
@@ -235,12 +246,7 @@ const CandidateNav = () => {
           ) :
           (
             <>
-              <div class="bg-white pb-6 sm:pb-8 lg:pb-12">
-
-                <div class="relative flex flex-wrap bg-blue-950 px-4 py-3 sm:flex-nowrap sm:items-center sm:justify-center sm:gap-3 sm:pr-8 md:px-8">
-                  <div class="order-1 mb-2 inline-block w-11/12 max-w-screen-sm text-sm text-white sm:order-none sm:mb-0 sm:w-auto md:text-base">Your Prefrences has ben submitted plz click here to <Link to={'/prefrence-form'}><span className='underline'>Edit</span></Link> Your Prefrence</div>
-                </div>
-              </div>
+              
             </>
           )
 

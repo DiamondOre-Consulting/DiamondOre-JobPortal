@@ -6,21 +6,24 @@ import boy from '../../assets/Boyimage.jpg'
 import rahulmathursir from '../../assets/20240201_105248.jpg'
 import sakshimaam from '../../assets/sakshi maam.jpg'
 import neetumaam from '../../assets/neetu maam.jpeg'
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
 
 const AboutUs = () => {
     return (
         <div>
             <Navbar />
-            <div className="h-96 sm:h-block md:h-96 lg:h-96 bg-cover bg-center overflow-hidden" style={{ backgroundImage: `url(${empimage})`, backgroundPosition: "top" }}>
+          <div className="h-96 sm:h-block md:h-96 lg:h-96 bg-cover bg-center overflow-hidden" style={{ backgroundImage: `url(${empimage})`, backgroundPosition: "top" }}>
                 <div className=" inset-0 bg-black opacity-50"></div>
                 <div className=" inset-0 flex items-center justify-center text-gray-900 text-center">
                     <div>
-                        {/* <h1 className="text-3xl md:text-3xl lg:text-6xl font-bold  ">Diamond Ore Consulting Pvt Ltd</h1> */}
+                        {/* <h1 className="text-3xl md:text-3xl lg:text-6xl font-bold  ">About Us</h1> */}
 
                     </div>
                 </div>
             </div>
+            
 
             <div>
                 <h2 className='text-center  text-5xl font-bold mt-8'>About Us</h2>
@@ -176,7 +179,7 @@ const AboutUs = () => {
 
                         <div class="flex flex-col items-center">
                             <div class="mb-2 h-24 w-24 overflow-hidden rounded-full bg-gray-100 shadow-lg md:mb-4 md:h-32 md:w-32">
-                                <img src="https://media.licdn.com/dms/image/C4E03AQEZ_yJc3ebHOA/profile-displayphoto-shrink_800_800/0/1607527021305?e=1712793600&v=beta&t=7yQCc4QFgHkH7bY0EGCIId5I7i7wGqdzA9ONANU3_UA" loading="lazy" alt="Photo by Radu Florin" class="h-full w-full object-cover object-center" />
+                            <LazyLoadImage src="https://media.licdn.com/dms/image/C4E03AQEZ_yJc3ebHOA/profile-displayphoto-shrink_800_800/0/1607527021305?e=1712793600&v=beta&t=7yQCc4QFgHkH7bY0EGCIId5I7i7wGqdzA9ONANU3_UA" loading="lazy" effect="blur" alt="Photo by Radu Florin" class="h-full w-full object-cover object-center" />
                             </div>
 
                             <div>
@@ -200,7 +203,7 @@ const AboutUs = () => {
 
                         <div class="flex flex-col items-center">
                             <div class="mb-2 h-24 w-24 overflow-hidden rounded-full bg-gray-100 shadow-lg md:mb-4 md:h-32 md:w-32">
-                                <img src={rahulmathursir} loading="lazy" alt="Photo by christian ferrer" class="h-full w-full object-cover object-center" />
+                            <LazyLoadImage src={rahulmathursir} loading="lazy" effect="blur" alt="Photo by christian ferrer" class="h-full w-full object-cover object-center" />
                             </div>
 
                             <div>
@@ -223,7 +226,7 @@ const AboutUs = () => {
 
                         <div class="flex flex-col items-center">
                             <div class="mb-2 h-24 w-24 overflow-hidden rounded-full bg-gray-100 shadow-lg md:mb-4 md:h-32 md:w-32">
-                                <img src={neetumaam} loading="lazy" alt="Photo by Ayo Ogunseinde" class="h-full w-full object-cover object-center object-top" />
+                            <LazyLoadImage src={neetumaam} loading="lazy" effect="blur" alt="Photo by Ayo Ogunseinde" class="h-full w-full object-cover object-center object-top" />
                             </div>
 
                             <div>
@@ -246,7 +249,7 @@ const AboutUs = () => {
 
                         <div class="flex flex-col items-center">
                             <div class="mb-2 h-24 w-24 overflow-hidden rounded-full bg-gray-100 shadow-lg md:mb-4 md:h-32 md:w-32">
-                                <img src={sakshimaam} loading="lazy" alt="Photo by Midas Hofstra" class="h-full w-full object-cover object-center" />
+                            <LazyLoadImage src={sakshimaam} loading="lazy" effect="blur" alt="Photo by Midas Hofstra" class="h-full w-full object-cover object-center" />
                             </div>
 
                             <div>
@@ -285,7 +288,7 @@ const AboutUs = () => {
 
 
                 <div className='w-auto'>
-                    <img src="https://media.licdn.com/dms/image/C4E03AQEZ_yJc3ebHOA/profile-displayphoto-shrink_800_800/0/1607527021305?e=1712793600&v=beta&t=7yQCc4QFgHkH7bY0EGCIId5I7i7wGqdzA9ONANU3_UA" alt="Rounded" className="rounded-full shadow-md mb-2" />
+                <LazyLoadImage src="https://media.licdn.com/dms/image/C4E03AQEZ_yJc3ebHOA/profile-displayphoto-shrink_800_800/0/1607527021305?e=1712793600&v=beta&t=7yQCc4QFgHkH7bY0EGCIId5I7i7wGqdzA9ONANU3_UA" alt="Rounded" effect="blur" className="rounded-full shadow-md mb-2" />
                     <h2 className="text-sm md:text-xl font-bold  text-blue-950  text-center "> The Director</h2>
                 </div>
             </div>

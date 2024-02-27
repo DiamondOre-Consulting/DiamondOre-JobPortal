@@ -27,8 +27,8 @@ const Chatboot = () => {
         'What is your Current CTC?',
     ];
 
-    const introMessage =
-        "Hi! Welcome to the Diamondore Consulting Pvt. Ltd. We're here to help you find your next career opportunity. To get started, please provide us with some information";
+    const introMessage = 
+        `Hi! Welcome to the Diamondore Consulting Pvt. Ltd. We're here to help you find your next career opportunity. To get started, please provide us with some information`;
     const endingMessage = 'Thank you for providing your information. We will contact you soon';
 
     const toggleChatbox = () => {
