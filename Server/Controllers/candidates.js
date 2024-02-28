@@ -832,4 +832,24 @@ router.put("/edit-preference", CandidateAuthenticateToken, async (req, res) => {
   }
 });
 
+// GET PREF DATA
+router.get("/get-pref-data", CandidateAuthenticateToken, async (req, res) => {
+  try {
+    const { email, userId } = req.user;
+
+    const user = await Candidates.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const prefFormData = await PreferenceForm.findOne({ candidateId: userId });
+
+    res.status(200).json(prefFormData);
+
+  } catch(error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong!!!" });
+  }
+})
+
 export default router;
