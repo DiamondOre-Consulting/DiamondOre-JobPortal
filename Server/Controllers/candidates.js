@@ -391,10 +391,14 @@ router.get(
       console.log(user.preferredFormStatus);
 
       if (user.preferredFormStatus === true) {
+        const mini = parseFloat(prefFormData.minExpectedCTC);
+        const maxi = parseFloat(prefFormData.maxExpectedCTC)
         const recommendedJobs = await Jobs.find({
-          maxSalary: {
-            $gte: prefFormData.minExpectedCTC,
-            $lte: prefFormData.maxExpectedCTC,
+          $expr: {
+            $and: [
+              { $gte: [{ $toDouble: "$MaxSalary" }, mini] },
+              { $lte: [{ $toDouble: "$MaxSalary" }, maxi] }
+            ]
           },
           Channel: prefFormData.preferredChannel,
           City: prefFormData.preferredCity,
