@@ -304,6 +304,32 @@ router.get("/all-jobs/:id", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
+// DELETE BUT NOT EXACTLY DELETE A PARTICULAR JOB
+router.put("/remove-job/:id", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { email } = req.user;
+    const { id } = req.params;
+
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const job = await Jobs.findByIdAndUpdate(
+      { _id: id},
+      {
+        $set: { JobStatus: false}
+      }
+    );
+
+    res.status(201).json({message: "Job has been removed from list!!!"})
+
+  } catch(error) {
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong!!!" });
+  }
+})
+
 // FETCH POSITIONS WITH HIGH NUMMBER OF APPLICANTS
 router.get("/jobs-high", async (req, res) => {
   try {
