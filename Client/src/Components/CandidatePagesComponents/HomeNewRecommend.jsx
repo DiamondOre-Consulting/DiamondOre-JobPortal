@@ -38,7 +38,8 @@ const HomeNewRecommend = () => {
         if(response.status === 200){
           console.log("recomended jobs",response.data);
           const all = response.data;
-          const latest = all.slice(-7);
+          const filteredJobs = all.filter(job => job.JobStatus === true);
+          const latest = filteredJobs.slice(-7);
           // console.log(latestJobs);
           setLatestJobs(latest.reverse());
           console.log("myprefrencejobs",latest);

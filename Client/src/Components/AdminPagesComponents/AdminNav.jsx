@@ -133,7 +133,7 @@ const AdminNav = () => {
               >
                 <img
                   onClick={toggleDropdown}
-                  className="cursor-pointer rounded-full w-12 h-12 hover:border-4 hover:border-blue-950"
+                  className="cursor-pointer rounded-full w-12 h-12 hover:border-4 hover:border-blue-950 object-cover object-position-center"
                   src={userData?.profilePic}
                   alt="account"
                 />
@@ -235,7 +235,7 @@ const AdminNav = () => {
                 className={`${menuOpen ? "block" : "hidden"
                   } px-32 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
-                Add Jobs
+                All Jobs
               </li>
             </Link>
             <Link to={"/all-candidates"}>
@@ -261,6 +261,15 @@ const AdminNav = () => {
                   } px-32 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 AddEmployee
+              </li>
+            </Link>
+
+            <Link to={"/admin/add-jobs"}>
+              <li
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-32 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+              >
+                Add Jobs
               </li>
             </Link>
             <Link to={"/admin-all-employee"}>

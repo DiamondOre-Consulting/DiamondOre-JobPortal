@@ -7,6 +7,7 @@ import StatsPartners from './StatsPartners'
 import HeroNav from './HeroNav'
 import axios from "axios";
 import Chatboot from './Chatboot'
+import CvSection from './CvSection'
 
 const Homemain = () => {
   const [latestJobs, setLatestJobs] = useState([]);
@@ -20,9 +21,10 @@ const Homemain = () => {
           );
           console.log(response.data);
           const all = response.data;
-          const latest = all.slice(-3);
+          const filteredJobs = all.filter(job => job.JobStatus === true);
+          const latest = filteredJobs.slice(-3).reverse();
           // console.log(latestJobs);
-          setLatestJobs(latest.reverse());
+          setLatestJobs(latest);
           console.log(latest);
         } catch (error) {
           console.error("Error fetching associates:", error);
@@ -38,6 +40,7 @@ const Homemain = () => {
       <HeroNav/>
       <StatsPartners/>
       <PathSearch latestJobs={latestJobs}/>
+      <CvSection/>
       <JobsReviews/>
       <Footer/>
       <Chatboot/>

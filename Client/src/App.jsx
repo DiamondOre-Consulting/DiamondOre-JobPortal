@@ -42,6 +42,8 @@ import FAQ from "./Pages/HomePage/FAQ";
 import Termsofservices from "./Pages/HomePage/Termsofservices";
 import Privicypolicy from "./Pages/HomePage/Privicypolicy";
 import EditPrefrenceform from "./Components/CandidatePagesComponents/EditPrefrenceform";
+import Cvdashboard from "./Pages/Cvpage/Cvdashboard";
+import Cvform from "./Pages/Cvpage/Cvform";
 
 
 function App() {
@@ -57,6 +59,8 @@ function App() {
             <Route path="/contact" element={<Contact/>}/>
             <Route path="/signup" element={<Signup/>} />
             <Route path="/login" element={<Login/>} />
+            <Route path='/cv-dashboard' element={<Cvdashboard/>}/>
+            <Route path='/cv-form'element={<Cvform/>}/>
             <Route path='/be-our-client' element={<Beourclient/>}/>
             <Route path='/fAQ'element={<FAQ/>}/>
             <Route path='/terms-of-services'element={<Termsofservices/>}/>

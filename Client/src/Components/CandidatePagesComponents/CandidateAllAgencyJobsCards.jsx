@@ -32,9 +32,10 @@ const CandidateAllAgencyJobsCards = () => {
           );
           if(response.status==200) {
             console.log(response.data);
-          const all = response.data;
-          setagencyJobs(all.reverse());
-          console.log(latest.reverse());
+            const all = response.data;
+            const filteredJobs = all.filter(job => job.JobStatus === true);
+          setagencyJobs(filteredJobs.reverse());
+          
           }
         } catch (error) {
           console.error("Error fetching associates:", error);

@@ -32,10 +32,12 @@ const JobsWithMostApplicants = () => {
         );
         console.log(response.data);
         const all = response.data;
-        const latest = all.slice(-7);
+        const filteredJobs = all.filter(job => job.JobStatus === true);
+        const latest = filteredJobs;
         // console.log(latestJobs);
-        setLatestJobs(response.data);
-        console.log(latest);
+        setLatestJobs(latest);
+        console.log("all",all)
+        console.log("filtered Jobs",filteredJobs);
       } catch (error) {
         console.error("Error fetching jobs:", error);
         // Handle error and show appropriate message

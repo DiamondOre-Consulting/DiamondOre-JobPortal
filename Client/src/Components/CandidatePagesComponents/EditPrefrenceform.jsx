@@ -12,11 +12,14 @@ const EditPrefrenceform = () => {
         preferredChannel: null,
         expectedCTC: null,
     });
+    const [prefcity,setPrefCity]=useState(null);
+    const [prefchannel,setPrefChannel]=useState(null);
+    const [prefctc,setPrefCtc]=useState(null);
     const [userInputs, setUserInputs] = useState([]);
     const [step, setStep] = useState(0);
 
     const token = localStorage.getItem("token");
-    const navigate =useNavigate();
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -41,13 +44,13 @@ const EditPrefrenceform = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 }
-               
+
             );
             if (response.status === 201) {
-                console.log('pref data',response.data)
-                const all= response.data;
+                console.log('pref data', response.data)
+                const all = response.data;
                 setUserInputs(all);
-                console.log("user input is ",userInputs);
+                console.log("user input is ", userInputs);
                 setFormData({
                     preferredCity: '',
                     preferredChannel: '',
@@ -56,9 +59,9 @@ const EditPrefrenceform = () => {
 
                 navigate('/dashboard')
             }
-            
 
-         
+
+
         } catch (error) {
             console.error("Error submitting preference form:", error);
         }
@@ -86,7 +89,7 @@ const EditPrefrenceform = () => {
                 const response = await axios.get(
                     "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/all-jobs"
                 );
-              
+
 
                 const uniquicities = [...new Set(response.data.map(job => job.City))];
                 const uniquiChannels = [...new Set(response.data.map(job => job.Channel))];
@@ -95,7 +98,7 @@ const EditPrefrenceform = () => {
                 setCities(uniquicities);
                 setChannels(uniquiChannels);
                 console.log(uniquicities)
-                if (response.status == 200) {
+                if (response.status === 200) {
                     console.log(response.data);
                     const all = response.data;
                 }
@@ -109,8 +112,43 @@ const EditPrefrenceform = () => {
     }, []);
 
 
-  return (
-    <div className=''>
+    useEffect(() => {
+    
+        const fetchPrefData = async () => {
+
+            try {
+
+                const response = await axios.get("https://diamond-ore-job-portal-backend.vercel.app/api/candidates/get-pref-data",
+
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+
+                )
+                if(response.status === 200){
+                    console.log("our prefrence data",response.data);
+                    const prefdata= response.data
+                    setPrefCity(prefdata?.preferredCity);
+                    setPrefChannel(prefdata?.preferredChannel);
+                    const ctc=(`${prefdata?.minExpectedCTC}-${prefdata?.maxExpectedCTC}`)
+                    setPrefCtc(ctc)
+                    // const myctc=`${setPrefMaxCtc(prefdata?.maxExpectedCTC)} - ${setPrefMinCtc(prefdata?.minExpectedCTC)}`
+                    
+                }
+               
+            }
+            catch(error){
+                console.log(error,"error fetched ")
+            }
+
+        }
+        fetchPrefData();
+
+    },[])
+    return (
+        <div className=''>
             <Navbar />
             <h1 className='text-3xl font-bold  mx-auto text-center'>Edit Your Prefrence</h1>
             <div className='w-44 h-1 bg-blue-900 mx-auto'></div>
@@ -124,7 +162,7 @@ const EditPrefrenceform = () => {
                             value={formData.preferredCity}
                             onChange={handleChange}
                         >
-                            <option>Select Your Prefered City</option>
+                            <option>{prefcity?prefcity:"select preffered City"}</option>
                             {cities.map((city, index) => (
                                 <option
                                     key={index}
@@ -146,7 +184,7 @@ const EditPrefrenceform = () => {
                             value={formData.preferredChannel}
                             onChange={handleChange}
                         >
-                            <option>Select Your Prefered City</option>
+                            <option>{prefchannel?prefchannel:"Select your Prefferd Channel"}</option>
                             {channels.map((channel, index) => (
                                 <option
                                     key={index}
@@ -169,10 +207,19 @@ const EditPrefrenceform = () => {
                             value={formData.expectedCTC}
                             onChange={handleChange}
                         >
-                            <option>Select Your expectedCTC</option>
+                            <option>{prefctc?prefctc:"Select your Prefferd Ctc"}</option>
                             <option>0-3</option>
                             <option>3-6</option>
                             <option>6-9</option>
+                            <option>9-12</option>
+                            <option>12-15</option>
+                            <option>15-18</option>
+                            <option>18-21</option>
+                            <option>21-24</option>
+                            <option>24-27</option>
+                            <option>27-30</option>
+                            <option>30-33</option>
+                            <option>33-35</option>
                         </select>
 
                         {/* <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} className="border border-gray-400 rounded w-full py-2 px-3" /> */}
@@ -190,7 +237,7 @@ const EditPrefrenceform = () => {
             <Footer />
         </div>
 
-  )
+    )
 }
 
 export default EditPrefrenceform

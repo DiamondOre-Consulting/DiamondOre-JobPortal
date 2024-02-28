@@ -46,9 +46,10 @@ const CandidateAllJobsCards = () => {
         if (response.status == 200) {
           console.log(response.data);
           const all = response.data;
+          const filteredJobs = all.filter(job => job.JobStatus === true);
           // console.log(latestJobs);
-          setAllJobs(response.data);
-          setLatestJobs(all.reverse());
+          setAllJobs(filteredJobs);
+          setLatestJobs(filteredJobs.reverse());
         }
       } catch (error) {
         console.error("Error fetching associates:", error);
