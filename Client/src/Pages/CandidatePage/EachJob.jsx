@@ -181,12 +181,7 @@ const EachJob = () => {
                 </span>
               </p>
 
-              <p className="mb-8 max-w-md text-gray-800 text-xl">
-                No. of openings:{" "}
-                <span className="text-blue-950 font-semibold">
-                  {singleJob?.Vacancies}
-                </span>
-              </p>
+              
 
               <p className="mb-8 max-w-md text-gray-800 text-xl">
                 Min. Experience:{" "}

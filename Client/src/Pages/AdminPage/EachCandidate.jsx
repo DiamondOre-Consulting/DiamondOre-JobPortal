@@ -161,9 +161,7 @@ const EachCandidate = () => {
                    </p>
                    <p className="text-xl text-gray-600 font-semibold">Channel - <span className="text-blue-950">{job?.Channel}</span></p>
                    <p className="text-xl text-gray-600 font-semibold float-left">Min. Experience - <span className="text-blue-950">{job?.MinExperience} Year(s)</span> </p>
-                   <p className="text-xl text-gray-600 font-semibold">
-                     Total Openings - <span className="text-blue-950">{job?.Vacancies}</span>
-                   </p>
+                   
                  </div>
                </div>
               ))}

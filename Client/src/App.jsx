@@ -44,12 +44,44 @@ import Privicypolicy from "./Pages/HomePage/Privicypolicy";
 import EditPrefrenceform from "./Components/CandidatePagesComponents/EditPrefrenceform";
 import Cvdashboard from "./Pages/Cvpage/Cvdashboard";
 import Cvform from "./Pages/Cvpage/Cvform";
+import ScaleLoader from "react-spinners/ScaleLoader";
+import { useState } from "react";
 
 
 function App() {
+  let [loading, setLoading] = useState(true);
 
+  const override = {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh", 
+    flexDirection:'column'
+
+  };
+
+  useState(()=>{
+    setTimeout(()=>{
+      setLoading(false)
+    },3000)
+  },[])
   return (
-    <>
+    <> {
+      loading ?
+      <>
+      <div style={override}>
+        <ScaleLoader
+          color={'#023E8A'}
+          loading={loading}
+          size={150}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        />
+          <p className="text-black text-center mt-2 font-bold text-2xl">Loading opportunities....</p>
+        </div>
+  
+        </>
+         :
       <Router>
         <Routes>
           <Route path="/">
@@ -99,6 +131,7 @@ function App() {
           </Route> 
         </Routes>
       </Router>
+}
     </>
   )
 }
