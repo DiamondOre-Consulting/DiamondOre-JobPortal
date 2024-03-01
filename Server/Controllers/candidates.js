@@ -17,6 +17,7 @@ import Jobs from "../Models/Jobs.js";
 import Status from "../Models/Status.js";
 import CandidateContact from "../Models/CandidateContact.js";
 import PreferenceForm from "../Models/PreferenceForm.js";
+import RemovedCandidates from "../Models/RemovedCandidates.js";
 
 dotenv.config();
 
@@ -853,6 +854,40 @@ router.get("/get-pref-data", CandidateAuthenticateToken, async (req, res) => {
   } catch(error) {
     console.log(error);
     res.status(500).json({ message: "Something went wrong!!!" });
+  }
+})
+
+// DELETE BUT NOT DELETE PERSONAL ACCOUNT
+router.delete("/remove-account", CandidateAuthenticateToken, async (req, res) => {
+  try {
+    const { email, userId } = req.user;
+
+    const user = await Candidates.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const deletedUser = new RemovedCandidates({
+      name: user.name,
+      email:  user.email,
+      phone: user.phone,
+      password: user.password,
+      profilePic: user.profilePic,
+      resume: user.resume,
+      preferredFormStatus: user.preferredFormStatus,
+      allAppliedJobs: user.allAppliedJobs,
+      allShortlistedJobs: user.allShortlistedJobs,
+    });
+
+    await deletedUser.save();
+
+    if(deletedUser) {
+      await Candidates.findByIdAndDelete({_id: userId});
+    }
+
+    res.status(200).json({message: "Candidate has been removed from Candidates DB and Transaferred to DeletedCandidates Schema!!!"})
+  } catch(error) {
+
   }
 })
 
