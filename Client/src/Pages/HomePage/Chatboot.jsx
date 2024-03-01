@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import chatboat from '../../assets/chatboat.svg'
+import chatboat from '../../assets/Chatboat.svg'
 import axios from "axios";
 
 const Chatboot = () => {

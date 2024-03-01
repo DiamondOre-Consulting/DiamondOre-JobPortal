@@ -1,7 +1,7 @@
 import React from 'react'
 import Navbar from './Navbar'
 import Footer from './Footer'
-import empimage from '../../assets/Asset.png'
+import aboutusimg from '../../assets/aboutusimg.svg'
 import boy from '../../assets/Boyimage.jpg'
 import rahulmathursir from '../../assets/20240201_105248.jpg'
 import sakshimaam from '../../assets/sakshi maam.jpg'
@@ -14,7 +14,7 @@ const AboutUs = () => {
     return (
         <div>
             <Navbar />
-          <div className="h-96 sm:h-block md:h-96 lg:h-96 bg-cover bg-center overflow-hidden" style={{ backgroundImage: `url(${empimage})`, backgroundPosition: "top" }}>
+          <div className="h-96 sm:h-block md:h-96 lg:h-96 bg-cover bg-center overflow-hidden" style={{ backgroundImage: `url(${aboutusimg})`, backgroundPosition: "top" }}>
                 <div className=" inset-0 bg-black opacity-50"></div>
                 <div className=" inset-0 flex items-center justify-center text-gray-900 text-center">
                     <div>
@@ -165,7 +165,7 @@ const AboutUs = () => {
                 </div>
             </section>
 
-            <div class="bg-white py-6 sm:py-8 lg:py-12">
+            <div class="bg-white py-6 sm:py-8 lg:py-12" id='ourteam'>
                 <div class="mx-auto max-w-screen-xl px-4 md:px-8">
 
                     <div class="mb-10 md:mb-16">

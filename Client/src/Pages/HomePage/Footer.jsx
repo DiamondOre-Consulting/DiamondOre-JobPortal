@@ -49,7 +49,7 @@ const Footer = () => {
                     </div>
 
                     <div>
-                    <Link to={'/about'}className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Team</Link>
+                    <a href="#ourteam" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Team</a>
                     </div>
 
                     <div>
