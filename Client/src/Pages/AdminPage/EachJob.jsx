@@ -95,7 +95,7 @@ const AdminEachJob = () => {
   }, [decodedToken]);
 
   return (
-    <div className="bg-white mx-5">
+    <div className="bg-white  ">
       <AdminNav />
       <div>
         <h1 className="text-center text-5xl text-bold py-lg font-bold ">Each Job</h1>
@@ -151,7 +151,7 @@ const AdminEachJob = () => {
         </div>
       </div>
       <div className="my-8">
-        <h1 className="text-center text-5xl text-bold py-lg">
+        <h1 className="text-center text-2xl px-16 text-bold py-lg">
           Applicants Applied For This Position
         </h1>
         <div class="mt-10 mx-10 grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-3">

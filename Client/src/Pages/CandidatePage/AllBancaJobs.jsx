@@ -34,7 +34,7 @@ const AllBancaJobs = () => {
     }, [decodedToken])
 
   return (
-    <div className='bg-white mx-5'>
+    <div className='bg-white  '>
       <CandidateNav/>
       <CandidateAllBancaJobsCards />
       <CandidateFooter/>

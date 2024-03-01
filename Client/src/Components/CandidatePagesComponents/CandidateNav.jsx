@@ -10,7 +10,7 @@ const CandidateNav = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [userData, setUserData] = useState(null);
   const dropdownRef = useRef(null);
-
+  const [showPopup, setShowPopup] = useState(false);
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -49,8 +49,44 @@ const CandidateNav = () => {
     fetchUserData();
   }, [])
 
+  //delete account 
+
+  const deleteAccount= async(e)=>{
+    e.preventDefault();
+  
+    
+    try{
+      const token = localStorage.getItem("token");
+
+      const response =await axios.delete('https://diamond-ore-job-portal-backend.vercel.app/api/candidates/remove-account',
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+      )
+      if(response.status === 200){
+          console.log("account has been deleted");
+          setShowPopup(true);
+          window.alert("Your account has been deleted")
+          navigate("/login");
+      }
+
+    }
+    catch(error){
+      console.log(error)
+    }
+
+
+  }
+
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleClose = () => {
+    setShowPopup(false);
+  
   };
 
   const handleClickOutside = (event) => {
@@ -134,6 +170,16 @@ const CandidateNav = () => {
                   Edit Prefrence form
                 </Link>
 
+                <a
+                  href="#"
+                  className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
+                  onClick={()=>{
+                    setShowPopup(true);
+                  }}
+                >
+                  Delete Account
+                </a>
+
 
                 <a
                   href="#"
@@ -142,15 +188,19 @@ const CandidateNav = () => {
                 >
                   Logout
                 </a>
+
+
               </div>
             )}
 
             <button
               type="button"
               onClick={toggleMenu}
-              className="inline-flex items-center gap-2 rounded-lg bg-blue-950 px-2.5 py-2 text-sm font-semibold text-gray-100 z-40  md:text-base lg:hidden"
+              className="inline-flex items-center gap-2 rounded-lg  px-2.5 py-2 text-sm font-semibold text-gray-100 z-40  md:text-base lg:hidden"
             >
-              <svg
+
+              <img onClick={toggleDropdown} className="border border-1 border-black cursor-pointer rounded-full w-14 h-14" src={profilePicUrl} alt="account" />
+              {/* <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6"
                 viewBox="0 0 20 20"
@@ -161,7 +211,7 @@ const CandidateNav = () => {
                   d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
                   clipRule="evenodd"
                 />
-              </svg>
+              </svg> */}
 
             </button>
           </header>
@@ -204,7 +254,7 @@ const CandidateNav = () => {
             <a href={"/edit/profile-page"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                  } px-24 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Edit Profile
               </li>
@@ -228,6 +278,42 @@ const CandidateNav = () => {
         </div>
       </div>
 
+      {showPopup ? (
+            <div
+              className={`fixed inset-0 flex items-center justify-center ${
+                showPopup ? "visible" : "hidden"
+              }`}
+            >
+              <section className="rounded-3xl shadow-2xl bg-gray-200">
+                <div className="p-8 text-center sm:p-12">
+                  <p className="text-sm font-semibold uppercase tracking-widest text-pink-500">
+                   {/* Do You Want To Delete this Account!!! */}
+                  </p>
+  
+                  <h2 className="mt-6 text-3xl font-bold">
+                     Do You Want To Delete this Account!!!
+                  </h2>
+  
+                  <button
+                    className="mt-8 inline-block w-full rounded-full bg-green-500 py-4 text-sm font-bold text-white shadow-xl"
+                    onClick={handleClose}
+                  >
+                    No
+                  </button>
+
+                  <button
+                    className="mt-8 inline-block w-full rounded-full bg-red-400 py-4 text-sm font-bold text-white shadow-xl"
+                    onClick={deleteAccount}
+                  >
+                    Yes! I'm Sure
+                  </button>
+                </div>
+              </section>
+            </div>
+          ) : (
+            ""
+          )}
+
 
       {
 
@@ -249,7 +335,6 @@ const CandidateNav = () => {
 
             </>
           )
-
 
 
 

@@ -93,7 +93,7 @@ const EachCandidate = () => {
   }, [decodedToken])
 
   return (
-    <div className="bg-white mx-5">
+    <div className="bg-white  ">
       <AdminNav />
       <div className="my-2 flex flex-col justify-between text-center">
         <div class="bg-white py-6 sm:py-8 lg:py-12">

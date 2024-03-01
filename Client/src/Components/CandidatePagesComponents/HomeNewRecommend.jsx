@@ -82,7 +82,7 @@ const HomeNewRecommend = () => {
                 data-testid="loader"
               />
             </div> :
-            <div class="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+            <div class="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4 mb-4">
               {latestJobs.map((latestJob) => (
                 <div>
                   <div
@@ -113,17 +113,7 @@ const HomeNewRecommend = () => {
                 </div>
               ))}
 
-              <div>
-                <div
-                  class="flex flex-col justify-center h-64 overflow-hidden rounded-lg bg-gray-200 p-4 shadow-lg"
-                >
-                  <Link to={`/all-jobs`} class="cursor-pointer w-full flex-col rounded-lg bg-white p-4 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200">
-                    <span class="text-md font-bold lg:text-md">
-                      Know More
-                    </span>
-                  </Link>
-                </div>
-              </div>
+              
             </div>
         }
       </div>

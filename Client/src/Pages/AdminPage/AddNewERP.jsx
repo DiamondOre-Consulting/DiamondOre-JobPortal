@@ -104,7 +104,7 @@ const AddERPForm = () => {
 
   return (
     
-    <div className="mx-5 ">
+    <div className="  ">
       <AdminNav/>
     
       <h1 className="mx-auto text-center text-3xl my-2 ">Employee of the month</h1>

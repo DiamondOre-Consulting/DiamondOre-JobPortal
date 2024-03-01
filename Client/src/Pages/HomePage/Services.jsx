@@ -1,22 +1,24 @@
 import React from 'react'
 import Navbar from './Navbar'
+import aboutimg from '../../assets/aboutusimg.png'
 import potrait from '../../assets/potrait.png'
 import Footer from './Footer'
-import serpage from '../../assets/servicepage.png'
+import service1 from '../../assets/service1.png'
+import service2 from '../../assets/service2.png'
+import service3 from '../../assets/service3.png'
+
+
 
 const Services = () => {
     return (
         <div>
 
             <Navbar />
-            <div className="h-96 sm:h-block md:h-96 lg:h-96 bg-cover bg-center overflow-hidden" style={{ backgroundImage: `url(${serpage})`, backgroundPosition: "top" }}>
-                <div className=" inset-0 bg-black opacity-50"></div>
-                <div className=" inset-0 flex items-center justify-center text-gray-900 text-center">
-                    <div>
-                        {/* <h1 className="text-3xl md:text-3xl lg:text-6xl font-bold  ">Diamond Ore Consulting Pvt Ltd</h1> */}
+            <div className='grid grid-cols-3 sm:cols-2 lg:cols-3 gap-4'>
+                <div><img src={service2}/></div>
+                <div><img src={service3}/></div>
+                <div><img src={service1}/></div>
 
-                    </div>
-                </div>
             </div>
 
             <div class="bg-white py-6 sm:py-8 lg:py-12">

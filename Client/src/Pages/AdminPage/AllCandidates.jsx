@@ -34,7 +34,7 @@ const AdminAllCandidates = () => {
   }, [decodedToken]);
 
   return (
-    <div className="bg-white mx-5">
+    <div className="bg-white  ">
       <AdminNav />
       <AdminAllCandidatesCards />
       <AdminFooter />

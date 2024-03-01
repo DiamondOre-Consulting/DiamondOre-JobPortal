@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import simg from '../../assets/signupimg.svg';
 
 const Signup = ({ toggleForm }) => {
+  let [loading, setLoading] = useState(true);
   const navigate = useNavigate()
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -139,9 +140,9 @@ const Signup = ({ toggleForm }) => {
         <div className="grid grid-cols-1 md:grid-cols-2">
           <div className="p-6 space-y-4">
             <form onSubmit=
-            {handleSignup} 
-            className="space-y-4"
-             
+              {handleSignup}
+              className="space-y-4"
+
 
             >
               <h1 className=" text-3xl font-bold sm:text-3xl">
@@ -196,13 +197,15 @@ const Signup = ({ toggleForm }) => {
                     <svg class="h-6 w-6 text-gray-500" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <rect x="3" y="5" width="18" height="14" rx="2" />  <polyline points="3 7 12 13 21 7" /></svg>
                   </span>
                 </div>
-                <button
-                  onClick={handleSendOtp}
-                  className={`ml-4 rounded-lg bg-blue-900 hover:bg-blue-950 px-3 py-2 text-sm font-medium text-white  mt-2 mb-2`}
+               
+                    <button
+                      onClick={handleSendOtp}
+                      className={`ml-4 rounded-lg bg-blue-900 hover:bg-blue-950 px-3 py-2 text-sm font-medium text-white  mt-2 mb-2`}
 
-                >
-                  Send OTP
-                </button>
+                    >
+                      Send OTP
+                    </button>
+                  
               </div>
 
               {/* OTP input field starts */}

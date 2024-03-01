@@ -120,7 +120,7 @@ const CandidateAllJobsCards = () => {
 
   return (
     <div class="sm:py-8 ">
-      <div className="flex flex-wrap items-center justify-center mx-auto mb-16">
+      <div className="flex flex-wrap items-center justify-center mx-auto px-6 mb-16">
         <div className="relative">
           <h2 className="bg-blue-900 text-white px-4 py-2 text-center mb-1 border-md">City</h2>
           <button
