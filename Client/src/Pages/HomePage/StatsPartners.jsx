@@ -14,7 +14,7 @@ const StatsPartners = () => {
           <div class="mb-10 md:mb-16">
             <h2 class="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-6 lg:text-3xl ">Our Work By Numbers</h2>
 
-            <p class="mx-auto max-w-screen-md text-center text-gray-500 md:text-lg" style={{}}>we partner with to the vacancies eagerly awaiting talented individuals. As each position is filled, our numerical narrative transforms, reflecting the continual influx of talent that propels our collective success.</p>
+            <p class="mx-auto max-w-screen-md text-center text-gray-500 md:text-lg" style={{}}>We eagerly partner with vacancies, awaiting talented individuals. As each position is filled, our numerical narrative transforms, reflecting the continual influx of talent that propels our collective success.</p>
           </div>
 
           <div class="grid grid-cols-2 gap-8 md:grid-cols-4 md:gap-0 md:divide-x">
