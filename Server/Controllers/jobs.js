@@ -187,9 +187,8 @@ router.post("/add-job", AdminAuthenticateToken, async (req, res) => {
       });
   
       // Save the user to the database
-      await newJob.save();
-  
-      return res.status(201).json({ message: "A Job added successfully" });
+      await newJob.save();  
+      return res.status(201).json({ message: "A Job added successfully"});
     } catch (error) {
       console.error("Error adding job", error);
       return res.status(500).send("Error adding job");

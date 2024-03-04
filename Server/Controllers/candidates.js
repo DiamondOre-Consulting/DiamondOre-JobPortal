@@ -263,6 +263,35 @@ router.post("/signup", async (req, res) => {
 
       delete otpStore[email];
 
+      // Send Confermation via email using Nodemailer
+      const sendConfirmationByEmail = async (email) => {
+        try {
+          const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              user: "harshkr2709@gmail.com",
+              pass: "frtohlwnukisvrzh",
+            },
+          });
+
+          const mailOptions = {
+            from: "Diamondore.in <harshkr2709@gmail.com>",
+            to: `Recipient <${email}>`,
+            subject: "Welcome to Diamond Ore Pvt.Ltd !",
+            text: `Congratulations! We are thrilled to have you as a new member of our community. By joining us, you've taken the first step towards unlocking a world of opportunities.`,
+            html: `<p font-size: 1rem">Congratulations! We are thrilled to have you as a new member of our community. By joining us, you've taken the first step towards unlocking a world of opportunities.</p>`,
+          };
+
+          const info = await transporter.sendMail(mailOptions);
+          console.log("Email sent: " + info.response);
+
+          // console.log(info);
+        } catch (error) {
+          console.error("Error sending Mail:", error);
+          throw error;
+        }
+      };
+      await sendConfirmationByEmail(email);
       return res
         .status(201)
         .json({ message: "Candidate User created successfully" });
@@ -655,6 +684,84 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
       await newStatus.save();
 
       console.log(newStatus);
+
+      // applied job confirmation mail to candidate
+
+      const jobAppliedSucessfully = async (email, job) => {
+        try {
+          const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              user: "harshkr2709@gmail.com",
+              pass: "frtohlwnukisvrzh",
+            },
+          });
+
+          const mailOptions = {
+            from: "Diamondore.in <harshkr2709@gmail.com>",
+            to: `Recipient <${email}>`,
+            subject: "Job Applied Successfully!",
+            html: `
+            <p style="color:green; text-align:center;">Congratulations! You have successfully applied to the following job:</p>
+               <div style="padding:18px; display:flex; flex-direction:column; justify-content:center; align-items:center; border:1px solid black;">
+                 <p><strong>${job.JobTitle}</strong></p>
+                 <p><strong>Channel:</strong> ${job.Channel}</p>
+                 <p><strong>City:</strong> ${job.City}</p>
+                 <p><strong>State:</strong> ${job.State}</p>
+                 <p><strong>Minimum Experience:</strong> ${job.MinExperience}</p>
+                 <p><strong>Maximum Salary:</strong> ${job.MaxSalary}</p>
+                </div>
+              <p style="color:green;">Thank you for applying!</p>
+              `,
+          };
+
+          const info = await transporter.sendMail(mailOptions);
+          console.log("Email sent: " + info.response);
+
+          // console.log(info);
+        } catch (error) {
+          console.error("Error sending Mail:", error);
+          throw error;
+        }
+      }
+      await jobAppliedSucessfully(email, job)
+
+      // appliedjob by candidate mail to admin
+      const CandidateUser = await Candidates.findById({ _id: id })
+      const CandidateAppliedJob = async (email, job,CandidateUser) => {
+        try {
+          const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              user: "harshkr2709@gmail.com",
+              pass: "frtohlwnukisvrzh",
+            },
+          });
+
+          const mailOptions = {
+            from: "Diamondore.in <harshkr2709@gmail.com>",
+            to: `Recipient <hr@diamondore.in>`,
+            subject: `A new applicant applied for ${job.JobTitle}`,
+            html: `
+            <ul>
+            <li><strong>Name:</strong>${CandidateUser?.name}</li>
+            <li><strong>Email:</strong> ${CandidateUser?.email}</li>
+            <li><strong>Phone Number:</strong> ${CandidateUser?.phone}</li>
+           <li><strong>Resume/CV:</strong>${CandidateUser?.resume}</li>
+           </ul> `,
+          };
+
+          const info = await transporter.sendMail(mailOptions);
+          console.log("Email sent: " + info.response);
+
+          // console.log(info);
+        } catch (error) {
+          console.error("Error sending Mail:", error);
+          throw error;
+        }
+      }
+      await CandidateAppliedJob(email,CandidateUser,job)
+
       res
         .status(201)
         .json({ newStatus, message: "Applied to job successfully!!!" });
@@ -851,7 +958,7 @@ router.get("/get-pref-data", CandidateAuthenticateToken, async (req, res) => {
 
     res.status(200).json(prefFormData);
 
-  } catch(error) {
+  } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Something went wrong!!!" });
   }
@@ -869,7 +976,7 @@ router.delete("/remove-account", CandidateAuthenticateToken, async (req, res) =>
 
     const deletedUser = new RemovedCandidates({
       name: user.name,
-      email:  user.email,
+      email: user.email,
       phone: user.phone,
       password: user.password,
       profilePic: user.profilePic,
@@ -881,12 +988,12 @@ router.delete("/remove-account", CandidateAuthenticateToken, async (req, res) =>
 
     await deletedUser.save();
 
-    if(deletedUser) {
-      await Candidates.findByIdAndDelete({_id: userId});
+    if (deletedUser) {
+      await Candidates.findByIdAndDelete({ _id: userId });
     }
 
-    res.status(200).json({message: "Candidate has been removed from Candidates DB and Transaferred to DeletedCandidates Schema!!!"})
-  } catch(error) {
+    res.status(200).json({ message: "Candidate has been removed from Candidates DB and Transaferred to DeletedCandidates Schema!!!" })
+  } catch (error) {
 
   }
 })

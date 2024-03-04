@@ -139,12 +139,10 @@ const CandidateNav = () => {
                 >
                   Applied Jobs
                 </Link>
-                <Link
-                  href="#"
-                  className="text-md font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
-                >
-                  Specialized
-                </Link>
+                <a href="https://referbiz.in/" target="_blank">
+                  Reffer & Earn
+                </a>
+
               </nav>
 
               <div className="hidden lg:inline-block relative text-left" ref={dropdownRef}>
@@ -219,36 +217,36 @@ const CandidateNav = () => {
             className={`gap-10 ${menuOpen ? "block" : "hidden"
               } w-full flex flex-col items-center justify-center mb-14`}
           >
-            <a href={"/dashboard"}>
+            <Link to={"/dashboard"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
                   } transition ease-in-out delay-150 px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Home
               </li>
-            </a>
-            <a href={"/all-jobs"}>
+            </Link>
+            <Link to={"/all-jobs"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
                   } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 All jobs
               </li>
-            </a>
-            <a href={"/all-applied-jobs"}>
+            </Link>
+            <Link to={"/all-applied-jobs"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
                   } px-24 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Applied jobs
               </li>
-            </a>
-            <a href={"/"}>
+            </Link>
+            <a href="https://referbiz.in/" target="_blank">
               <li
                 className={`${menuOpen ? "block" : "hidden"
                   } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
-                specilised
+                Reffer & Earn
               </li>
             </a>
             <a href={"/edit/profile-page"}>
