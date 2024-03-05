@@ -244,19 +244,19 @@ const CandidateNav = () => {
             <a href="https://referbiz.in/" target="_blank">
               <li
                 className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                  } px-16 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Reffer & Earn
               </li>
             </a>
-            <a href={"/edit/profile-page"}>
+            <Link to={"/edit/profile-page"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
                   } px-24 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Edit Profile
               </li>
-            </a>
+            </Link>
             <a
               href="#"
               className="px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250"
