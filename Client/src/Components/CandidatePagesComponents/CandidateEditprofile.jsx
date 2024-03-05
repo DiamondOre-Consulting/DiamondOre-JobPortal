@@ -113,22 +113,29 @@ const CandidateEditprofile = () => {
       formData.append("name", userData.name);
       formData.append("email", userData.email);
       formData.append("phone", userData.phone);
-      formData.append("resume", userData.resumeUrl);
+      formData.append("resume", resumeUrl);
       formData.append("profilePic", profilePicUrl);
 
-      //  console.log(userData.profilePic); 
       const token = localStorage.getItem("token");
-      await axios.put('https://diamond-ore-job-portal-backend.vercel.app/api/candidates/edit-profile', formData, {
+      const response=await axios.put('https://diamond-ore-job-portal-backend.vercel.app/api/candidates/edit-profile',
+       formData,
+        {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
         },
       });
-      alert('Profile updated successfully!');
-      navigate('/dashboard');
+      if(response.status === 201){
+        console.log("data after submitting",response.data)
+        console.log("updated")
+        alert('Profile updated successfully!');
+        navigate('/dashboard');
+
+      }
+      
     } catch (error) {
       console.error('Error updating profile:', error.message);
-      alert('Failed to update profile. Please try again.');
+      // alert('Failed to update profile. Please try again.');
     }
   };
 

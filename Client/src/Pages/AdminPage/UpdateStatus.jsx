@@ -264,10 +264,10 @@ const UpdateStatus = () => {
   return (
     <div className="bg-white  ">
       <AdminNav />
-      <div class="bg-white py-6 sm:py-8 lg:py-12">
-        <div class="mx-auto max-w-screen-2xl px-4 md:px-8">
-          <div class="flex flex-col overflow-hidden rounded-lg bg-gray-200 sm:flex-row lg:h-90">
-            <div class="order-first h-auto w-full rounded-lg bg-gray-300 sm:order-none sm:h-auto sm:w-1/2 lg:w-2/5">
+      <div  className="bg-white py-6 sm:py-8 lg:py-12">
+        <div  className="mx-auto max-w-screen-2xl px-4 md:px-8">
+          <div  className="flex flex-col overflow-hidden rounded-lg bg-gray-200 sm:flex-row lg:h-90">
+            <div  className="order-first h-auto w-full rounded-lg bg-gray-300 sm:order-none sm:h-auto sm:w-1/2 lg:w-2/5">
               <a
                 href="#"
                 className="relative block overflow-hidden rounded-lg border border-gray-100 p-4 sm:p-6 lg:p-8 h-full"
@@ -318,12 +318,12 @@ const UpdateStatus = () => {
               </a>
             </div>
 
-            <div class="flex w-full flex-col p-4 sm:w-1/2 sm:p-8 lg:w-3/5">
-              <h2 class="mb-4 text-xl font-bold text-gray-800 md:text-2xl lg:text-4xl">
+            <div  className="flex w-full flex-col p-4 sm:w-1/2 sm:p-8 lg:w-3/5">
+              <h2  className="mb-4 text-xl font-bold text-gray-800 md:text-2xl lg:text-4xl">
                 Change Status Of Candidature
               </h2>
 
-              <p class="mb-2 max-w-md text-gray-600 font-semibold">
+              <p  className="mb-2 max-w-md text-gray-600 font-semibold">
                 Applied?{" "}
                 {statusData?.status.Applied ? (
                   <span className="text-green-600">Yes</span>
@@ -333,7 +333,7 @@ const UpdateStatus = () => {
                   </button>
                 )}
               </p>
-              <p class="mb-2 max-w-md text-gray-600 font-semibold">
+              <p  className="mb-2 max-w-md text-gray-600 font-semibold">
                 CV Shortlisted?{" "}
                 {statusData?.status?.CvShortlisted ? (
                   <span className="text-md text-green-600">Yes</span>
@@ -365,7 +365,7 @@ const UpdateStatus = () => {
                 )}
               </p>
 
-              <p class="mb-2 max-w-md text-gray-600 font-semibold">
+              <p  className="mb-2 max-w-md text-gray-600 font-semibold">
                 Screening?{" "}
                 {statusData?.status.Screening ? (
                   <span className="text-md text-green-600">Yes</span>
@@ -396,7 +396,7 @@ const UpdateStatus = () => {
                   </>
                 )}
               </p>
-              <p class="mb-2 max-w-md text-gray-600 font-semibold">
+              <p  className="mb-2 max-w-md text-gray-600 font-semibold">
                 Interview Scheduled?{" "}
                 {statusData?.status.InterviewScheduled ? (
                   <span className="text-md text-green-600">Yes</span>
@@ -427,7 +427,7 @@ const UpdateStatus = () => {
                   </>
                 )}
               </p>
-              <p class="mb-2 max-w-md text-gray-600 font-semibold">
+              <p  className="mb-2 max-w-md text-gray-600 font-semibold">
                 Interviewed?{" "}
                 {statusData?.status.Interviewed ? (
                   <span className="text-md text-green-600">Yes</span>
@@ -457,7 +457,7 @@ const UpdateStatus = () => {
                   </>
                 )}
               </p>
-              <p class="mb-2 max-w-md text-gray-600 font-semibold">
+              <p  className="mb-2 max-w-md text-gray-600 font-semibold">
                 Shortlisted?{" "}
                 {statusData?.status.Shortlisted ? (
                   <span className="text-md text-green-600">Yes</span>
@@ -487,7 +487,7 @@ const UpdateStatus = () => {
                   </>
                 )}
               </p>
-              <p class="mb-2 max-w-md text-gray-600 font-semibold">
+              <p  className="mb-2 max-w-md text-gray-600 font-semibold">
                 Joined?{" "}
                 {statusData?.status.Joined ? (
                   <span className="text-md text-green-600">Yes</span>

@@ -136,6 +136,7 @@ const EachJob = () => {
       if (apply.status === 201) {
         console.log(apply.data);
         setApplyRes("Congratulations!!! Applied to this job successfully.");
+        alert("Congratulations You have Applied For this Job sucessfully")
       } else if (apply.status === 401) {
         setApplyRes("Already applied to this job.");
       } else {

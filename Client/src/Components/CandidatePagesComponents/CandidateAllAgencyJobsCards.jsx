@@ -56,9 +56,9 @@ const CandidateAllAgencyJobsCards = () => {
   }, []);
 
   return (
-    <div class="bg-white py-4 sm:py-8 lg:py-10">
-      <div class="mx-auto max-w-screen-2xl px-4 md:px-8">
-        <h2 class="mb-8 text-center text-2xl font-bold text-gray-800 md:mb-12 lg:text-3xl">
+    <div  className="bg-white py-4 sm:py-8 lg:py-10">
+      <div  className="mx-auto max-w-screen-2xl px-4 md:px-8">
+        <h2  className="mb-8 text-center text-2xl font-bold text-gray-800 md:mb-12 lg:text-3xl">
           All Agency Jobs
         </h2>
         {
@@ -73,10 +73,10 @@ const CandidateAllAgencyJobsCards = () => {
               />
             </div> :
 
-            <div class="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+            <div  className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
               {agencyJobs.map((agencyJob) => (
                 <div
-                  class="flex flex-col justify-between h-64 overflow-hidden rounded-lg bg-white shadow-lg shadow-2xl-gray-200 p-4 shadow-lg hover:shadow-2xl"
+                   className="flex flex-col justify-between h-64 overflow-hidden rounded-lg bg-white shadow-lg shadow-2xl-gray-200 p-4 shadow-lg hover:shadow-2xl"
                 >
                   <h3 className="text-xl text-blue-950 font-bold">
                     {agencyJob?.JobTitle}
@@ -91,8 +91,8 @@ const CandidateAllAgencyJobsCards = () => {
                   </p>
 
                   {(agencyJob?.appliedApplicants == decodedToken?.userId) ? (<p className="text-center text-md text-green-500 font-semibold">Already applied</p>) : ""}
-                  <Link to={`/all-jobs/${agencyJob?._id}`} class="cursor-pointer w-full flex-col rounded-lg bg-blue-900 p-4 text-center text-white hover:bg-white hover:text-black-100 hover:text-gray-900 border border-blue-950 mt-2">
-                    <span class="text-md font-bold lg:text-md">
+                  <Link to={`/all-jobs/${agencyJob?._id}`}  className="cursor-pointer w-full flex-col rounded-lg bg-blue-900 p-4 text-center text-white hover:bg-white hover:text-black-100 hover:text-gray-900 border border-blue-950 mt-2">
+                    <span  className="text-md font-bold lg:text-md">
                       Know More
                     </span>
                   </Link>

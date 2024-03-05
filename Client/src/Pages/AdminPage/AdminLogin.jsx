@@ -69,7 +69,7 @@ const AdminLogin = () => {
             <div className="absolute inset-0 bg-gray-800 text-gray-300 text-5xl font-bold opacity-75 flex items-center justify-center">
               <svg
                 aria-hidden="true"
-                class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                 className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
                 viewBox="0 0 100 101"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -84,7 +84,7 @@ const AdminLogin = () => {
                 />
               </svg>
               {/* <p>Loading</p> */}
-              <span class="sr-only">Loading...</span>
+              <span  className="sr-only">Loading...</span>
             </div>
           )}
           <h1 className="text-2xl font-bold sm:text-3xl text-blue-950">

@@ -247,8 +247,8 @@ const PathSearch = ({ latestJobs }) => {
 
                     <div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-4 xl:grid-cols-4 xl:gap-8">
 
-                        {latestJobs.map((latestJob) => (
-                            <div className="flex flex-col overflow-hidden rounded-lg bg-blue-900 p-4 hover:bg-blue-950 shadow-lg shadow-gray-800 hover:shadow-2xl shadow-gray-900">
+                        {latestJobs.map((latestJob,index) => (
+                            <div key={index} className="flex flex-col overflow-hidden rounded-lg bg-blue-900 p-4 hover:bg-blue-950 shadow-lg shadow-gray-800 hover:shadow-2xl shadow-gray-900">
                                 <div className="flex flex-1 flex-col py-4 ">
                                     <div className="mb-2 text-lg font-bold text-white text-left   ">{latestJob?.JobTitle}</div>
 

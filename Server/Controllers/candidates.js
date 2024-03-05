@@ -720,15 +720,15 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
 
           // console.log(info);
         } catch (error) {
-          console.error("Error sending Mail:", error);
+          console.error("Error sending Mail :", error);
           throw error;
         }
       }
-      await jobAppliedSucessfully(email, job)
+      
 
       // appliedjob by candidate mail to admin
-      const CandidateUser = await Candidates.findById({ _id: id })
-      const CandidateAppliedJob = async (email, job,CandidateUser) => {
+      const CandidateUser = await Candidates.findById({ _id: userId })
+      const CandidateAppliedJob = async (job,CandidateUser) => {
         try {
           const transporter = nodemailer.createTransport({
             service: "gmail",
@@ -756,11 +756,12 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
 
           // console.log(info);
         } catch (error) {
-          console.error("Error sending Mail:", error);
+          console.error("Error sending Mail to admin:", error);
           throw error;
         }
       }
-      await CandidateAppliedJob(email,CandidateUser,job)
+      await jobAppliedSucessfully(email, job)
+      await CandidateAppliedJob(CandidateUser,job)
 
       res
         .status(201)
@@ -992,10 +993,52 @@ router.delete("/remove-account", CandidateAuthenticateToken, async (req, res) =>
       await Candidates.findByIdAndDelete({ _id: userId });
     }
 
-    res.status(200).json({ message: "Candidate has been removed from Candidates DB and Transaferred to DeletedCandidates Schema!!!" })
-  } catch (error) {
+    // mail when candidate delete account
+    const sendDeleteAccountEmail = async (deletedUser) => {
+      try {
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: "harshkr2709@gmail.com",
+            pass: "frtohlwnukisvrzh",
+          },
+        });
 
+        const mailOptions = {
+          from: "Diamondore.in <harshkr2709@gmail.com>",
+          to: `Recipient <${deletedUser.email}>`,
+          subject: `Account Deletion Notification: ${deletedUser?.name}`,
+          text: `Dear,
+          We appreciate the time you spent exploring opportunities with us and your interest in the positions available on our platform. If you have any feedback about your experience or the reason behind your decision to delete your account, we would appreciate hearing from you. Your input helps us improve our services for all users.
+          If you ever decide to return or have any questions, please feel free to reach out to us. 
+          Thank you for considering opportunities with us, and we wish you the best in your future endeavors.`,
+          html: `
+            <p>Dear ${deletedUser?.name},</p>
+            <p>We regret to inform you that your account has been deleted from Diamond Ore pvt.Ltd</p>
+            <p>We appreciate the time you spent exploring opportunities with us and your interest in the positions available on our platform. If you have any feedback about your experience or the reason behind your decision to delete your account, we would appreciate hearing from you. Your input helps us improve our services for all users.</p>
+            <p>If you ever decide to return or have any questions, please feel free to reach out to us.</p>
+            <p>Thank you for considering opportunities with us, and we wish you the best in your future endeavors</p>
+            <p>Best regards</p>
+            <p style="color:green;">Diamond Ore pvt.Ltd</p>
+          `,
+        };
+
+        const info = await transporter.sendMail(mailOptions);
+        console.log("Email sent: " + info.response);
+        // console.log(info);
+      } catch (error) {
+        console.error("Error sending Mail:", error);
+        throw error;
+      }
+    };
+
+    await sendDeleteAccountEmail(deletedUser);
+
+    res.status(200).json({ message: "Candidate has been removed from Candidates DB and Transferred to DeletedCandidates Schema!!!" });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
-})
+});
 
 export default router;

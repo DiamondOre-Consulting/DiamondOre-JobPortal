@@ -228,7 +228,7 @@ const AdminNav = () => {
                 All Jobs
               </li>
             </Link>
-            <Link to={"/all-candidates"}>
+            <Link to={"/admin/all-candidates"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
                   } px-12 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
