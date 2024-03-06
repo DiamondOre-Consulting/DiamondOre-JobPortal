@@ -18,12 +18,21 @@ import Status from "../Models/Status.js";
 import CandidateContact from "../Models/CandidateContact.js";
 import PreferenceForm from "../Models/PreferenceForm.js";
 import RemovedCandidates from "../Models/RemovedCandidates.js";
+import fs from "fs";
+import { fileURLToPath } from 'url';
+import mammoth from "mammoth"
+import Docxtemplater from "docxtemplater"; 
+import PizZip from "pizzip";
+import ResumeTemp from "../Models/ResumeTemp.js";
 
 dotenv.config();
 
 const secretKey = process.env.JWT_SECRET;
 
 const router = express.Router();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Generate a random OTP
 const generateOTP = () => {
@@ -393,13 +402,13 @@ router.get(
 
       if (user.preferredFormStatus === true) {
         const mini = parseFloat(prefFormData.minExpectedCTC);
-        const maxi = parseFloat(prefFormData.maxExpectedCTC)
+        const maxi = parseFloat(prefFormData.maxExpectedCTC);
         const recommendedJobs = await Jobs.find({
           $expr: {
             $and: [
               { $gte: [{ $toDouble: "$MaxSalary" }, mini] },
-              { $lte: [{ $toDouble: "$MaxSalary" }, maxi] }
-            ]
+              { $lte: [{ $toDouble: "$MaxSalary" }, maxi] },
+            ],
           },
           Channel: prefFormData.preferredChannel,
           City: prefFormData.preferredCity,
@@ -786,12 +795,10 @@ router.post("/add-preference", CandidateAuthenticateToken, async (req, res) => {
       await user.save();
     }
 
-    res
-      .status(200)
-      .json({
-        message: "Preference form submitted successfully!!! ",
-        newPrefForm,
-      });
+    res.status(200).json({
+      message: "Preference form submitted successfully!!! ",
+      newPrefForm,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Something went wrong!!!" });
@@ -850,45 +857,259 @@ router.get("/get-pref-data", CandidateAuthenticateToken, async (req, res) => {
     const prefFormData = await PreferenceForm.findOne({ candidateId: userId });
 
     res.status(200).json(prefFormData);
-
-  } catch(error) {
+  } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Something went wrong!!!" });
   }
-})
+});
 
 // DELETE BUT NOT DELETE PERSONAL ACCOUNT
-router.delete("/remove-account", CandidateAuthenticateToken, async (req, res) => {
-  try {
-    const { email, userId } = req.user;
+router.delete(
+  "/remove-account",
+  CandidateAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { email, userId } = req.user;
 
-    const user = await Candidates.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      const user = await Candidates.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const deletedUser = new RemovedCandidates({
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        password: user.password,
+        profilePic: user.profilePic,
+        resume: user.resume,
+        preferredFormStatus: user.preferredFormStatus,
+        allAppliedJobs: user.allAppliedJobs,
+        allShortlistedJobs: user.allShortlistedJobs,
+      });
+
+      await deletedUser.save();
+
+      if (deletedUser) {
+        await Candidates.findByIdAndDelete({ _id: userId });
+      }
+
+      res.status(200).json({
+        message:
+          "Candidate has been removed from Candidates DB and Transaferred to DeletedCandidates Schema!!!",
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Something went wrong!!!" });
     }
-
-    const deletedUser = new RemovedCandidates({
-      name: user.name,
-      email:  user.email,
-      phone: user.phone,
-      password: user.password,
-      profilePic: user.profilePic,
-      resume: user.resume,
-      preferredFormStatus: user.preferredFormStatus,
-      allAppliedJobs: user.allAppliedJobs,
-      allShortlistedJobs: user.allShortlistedJobs,
-    });
-
-    await deletedUser.save();
-
-    if(deletedUser) {
-      await Candidates.findByIdAndDelete({_id: userId});
-    }
-
-    res.status(200).json({message: "Candidate has been removed from Candidates DB and Transaferred to DeletedCandidates Schema!!!"})
-  } catch(error) {
-
   }
-})
+);
+
+// TEBI FOR FREE RESUME BUILDING
+const credentialsFreeResumeBuilding = {
+  accessKeyId: "KPvWPJ8OJZwpVGZm",
+  secretAccessKey: "3jVWD2tpmuoHlrn6UHLIwbFozdoxXneSKL8bYJ0d",
+};
+
+const s3ClientFreeResumeBuilding = new S3Client({
+  endpoint: "https://s3.tebi.io",
+  credentials: credentialsFreeResumeBuilding,
+  region: "global",
+});
+
+// RESUME BUILDING
+// router.post("/free-resume", async (req, res) => {
+//   try {
+//     const { name, email, phone, linkedinUrl, summary } = req.body;
+
+//     const templatePath = path.resolve(__dirname, "resume_001.docx");
+//     const content = fs.readFileSync(templatePath, "binary");
+//     const zip = new PizZip(content);
+//     const doc = new Docxtemplater(zip);
+
+//     doc.render({
+//       name: name,
+//       email: email,
+//       phone: phone,
+//       linkedinUrl: linkedinUrl,
+//       summary: summary,
+//     });
+
+//     // Save Word document
+//     const buffer = doc.getZip().generate({ type: "nodebuffer", compression: "DEFLATE", });
+//     console.log(__dirname);
+
+//     // const tempFilePath = path.resolve(__dirname, "freeResume.docx");
+//     // await fs.writeFile(tempFilePath, buffer);
+
+//     // TEBI START
+//         // Generate a unique identifier
+//         // const uniqueIdentifier = uuidv4();
+
+//         // Get the file extension from the original file name
+//         // const fileExtension = buffer.split(".").pop();
+    
+//         // Create a unique filename by appending the unique identifier to the original filename
+//         // const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
+    
+//         // Convert file to base64
+//         // const base64Data = buffer.data.toString("base64");
+    
+//         // Create a buffer from the base64 data
+//         // const fileBuffer = Buffer.from(base64Data, "base64");
+    
+//         // const uploadData = await s3ClientFreeResumeBuilding.send(
+//         //   new PutObjectCommand({
+//         //     Bucket: "freeresumesbuild",
+//         //     Key: `freeResume_${name}.docx`, // Use the unique filename for the S3 object key
+//         //     Body: await fs.readFile(tempFilePath), // Provide the file buffer as the Body
+//         //   })
+//         // );
+    
+//         // Generate a public URL for the uploaded file
+//         // const getObjectCommand = new GetObjectCommand({
+//         //   Bucket: "freeresumesbuild",
+//         //   Key: `freeResume_${name}.docx`,
+//         // });
+    
+//         // const signedUrl = await getSignedUrl(s3Client, getObjectCommand); 
+    
+//         // Parse the signed URL to extract the base URL
+//         // const parsedUrl = new URL(signedUrl);
+//         // await fs.unlink(tempFilePath);
+//         // const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
+//     // TEBI END
+
+//     const outputPath = path.resolve(__dirname, "output.docx");
+//     fs.writeFileSync(outputPath, buffer);
+
+//     res.status(200).send(outputPath);
+
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ message: "Something went wrong!!!" });
+//   }
+// });
+
+router.post("/free-resume", async (req, res) => {
+  try {
+      const { full_name, address, phone, email, linkedinUrl, summary, tech_skills, soft_skills, designation, start_month, start_year, end_month, end_year, company, company_city, work_description, degree_name, degree_field, graduation_year, university_name, university_city, tewlfth_field, twelfth_year, twelfth_school_name, twelfth_school_city, twelfth_board_name, tenth_field, tenth_year, tenth_school_name, tenth_school_city, tenth_board_name } = req.body;
+
+      // Your existing code to generate output.docx
+      const templatePath = path.resolve(__dirname, "Template_Resume.docx");
+      const content = fs.readFileSync(templatePath, "binary");
+      const zip = new PizZip(content);
+      const doc = new Docxtemplater(zip);
+
+      console.log("logging to test");
+
+      doc.render({
+          full_name: full_name,
+          address:address,
+          phone:phone,
+          email:email,
+          linkedinUrl:linkedinUrl,
+          summary:summary,
+          tech_skills:[tech_skills],
+          soft_skills:[soft_skills],
+          designation:designation,
+          start_month:start_month,
+          start_year:start_year,
+          end_month:end_month,
+          end_year:end_year,
+          company:company,
+          company_city:company_city,
+          work_description:work_description,
+          degree_name:degree_name,
+          degree_field:degree_field,
+          graduation_year:graduation_year,
+          university_name:university_name,
+          university_city:university_city,
+          tewlfth_field:tewlfth_field,
+          twelfth_year:twelfth_year,
+          twelfth_school_name:twelfth_school_name,
+          twelfth_school_city:twelfth_school_city,
+          twelfth_board_name:twelfth_board_name,
+          tenth_year:tenth_year,
+          tenth_field:tenth_field,
+          tenth_school_name:tenth_school_name,
+          tenth_school_city:tenth_school_city,
+          tenth_board_name:tenth_board_name
+        
+      });
+
+      // Save Word document
+      const buffer = doc.getZip().generate({ type: "nodebuffer", compression: "DEFLATE" });
+      const outputPath = path.resolve(__dirname, `${full_name}_freeResume.docx`);
+      fs.writeFileSync(outputPath, buffer);
+
+      console.log(outputPath);
+
+      // Upload the generated file to Tebi
+      const upload_data = await s3ClientFreeResumeBuilding.send(
+          new PutObjectCommand({
+              Bucket: "freeresumesbuild",
+              Key: `${full_name}_freeResume.docx`,
+              Body: fs.readFileSync(outputPath)
+          })
+      );
+
+      const getObjectCommand = new GetObjectCommand({
+        Bucket: "freeresumesbuild",
+        Key: `${full_name}_freeResume.docx`,
+      });
+
+      const signedUrl = await getSignedUrl(s3Client, getObjectCommand); // Generate URL valid for 1 hour
+
+      // Parse the signed URL to extract the base URL
+      const parsedUrl = new URL(signedUrl);
+      const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
+
+      if(baseUrl) {
+        const newFreeResume = new ResumeTemp({
+          full_name,
+          address,
+          phone,
+          email,
+          linkedinUrl,
+          summary,
+          tech_skills,
+          soft_skills,
+          designation,
+          start_month,
+          start_year,
+          end_month,
+          end_year,
+          company,
+          company_city,
+          work_description,
+          degree_name,
+          degree_field,
+          graduation_year,
+          university_name,
+          university_city,
+          tewlfth_field,
+          twelfth_year,
+          twelfth_school_name,
+          twelfth_school_city,
+          twelfth_board_name,
+          tenth_field,
+          tenth_year,
+          tenth_school_name,
+          tenth_school_city,
+          tenth_board_name
+          
+        })
+
+        await newFreeResume.save();
+      }
+
+      res.status(200).send(baseUrl); // Return the URL of the uploaded file
+
+  } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Something went wrong!!!" });
+  }
+});
 
 export default router;
