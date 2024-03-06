@@ -316,15 +316,15 @@ router.put("/remove-job/:id", AdminAuthenticateToken, async (req, res) => {
     }
 
     const job = await Jobs.findByIdAndUpdate(
-      { _id: id},
+      { _id: id },
       {
-        $set: { JobStatus: false}
+        $set: { JobStatus: false }
       }
     );
 
-    res.status(201).json({message: "Job has been removed from list!!!"})
+    res.status(201).json({ message: "Job has been removed from list!!!" })
 
-  } catch(error) {
+  } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Something went wrong!!!" });
   }
@@ -516,6 +516,41 @@ router.put(
       );
 
       console.log(cvShortlistedJob);
+      const CandidateUser = await Candidates.findById({ _id: id1 })
+      // cv shorlisted confirmation mail
+
+      const CvShortlistedSucessfully = async (CandidateUser, cvShortlistedJob, user) => {
+        try {
+          const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              user: "harshkr2709@gmail.com",
+              pass: "frtohlwnukisvrzh",
+            },
+          });
+
+          const mailOptions = {
+            from: "Diamondore.in <harshkr2709@gmail.com>",
+            to: `Recipient <${CandidateUser.email}>`,
+            subject: "Congratulation! Your CV has been shorlisted",
+            html: `
+            <p style="color:green; text-align:center;">Congratulations!</p>
+            <p>Your CV has been successfully shortlisted for ${cvShortlistedJob.JobTitle}.</p>
+            <p>We will contact you soon with further details.</p>
+            <p style="color:green; text-align:center;">Thank you!</p>
+            `,
+          };
+
+          const info = await transporter.sendMail(mailOptions);
+          console.log("Email sent: " + info.response);
+
+          // console.log(info);
+        } catch (error) {
+          console.error("Error sending Mail:", error);
+          throw error;
+        }
+      }
+      await CvShortlistedSucessfully(CandidateUser, cvShortlistedJob, user)
 
       return res
         .status(201)
@@ -559,6 +594,43 @@ router.put(
         }
       );
 
+
+      const CandidateUser = await Candidates.findById({ _id: id1 })
+
+      // CV Screening mail
+      const CvScreeningSucessfully = async (CandidateUser, screeningJob, user) => {
+        try {
+          const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              user: "harshkr2709@gmail.com",
+              pass: "frtohlwnukisvrzh",
+            },
+          });
+
+          const mailOptions = {
+            from: "Diamondore.in <harshkr2709@gmail.com>",
+            to: `Recipient <${CandidateUser.email}>`,
+            subject: "Congratulation! Your CV passed the screening process",
+            html: `
+            <p style="color:green; text-align:center;">Congratulations!</p>
+            <p>Your CV has successfully passed the screening process.</p>
+            <p>We are pleased to inform you that you have passed the screening process for ${screeningJob.JobTitle}.</p>
+            <p>We will contact you soon with further details.</p>
+            <p style="color:green; text-align:center;">Thank you!</p>
+            `,
+          };
+
+          const info = await transporter.sendMail(mailOptions);
+          console.log("Email sent: " + info.response);
+
+          // console.log(info);
+        } catch (error) {
+          console.error("Error sending Mail:", error);
+          throw error;
+        }
+      }
+      await CvScreeningSucessfully(CandidateUser, screeningJob, user)
       return res
         .status(201)
         .json({ message: "Screening status updated sucessfully!!!" });
@@ -606,6 +678,40 @@ router.put(
         }
       );
 
+      const CandidateUser = await Candidates.findById({ _id: id1 })
+
+      // Interview Shedule
+      const InterviewScheduledSucessfully = async (CandidateUser, interviewScheduledJob, user) => {
+        try {
+          const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              user: "harshkr2709@gmail.com",
+              pass: "frtohlwnukisvrzh",
+            },
+          });
+
+          const mailOptions = {
+            from: "Diamondore.in <harshkr2709@gmail.com>",
+            to: `Recipient <${CandidateUser.email}>`,
+            subject: "Congratulation! Your Interview has been Scheduled",
+            html: `
+            <p style="color:green; text-align:center;">Congratulations!</p>
+            <p>We are pleased to inform you that your Interview has been  Scheduled you will get the further information through our HR ${interviewScheduledJob.JobTitle}.</p>
+            <p style="color:green; text-align:center;">Thank you!</p>
+            `,
+          };
+
+          const info = await transporter.sendMail(mailOptions);
+          console.log("Email sent: " + info.response);
+
+          // console.log(info);
+        } catch (error) {
+          console.error("Error sending Mail:", error);
+          throw error;
+        }
+      }
+      await InterviewScheduledSucessfully(CandidateUser, interviewScheduledJob, user)
       return res
         .status(201)
         .json({ message: "Interview scheduled status updated sucessfully!!!" });
@@ -703,6 +809,43 @@ router.put(
         }
       );
 
+      const CandidateUser = await Candidates.findById({ _id: id1 })
+      // Shrtlisted for job mail
+
+      const shortlistedforjob = async (CandidateUser, shortlistedJob, user) => {
+        try {
+          const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              user: "harshkr2709@gmail.com",
+              pass: "frtohlwnukisvrzh",
+            },
+          });
+
+          const mailOptions = {
+            from: "Diamondore.in <harshkr2709@gmail.com>",
+            to: `Recipient <${CandidateUser.email}>`,
+            subject: "Congratulation! You are Shortlisted!",
+            html: `
+            <p style="color:green; text-align:center;">Congratulations!</p>
+            <p>You have been shortlisted for the position of ${shortlistedJob.JobTitle}.</p>
+            <p>This is a significant achievement, and we are excited to consider you for this role.</p>
+            <p>We will be in touch shortly with the next steps in the hiring process.</p>
+            <p style="color:green; text-align:center;">Thank you!</p>
+            `,
+          };
+
+          const info = await transporter.sendMail(mailOptions);
+          console.log("Email sent: " + info.response);
+
+          // console.log(info);
+        } catch (error) {
+          console.error("Error sending Mail:", error);
+          throw error;
+        }
+      }
+      await shortlistedforjob(CandidateUser, shortlistedJob, user)
+
       return res
         .status(201)
         .json({ message: "Shortlisted status updated sucessfully!!!" });
@@ -746,13 +889,54 @@ router.put(
         { new: true }
       );
 
-      const shortlistedJob = await Jobs.findByIdAndUpdate(
+      const JoinedJob = await Jobs.findByIdAndUpdate(
         { _id: id2 },
         {
           $push: { joinedApplicants: id1 },
           $inc: { Vacancies: -1 },
         }
       );
+
+      const CandidateUser = await Candidates.findById({ _id: id1 })
+      // Shrtlisted for job mail
+
+      const Joiningstatusmail = async (CandidateUser, JoinedJob, user) => {
+        try {
+          const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              user: "harshkr2709@gmail.com",
+              pass: "frtohlwnukisvrzh",
+            },
+          });
+
+          const mailOptions = {
+            from: "Diamondore.in <harshkr2709@gmail.com>",
+            to: `Recipient <${CandidateUser.email}>`,
+            subject: "Congratulations on Successfully Joining Your New Company!",
+            html: `
+             <p style="color:green; text-align:center;">Congratulations!</p>
+             <p>Dear ${CandidateUser?.name},</p>
+            <p>We are thrilled to inform you that you have successfully joined  ${JoinedJob?.Company} through Diamond Ore pvt.Ltd!</p>
+            <p>This marks the beginning of an exciting journey in your career, and we couldn't be happier to have played a part in your success.</p>
+            <p>We wish you all the best as you embark on this new chapter. May it bring you growth, fulfillment, and endless opportunities.</p>
+            <p>If you have any questions or need assistance during your transition, please don't hesitate to reach out to us. We're here to support you every step of the way.</p>
+            <p>Once again, congratulations on your new role at ${JoinedJob?.Company}!</p>
+            <p style="color:green; text-align:center;">Best regards,</p>
+            <p>Diamond Ore Pvt.Ltd</p>
+            `,
+          };
+
+          const info = await transporter.sendMail(mailOptions);
+          console.log("Email sent: " + info.response);
+
+          // console.log(info);
+        } catch (error) {
+          console.error("Error sending Mail:", error);
+          throw error;
+        }
+      }
+      await Joiningstatusmail(CandidateUser, JoinedJob, user)
 
       return res
         .status(201)
@@ -867,15 +1051,15 @@ router.get("/all-employees/:id", AdminAuthenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const { email } = req.user;
-    const user =await Admin.findOne({email})
-    if(!user){
-      return res.status(404).json({message:'user not Found'})
+    const user = await Admin.findOne({ email })
+    if (!user) {
+      return res.status(404).json({ message: 'user not Found' })
     }
 
-    const oneEmployee = await Employees.findById({_id : id}, { password: 0 });
+    const oneEmployee = await Employees.findById({ _id: id }, { password: 0 });
     console.log(oneEmployee);
     return res.status(201).json(oneEmployee);
-  
+
 
   } catch (error) {
     console.log(error);
@@ -897,12 +1081,12 @@ router.post("/add-leave-report/:id", async (req, res) => {
       return res.status(409).json({ message: "This month's or year's report already exists" });
     }
 
-    const currentReport = await LeaveReport.findOne({employeeId: id});
+    const currentReport = await LeaveReport.findOne({ employeeId: id });
 
     let newReport = {};
-    if(currentReport) {
+    if (currentReport) {
       let currentLeaves = currentReport.totalLeaves;
-      if(month=="April" || month=="Apr") {
+      if (month == "April" || month == "Apr") {
         newReport = new LeaveReport({
           employeeId: id,
           month,
@@ -953,20 +1137,20 @@ router.post("/add-leave-report/:id", async (req, res) => {
 // ADD PERFORMANCE REPORT
 router.post("/add-performance-report/:id", async (req, res) => {
   try {
-    const {id} = req.params;
-    const {month, year, multipleOf4x, monthlyIncentive, kpiScore} = req.body;
+    const { id } = req.params;
+    const { month, year, multipleOf4x, monthlyIncentive, kpiScore } = req.body;
 
     const reportExists = await PerformanceReport.findOne({ employeeId: id, month: month, year: year });
     if (reportExists) {
       return res.status(409).json({ message: "This month's or year's report already exists" });
     }
 
-    const currentReport = await PerformanceReport.findOne({employeeId: id});
+    const currentReport = await PerformanceReport.findOne({ employeeId: id });
 
     let newReport = {};
-    if(currentReport) {
+    if (currentReport) {
       let currentLeaves = currentReport.totalLeaves;
-      if(month=="April" || month=="Apr") {
+      if (month == "April" || month == "Apr") {
         newReport = new PerformanceReport({
           employeeId: id,
           month,
@@ -990,7 +1174,7 @@ router.post("/add-performance-report/:id", async (req, res) => {
       newReport = new PerformanceReport({
         employeeId: id,
         month,
-        year, 
+        year,
         multipleOf4x,
         monthlyIncentive,
         kpiScore
@@ -999,9 +1183,9 @@ router.post("/add-performance-report/:id", async (req, res) => {
       await newReport.save();
     }
 
-    res.status(200).json({message: "Performance report submitted", newReport})
+    res.status(200).json({ message: "Performance report submitted", newReport })
 
-  } catch(error) {
+  } catch (error) {
     console.log(error, "Something went wrong!!!");
     res.status(500).json("Something went wrong!!!", error);
   }
@@ -1010,7 +1194,7 @@ router.post("/add-performance-report/:id", async (req, res) => {
 // GET LEAVE REPORT OF AN EMPLOYEE
 router.get("/leave-report/:id", AdminAuthenticateToken, async (req, res) => {
   try {
-    const {id} = req.params;
+    const { id } = req.params;
     const { email } = req.user;
 
     // Find the user in the database
@@ -1019,7 +1203,7 @@ router.get("/leave-report/:id", AdminAuthenticateToken, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const latestData = await LeaveReport.find({employeeId: id});
+    const latestData = await LeaveReport.find({ employeeId: id });
 
     if (!latestData) {
       return res.status(404).json({ message: "No Leave Report data found" });
@@ -1034,29 +1218,29 @@ router.get("/leave-report/:id", AdminAuthenticateToken, async (req, res) => {
 
 // GET PERFORMANCE REPORT OF AN EMPLOYEE
 router.get("/performance-report/:id", AdminAuthenticateToken, async (req, res) => {
-    try {
-      const {id} = req.params;
-      const { email } = req.user;
-  
-      // Find the user in the database
-      const user = await Admin.findOne({ email });
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
+  try {
+    const { id } = req.params;
+    const { email } = req.user;
 
-      const latestData = await PerformanceReport.find({ employeeId: id });
-
-      if (!latestData) {
-        return res
-          .status(404)
-          .json({ message: "No Performance Report data found" });
-      }
-
-      res.status(200).json(latestData);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Internal server error" });
+    // Find the user in the database
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    const latestData = await PerformanceReport.find({ employeeId: id });
+
+    if (!latestData) {
+      return res
+        .status(404)
+        .json({ message: "No Performance Report data found" });
+    }
+
+    res.status(200).json(latestData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 })
 
 // CHATBOT MESSAGE RECIEVE

@@ -34,7 +34,7 @@ const AllAgencyJobs = () => {
     }, [decodedToken])
 
   return (
-    <div className='bg-white mx-5'>
+    <div className='bg-white  '>
       <CandidateNav/>
       <CandidateAllAgencyJobsCards />
       <CandidateFooter/>

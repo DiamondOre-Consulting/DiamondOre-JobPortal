@@ -9,33 +9,33 @@ const StatsPartners = () => {
 
   return (
     <div className='mt-20 '>
-      <div class=" py-6 sm:py-8 lg:py-18 bg-gray-50">
-        <div class="mx-auto max-w-screen-xl px-4 md:px-8">
-          <div class="mb-10 md:mb-16">
-            <h2 class="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-6 lg:text-3xl ">Our Work By Numbers</h2>
+      <div  className=" py-6 sm:py-8 lg:py-18 bg-gray-50">
+        <div  className="mx-auto max-w-screen-xl px-4 md:px-8">
+          <div  className="mb-10 md:mb-16">
+            <h2  className="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-6 lg:text-3xl ">Our Work By Numbers</h2>
 
-            <p class="mx-auto max-w-screen-md text-center text-gray-500 md:text-lg" style={{}}>we partner with to the vacancies eagerly awaiting talented individuals. As each position is filled, our numerical narrative transforms, reflecting the continual influx of talent that propels our collective success.</p>
+            <p  className="mx-auto max-w-screen-md text-center text-gray-500 md:text-lg" style={{}}>We eagerly partner with vacancies, awaiting talented individuals. As each position is filled, our numerical narrative transforms, reflecting the continual influx of talent that propels our collective success.</p>
           </div>
 
-          <div class="grid grid-cols-2 gap-8 md:grid-cols-4 md:gap-0 md:divide-x">
-            <div class="flex flex-col items-center md:p-4 hover:shadow-lg">
-              <div class="text-xl font-bold text-blue-900 sm:text-2xl md:text-3xl">30+</div>
-              <div class="text-sm font-semibold sm:text-base">Companies</div>
+          <div  className="grid grid-cols-2 gap-8 md:grid-cols-4 md:gap-0 md:divide-x">
+            <div  className="flex flex-col items-center md:p-4 hover:shadow-lg">
+              <div  className="text-xl font-bold text-blue-900 sm:text-2xl md:text-3xl">30+</div>
+              <div  className="text-sm font-semibold sm:text-base">Companies</div>
             </div>
 
-            <div class="flex flex-col items-center md:p-4 hover:shadow-lg">
-              <div class="text-xl font-bold text-blue-900 sm:text-2xl md:text-3xl">3000+</div>
-              <div class="text-sm font-semibold sm:text-base">Vacancies</div>
+            <div  className="flex flex-col items-center md:p-4 hover:shadow-lg">
+              <div  className="text-xl font-bold text-blue-900 sm:text-2xl md:text-3xl">3000+</div>
+              <div  className="text-sm font-semibold sm:text-base">Vacancies</div>
             </div>
 
-            <div class="flex flex-col items-center md:p-4 hover:shadow-lg">
-              <div class="text-xl font-bold text-blue-900 sm:text-2xl md:text-3xl">20,000+</div>
-              <div class="text-sm font-semibold sm:text-base">Got Placed</div>
+            <div  className="flex flex-col items-center md:p-4 hover:shadow-lg">
+              <div  className="text-xl font-bold text-blue-900 sm:text-2xl md:text-3xl">20,000+</div>
+              <div  className="text-sm font-semibold sm:text-base">Got Placed</div>
             </div>
 
-            <div class="flex flex-col items-center md:p-4 hover:shadow-lg">
-              <div class="text-xl font-bold text-blue-900 sm:text-2xl md:text-3xl">A couple</div>
-              <div class="text-sm font-semibold sm:text-base">Coffee breaks</div>
+            <div  className="flex flex-col items-center md:p-4 hover:shadow-lg">
+              <div  className="text-xl font-bold text-blue-900 sm:text-2xl md:text-3xl">A couple</div>
+              <div  className="text-sm font-semibold sm:text-base">Coffee breaks</div>
             </div>
           </div>
         </div>

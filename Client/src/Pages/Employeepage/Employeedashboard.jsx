@@ -127,7 +127,7 @@ const Employeedashboard = () => {
   }, [decodedToken]);
      
   return (
-    <div className="mx-5">
+    <div className=" ">
       <EmployeeNavbar/>
       <h2 className="text-5xl px-10 font-bold text-gray-800">
         Welcome aboard <span className="text-blue-900">{userName} </span>

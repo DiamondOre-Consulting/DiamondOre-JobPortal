@@ -155,7 +155,7 @@ const EditPrefrenceform = () => {
             <div className="max-w-screen-md mx-auto mt-2 px-8  mt-2 shadow-lg shadow-gray-500 pb-8 pt-4">
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
-                        <label htmlFor="name" className="block text-gray-700 font-bold mb-2">Prefered Cities</label>
+                        <label htmlFor="name" className="block text-gray-700 font-bold mb-2">Prefered Cities<span className='text-red-500'>*</span></label>
                         <select
                             className='w-full py-2 px-3'
                             name="preferredCity"
@@ -177,7 +177,7 @@ const EditPrefrenceform = () => {
                         {/* <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} className="border border-gray-400 rounded w-full py-2 px-3" /> */}
                     </div>
                     <div className="mb-4">
-                        <label htmlFor="email" className="block text-gray-700 font-bold mb-2">Prefered Channels</label>
+                        <label htmlFor="email" className="block text-gray-700 font-bold mb-2">Prefered Channels<span className='text-red-500'>*</span></label>
                         <select
                             className='w-full py-2 px-3'
                             name="preferredChannel"
@@ -200,7 +200,7 @@ const EditPrefrenceform = () => {
                     </div>
 
                     <div className="mb-4">
-                        <label htmlFor="email" className="block text-gray-700 font-bold mb-2">Expected CTC</label>
+                        <label htmlFor="email" className="block text-gray-700 font-bold mb-2">Expected CTC<span className='text-red-500'>*</span></label>
                         <select
                             className='w-full py-2 px-3'
                             name="expectedCTC"

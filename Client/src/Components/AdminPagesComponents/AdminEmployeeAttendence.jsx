@@ -193,39 +193,39 @@ const AdminEmployeeAttendence = () => {
         <div>
             <AdminNav/>
             <h1 className='text-bold  text-center text-3xl my-8'> Employee Details</h1>
-            <div class="overflow-x-auto px-12 py-8 border border-1">
-                <table class="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
-                    <thead class="ltr:text-left rtl:text-right bg-blue-950 text-white">
+            <div  className="overflow-x-auto px-12 py-8 border border-1">
+                <table  className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
+                    <thead  className="ltr:text-left rtl:text-right bg-blue-950 text-white">
                         <tr>
-                            <th class="whitespace-nowrap px-4 py-2 font-medium text-white">UserImage</th>
-                            <th class="whitespace-nowrap px-4 py-2 font-medium text-white">Name</th>
-                            <th class="whitespace-nowrap px-4 py-2 font-medium text-white">Email</th>
-                            <th class="whitespace-nowrap px-4 py-2 font-medium text-white">EditAttendece</th>
-                            <th class="whitespace-nowrap px-4 py-2 font-medium text-white">EditPerfomence</th>
-                            <th class="px-4 py-2"></th>
+                            <th  className="whitespace-nowrap px-4 py-2 font-medium text-white">UserImage</th>
+                            <th  className="whitespace-nowrap px-4 py-2 font-medium text-white">Name</th>
+                            <th  className="whitespace-nowrap px-4 py-2 font-medium text-white">Email</th>
+                            <th  className="whitespace-nowrap px-4 py-2 font-medium text-white">EditAttendece</th>
+                            <th  className="whitespace-nowrap px-4 py-2 font-medium text-white">EditPerfomence</th>
+                            <th  className="px-4 py-2"></th>
                         </tr>
                     </thead>
 
-                    <tbody class="divide-y divide-gray-200 text-center">
+                    <tbody  className="divide-y divide-gray-200 text-center">
                         {employees.map((emp) => {
                             return (
                                 <tr>
-                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700 object-cover w-4 cursor-pointer"><img onClick={() => handleOpen(emp)} src={emp.profilePic} /></td>
-                                    <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{emp.name}</td>
-                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{emp.email}</td>
-                                    {/* <td class="whitespace-nowrap px-4 py-2 text-gray-700"><Link to={'/'} className="bg-blue-950 text-white p-2">EditAttendence</Link></td> */}
-                                    <td class="whitespace-nowrap px-4 py-2">
+                                    <td  className="whitespace-nowrap px-4 py-2 text-gray-700 object-cover w-4 cursor-pointer"><img onClick={() => handleOpen(emp)} src={emp.profilePic} /></td>
+                                    <td  className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{emp.name}</td>
+                                    <td  className="whitespace-nowrap px-4 py-2 text-gray-700">{emp.email}</td>
+                                    {/* <td  className="whitespace-nowrap px-4 py-2 text-gray-700"><Link to={'/'} className="bg-blue-950 text-white p-2">EditAttendence</Link></td> */}
+                                    <td  className="whitespace-nowrap px-4 py-2">
                                         <Link to={`/admin-all-employee/attendence/${emp._id}`}
                                             href="#"
-                                            class="inline-block rounded bg-blue-900 px-4 py-4 text-xs font-medium text-white hover:bg-blue-950"
+                                             className="inline-block rounded bg-blue-900 px-4 py-4 text-xs font-medium text-white hover:bg-blue-950"
                                         >
                                             EditAttendence
                                         </Link>
                                     </td>
-                                    <td class="whitespace-nowrap px-4 py-2">
+                                    <td  className="whitespace-nowrap px-4 py-2">
                                         <Link to={`/admin-all-employee/performence/${emp._id}`}
                                             href="#"
-                                            class="inline-block rounded bg-blue-900 px-4 py-4 text-xs font-medium text-white hover:bg-blue-950"
+                                             className="inline-block rounded bg-blue-900 px-4 py-4 text-xs font-medium text-white hover:bg-blue-950"
                                         >
                                             EditPerformence
                                         </Link>
@@ -240,7 +240,7 @@ const AdminEmployeeAttendence = () => {
                 {/* Dialog component */}
                 {selectedEmployee && (
                     <div className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded shadow-lg shadow-gray-500 p-6 overflow-scroll h-4/6 ${open ? 'block' : 'hidden'}`}>
-                        <svg class="h-8 w-8 text-red-600 float-right" onClick={() => setOpen(false)} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">  <circle cx="12" cy="12" r="10" />  <line x1="15" y1="9" x2="9" y2="15" />  <line x1="9" y1="9" x2="15" y2="15" /></svg>
+                        <svg  className="h-8 w-8 text-red-600 float-right" onClick={() => setOpen(false)} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">  <circle cx="12" cy="12" r="10" />  <line x1="15" y1="9" x2="9" y2="15" />  <line x1="9" y1="9" x2="15" y2="15" /></svg>
                         <div className='flex items-center justify-center text-center flex-col'>
                             <img src={selectedEmployee.profilePic} alt={selectedEmployee.name} className='w-24 flex  justify-center' />
                             <h1>
@@ -250,12 +250,12 @@ const AdminEmployeeAttendence = () => {
                                 {/* Add more details as needed */}
                             </h1>
                         </div>
-                        <div class="grid grid-cols-1 gap-4 ">
+                        <div  className="grid grid-cols-1 gap-4 ">
                             <div>
                                 <h2 className='text-center font-bold  mb-1 text-2xl mt-2 text-blue-950'>Attendence</h2>
-                                <div class="relative overflow-x-auto">
-                                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 bg-gray-50">
-                                        <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                                <div  className="relative overflow-x-auto">
+                                    <table  className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 bg-gray-50">
+                                        <thead  className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
 
                                             <tr>
                                                 <th scope="col" className="px-6 py-3 rounded-s-lg ">
@@ -313,9 +313,9 @@ const AdminEmployeeAttendence = () => {
 
                             <div>
                                 <h2 className='text-center font-bold  mb-1 mb-1 text-2xl mt-2 text-blue-950'>Performence</h2>
-                                <div class="relative overflow-x-auto">
-                                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 bg-gray-50">
-                                        <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                                <div  className="relative overflow-x-auto">
+                                    <table  className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 bg-gray-50">
+                                        <thead  className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
 
                                             <tr>
                                                 <th scope="col" className="px-6 py-3 rounded-s-lg ">

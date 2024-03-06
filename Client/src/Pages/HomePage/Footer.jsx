@@ -7,7 +7,7 @@ const Footer = () => {
     <div>
       <footer className="bg-white">
         <div className="pb-16 pt-4 sm:pt-10 lg:pt-12">
-            <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
+            <div className="mx-auto max-w-screen-2xl lg:px-4 px-10 md:px-8 sm:px-16">
             <div className="grid grid-cols-2 gap-12 border-t pt-10 md:grid-cols-4 lg:grid-cols-6 lg:gap-8 lg:pt-12">
                 <div className="col-span-full lg:col-span-2">
                 <div className="mb-4 w-3/4">
@@ -49,7 +49,7 @@ const Footer = () => {
                     </div>
 
                     <div>
-                    <a href="#ourteam" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Team</a>
+                    <Link to={"/about#ourteam"} className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Team</Link>
                     </div>
 
                     <div>
@@ -110,11 +110,11 @@ const Footer = () => {
                 </a>
 
                 <a href="https://www.youtube.com/@DiamondOre-Career" target="_blank" className="text-gray-400 transition duration-100 hover:text-blue-950 active:text-gray-600">
-                <svg class="h-6 w-6 text-gray-500 hover:text-blue-950"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />  <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" /></svg>
+                <svg  className="h-6 w-6 text-gray-500 hover:text-blue-950"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />  <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" /></svg>
                 </a>
 
                 <a href="https://www.facebook.com/profile.php?id=61555444963500&mibextid=ZbWKwL" target="_blank" className="text-gray-400 transition duration-100 hover:text-blue-950 active:text-gray-600">
-                <svg class="h-6 w-6 text-gray-400 hover:text-blue-950"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <path d="M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3" /></svg>
+                <svg  className="h-6 w-6 text-gray-400 hover:text-blue-950"  width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <path d="M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3" /></svg>
                 </a>
                 </div>
             </div>

@@ -95,7 +95,7 @@ const AdminEachJob = () => {
   }, [decodedToken]);
 
   return (
-    <div className="bg-white mx-5">
+    <div className="bg-white  ">
       <AdminNav />
       <div>
         <h1 className="text-center text-5xl text-bold py-lg font-bold ">Each Job</h1>
@@ -151,15 +151,15 @@ const AdminEachJob = () => {
         </div>
       </div>
       <div className="my-8">
-        <h1 className="text-center text-5xl text-bold py-lg">
+        <h1 className="text-center text-2xl px-16 text-bold py-lg">
           Applicants Applied For This Position
         </h1>
-        <div class="mt-10 mx-10 grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-3">
+        <div  className="mt-10 mx-10 grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-3">
           {jobsApplied?.map((jobs) => (
             <div>
               <div
                 href="#"
-                class="flex flex-col justify-between h-72 overflow-hidden rounded-lg bg-gray-100 p-4 shadow-lg"
+                 className="flex flex-col justify-between h-72 overflow-hidden rounded-lg bg-gray-100 p-4 shadow-lg"
               >
                 <h3 className="text-xl text-blue-950 font-bold text-wrap">
                   Name -{" "}  
@@ -179,15 +179,15 @@ const AdminEachJob = () => {
                 </p>
                 <a
                   href={jobs?.resume}
-                  class="cursor-pointer w-full flex-col rounded-lg bg-white p-4 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200"
+                   className="cursor-pointer w-full flex-col rounded-lg bg-white p-4 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200"
                 >
-                  <span class="text-md font-bold lg:text-md">Download Resume</span>
+                  <span  className="text-md font-bold lg:text-md">Download Resume</span>
                 </a>
                 <Link
                   to={`/update-status/${jobs?._id}/${id}`}
-                  class="cursor-pointer w-full flex-col rounded-lg bg-white p-4 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200"
+                   className="cursor-pointer w-full flex-col rounded-lg bg-white p-4 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200"
                 >
-                  <span class="text-md font-bold lg:text-md">Update Status</span>
+                  <span  className="text-md font-bold lg:text-md">Update Status</span>
                 </Link>
               </div>
             </div>

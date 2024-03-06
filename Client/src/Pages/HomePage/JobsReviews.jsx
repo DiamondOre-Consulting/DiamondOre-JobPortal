@@ -62,7 +62,6 @@ const JobsReviews = () => {
 
   return (
     <div>
-
       <section className="bg-gray-100">
         <div className="mx-auto max-w-[1340px] px-4 py-12 sm:px-6 lg:me-0 lg:py-16 lg:pe-0 lg:ps-8 xl:py-24">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 lg:items-center lg:gap-16">
@@ -120,7 +119,7 @@ const JobsReviews = () => {
               </div>
             </div>
 
-            <div className="-mx-6 lg:col-span-2 lg:mx-0">
+            <div className="-ml-6 lg:col-span-2 lg:mx-0 sm:mx-0 md:mx-0">
               <div id="keen-slider" className="keen-slider">
                 <div className="keen-slider__slide shadow-lg shadow-gray-400 ">
                   <blockquote

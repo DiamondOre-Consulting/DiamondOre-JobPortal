@@ -17,24 +17,24 @@ const ERPTop5s = ({ hrname, client }) => {
             </div>
 
             <div className="lg:py-24">
-              <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                  <thead class="text-xs text-gray-700 uppercase bg-white dark:bg-gray-700 dark:text-gray-400">
+              <div  className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                <table  className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                  <thead  className="text-xs text-gray-700 uppercase bg-white dark:bg-gray-700 dark:text-gray-400">
                     <tr className="bg-blue-900 text-white">
-                      <th scope="col" class="px-6 py-3">
+                      <th scope="col"  className="px-6 py-3">
                         serial No
                       </th>
-                      <th scope="col" class="px-6 py-3">
+                      <th scope="col"  className="px-6 py-3">
                         Top5hrs
                       </th>
                     </tr>
 
                     {hrname?.map((hrs) => (
                       <tr>
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col"  className="px-6 py-3">
                           {hrs.serialNumber}
                         </th>
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col"  className="px-6 py-3">
                           {hrs.name}
                         </th>
                       </tr>
@@ -51,25 +51,25 @@ const ERPTop5s = ({ hrname, client }) => {
       </section>
 <hr className="bg-black"></hr>
       <section className="bg-gray-200">
-        <div class="mx-auto py-24 max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
-          <div class="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16">
-            <div class="relative h-64 overflow-hidden rounded-lg sm:h-80 lg:h-full">
+        <div  className="mx-auto py-24 max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
+          <div  className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16">
+            <div  className="relative h-64 overflow-hidden rounded-lg sm:h-80 lg:h-full">
               <img
                 alt="Party"
                 src={top5client}
-                class="absolute inset-0 h-full w-full object-cover object-top"
+                 className="absolute inset-0 h-full w-full object-cover object-top"
               />
             </div>
 
             <div className="lg:py-24">
-              <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                  <thead class="text-xs text-gray-700 uppercase bg-white dark:bg-gray-700 dark:text-gray-400">
+              <div  className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                <table  className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                  <thead  className="text-xs text-gray-700 uppercase bg-white dark:bg-gray-700 dark:text-gray-400">
                     <tr className="bg-blue-900 text-white">
-                      <th scope="col" class="px-6 py-3">
+                      <th scope="col"  className="px-6 py-3">
                         S. No.
                       </th>
-                      <th scope="col" class="px-6 py-3">
+                      <th scope="col"  className="px-6 py-3">
                         Top5Client
                       </th>
                     </tr>
@@ -77,10 +77,10 @@ const ERPTop5s = ({ hrname, client }) => {
                   <tbody>
                   {client?.map((cl) => (
                       <tr className="bg-white">
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col"  className="px-6 py-3">
                           {cl.serialNumber}
                         </th>
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col"  className="px-6 py-3">
                           {cl.name}
                         </th>
                       </tr>

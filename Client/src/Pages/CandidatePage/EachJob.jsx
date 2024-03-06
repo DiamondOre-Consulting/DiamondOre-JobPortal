@@ -136,6 +136,7 @@ const EachJob = () => {
       if (apply.status === 201) {
         console.log(apply.data);
         setApplyRes("Congratulations!!! Applied to this job successfully.");
+        alert("Congratulations You have Applied For this Job sucessfully")
       } else if (apply.status === 401) {
         setApplyRes("Already applied to this job.");
       } else {
@@ -147,7 +148,7 @@ const EachJob = () => {
   };
 
   return (
-    <div className="bg-white mx-5">
+    <div className="bg-white">
       <CandidateNav />
       <h1 className="text-center text-5xl text-bold py-lg">Each Job</h1>
       <div className="bg-white py-6 sm:py-8 lg:py-12">

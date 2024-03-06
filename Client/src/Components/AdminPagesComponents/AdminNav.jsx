@@ -118,13 +118,9 @@ const AdminNav = () => {
                 <Link
                   to={'/admin/add-jobs'}
                   className="cursor-pointer text-md font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
-
                 >
                   AddJobs
                 </Link>
-
-
-
               </nav>
 
               <div
@@ -201,20 +197,14 @@ const AdminNav = () => {
             <button
               type="button"
               onClick={toggleMenu}
-              className="inline-flex items-center gap-2 rounded-lg bg-blue-950 px-2.5 py-2 text-sm font-semibold text-white ring-indigo-300 hover:bg-gray-300 focus-visible:ring active:text-gray-700 md:text-base lg:hidden"
+              className="inline-flex items-center gap-2 rounded-lg  px-2.5 py-2 text-sm font-semibold text-white ring-indigo-300  active:text-gray-700 md:text-base lg:hidden"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                  clipRule="evenodd"
+               <img
+                  onClick={toggleDropdown}
+                  className="cursor-pointer rounded-full w-12 h-12 border border-1 border-black object-cover object-position-center"
+                  src={userData?.profilePic}
+                  alt="account"
                 />
-              </svg>
 
             </button>
           </header>
@@ -238,7 +228,7 @@ const AdminNav = () => {
                 All Jobs
               </li>
             </Link>
-            <Link to={"/all-candidates"}>
+            <Link to={"/admin/all-candidates"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
                   } px-12 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}

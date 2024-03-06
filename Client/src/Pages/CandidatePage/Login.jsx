@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import simg  from '../../assets/loginimg.svg';
+import PropagateLoader from "react-spinners/PropagateLoader";
+
 
 const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   // const [showPassword, setShowPassword] = useState(false);
@@ -57,8 +58,8 @@ const Login = () => {
 
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-    <div className="max-w-screen-xl sm:max-w-screen-lg md:max-w-screen-md lg:max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 shadow-lg bg-white rounded-md  ">
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 ">
+    <div className="max-w-screen-xl sm:max-w-screen-lg md:max-w-screen-md lg:max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 shadow-lg bg-white rounded-md  w-full sm:w-full lg:min-w-screen m-8">
       <div className="space-y-4 ">
         <form
           onSubmit={handleLogin}
@@ -87,7 +88,7 @@ const Login = () => {
               />
 
               <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
-                <svg class="h-6 w-6 text-gray-500" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <rect x="3" y="5" width="18" height="14" rx="2" />  <polyline points="3 7 12 13 21 7" /></svg>
+                <svg  className="h-6 w-6 text-gray-500" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <rect x="3" y="5" width="18" height="14" rx="2" />  <polyline points="3 7 12 13 21 7" /></svg>
               </span>
             </div>
           </div>

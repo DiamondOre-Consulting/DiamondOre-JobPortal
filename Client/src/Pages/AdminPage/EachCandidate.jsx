@@ -93,28 +93,28 @@ const EachCandidate = () => {
   }, [decodedToken])
 
   return (
-    <div className="bg-white mx-5">
+    <div className="bg-white  ">
       <AdminNav />
       <div className="my-2 flex flex-col justify-between text-center">
-        <div class="bg-white py-6 sm:py-8 lg:py-12">
-          <h2 class="mb-8 text-center text-2xl font-bold text-gray-800 md:mb-12 lg:text-3xl">
+        <div  className="bg-white py-6 sm:py-8 lg:py-12">
+          <h2  className="mb-8 text-center text-2xl font-bold text-gray-800 md:mb-12 lg:text-3xl">
             Each Candidate
           </h2>
-          <div class="mx-auto max-w-screen-lg rounded-lg bg-gray-200">
-            <div class="grid gap-8 sm:grid-cols-2">
-              <div class="flex flex-col items-center justify-center px-10 sm:items-start md:py-10 lg:py-18 h-80">
-                <h1 class="mb-6 text-center text-2xl font-bold text-gray-800 sm:text-left md:text-3xl">
+          <div  className="mx-auto max-w-screen-lg rounded-lg bg-gray-200">
+            <div  className="grid gap-8 sm:grid-cols-2">
+              <div  className="flex flex-col items-center justify-center px-10 sm:items-start md:py-10 lg:py-18 h-80">
+                <h1  className="mb-6 text-center text-2xl font-bold text-gray-800 sm:text-left md:text-3xl">
                   {candidateDetails?.name}
                 </h1>
 
-                <p class="mb-4 text-center text-gray-500 sm:text-left md:text-lg">
+                <p  className="mb-4 text-center text-gray-500 sm:text-left md:text-lg">
                   Email:{" "}
                   <span className="font-semibold">
                     {candidateDetails?.email}
                   </span>
                 </p>
 
-                <p class="mb-4 text-center text-gray-500 sm:text-left md:text-lg">
+                <p  className="mb-4 text-center text-gray-500 sm:text-left md:text-lg">
                   Phone Number:{" "}
                   <span className="font-semibold">
                     {candidateDetails?.phone}
@@ -123,34 +123,34 @@ const EachCandidate = () => {
 
                 <a
                   href={candidateDetails?.resume}
-                  class="inline-block items-left rounded-lg bg-blue-950 px-8 py-3 text-center text-sm font-semibold text-gray-100  transition duration-100 hover:bg-blue-950 focus-visible:ring active:text-gray-700 md:text-base"
+                   className="inline-block items-left rounded-lg bg-blue-950 px-8 py-3 text-center text-sm font-semibold text-gray-100  transition duration-100 hover:bg-blue-950 focus-visible:ring active:text-gray-700 md:text-base"
                 >
                   Download Resume
                 </a>
               </div>
 
-              <div class="relative h-80 overflow-hidden rounded-lg bg-gray-100 shadow-lg md:h-auto">
+              <div  className="relative h-80 overflow-hidden rounded-lg bg-gray-100 shadow-lg md:h-auto">
                 <img
                   src={candidateDetails?.profilePic}
                   loading="lazy"
                   alt={`Profile pic of ${candidateDetails?.name}`}
-                  class="absolute inset-0 h-full w-full object-cover object-center"
+                   className="absolute inset-0 h-full w-full object-cover object-center"
                 />
               </div>
             </div>
           </div>
         </div>
-        <div class="bg-white py-6 sm:py-8 lg:py-12">
-          <h2 class="mb-8 mt-10 text-center text-2xl font-bold text-gray-800 md:mb-12 lg:text-3xl">
+        <div  className="bg-white py-6 sm:py-8 lg:py-12">
+          <h2  className="mb-8 mt-10 text-center text-2xl font-bold text-gray-800 md:mb-12 lg:text-3xl">
             Jobs Applied By <span className="text-blue-950">{candidateDetails?.name}</span>
           </h2>
-          <div class="mx-auto max-w-screen-2xl px-4 md:px-8">
-            <div class="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-3">
+          <div  className="mx-auto max-w-screen-2xl px-4 md:px-8">
+            <div  className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-3">
               {candidateApplied?.map((job) => (
                  <div className="float-left">
                  <div
                    href="#"
-                   class="flex flex-col justify-between items-start h-64 overflow-hidden rounded-lg bg-gray-100 p-4 shadow-lg hover:shadow-2xl"
+                    className="flex flex-col justify-between items-start h-64 overflow-hidden rounded-lg bg-gray-100 p-4 shadow-lg hover:shadow-2xl"
                  >
                    <h3 className="text-2xl text-blue-950 font-bold">
                      {job?.JobTitle}

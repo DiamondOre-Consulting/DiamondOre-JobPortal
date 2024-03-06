@@ -18,28 +18,28 @@ const JoiningsForWeek = ({ Joinings }) => {
             This week's Joinings
           </h2>
           <div className="lg:py-18">
-            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-              <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <div  className="relative overflow-x-auto shadow-md sm:rounded-lg">
+              <table  className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead  className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr className="bg-blue-950 text-white">
-                    <th scope="col" class="px-6 py-3">
+                    <th scope="col"  className="px-6 py-3">
                       position
                     </th>
-                    <th scope="col" class="px-6 py-3">
+                    <th scope="col"  className="px-6 py-3">
                       No.joinings
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {Joinings?.map((join) => (
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <tr  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                       <th
                         scope="row"
-                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                         className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                       >
                        {join.names}
                       </th>
-                      <td class="px-6 py-4">{join.noOfJoinings}</td>
+                      <td  className="px-6 py-4">{join.noOfJoinings}</td>
                     </tr>
 
                   ))}

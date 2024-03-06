@@ -6,9 +6,9 @@ import { useJwt } from 'react-jwt';
 const Navbar = () => {
 
   const navigate = useNavigate();
-  const { decodedToken } = useJwt(localStorage.getItem("token"));
   const token = localStorage.getItem("token");
-
+  // const { decodedToken } = useJwt(localStorage.getItem("token"));
+  const { decodedToken } = useJwt(token || "No decoded Token Found yet"); 
 
   const handleSignup = () => {
     if (token && decodedToken && decodedToken.exp * 1000 > Date.now()) {

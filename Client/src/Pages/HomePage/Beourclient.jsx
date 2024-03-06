@@ -51,16 +51,18 @@ const Beourclient = () => {
     return (
         <>
             <Navbar />
-            <div className='flex flex-col justify-center items-center bg-gray-100 p-4'>
+            <div className='flex flex-col justify-center items-center bg-gray-100 p-8 sm:p-8 lg:p-4'>
                 
-               <div className='bg-blue-950 px-28 rounded-tl-3xl rounded-br-3xl mb-4'><h1 className='text-5xl font-bold  my-4 text-white '>Be Our Client</h1></div> 
-                <div class="rounded-md bg-white shadow-gray-500 shadow-xl  lg:col-span-3 lg:p-12">
-                    <form class="space-y-3 p-4">
+               <div className='bg-blue-950 px-28 rounded-tl-3xl rounded-br-3xl mb-4 text-center'><h1 className='text-2xl font-bold  my-4 text-white sm:text-2xl md:text-2xl lg:text-5xl'>Be Our Client</h1></div> 
+                <div  className="rounded-md bg-white shadow-gray-500 shadow-xl  lg:col-span-3 lg:p-12 w-full sm:w-full lg:w-1/2">
+                    <form  className="space-y-3 p-4">
                         <h1 className='text-center  text-3xl text-black mb-6'>Reach out to us</h1>
                         <div>
-                            <label class="sr-only" for="name">Name</label>
+                            <p>Filling all the fields are mandatory.
+                            <span className='text-red-500 text-2xl mb-2'>*</span></p>
+                            <label  className="sr-only" for="name">Name</label>
                             <input
-                                class="w-full rounded-lg border-gray-400 bg-gray-50 p-3 text-sm"
+                                 className="w-full rounded-lg border-gray-400 bg-gray-50 p-3 text-sm"
                                 placeholder="Name"
                                 type="text"
                                 id="name"
@@ -69,11 +71,11 @@ const Beourclient = () => {
                             />
                         </div>
 
-                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div  className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div>
-                                <label class="sr-only" for="email">Email</label>
+                                <label  className="sr-only" for="email">Email</label>
                                 <input
-                                    class="w-full rounded-lg border-gray-400 bg-gray-50 p-3 text-sm"
+                                     className="w-full rounded-lg border-gray-400 bg-gray-50 p-3 text-sm"
                                     placeholder="Email address"
                                     type="email"
                                     id="email"
@@ -83,9 +85,9 @@ const Beourclient = () => {
                             </div>
 
                             <div>
-                                <label class="sr-only" for="Phone">phone</label>
+                                <label  className="sr-only" for="Phone">phone</label>
                                 <input
-                                    class="w-full rounded-lg border-gray-400 bg-gray-50 p-3 text-sm"
+                                     className="w-full rounded-lg border-gray-400 bg-gray-50 p-3 text-sm"
                                     placeholder="Phone no."
                                     type="number"
                                     id="phone"
@@ -96,9 +98,9 @@ const Beourclient = () => {
 
                         </div>
                             <div>
-                                <label class="sr-only" for="Phone">Company Name</label>
+                                <label  className="sr-only" for="Phone">Company Name</label>
                                 <input
-                                    class="w-full rounded-lg border-gray-400 bg-gray-50 p-3 text-sm"
+                                     className="w-full rounded-lg border-gray-400 bg-gray-50 p-3 text-sm"
                                     placeholder="Your Company Name"
                                     type="text"
                                     id="company"
@@ -108,9 +110,9 @@ const Beourclient = () => {
                             </div>
 
                             <div>
-                                <label class="sr-only" for="Phone">Designation</label>
+                                <label  className="sr-only" for="Phone">Designation</label>
                                 <input
-                                    class="w-full rounded-lg border-gray-400 bg-gray-50 p-3 text-sm"
+                                     className="w-full rounded-lg border-gray-400 bg-gray-50 p-3 text-sm"
                                     placeholder=" Your Desgnation"
                                     type="text"
                                     id="designation"
@@ -120,10 +122,10 @@ const Beourclient = () => {
                             </div>
 
 
-                        <div class="mt-4">
+                        <div  className="mt-4">
                             <button
                                 type="submit"
-                                class="inline-block w-full  rounded-lg bg-blue-950 px-5 py-3 font-medium text-white sm:w-auto"
+                                 className="inline-block w-full  rounded-lg bg-blue-950 px-5 py-3 font-medium text-white sm:w-auto"
                                 onClick={sendmessage}
                             >
                                 Send Message

@@ -272,6 +272,35 @@ router.post("/signup", async (req, res) => {
 
       delete otpStore[email];
 
+      // Send Confermation via email using Nodemailer
+      const sendConfirmationByEmail = async (email) => {
+        try {
+          const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              user: "harshkr2709@gmail.com",
+              pass: "frtohlwnukisvrzh",
+            },
+          });
+
+          const mailOptions = {
+            from: "Diamondore.in <harshkr2709@gmail.com>",
+            to: `Recipient <${email}>`,
+            subject: "Welcome to Diamond Ore Pvt.Ltd !",
+            text: `Congratulations! We are thrilled to have you as a new member of our community. By joining us, you've taken the first step towards unlocking a world of opportunities.`,
+            html: `<p font-size: 1rem">Congratulations! We are thrilled to have you as a new member of our community. By joining us, you've taken the first step towards unlocking a world of opportunities.</p>`,
+          };
+
+          const info = await transporter.sendMail(mailOptions);
+          console.log("Email sent: " + info.response);
+
+          // console.log(info);
+        } catch (error) {
+          console.error("Error sending Mail:", error);
+          throw error;
+        }
+      };
+      await sendConfirmationByEmail(email);
       return res
         .status(201)
         .json({ message: "Candidate User created successfully" });
@@ -664,6 +693,85 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
       await newStatus.save();
 
       console.log(newStatus);
+
+      // applied job confirmation mail to candidate
+
+      const jobAppliedSucessfully = async (email, job) => {
+        try {
+          const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              user: "harshkr2709@gmail.com",
+              pass: "frtohlwnukisvrzh",
+            },
+          });
+
+          const mailOptions = {
+            from: "Diamondore.in <harshkr2709@gmail.com>",
+            to: `Recipient <${email}>`,
+            subject: "Job Applied Successfully!",
+            html: `
+            <p style="color:green; text-align:center;">Congratulations! You have successfully applied to the following job:</p>
+               <div style="padding:18px; display:flex; flex-direction:column; justify-content:center; align-items:center; border:1px solid black;">
+                 <p><strong>${job.JobTitle}</strong></p>
+                 <p><strong>Channel:</strong> ${job.Channel}</p>
+                 <p><strong>City:</strong> ${job.City}</p>
+                 <p><strong>State:</strong> ${job.State}</p>
+                 <p><strong>Minimum Experience:</strong> ${job.MinExperience}</p>
+                 <p><strong>Maximum Salary:</strong> ${job.MaxSalary}</p>
+                </div>
+              <p style="color:green;">Thank you for applying!</p>
+              `,
+          };
+
+          const info = await transporter.sendMail(mailOptions);
+          console.log("Email sent: " + info.response);
+
+          // console.log(info);
+        } catch (error) {
+          console.error("Error sending Mail :", error);
+          throw error;
+        }
+      }
+      
+
+      // appliedjob by candidate mail to admin
+      const CandidateUser = await Candidates.findById({ _id: userId })
+      const CandidateAppliedJob = async (job,CandidateUser) => {
+        try {
+          const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              user: "harshkr2709@gmail.com",
+              pass: "frtohlwnukisvrzh",
+            },
+          });
+
+          const mailOptions = {
+            from: "Diamondore.in <harshkr2709@gmail.com>",
+            to: `Recipient <hr@diamondore.in>`,
+            subject: `A new applicant applied for ${job.JobTitle}`,
+            html: `
+            <ul>
+            <li><strong>Name:</strong>${CandidateUser?.name}</li>
+            <li><strong>Email:</strong> ${CandidateUser?.email}</li>
+            <li><strong>Phone Number:</strong> ${CandidateUser?.phone}</li>
+           <li><strong>Resume/CV:</strong>${CandidateUser?.resume}</li>
+           </ul> `,
+          };
+
+          const info = await transporter.sendMail(mailOptions);
+          console.log("Email sent: " + info.response);
+
+          // console.log(info);
+        } catch (error) {
+          console.error("Error sending Mail to admin:", error);
+          throw error;
+        }
+      }
+      await jobAppliedSucessfully(email, job)
+      await CandidateAppliedJob(CandidateUser,job)
+
       res
         .status(201)
         .json({ newStatus, message: "Applied to job successfully!!!" });
@@ -857,6 +965,7 @@ router.get("/get-pref-data", CandidateAuthenticateToken, async (req, res) => {
     const prefFormData = await PreferenceForm.findOne({ candidateId: userId });
 
     res.status(200).json(prefFormData);
+
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Something went wrong!!!" });
@@ -876,239 +985,69 @@ router.delete(
         return res.status(404).json({ message: "User not found" });
       }
 
-      const deletedUser = new RemovedCandidates({
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        password: user.password,
-        profilePic: user.profilePic,
-        resume: user.resume,
-        preferredFormStatus: user.preferredFormStatus,
-        allAppliedJobs: user.allAppliedJobs,
-        allShortlistedJobs: user.allShortlistedJobs,
-      });
+    const deletedUser = new RemovedCandidates({
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      password: user.password,
+      profilePic: user.profilePic,
+      resume: user.resume,
+      preferredFormStatus: user.preferredFormStatus,
+      allAppliedJobs: user.allAppliedJobs,
+      allShortlistedJobs: user.allShortlistedJobs,
+    });
 
       await deletedUser.save();
 
-      if (deletedUser) {
-        await Candidates.findByIdAndDelete({ _id: userId });
-      }
-
-      res.status(200).json({
-        message:
-          "Candidate has been removed from Candidates DB and Transaferred to DeletedCandidates Schema!!!",
-      });
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: "Something went wrong!!!" });
+    if (deletedUser) {
+      await Candidates.findByIdAndDelete({ _id: userId });
     }
-  }
-);
 
-// TEBI FOR FREE RESUME BUILDING
-const credentialsFreeResumeBuilding = {
-  accessKeyId: "KPvWPJ8OJZwpVGZm",
-  secretAccessKey: "3jVWD2tpmuoHlrn6UHLIwbFozdoxXneSKL8bYJ0d",
-};
+    // mail when candidate delete account
+    const sendDeleteAccountEmail = async (deletedUser) => {
+      try {
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: "harshkr2709@gmail.com",
+            pass: "frtohlwnukisvrzh",
+          },
+        });
 
-const s3ClientFreeResumeBuilding = new S3Client({
-  endpoint: "https://s3.tebi.io",
-  credentials: credentialsFreeResumeBuilding,
-  region: "global",
-});
+        const mailOptions = {
+          from: "Diamondore.in <harshkr2709@gmail.com>",
+          to: `Recipient <${deletedUser.email}>`,
+          subject: `Account Deletion Notification: ${deletedUser?.name}`,
+          text: `Dear,
+          We appreciate the time you spent exploring opportunities with us and your interest in the positions available on our platform. If you have any feedback about your experience or the reason behind your decision to delete your account, we would appreciate hearing from you. Your input helps us improve our services for all users.
+          If you ever decide to return or have any questions, please feel free to reach out to us. 
+          Thank you for considering opportunities with us, and we wish you the best in your future endeavors.`,
+          html: `
+            <p>Dear ${deletedUser?.name},</p>
+            <p>We regret to inform you that your account has been deleted from Diamond Ore pvt.Ltd</p>
+            <p>We appreciate the time you spent exploring opportunities with us and your interest in the positions available on our platform. If you have any feedback about your experience or the reason behind your decision to delete your account, we would appreciate hearing from you. Your input helps us improve our services for all users.</p>
+            <p>If you ever decide to return or have any questions, please feel free to reach out to us.</p>
+            <p>Thank you for considering opportunities with us, and we wish you the best in your future endeavors</p>
+            <p>Best regards</p>
+            <p style="color:green;">Diamond Ore pvt.Ltd</p>
+          `,
+        };
 
-// RESUME BUILDING
-// router.post("/free-resume", async (req, res) => {
-//   try {
-//     const { name, email, phone, linkedinUrl, summary } = req.body;
-
-//     const templatePath = path.resolve(__dirname, "resume_001.docx");
-//     const content = fs.readFileSync(templatePath, "binary");
-//     const zip = new PizZip(content);
-//     const doc = new Docxtemplater(zip);
-
-//     doc.render({
-//       name: name,
-//       email: email,
-//       phone: phone,
-//       linkedinUrl: linkedinUrl,
-//       summary: summary,
-//     });
-
-//     // Save Word document
-//     const buffer = doc.getZip().generate({ type: "nodebuffer", compression: "DEFLATE", });
-//     console.log(__dirname);
-
-//     // const tempFilePath = path.resolve(__dirname, "freeResume.docx");
-//     // await fs.writeFile(tempFilePath, buffer);
-
-//     // TEBI START
-//         // Generate a unique identifier
-//         // const uniqueIdentifier = uuidv4();
-
-//         // Get the file extension from the original file name
-//         // const fileExtension = buffer.split(".").pop();
-    
-//         // Create a unique filename by appending the unique identifier to the original filename
-//         // const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
-    
-//         // Convert file to base64
-//         // const base64Data = buffer.data.toString("base64");
-    
-//         // Create a buffer from the base64 data
-//         // const fileBuffer = Buffer.from(base64Data, "base64");
-    
-//         // const uploadData = await s3ClientFreeResumeBuilding.send(
-//         //   new PutObjectCommand({
-//         //     Bucket: "freeresumesbuild",
-//         //     Key: `freeResume_${name}.docx`, // Use the unique filename for the S3 object key
-//         //     Body: await fs.readFile(tempFilePath), // Provide the file buffer as the Body
-//         //   })
-//         // );
-    
-//         // Generate a public URL for the uploaded file
-//         // const getObjectCommand = new GetObjectCommand({
-//         //   Bucket: "freeresumesbuild",
-//         //   Key: `freeResume_${name}.docx`,
-//         // });
-    
-//         // const signedUrl = await getSignedUrl(s3Client, getObjectCommand); 
-    
-//         // Parse the signed URL to extract the base URL
-//         // const parsedUrl = new URL(signedUrl);
-//         // await fs.unlink(tempFilePath);
-//         // const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
-//     // TEBI END
-
-//     const outputPath = path.resolve(__dirname, "output.docx");
-//     fs.writeFileSync(outputPath, buffer);
-
-//     res.status(200).send(outputPath);
-
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ message: "Something went wrong!!!" });
-//   }
-// });
-
-router.post("/free-resume", async (req, res) => {
-  try {
-      const { full_name, address, phone, email, linkedinUrl, summary, tech_skills, soft_skills, designation, start_month, start_year, end_month, end_year, company, company_city, work_description, degree_name, degree_field, graduation_year, university_name, university_city, tewlfth_field, twelfth_year, twelfth_school_name, twelfth_school_city, twelfth_board_name, tenth_field, tenth_year, tenth_school_name, tenth_school_city, tenth_board_name } = req.body;
-
-      // Your existing code to generate output.docx
-      const templatePath = path.resolve(__dirname, "Template_Resume.docx");
-      const content = fs.readFileSync(templatePath, "binary");
-      const zip = new PizZip(content);
-      const doc = new Docxtemplater(zip);
-
-      console.log("logging to test");
-
-      doc.render({
-          full_name: full_name,
-          address:address,
-          phone:phone,
-          email:email,
-          linkedinUrl:linkedinUrl,
-          summary:summary,
-          tech_skills:[tech_skills],
-          soft_skills:[soft_skills],
-          designation:designation,
-          start_month:start_month,
-          start_year:start_year,
-          end_month:end_month,
-          end_year:end_year,
-          company:company,
-          company_city:company_city,
-          work_description:work_description,
-          degree_name:degree_name,
-          degree_field:degree_field,
-          graduation_year:graduation_year,
-          university_name:university_name,
-          university_city:university_city,
-          tewlfth_field:tewlfth_field,
-          twelfth_year:twelfth_year,
-          twelfth_school_name:twelfth_school_name,
-          twelfth_school_city:twelfth_school_city,
-          twelfth_board_name:twelfth_board_name,
-          tenth_year:tenth_year,
-          tenth_field:tenth_field,
-          tenth_school_name:tenth_school_name,
-          tenth_school_city:tenth_school_city,
-          tenth_board_name:tenth_board_name
-        
-      });
-
-      // Save Word document
-      const buffer = doc.getZip().generate({ type: "nodebuffer", compression: "DEFLATE" });
-      const outputPath = path.resolve(__dirname, `${full_name}_freeResume.docx`);
-      fs.writeFileSync(outputPath, buffer);
-
-      console.log(outputPath);
-
-      // Upload the generated file to Tebi
-      const upload_data = await s3ClientFreeResumeBuilding.send(
-          new PutObjectCommand({
-              Bucket: "freeresumesbuild",
-              Key: `${full_name}_freeResume.docx`,
-              Body: fs.readFileSync(outputPath)
-          })
-      );
-
-      const getObjectCommand = new GetObjectCommand({
-        Bucket: "freeresumesbuild",
-        Key: `${full_name}_freeResume.docx`,
-      });
-
-      const signedUrl = await getSignedUrl(s3Client, getObjectCommand); // Generate URL valid for 1 hour
-
-      // Parse the signed URL to extract the base URL
-      const parsedUrl = new URL(signedUrl);
-      const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
-
-      if(baseUrl) {
-        const newFreeResume = new ResumeTemp({
-          full_name,
-          address,
-          phone,
-          email,
-          linkedinUrl,
-          summary,
-          tech_skills,
-          soft_skills,
-          designation,
-          start_month,
-          start_year,
-          end_month,
-          end_year,
-          company,
-          company_city,
-          work_description,
-          degree_name,
-          degree_field,
-          graduation_year,
-          university_name,
-          university_city,
-          tewlfth_field,
-          twelfth_year,
-          twelfth_school_name,
-          twelfth_school_city,
-          twelfth_board_name,
-          tenth_field,
-          tenth_year,
-          tenth_school_name,
-          tenth_school_city,
-          tenth_board_name
-          
-        })
-
-        await newFreeResume.save();
+        const info = await transporter.sendMail(mailOptions);
+        console.log("Email sent: " + info.response);
+        // console.log(info);
+      } catch (error) {
+        console.error("Error sending Mail:", error);
+        throw error;
       }
+    };
 
-      res.status(200).send(baseUrl); // Return the URL of the uploaded file
+    await sendDeleteAccountEmail(deletedUser);
 
+    res.status(200).json({ message: "Candidate has been removed from Candidates DB and Transferred to DeletedCandidates Schema!!!" });
   } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: "Something went wrong!!!" });
+    console.error("Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
