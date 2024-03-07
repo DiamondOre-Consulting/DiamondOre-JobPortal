@@ -6,7 +6,7 @@ import path from "path";
 import multer from "multer";
 import nodemailer from "nodemailer";
 import otpStore from "../server.js";
-import forgotOtp from "../server.js";
+// import forgotOtp from "../server.js";
 import { S3Client } from "@aws-sdk/client-s3";
 import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -39,7 +39,7 @@ const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
 };
 
-// Send OTP via email using Nodemailer
+// Send OTP via email using Nodemailer For Signup
 const sendOTPByEmail = async (email, otp) => {
   try {
     const transporter = nodemailer.createTransport({
@@ -1051,6 +1051,94 @@ router.delete(
   }
 });
 
+// FORGOT PASSWORD 
+// Send OTP via email using Nodemailer For Forgot Password
+const sendOTPByEmailForgotPassword = async (email, otp) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "harshkr2709@gmail.com",
+        pass: "frtohlwnukisvrzh",
+      },
+    });
+
+    const mailOptions = {
+      from: "Diamondore.in <harshkr2709@gmail.com>",
+      to: `Recipient <${email}>`,
+      subject: "Forgot Password - OTP",
+      text: `Your OTP is: ${otp}`,
+      html: `<h1 style="color: blue; text-align: center; font-size: 2rem">Diamond Consulting Pvt. Ltd.</h1> </br> <h3 style="color: black; font-size: 1.3rem; text-align: center;">Your OTP for forget password is: ${otp}</h3>`,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent: " + info.response);
+
+    // console.log(info);
+  } catch (error) {
+    console.error("Error sending OTP:", error);
+    throw error;
+  }
+};
+
+// SEND-OTP
+router.post("/forgot-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // Check affiliate exists
+    const userExists = await Candidates.exists({ email });
+    if (!userExists) {
+      return res.status(409).json({ message: "User does not exists" });
+    }
+
+    // Generate and store OTP
+    const otp = generateOTP();
+    otpStore[email] = otp; // Store OTP for the email
+
+    // Send OTP via email
+    await sendOTPByEmailForgotPassword(email, otp);
+
+    console.log("otpStore:", otpStore[email]);
+
+    res.status(201).json({ message: "OTP sent successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
+
+// VERIFY AND UPDATE PASSWORD
+router.put("/update-password", async (req, res) => {
+  const { email, otp, password } = req.body;
+
+  try {
+    // const { id } = req.params;
+    if (otpStore[email] == otp) {
+      console.log("stored: ", otpStore[email]);
+      console.log("Entered: ", otp);
+
+      // Find the user in the database
+      const user = await Candidates.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "Candidate not found" });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.password = hashedPassword;
+
+      await user.save();
+
+      delete otpStore[email];
+
+      res.status(200).json({ message: "Password Updated Successfully!!!" });
+    }
+  } catch (error) {
+    console.error("Error updating Candidate Password:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 // FREE RESUME WITH TEBI
 // TEBI CREDS
 const credentialsFreeResumes = {
@@ -1088,7 +1176,7 @@ router.post("/free-resume", async (req, res) => {
       fs.writeFileSync(outputPath, buffer);
 
       // Upload the generated file to Tebi
-      const upload_data = await s3Client.send(
+      const upload_data = await s3ClientFreeResumes.send(
           new PutObjectCommand({
               Bucket: "freeresumesbuild",
               Key: `${full_name}_free_resume.docx`,
@@ -1097,12 +1185,12 @@ router.post("/free-resume", async (req, res) => {
       );
 
       // Generate a presigned URL for the uploaded file
-      const url = await s3Client.getSignedUrlPromise(
-          new GetObjectCommand({
-              Bucket: "freeresumesbuild",
-              Key: `${full_name}_free_resume.docx`
-          })
-      );
+      // const url = await s3Client.getSignedUrlPromise(
+      //     new GetObjectCommand({
+      //         Bucket: "freeresumesbuild",
+      //         Key: `${full_name}_free_resume.docx`
+      //     })
+      // );
 
       const getObjectCommand = new GetObjectCommand({
         Bucket: "freeresumesbuild",
