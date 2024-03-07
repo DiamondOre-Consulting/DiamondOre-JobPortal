@@ -1051,4 +1051,76 @@ router.delete(
   }
 });
 
+// FREE RESUME WITH TEBI
+// TEBI CREDS
+const credentialsFreeResumes = {
+  accessKeyId: "KPvWPJ8OJZwpVGZm",
+  secretAccessKey: "3jVWD2tpmuoHlrn6UHLIwbFozdoxXneSKL8bYJ0d",
+};
+
+const s3ClientFreeResumes = new S3Client({
+  endpoint: "https://s3.tebi.io",
+  credentials: credentialsFreeResumes,
+  region: "global",
+});
+
+router.post("/free-resume", async (req, res) => {
+  try {
+      const { name, address, email, phone, linkedinUrl, summary } = req.body;
+
+      // Your existing code to generate output.docx
+      const templatePath = path.resolve(__dirname, "Template_Resume.docx");
+      const content = fs.readFileSync(templatePath, "binary");
+      const zip = new PizZip(content);
+      const doc = new Docxtemplater(zip);
+
+      doc.render({
+          name: name,
+          email: email,
+          phone: phone,
+          linkedinUrl: linkedinUrl,
+          summary: summary,
+      });
+
+      // Save Word document
+      const buffer = doc.getZip().generate({ type: "nodebuffer", compression: "DEFLATE" });
+      const outputPath = path.resolve(__dirname, `${full_name}_free_resume.docx`);
+      fs.writeFileSync(outputPath, buffer);
+
+      // Upload the generated file to Tebi
+      const upload_data = await s3Client.send(
+          new PutObjectCommand({
+              Bucket: "freeresumesbuild",
+              Key: `${full_name}_free_resume.docx`,
+              Body: fs.readFileSync(outputPath)
+          })
+      );
+
+      // Generate a presigned URL for the uploaded file
+      const url = await s3Client.getSignedUrlPromise(
+          new GetObjectCommand({
+              Bucket: "freeresumesbuild",
+              Key: `${full_name}_free_resume.docx`
+          })
+      );
+
+      const getObjectCommand = new GetObjectCommand({
+        Bucket: "freeresumesbuild",
+        Key: `${full_name}_free_resume.docx`,
+      });
+  
+      const signedUrl = await getSignedUrl(s3Client, getObjectCommand); // Generate URL valid for 1 hour
+  
+      // Parse the signed URL to extract the base URL
+      const parsedUrl = new URL(signedUrl);
+      const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
+
+      res.status(200).send(baseUrl); // Return the URL of the uploaded file
+
+  } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Something went wrong!!!" });
+  }
+});
+
 export default router;
