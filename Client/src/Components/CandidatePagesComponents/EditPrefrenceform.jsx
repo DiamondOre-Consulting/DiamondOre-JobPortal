@@ -3,6 +3,7 @@ import Footer from '../../Pages/HomePage/Footer';
 import Navbar from '../../Pages/HomePage/Navbar';
 import axios from 'axios';
 import { Navigate, useNavigate } from 'react-router-dom';
+import CandidateNav from './CandidateNav';
 
 const EditPrefrenceform = () => {
     const [cities, setCities] = useState([]);
@@ -149,7 +150,7 @@ const EditPrefrenceform = () => {
     },[])
     return (
         <div className=''>
-            <Navbar />
+            <CandidateNav/>
             <h1 className='text-3xl font-bold  mx-auto text-center'>Edit Your Prefrence</h1>
             <div className='w-44 h-1 bg-blue-900 mx-auto'></div>
             <div className="max-w-screen-md mx-auto mt-2 px-8  mt-2 shadow-lg shadow-gray-500 pb-8 pt-4">
@@ -234,7 +235,7 @@ const EditPrefrenceform = () => {
                     </div>
                 </form>
             </div>
-            <Footer />
+            <Footer/>
         </div>
 
     )

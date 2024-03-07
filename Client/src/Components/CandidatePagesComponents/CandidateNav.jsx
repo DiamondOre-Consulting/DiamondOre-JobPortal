@@ -42,10 +42,19 @@ const CandidateNav = () => {
         }
       } catch (error) {
         console.error("Error fetching associates:", error);
-        // Handle error and show appropriate message
-      }
-    };
-
+      //   if (error.response)
+      //   {
+      //     const status = error.response.status;
+      //     if (status === 404) {
+      //      alert("User Not Found")
+      //     } else {
+      //       console.log("user Not Found")
+      //     }
+      //   } else {
+      //     console.log("User not Found");
+      //   }
+     }
+    }
     fetchUserData();
   }, [])
 
@@ -257,6 +266,16 @@ const CandidateNav = () => {
                 Edit Profile
               </li>
             </Link>
+
+            <Link to={"/edit-prefrence-form"}>
+              <li
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-24 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+              >
+                Edit Prefrence
+              </li>
+            </Link>
+
             <a
               href="#"
               className="px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250"

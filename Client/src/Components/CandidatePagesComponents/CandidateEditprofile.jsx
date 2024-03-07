@@ -19,7 +19,7 @@ const CandidateEditprofile = () => {
     profilePic: null
   });
   const navigate = useNavigate();
-
+  const [error,setError]=useState(null);
   useEffect(() => {
     const fetchUserData = async () => {
       const token = localStorage.getItem("token");
@@ -107,6 +107,7 @@ const CandidateEditprofile = () => {
 
 
   const handleSubmit = async (e) => {
+    setError(null)
     e.preventDefault();
     try {
       const formData = new FormData();
@@ -130,11 +131,21 @@ const CandidateEditprofile = () => {
         console.log("updated")
         alert('Profile updated successfully!');
         navigate('/dashboard');
-
-      }
-      
+      }   
     } catch (error) {
       console.error('Error updating profile:', error.message);
+      if(error.response){
+        const status=error.response.status;
+        if(status==500){
+         setError("error occured in updating files")
+        }
+        else{
+          console.log("eror occured")
+        }
+      }
+      else{
+        console.log("error is in edditing profile")
+      }
       // alert('Failed to update profile. Please try again.');
     }
   };
@@ -219,6 +230,12 @@ const CandidateEditprofile = () => {
           </div>
           <button type="submit" onClick={handleSubmit} className="flex items-center juctify-center w-full text-white bg-blue-950 hover:bg-blue-950 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 ">Submit</button>
         </form>
+
+        {error && (
+            <div className="flex items-center justify-center bg-red-300 p-4 rounded-md">
+              <p className="text-center text-sm text-red-500">{error}</p>
+            </div>
+          )}
       </div>
       <Footer />
     </>

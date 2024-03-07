@@ -13,19 +13,17 @@ const Signup = ({ toggleForm }) => {
   const [otp, setOtp] = useState("");
   const [profilePic, setProfilePic] = useState(null);
   const [resume, setResume] = useState(null);
-
   const [profilePicUrl, setProfilePicUrl] = useState("");
   const [resumeUrl, setResumeUrl] = useState("");
-
   const [error, setError] = useState(null);
-
   const [showPass, setShowPass] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
+  
 
   const handleUploadImage = async (e) => {
     try {
       e.preventDefault();
-
+      setError(null);
       const formData = new FormData();
       formData.append("myFileImage", profilePic);
       const response = await axios.post(
@@ -42,6 +40,14 @@ const Signup = ({ toggleForm }) => {
         console.log(response.data);
         setProfilePicUrl(response.data);
       }
+      else if(response.status === 500){
+        setError("Please Upload your profile image Correctly")
+      }
+      else{
+
+        console.log("error occurred in image file uploading")
+
+      }
     } catch (error) {
       console.log(error);
     }
@@ -50,6 +56,7 @@ const Signup = ({ toggleForm }) => {
   const handleUploadResume = async (e) => {
     try {
       e.preventDefault();
+      setError(null);
 
       const formData = new FormData();
       formData.append("myFileResume", resume);
@@ -67,6 +74,14 @@ const Signup = ({ toggleForm }) => {
         // console.log(response.data);
         setResumeUrl(response.data);
         console.log(response.data);
+      }
+      else if(response.status === 500){
+        setError("Please Upload your resume Correctly")
+      }
+      else{
+
+        console.log("error occurred in resume file uploading")
+
       }
     } catch (error) {
       console.log(error);
@@ -118,15 +133,20 @@ const Signup = ({ toggleForm }) => {
       if (response.status === 201) {
         console.log("User Registered Successfully!!!");
         navigate('/dashboard')
-      } else {
-        console.log("Signup failed");
-        setError("Some details are wrong!!");
-        // Handle signup error
       }
+     
     } catch (error) {
       console.error("Error signing up:", error);
-      setError("Some details are wrong!!");
-      // Handle error
+      if (error.response) {
+        const status = error.response.status;
+        if (status === 409) {
+          setError("User already Exist");
+        } else {
+          setError("An error occurred while in signup. Please try again later.");
+        }
+      } else {
+        setError("An error occurred while signup. Please try again later.");
+      }
     }
   };
 

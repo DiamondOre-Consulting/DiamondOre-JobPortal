@@ -1154,7 +1154,7 @@ const s3ClientFreeResumes = new S3Client({
 
 router.post("/free-resume", async (req, res) => {
   try {
-      const { name, address, email, phone, linkedinUrl, summary } = req.body;
+      const { full_name, address, phone, email,linkedinUrl,summary,tech_skills, soft_skills, designation, start_month, start_year, end_month,end_year, company, company_city, work_description, degree_name, degree_field, graduation_year , university_name, university_city, tewlfth_field, twelfth_year, twelfth_school_name, twelfth_school_city, twelfth_board_name, tenth_field, tenth_year, tenth_school_name, tenth_school_city, tenth_board_name } = req.body;
 
       // Your existing code to generate output.docx
       const templatePath = path.resolve(__dirname, "Template_Resume.docx");
@@ -1163,12 +1163,39 @@ router.post("/free-resume", async (req, res) => {
       const doc = new Docxtemplater(zip);
 
       doc.render({
-          name: name,
-          email: email,
-          phone: phone,
-          linkedinUrl: linkedinUrl,
-          summary: summary,
+        full_name:full_name,
+        address:address,
+        phone:phone,
+        email:email,
+        linkedinUrl:linkedinUrl,
+        summary:summary,
+        tech_skills:[tech_skills],
+        soft_skills:[soft_skills],
+        designation:designation,
+        start_month:start_month,
+        start_year:start_year,
+        end_month:end_month,
+        end_year:end_year,
+        company:company,
+        company_city:company_city,
+        work_description:work_description,
+        degree_name:degree_name,
+        degree_field:degree_field,
+        graduation_year:graduation_year,
+        university_name:university_name,
+        university_city:university_city,
+        tewlfth_field:tewlfth_field,
+        twelfth_year:twelfth_year,
+        twelfth_school_name:twelfth_school_name,
+        twelfth_school_city:twelfth_school_city,
+        twelfth_board_name:twelfth_board_name,
+        tenth_field:tenth_field,
+        tenth_year:tenth_year,
+        tenth_school_name:tenth_school_name,
+        tenth_school_city:tenth_school_city,
+        tenth_board_name:tenth_board_name
       });
+
 
       // Save Word document
       const buffer = doc.getZip().generate({ type: "nodebuffer", compression: "DEFLATE" });
@@ -1203,6 +1230,45 @@ router.post("/free-resume", async (req, res) => {
       const parsedUrl = new URL(signedUrl);
       const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
 
+      // if(baseUrl){
+
+      //   const newFreeResume = new ResumeTemp({
+
+      //     full_name,
+      //     address, 
+      //     phone, 
+      //     email,
+      //     linkedinUrl,
+      //     summary,
+      //     tech_skills, 
+      //     soft_skills, 
+      //     designation, 
+      //     start_month, 
+      //     start_year, 
+      //     end_month,
+      //     end_year, 
+      //     company, 
+      //     company_city, 
+      //     work_description, 
+      //     degree_name, 
+      //     degree_field, 
+      //     graduation_year , 
+      //     university_name, 
+      //     university_city, 
+      //     tewlfth_field, 
+      //     twelfth_year, 
+      //     twelfth_school_name, 
+      //     twelfth_school_city, 
+      //     twelfth_board_name, 
+      //     tenth_field, 
+      //     tenth_year, 
+      //     tenth_school_name, 
+      //     tenth_school_city, 
+      //     tenth_board_name
+      //   })
+      //   await newFreeResume.save()
+      // }
+     
       res.status(200).send(baseUrl); // Return the URL of the uploaded file
 
   } catch (error) {

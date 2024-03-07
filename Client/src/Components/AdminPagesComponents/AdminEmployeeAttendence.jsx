@@ -193,7 +193,7 @@ const AdminEmployeeAttendence = () => {
         <div>
             <AdminNav/>
             <h1 className='text-bold  text-center text-3xl my-8'> Employee Details</h1>
-            <div  className="overflow-x-auto px-12 py-8 border border-1">
+            <div  className="overflow-x-auto px-0 py-8 border border-1  sm:px-0 lg:px-16 md:px-8">
                 <table  className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
                     <thead  className="ltr:text-left rtl:text-right bg-blue-950 text-white">
                         <tr>

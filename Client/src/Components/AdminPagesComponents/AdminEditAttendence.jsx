@@ -222,7 +222,7 @@ const AdminEditAttendence = () => {
 
 
             {/* Table */}
-            <div className="overflow-x-auto rounded-lg border border-gray-200 px-8 mt-6 pt-4 ">
+            <div className="overflow-x-auto rounded-lg border border-gray-200 px-0 sm:px-0 lg:px-8 md:px-6 mt-6 pt-4">
               <span className='bg-blue-950 shadow-lg text-white  rounded-lg p-2 border-black m-4'>totalleaves:- {totalLeavesis.totalLeaves}</span>
                 <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm mt-4">
                     <thead className="ltr:text-left rtl:text-right bg-blue-950">

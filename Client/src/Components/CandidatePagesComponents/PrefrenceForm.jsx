@@ -16,9 +16,9 @@ const PrefrenceForm = () => {
     });
     const [userInputs, setUserInputs] = useState([]);
     const [step, setStep] = useState(0);
-
+    cosnt[error, setError] = useState(null)
     const token = localStorage.getItem("token");
-    const navigate =useNavigate();
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -34,6 +34,11 @@ const PrefrenceForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError(null);
+
+        if (!formData.preferredCity || !formData.preferredChannel || !formData.expectedCTC) {
+            setError("filling all the feild compulsory.")
+        }
         try {
             const response = await axios.post(
                 "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/add-preference",
@@ -43,12 +48,12 @@ const PrefrenceForm = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 }
-               
+
             );
             if (response.status === 200) {
-                console.log('posted data',response.data)
+                console.log('posted data', response.data)
                 setUserInputs(response.data);
-                console.log("user input is ",userInputs);
+                console.log("user input is ", userInputs);
                 setFormData({
                     preferredCity: '',
                     preferredChannel: '',
@@ -57,9 +62,7 @@ const PrefrenceForm = () => {
 
                 navigate('/dashboard')
             }
-            
 
-         
         } catch (error) {
             console.error("Error submitting preference form:", error);
         }
@@ -87,7 +90,7 @@ const PrefrenceForm = () => {
                 const response = await axios.get(
                     "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/all-jobs"
                 );
-              
+
 
                 const uniquicities = [...new Set(response.data.map(job => job.City))];
                 const uniquiChannels = [...new Set(response.data.map(job => job.Channel))];
@@ -187,6 +190,11 @@ const PrefrenceForm = () => {
                         </div>
                     </div>
                 </form>
+                {error && (
+                    <div className="flex items-center justify-center bg-red-300 p-4 rounded-md">
+                        <p className="text-center text-sm text-red-500">{error}</p>
+                    </div>
+                )}
             </div>
             <Footer />
         </div>
