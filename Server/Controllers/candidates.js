@@ -1131,7 +1131,7 @@ router.put("/update-password", async (req, res) => {
 
       delete otpStore[email];
 
-      res.status(200).json({ message: "Password Updated Successfully!!!" });
+      res.status(200).json({ message: "Password Updated Successfully!!" });
     }
   } catch (error) {
     console.error("Error updating Candidate Password:", error);
@@ -1155,7 +1155,7 @@ const s3ClientFreeResumes = new S3Client({
 router.post("/free-resume", async (req, res) => {
   try {
       const { full_name, address, phone, email,linkedinUrl,summary,tech_skills, soft_skills, experience, graduation, twelfth, tenth } = req.body;
-
+      
       // Your existing code to generate output.docx
       const templatePath = path.resolve(__dirname, "Template_Resume.docx");
       const content = fs.readFileSync(templatePath, "binary");
@@ -1184,7 +1184,7 @@ router.post("/free-resume", async (req, res) => {
         graduation_year: graduation.graduation_year,
         university_name: graduation.university_name,
         university_city: graduation.university_city,
-        tewlfth_field: twelfth.tewlfth_field,
+        twelfth_field: twelfth.twelfth_field,
         twelfth_year: twelfth.twelfth_year,
         twelfth_school_name: twelfth.twelfth_school_name,
         twelfth_school_city:twelfth.twelfth_school_city,
@@ -1239,31 +1239,41 @@ router.post("/free-resume", async (req, res) => {
           email: email,
           linkedinUrl: linkedinUrl,
           summary: summary,
-          tech_skills: [tech_skills],
-          soft_skills: [soft_skills],
-          designation: experience.designation,
-          start_month: experience.start_month,
-          start_year: experience.start_year,
-          end_month: experience.end_month,
-          end_year: experience.end_year,
-          company: experience.company,
-          company_city: experience.company_city,
-          work_description: experience.work_description,
-          degree_name: graduation.degree_name,
-          degree_field: graduation.degree_field,
-          graduation_year: graduation.graduation_year,
-          university_name: graduation.university_name,
-          university_city: graduation.university_city,
-          tewlfth_field: twelfth.tewlfth_field,
-          twelfth_year: twelfth.twelfth_year,
-          twelfth_school_name: twelfth.twelfth_school_name,
-          twelfth_school_city:twelfth.twelfth_school_city,
-          twelfth_board_name: twelfth.twelfth_board_name,
-          tenth_field: tenth.tenth_field,
-          tenth_year: tenth.tenth_year,
-          tenth_school_name: tenth.tenth_school_name,
-          tenth_school_city: tenth.tenth_school_city,
-          tenth_board_name: tenth.tenth_board_name
+          tech_skills: tech_skills,
+          soft_skills: soft_skills,
+          experience: {
+            designation: experience.designation,
+            start_month: experience.start_month,
+            start_year:  experience.start_year,
+            end_month: experience.end_month,
+            end_year: experience.end_year,
+            company: experience.company,
+            company_city: experience.company_city,
+            work_description: experience.work_description,
+          },
+          graduation: {
+            degree_name: graduation.degree_name,
+            degree_field: graduation.degree_field,
+            graduation_year: graduation.graduation_year,
+            university_name: graduation.university_name,
+            university_city: graduation.university_city,
+          },
+          twelfth: {
+            twelfth_field: twelfth.twelfth_field,
+            twelfth_year: twelfth.twelfth_year,
+            twelfth_school_name: twelfth.twelfth_school_name,
+            twelfth_school_city: twelfth.twelfth_school_city,
+            twelfth_board_name: twelfth.twelfth_board_name          
+          },
+          tenth: {
+            tenth_field: tenth.tenth_field,
+            tenth_year: tenth.tenth_year,
+            tenth_school_name: tenth.tenth_school_name,
+            tenth_school_city: tenth.tenth_school_city,
+            tenth_board_name: tenth.tenth_board_name,
+          },
+          resumeLink: baseUrl,
+
         })
         await newFreeResume.save()
       }

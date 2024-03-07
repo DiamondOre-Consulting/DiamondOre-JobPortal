@@ -94,7 +94,7 @@ const resumeSchema = new mongoose.Schema({
     },
   },
   twelfth: {
-    tewlfth_field: {
+    twelfth_field: {
       type: String,
       required: true,
     },
@@ -136,6 +136,10 @@ const resumeSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
+  },
+  resumeLink:{
+    type: String,
+    default: null
   },
   createdAt: {
     type: Date,

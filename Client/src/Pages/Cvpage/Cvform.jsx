@@ -3,9 +3,12 @@ import Navbar from '../HomePage/Navbar';
 import Footer from '../HomePage/Footer';
 import simg from '../../assets/formsvg.svg';
 import axios from "axios";
+import { Link } from 'react-router-dom';
 
 const Cvform = () => {
     const [currentStep, setCurrentStep] = useState(1);
+    const [url, setUrl] = useState(null);
+    const [error, setError] = useState(null)
     const [formData, setFormData] = useState({
         full_name: '',
         email: '',
@@ -15,8 +18,10 @@ const Cvform = () => {
         summary: '',
         tech_skills: [],
         soft_skills: [],
-        educatinaldetailsform: [{ degree_name: '', degree_feild: '', graduation_year: '', university_name: '', university_city: '' }, { twelfth_feild: '', twelfth_year: '', twelfth_school_name: '', twelfth_school_city: '', twelfth_board_name: '' }, { tenth_year: '', tenth_school_name: '', tenth_school_city: '', tenth_board_name: '', tenth_feild: '' }],
-        experience: [{ designation: '', start_month: '', start_year: '', end_month: '', end_year: '', company: '', company_city: '', work_discription: '' }]
+        graduation: { degree_name: '', degree_field: '', graduation_year: '', university_name: '', university_city: '' },
+        twelfth: { twelfth_field: '', twelfth_year: '', twelfth_school_name: '', twelfth_school_city: '', twelfth_board_name: '' },
+        tenth: { tenth_year: '', tenth_school_name: '', tenth_school_city: '', tenth_board_name: '', tenth_field: '' },
+        experience: { designation: '', start_month: '', start_year: '', end_month: '', end_year: '', company: '', company_city: '', work_description: '' }
         // Add more fields for each step
     });
 
@@ -28,11 +33,14 @@ const Cvform = () => {
         }));
     };
 
-    const handleInputChange = (field, value) => {
-        setFormData({
-            ...formData,
-            [field]: value,
-        });
+    const handleInputChange = (field, subfield, value) => {
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            [field]: {
+                ...prevFormData[field],
+                [subfield]: value,
+            },
+        }));
     };
 
     // const handleAddItem = (field) => {
@@ -51,7 +59,7 @@ const Cvform = () => {
             tech_skills: updatedTechSkills
         }));
     };
-    
+
     const handleSoftSkillInputChange = (index, value) => {
         const updatedSoftSkills = [...formData.soft_skills];
         updatedSoftSkills[index] = value;
@@ -88,14 +96,23 @@ const Cvform = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError(null)
+        if (!formData.full_name || formData.email || formData.phone || formData.address || formData.linkedinUrl || formData.summary || formData.tech_skills || formData.soft_skills || formData.experience || formData.graduation || formData.twelfth || formData.tenth) {
+            console.log("please fill all the feilds")
+            setError("Filling all the feild are compulsory.")
+            return;
+        }
+        setUrl(null)
         console.log(formData)
         try {
-            const response = await axios.post("http://localhost:5000/api/candidates/free-resume"
+            const response = await axios.post("https://diamond-ore-job-portal-backend.vercel.app/api/candidates/free-resume"
                 , formData
             )
 
             if (response.status === 200) {
                 console.log(response.data)
+                const myurl = response.data
+                setUrl(myurl)
                 console.log('Form submitted:', formData);
             }
 
@@ -293,11 +310,10 @@ const Cvform = () => {
                                             type="text"
                                             placeholder="Enter Degree/ Feild Of Study"
                                             className="border border-1 rounded-md px-3 py-2 mt-2 w-full "
-                                            value={formData.educatinaldetailsform[0].degree_name}
+                                            value={formData.graduation.degree_name}
                                             onChange={(e) =>
-                                                handleItemInputChange(
-                                                    "educatinaldetailsform",
-                                                    0,
+                                                handleInputChange(
+                                                    "graduation",
                                                     "degree_name",
                                                     e.target.value
                                                 )
@@ -307,12 +323,11 @@ const Cvform = () => {
                                             type="text"
                                             placeholder="Enter Feild"
                                             className="border border-1 rounded-md px-3 py-2 mt-2 w-full"
-                                            value={formData.educatinaldetailsform[0].degree_feild}
+                                            value={formData.graduation.degree_field}
                                             onChange={(e) =>
-                                                handleItemInputChange(
-                                                    "educatinaldetailsform",
-                                                    0,
-                                                    "degree_feild",
+                                                handleInputChange(
+                                                    "graduation",
+                                                    "degree_field",
                                                     e.target.value
                                                 )
                                             }
@@ -321,11 +336,10 @@ const Cvform = () => {
                                             type="text"
                                             placeholder="Graduation year"
                                             className="border border-1 rounded-md px-3 py-2 mt-2 w-full"
-                                            value={formData.educatinaldetailsform[0].graduation_year}
+                                            value={formData.graduation.graduation_year}
                                             onChange={(e) =>
-                                                handleItemInputChange(
-                                                    "educatinaldetailsform",
-                                                    0,
+                                                handleInputChange(
+                                                    "graduation",
                                                     "graduation_year",
                                                     e.target.value
                                                 )
@@ -335,11 +349,10 @@ const Cvform = () => {
                                             type="text"
                                             placeholder="unvirsity name"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
-                                            value={formData.educatinaldetailsform[0].university_name}
+                                            value={formData.graduation.university_name}
                                             onChange={(e) =>
-                                                handleItemInputChange(
-                                                    "educatinaldetailsform",
-                                                    0,
+                                                handleInputChange(
+                                                    "graduation",
                                                     "university_name",
                                                     e.target.value
                                                 )
@@ -349,11 +362,10 @@ const Cvform = () => {
                                             type="text"
                                             placeholder="unvirsity city"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
-                                            value={formData.educatinaldetailsform[0].university_city}
+                                            value={formData.graduation.university_city}
                                             onChange={(e) =>
-                                                handleItemInputChange(
-                                                    "educatinaldetailsform",
-                                                    0,
+                                                handleInputChange(
+                                                    "graduation",
                                                     "university_city",
                                                     e.target.value
                                                 )
@@ -369,13 +381,11 @@ const Cvform = () => {
                                             type="text"
                                             placeholder="twelfth _feilds"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
-                                            value={formData.educatinaldetailsform[1].twelfth_feild}
+                                            value={formData.twelfth.twelfth_field}
                                             onChange={(e) =>
-                                                handleItemInputChange(
-                                                    "educatinaldetailsform"
-                                                    ,
-                                                    1,
-                                                    "twelfth_feild",
+                                                handleInputChange(
+                                                    "twelfth",
+                                                    "twelfth_field",
                                                     e.target.value
                                                 )
                                             }
@@ -384,11 +394,10 @@ const Cvform = () => {
                                             type="text"
                                             placeholder="twelfth_year"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
-                                            value={formData.educatinaldetailsform[1].twelfth_year}
+                                            value={formData.twelfth.twelfth_year}
                                             onChange={(e) =>
-                                                handleItemInputChange(
-                                                    "educatinaldetailsform",
-                                                    1,
+                                                handleInputChange(
+                                                    "twelfth",
                                                     "twelfth_year",
                                                     e.target.value
                                                 )
@@ -398,11 +407,10 @@ const Cvform = () => {
                                             type="text"
                                             placeholder="twelfth_school name"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
-                                            value={formData.educatinaldetailsform[1].twelfth_school_name}
+                                            value={formData.twelfth.twelfth_school_name}
                                             onChange={(e) =>
-                                                handleItemInputChange(
-                                                    "educatinaldetailsform",
-                                                    1,
+                                                handleInputChange(
+                                                    "twelfth",
                                                     "twelfth_school_name",
                                                     e.target.value
                                                 )
@@ -412,11 +420,10 @@ const Cvform = () => {
                                             type="text"
                                             placeholder="twelfth school city"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
-                                            value={formData.educatinaldetailsform[1].twelfth_school_city}
+                                            value={formData.twelfth.twelfth_school_city}
                                             onChange={(e) =>
-                                                handleItemInputChange(
-                                                    "educatinaldetailsform",
-                                                    1,
+                                                handleInputChange(
+                                                    "twelfth",
                                                     "twelfth_school_city",
                                                     e.target.value
                                                 )
@@ -426,11 +433,10 @@ const Cvform = () => {
                                             type="text"
                                             placeholder="twelfth_board name"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
-                                            value={formData.educatinaldetailsform[1].twelfth_board_name}
+                                            value={formData.twelfth.twelfth_board_name}
                                             onChange={(e) =>
-                                                handleItemInputChange(
-                                                    "educatinaldetailsform",
-                                                    1,
+                                                handleInputChange(
+                                                    "twelfth",
                                                     "twelfth_board_name",
                                                     e.target.value
                                                 )
@@ -443,12 +449,11 @@ const Cvform = () => {
                                             type="text"
                                             placeholder="tenth feilds"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
-                                            value={formData.educatinaldetailsform[2].tenth_feild}
+                                            value={formData.tenth.tenth_field}
                                             onChange={(e) =>
-                                                handleItemInputChange(
-                                                    "educatinaldetailsform",
-                                                    2,
-                                                    "tenth_feild",
+                                                handleInputChange(
+                                                    "tenth",
+                                                    "tenth_field",
                                                     e.target.value
                                                 )
                                             }
@@ -457,11 +462,10 @@ const Cvform = () => {
                                             type="text"
                                             placeholder="tenth year"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
-                                            value={formData.educatinaldetailsform[2].tenth_year}
+                                            value={formData.tenth.tenth_year}
                                             onChange={(e) =>
-                                                handleItemInputChange(
-                                                    "educatinaldetailsform",
-                                                    2,
+                                                handleInputChange(
+                                                    "tenth",
                                                     "tenth_year",
                                                     e.target.value
                                                 )
@@ -471,11 +475,10 @@ const Cvform = () => {
                                             type="text"
                                             placeholder="tenth school name"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
-                                            value={formData.educatinaldetailsform[2].tenth_school_name}
+                                            value={formData.tenth.tenth_school_name}
                                             onChange={(e) =>
-                                                handleItemInputChange(
-                                                    "educatinaldetailsform",
-                                                    2,
+                                                handleInputChange(
+                                                    "tenth",
                                                     "tenth_school_name",
                                                     e.target.value
                                                 )
@@ -485,11 +488,10 @@ const Cvform = () => {
                                             type="text"
                                             placeholder="tenth school city"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
-                                            value={formData.educatinaldetailsform[2].tenth_school_city}
+                                            value={formData.tenth.tenth_school_city}
                                             onChange={(e) =>
-                                                handleItemInputChange(
-                                                    "educatinaldetailsform",
-                                                    2,
+                                                handleInputChange(
+                                                    "tenth",
                                                     "tenth_school_city",
                                                     e.target.value
                                                 )
@@ -499,18 +501,15 @@ const Cvform = () => {
                                             type="text"
                                             placeholder="tenth board name"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
-                                            value={formData.educatinaldetailsform[2].tenth_board_name}
+                                            value={formData.tenth.tenth_board_name}
                                             onChange={(e) =>
-                                                handleItemInputChange(
-                                                    "educatinaldetailsform",
-                                                    2,
+                                                handleInputChange(
+                                                    "tenth",
                                                     "tenth_board_name",
                                                     e.target.value
                                                 )
                                             }
                                         />
-
-
 
 
 
@@ -528,128 +527,117 @@ const Cvform = () => {
                                 <div>
                                     <h2 className='font-bold text-4xl mb-2'>Professional Experience</h2>
                                     <div className="sm:col-span-2">
-                                        {formData.experience.map((exp, index) => (
-                                            <div key={index} className=" items-center">
-                                                <input
-                                                    type="text"
-                                                    placeholder="Designation"
-                                                    className="border border-1 rounded-md px-3 py-2 mt-2 w-full "
-                                                    value={exp.designation}
-                                                    onChange={(e) =>
-                                                        handleItemInputChange(
-                                                            "experience",
-                                                            index,
-                                                            "designation",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
-                                                <input
-                                                    type="text"
-                                                    placeholder="starth month"
-                                                    className="border border-1 rounded-md px-3 py-2 mt-2 w-full"
-                                                    value={exp.start_month}
-                                                    onChange={(e) =>
-                                                        handleItemInputChange(
-                                                            "experience",
-                                                            index,
-                                                            "start_month",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
-                                                <input
-                                                    type="text"
-                                                    placeholder="start Year"
-                                                    className="border border-1 rounded-md px-3 py-2 mt-2 w-full"
-                                                    value={exp.start_year}
-                                                    onChange={(e) =>
-                                                        handleItemInputChange(
-                                                            "experience",
-                                                            index,
-                                                            "start_year",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
-                                                <input
-                                                    type="text"
-                                                    placeholder="end_month"
-                                                    className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
-                                                    value={exp.end_month}
-                                                    onChange={(e) =>
-                                                        handleItemInputChange(
-                                                            "experience",
-                                                            index,
-                                                            "end_month",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
 
-                                                <input
-                                                    type="text"
-                                                    placeholder="end_year"
-                                                    className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
-                                                    value={exp.end_year}
-                                                    onChange={(e) =>
-                                                        handleItemInputChange(
-                                                            "experience",
-                                                            index,
-                                                            "end_year",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
+                                        <input
+                                            type="text"
+                                            placeholder="Designation"
+                                            className="border border-1 rounded-md px-3 py-2 mt-2 w-full "
+                                            value={formData.experience.designation}
+                                            onChange={(e) =>
+                                                handleInputChange(
+                                                    "experience",
+                                                    "designation",
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                        <input
+                                            type="text"
+                                            placeholder="starth month"
+                                            className="border border-1 rounded-md px-3 py-2 mt-2 w-full"
+                                            value={formData.experience.start_month}
+                                            onChange={(e) =>
+                                                handleInputChange(
+                                                    "experience",
+                                                    "start_month",
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                        <input
+                                            type="text"
+                                            placeholder="start Year"
+                                            className="border border-1 rounded-md px-3 py-2 mt-2 w-full"
+                                            value={formData.experience.start_year}
+                                            onChange={(e) =>
+                                                handleInputChange(
+                                                    "experience",
+                                                    "start_year",
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                        <input
+                                            type="text"
+                                            placeholder="end_month"
+                                            className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
+                                            value={formData.experience.end_month}
+                                            onChange={(e) =>
+                                                handleInputChange(
+                                                    "experience",
+                                                    "end_month",
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+
+                                        <input
+                                            type="text"
+                                            placeholder="end_year"
+                                            className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
+                                            value={formData.experience.end_year}
+                                            onChange={(e) =>
+                                                handleInputChange(
+                                                    "experience",
+                                                    "end_year",
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
 
 
-                                                <input
-                                                    type="text"
-                                                    value={exp.company}
-                                                    placeholder="company name"
-                                                    className="border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
-                                                    onChange={(e) =>
-                                                        handleItemInputChange(
-                                                            "experience",
-                                                            index,
-                                                            "company",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
+                                        <input
+                                            type="text"
+                                            value={formData.experience.company}
+                                            placeholder="company name"
+                                            className="border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
+                                            onChange={(e) =>
+                                                handleInputChange(
+                                                    "experience",
+                                                    "company",
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
 
-                                                <input
-                                                    type="text"
-                                                    value={exp.company_city}
-                                                    placeholder="company city"
-                                                    className="border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
-                                                    onChange={(e) =>
-                                                        handleItemInputChange(
-                                                            "experience",
-                                                            index,
-                                                            "company_city",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
+                                        <input
+                                            type="text"
+                                            value={formData.experience.company_city}
+                                            placeholder="company city"
+                                            className="border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
+                                            onChange={(e) =>
+                                                handleInputChange(
+                                                    "experience",
+                                                    "company_city",
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
 
-                                                <textarea
-                                                    type="text"
-                                                    value={exp.work_discription}
-                                                    placeholder="work discription"
-                                                    className="border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
-                                                    onChange={(e) =>
-                                                        handleItemInputChange(
-                                                            "experience",
-                                                            index,
-                                                            "work_discription",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
+                                        <textarea
+                                            type="text"
+                                            value={formData.experience.work_description}
+                                            placeholder="work discription"
+                                            className="border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
+                                            onChange={(e) =>
+                                                handleInputChange(
+                                                    "experience",
+                                                    "work_description",
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
 
-                                            </div>
-                                        ))}
 
                                     </div>
                                     <div className="mt-4 flex justify-between">
@@ -668,7 +656,7 @@ const Cvform = () => {
                                             <div key={index}>
                                                 <input
                                                     type="text"
-                                                    className="w-full rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 my-1"
+                                                    className="w-3/4 rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 my-1"
                                                     value={skill}
                                                     placeholder="Enter skill"
                                                     onChange={(e) =>
@@ -677,10 +665,10 @@ const Cvform = () => {
                                                 />
                                                 <button
                                                     type="button"
-                                                    className="bg-red-400 p-2 mx-2 text-gray-100 hover:bg-red-600"
+                                                    className="bg-red-400 p-2 text-gray-100 p-4 mx-4 rounded-md"
                                                     onClick={() => handleRemoveItem("tech_skills", index)}
                                                 >
-                                                    Remove
+                                                    <svg class="h-3 w-3 text-slate-50" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <line x1="5" y1="12" x2="19" y2="12" /></svg>
                                                 </button>
                                             </div>
                                         ))}
@@ -697,7 +685,7 @@ const Cvform = () => {
                                             <div key={index}>
                                                 <input
                                                     type="text"
-                                                    className="w-full rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 my-1"
+                                                    className="w-3/4 rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 my-1"
                                                     value={skill}
                                                     placeholder="Enter skill"
                                                     onChange={(e) =>
@@ -706,10 +694,10 @@ const Cvform = () => {
                                                 />
                                                 <button
                                                     type="button"
-                                                    className="bg-red-400 p-2 mx-2 text-gray-100 hover:bg-red-600"
+                                                    className="bg-red-400 p-2 text-gray-100 p-4 mx-4 rounded-md"
                                                     onClick={() => handleRemoveItem("soft_skills", index)}
                                                 >
-                                                    Remove
+                                                    <svg class="h-3 w-3 text-slate-50" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <line x1="5" y1="12" x2="19" y2="12" /></svg>
                                                 </button>
                                             </div>
                                         ))}
@@ -725,10 +713,20 @@ const Cvform = () => {
                                         <button type="button" onClick={prevStep} className="bg-gray-500 text-white px-4 py-2 rounded-md">Previous</button>
                                         <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded-md">Submit</button>
                                     </div>
+
+                                    <a href={url} className='bg-blue-950 text-white uppercase p-4 flex justify-center mt-10'> dawnload Your Free CV</a>
                                 </div>
+
                             )}
 
+                    
+
                         </form>
+                        {error && (
+                                <div className="flex items-center justify-center bg-red-300 p-4 rounded-md">
+                                    <p className="text-center text-sm text-red-500">{error}</p>
+                                </div>
+                            )}
                     </div>
 
                 </div>
