@@ -1095,7 +1095,7 @@ router.post("/forgot-password", async (req, res) => {
 
     // Generate and store OTP
     const otp = generateOTP();
-    otpStore[email] = otp; // Store OTP for the email
+    otpStore[email] = {email, otp}; // Store OTP for the email
 
     // Send OTP via email
     await sendOTPByEmailForgotPassword(email, otp);
@@ -1122,7 +1122,7 @@ router.put("/update-password", async (req, res) => {
       console.log("Entered: ", otp);
 
       // Find the user in the database
-      const user = await Candidates.findOne({ email: emailStore[email] });
+      const user = await Candidates.findOne({ email: otpStore[email] });
       if (!user) {
         return res.status(404).json({ message: "Candidate not found" });
       }
