@@ -6,6 +6,7 @@ import path from "path";
 import multer from "multer";
 import nodemailer from "nodemailer";
 import otpStore from "../server.js";
+import emailStore from "../server.js";
 // import forgotOtp from "../server.js";
 import { S3Client } from "@aws-sdk/client-s3";
 import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
@@ -1099,6 +1100,8 @@ router.post("/forgot-password", async (req, res) => {
     // Send OTP via email
     await sendOTPByEmailForgotPassword(email, otp);
 
+    emailStore[email] = email;
+
     console.log("otpStore:", otpStore[email]);
 
     res.status(201).json({ message: "OTP sent successfully" });
@@ -1110,7 +1113,7 @@ router.post("/forgot-password", async (req, res) => {
 
 // VERIFY AND UPDATE PASSWORD
 router.put("/update-password", async (req, res) => {
-  const { email, otp, password } = req.body;
+  const { otp, password } = req.body;
 
   try {
     // const { id } = req.params;
@@ -1119,7 +1122,7 @@ router.put("/update-password", async (req, res) => {
       console.log("Entered: ", otp);
 
       // Find the user in the database
-      const user = await Candidates.findOne({ email });
+      const user = await Candidates.findOne({ email: emailStore[email] });
       if (!user) {
         return res.status(404).json({ message: "Candidate not found" });
       }
