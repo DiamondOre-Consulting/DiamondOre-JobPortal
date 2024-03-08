@@ -203,12 +203,12 @@ const Login = () => {
                 Sign up
               </Link>
             </p>
-            <a
-              href={"/"}
+            <Link
+              to={"/forgot-password"}
               className="text-center text-sm text-gray-500 cursor-pointer"
             >
               Forgot Password?
-            </a>
+            </Link>
           </form>
           {error && (
             <div className="flex items-center justify-center bg-red-300 p-4 rounded-md">

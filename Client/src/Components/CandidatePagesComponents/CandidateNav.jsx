@@ -42,47 +42,47 @@ const CandidateNav = () => {
         }
       } catch (error) {
         console.error("Error fetching associates:", error);
-      //   if (error.response)
-      //   {
-      //     const status = error.response.status;
-      //     if (status === 404) {
-      //      alert("User Not Found")
-      //     } else {
-      //       console.log("user Not Found")
-      //     }
-      //   } else {
-      //     console.log("User not Found");
-      //   }
-     }
+        //   if (error.response)
+        //   {
+        //     const status = error.response.status;
+        //     if (status === 404) {
+        //      alert("User Not Found")
+        //     } else {
+        //       console.log("user Not Found")
+        //     }
+        //   } else {
+        //     console.log("User not Found");
+        //   }
+      }
     }
     fetchUserData();
   }, [])
 
   //delete account 
 
-  const deleteAccount= async(e)=>{
+  const deleteAccount = async (e) => {
     e.preventDefault();
-  
-    
-    try{
+
+
+    try {
       const token = localStorage.getItem("token");
 
-      const response =await axios.delete('https://diamond-ore-job-portal-backend.vercel.app/api/candidates/remove-account',
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
+      const response = await axios.delete('https://diamond-ore-job-portal-backend.vercel.app/api/candidates/remove-account',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         }
-      }
       )
-      if(response.status === 200){
-          console.log("account has been deleted");
-          setShowPopup(true);
-          window.alert("Your account has been deleted")
-          navigate("/login");
+      if (response.status === 200) {
+        console.log("account has been deleted");
+        setShowPopup(true);
+        window.alert("Your account has been deleted")
+        navigate("/login");
       }
 
     }
-    catch(error){
+    catch (error) {
       console.log(error)
     }
 
@@ -95,7 +95,7 @@ const CandidateNav = () => {
 
   const handleClose = () => {
     setShowPopup(false);
-  
+
   };
 
   const handleClickOutside = (event) => {
@@ -180,7 +180,7 @@ const CandidateNav = () => {
                 <a
                   href="#"
                   className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
-                  onClick={()=>{
+                  onClick={() => {
                     setShowPopup(true);
                   }}
                 >
@@ -278,6 +278,16 @@ const CandidateNav = () => {
 
             <a
               href="#"
+              className="block px-4 py-2 text-lg text-center text-gray-700 hover:bg-gray-100"
+              onClick={() => {
+                setShowPopup(true);
+              }}
+            >
+              Delete Account
+            </a>
+
+            <a
+              href="#"
               className="px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250"
               onClick={handleLogout}
             >
@@ -296,41 +306,39 @@ const CandidateNav = () => {
       </div>
 
       {showPopup ? (
-            <div
-              className={`fixed inset-0 flex items-center justify-center ${
-                showPopup ? "visible" : "hidden"
-              }`}
-            >
-              <section className="rounded-3xl shadow-2xl bg-gray-200">
-                <div className="p-8 text-center sm:p-12">
-                  <p className="text-sm font-semibold uppercase tracking-widest text-pink-500">
-                   {/* Do You Want To Delete this Account!!! */}
-                  </p>
-  
-                  <h2 className="mt-6 text-3xl font-bold">
-                     Do You Want To Delete this Account!!!
-                  </h2>
-  
-                  <button
-                    className="mt-8 inline-block w-full rounded-full bg-green-500 py-4 text-sm font-bold text-white shadow-xl"
-                    onClick={handleClose}
-                  >
-                    No
-                  </button>
+        <div
+          className={`fixed inset-0 flex items-center justify-center ${showPopup ? "visible" : "hidden"
+            }`}
+        >
+          <section className="rounded-3xl shadow-xl bg-white">
+            <div className="p-4 text-center sm:p-12">
+              <h2 className="mt-6 text-sm lg:text-xl md:xl sm:text-sm font-bold">
+                Do You Want To Delete this Account??
+              </h2>
+              <div className="flex justify-center align-center ">
 
-                  <button
-                    className="mt-8 inline-block w-full rounded-full bg-red-400 py-4 text-sm font-bold text-white shadow-xl"
-                    onClick={deleteAccount}
-                  >
-                    Yes! I'm Sure
-                  </button>
-                </div>
-              </section>
+                <button
+                  className="mt-8 inline-block w-full rounded-full bg-green-500 py-4 text-sm font-bold text-white shadow-xl hover:bg-green-700 "
+                  onClick={handleClose}
+                >
+                  No
+                </button>
+
+                <button
+                  className="ml-2 mt-8 inline-block w-full rounded-full bg-red-400 py-4 text-sm font-bold text-white shadow-xl hover:bg-red-700"
+                  onClick={deleteAccount}
+                >
+                  Yes! I'm Sure
+                </button>
+
+              </div>
+
             </div>
-          ) : (
-            ""
-          )}
-
+          </section>
+        </div>
+      ) : (
+        ""
+      )}
 
       {
 
@@ -338,10 +346,10 @@ const CandidateNav = () => {
           preferredFormStatus === false) ?
           (
             <>
-              <div  className="bg-white pb-6 sm:pb-8 lg:pb-12">
+              <div className="bg-white pb-6 sm:pb-8 lg:pb-12">
 
-                <div  className="relative flex flex-wrap bg-blue-950 px-4 py-3 sm:flex-nowrap sm:items-center sm:justify-center sm:gap-3 sm:pr-8 md:px-8">
-                  <div  className="order-1 mb-2 inline-block w-11/12 max-w-screen-sm text-sm text-white sm:order-none sm:mb-0 sm:w-auto md:text-base"><Link to={'/prefrence-form'}><span className='underline'>Click here</span></Link> to Fill the form to get your Job according to your Prefrences</div>
+                <div className="relative flex flex-wrap bg-blue-950 px-4 py-3 sm:flex-nowrap sm:items-center sm:justify-center sm:gap-3 sm:pr-8 md:px-8">
+                  <div className="order-1 mb-2 inline-block w-11/12 max-w-screen-sm text-sm text-white sm:order-none sm:mb-0 sm:w-auto md:text-base"><Link to={'/prefrence-form'}><span className='underline'>Click here</span></Link> to Fill the form to get your Job according to your Prefrences</div>
                 </div>
               </div>
             </>

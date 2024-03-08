@@ -97,7 +97,7 @@ const Cvform = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null)
-        if (!formData.full_name || formData.email || formData.phone || formData.address || formData.linkedinUrl || formData.summary || formData.tech_skills || formData.soft_skills || formData.experience || formData.graduation || formData.twelfth || formData.tenth) {
+        if (!formData.full_name || !formData.email || !formData.phone || !formData.address || !formData.linkedinUrl || !formData.summary || !formData.tech_skills || !formData.soft_skills || !formData.experience || formData.graduation || !formData.twelfth || !formData.tenth) {
             console.log("please fill all the feilds")
             setError("Filling all the feild are compulsory.")
             return;
@@ -148,8 +148,8 @@ const Cvform = () => {
     return (
         <div>
             <Navbar />
-            <div className="flex items-center justify-center min-h-screen bg-gray-50">
-                <div className="max-w-screen-xl sm:max-w-screen-lg md:max-w-screen-md lg:max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 shadow-lg bg-white rounded-md  ">
+            <div className="flex items-center bg-gray-50">
+                <div className="max-w-screen-xl sm:max-w-screen-lg lg:mx-auto md:max-w-screen-md lg:max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 shadow-lg bg-white rounded-md  ">
                     <div className="flex rounded-lg mr-4 ">
                         <div className="hidden md:block">
                             <img src={simg} />
@@ -650,7 +650,7 @@ const Cvform = () => {
                             {currentStep === 4 && (
                                 <div>
                                     <h2 className='font-bold text-4xl mb-2'>Skills</h2>
-                                    <div className="sm:col-span-2">
+                                    <div className="sm:col-span-2 ">
                                         <h1>Tech Skills</h1>
                                         {formData.tech_skills.map((skill, index) => (
                                             <div key={index}>
@@ -719,14 +719,14 @@ const Cvform = () => {
 
                             )}
 
-                    
+
 
                         </form>
                         {error && (
-                                <div className="flex items-center justify-center bg-red-300 p-4 rounded-md">
-                                    <p className="text-center text-sm text-red-500">{error}</p>
-                                </div>
-                            )}
+                            <div className="flex items-center justify-center bg-red-300 p-4 rounded-md">
+                                <p className="text-center text-sm text-red-500">{error}</p>
+                            </div>
+                        )}
                     </div>
 
                 </div>

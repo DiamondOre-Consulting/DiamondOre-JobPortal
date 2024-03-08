@@ -1344,4 +1344,94 @@ router.post("/client-form", async (req, res) => {
   }
 });
 
+// FORGOT PASSWORD 
+// Send OTP via email using Nodemailer For Forgot Password
+const sendOTPByEmailForgotPassword = async (email, otp) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "harshkr2709@gmail.com",
+        pass: "frtohlwnukisvrzh",
+      },
+    });
+
+    const mailOptions = {
+      from: "Diamondore.in <harshkr2709@gmail.com>",
+      to: `Recipient <${email}>`,
+      subject: "Forgot Password - OTP",
+      text: `Your OTP is: ${otp}`,
+      html: `<h1 style="color: blue; text-align: center; font-size: 2rem">Diamond Consulting Pvt. Ltd.</h1> </br> <h3 style="color: black; font-size: 1.3rem; text-align: center;">Your OTP for forget password is: ${otp}</h3>`,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent: " + info.response);
+
+    // console.log(info);
+  } catch (error) {
+    console.error("Error sending OTP:", error);
+    throw error;
+  }
+};
+
+// SEND-OTP
+router.post("/forgot-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // Check affiliate exists
+    const userExists = await Admin.exists({ email });
+    if (!userExists) {
+      return res.status(409).json({ message: "Admin does not exists" });
+    }
+
+    // Generate and store OTP
+    const otp = generateOTP();
+    otpStore[email] = otp; // Store OTP for the email
+
+    // Send OTP via email
+    await sendOTPByEmailForgotPassword(email, otp);
+
+    console.log("otpStore:", otpStore[email]);
+
+    res.status(201).json({ message: "OTP sent successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
+
+// VERIFY AND UPDATE PASSWORD
+router.put("/update-password", async (req, res) => {
+  const { email, otp, password } = req.body;
+
+  console.log(otpStore[email]);
+
+  try {
+    // const { id } = req.params;
+    if (otpStore[email] == otp) {
+      console.log("stored: ", otpStore[email]);
+      console.log("Entered: ", otp);
+
+      // Find the user in the database
+      const user = await Admin.findOne({ email: email });
+      if (!user) {
+        return res.status(404).json({ message: "admin not found" });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.password = hashedPassword;
+
+      await user.save();
+
+      delete otpStore[email];
+
+      res.status(200).json({ message: "Password Updated Successfully!!" });
+    }
+  } catch (error) {
+    console.error("Error updating Admin Password:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 export default router;

@@ -100,7 +100,7 @@ const EachCandidate = () => {
           <h2  className="mb-8 text-center text-2xl font-bold text-gray-800 md:mb-12 lg:text-3xl">
             Each Candidate
           </h2>
-          <div  className="mx-auto max-w-screen-lg rounded-lg bg-gray-200">
+          <div  className="mx-auto max-w-screen-lg rounded-lg bg-white shadow-xl">
             <div  className="grid gap-8 sm:grid-cols-2">
               <div  className="flex flex-col items-center justify-center px-10 sm:items-start md:py-10 lg:py-18 h-80">
                 <h1  className="mb-6 text-center text-2xl font-bold text-gray-800 sm:text-left md:text-3xl">
@@ -145,22 +145,22 @@ const EachCandidate = () => {
             Jobs Applied By <span className="text-blue-950">{candidateDetails?.name}</span>
           </h2>
           <div  className="mx-auto max-w-screen-2xl px-4 md:px-8">
-            <div  className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-3">
+            <div  className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-4 xl:grid-cols-4">
               {candidateApplied?.map((job) => (
                  <div className="float-left">
                  <div
                    href="#"
-                    className="flex flex-col justify-between items-start h-64 overflow-hidden rounded-lg bg-gray-100 p-4 shadow-lg hover:shadow-2xl"
+                    className="flex flex-col justify-between items-start h-48 overflow-hidden rounded-lg bg-white  shadow-lg hover:shadow-2xl"
                  >
-                   <h3 className="text-2xl text-blue-950 font-bold">
+                   <h3 className="text-2xl text-white font-bold bg-blue-950 px-4 py-2 text-center w-full">
                      {job?.JobTitle}
                    </h3>
 
-                   <p className="text-xl text-gray-600 font-semibold">
+                   <p className="text-xl text-gray-600 font-semibold px-4">
                      Industry - <span className="text-blue-950">{job?.Industry}</span>
                    </p>
-                   <p className="text-xl text-gray-600 font-semibold">Channel - <span className="text-blue-950">{job?.Channel}</span></p>
-                   <p className="text-xl text-gray-600 font-semibold float-left">Min. Experience - <span className="text-blue-950">{job?.MinExperience} Year(s)</span> </p>
+                   <p className="text-xl text-gray-600 font-semibold px-4">Channel - <span className="text-blue-950">{job?.Channel}</span></p>
+                   <p className="text-xl text-gray-600 font-semibold float-left px-4 pb-4">Min. Experience - <span className="text-blue-950">{job?.MinExperience} Year(s)</span> </p>
                    
                  </div>
                </div>

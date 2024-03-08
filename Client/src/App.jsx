@@ -46,6 +46,8 @@ import Cvdashboard from "./Pages/Cvpage/Cvdashboard";
 import Cvform from "./Pages/Cvpage/Cvform";
 import ScaleLoader from "react-spinners/ScaleLoader";
 import { useState } from "react";
+import ForgotPassword from "./Pages/CandidatePage/ForgotPassword";
+import Adminforgotpassword from "./Pages/AdminPage/Adminforgotpassword";
 
 
 function App() {
@@ -91,6 +93,7 @@ function App() {
             <Route path="/contact" element={<Contact/>}/>
             <Route path="/signup" element={<Signup/>} />
             <Route path="/login" element={<Login/>} />
+            <Route path='/forgot-password' element={<ForgotPassword/>}/>
             <Route path='/cv-dashboard' element={<Cvdashboard/>}/>
             <Route path='/cv-form'element={<Cvform/>}/>
             <Route path='/be-our-client' element={<Beourclient/>}/>
@@ -111,6 +114,7 @@ function App() {
             <Route path='/admin/edit-profile'element={<AdminEditprofile/>} />
             <Route path="/admin-signup" element={<AdminSignup />} />
             <Route path="/admin-login" element={<AdminLogin />} />
+            <Route path='/admin/forgot-password' element={<Adminforgotpassword/>}/>
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/admin/all-jobs" element={<AdminAllJobs />} />
             <Route path="/admin/add-jobs" element={<AddJobs />} />
