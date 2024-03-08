@@ -1113,7 +1113,7 @@ router.post("/forgot-password", async (req, res) => {
 
 // VERIFY AND UPDATE PASSWORD
 router.put("/update-password", async (req, res) => {
-  const { otp, password } = req.body;
+  const { email, otp, password } = req.body;
 
   try {
     // const { id } = req.params;
@@ -1122,7 +1122,7 @@ router.put("/update-password", async (req, res) => {
       console.log("Entered: ", otp);
 
       // Find the user in the database
-      const user = await Candidates.findOne({ email: otpStore[email] });
+      const user = await Candidates.findOne({ email });
       if (!user) {
         return res.status(404).json({ message: "Candidate not found" });
       }
