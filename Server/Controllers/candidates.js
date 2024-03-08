@@ -1095,7 +1095,7 @@ router.post("/forgot-password", async (req, res) => {
 
     // Generate and store OTP
     const otp = generateOTP();
-    otpStore[email] = {email, otp}; // Store OTP for the email
+    otpStore[email] = {otp}; // Store OTP for the email
 
     // Send OTP via email
     await sendOTPByEmailForgotPassword(email, otp);
