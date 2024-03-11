@@ -97,7 +97,7 @@ const Cvform = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null)
-        if (!formData.full_name || !formData.email || !formData.phone || !formData.address || !formData.linkedinUrl || !formData.summary || !formData.tech_skills || !formData.soft_skills || !formData.experience || formData.graduation || !formData.twelfth || !formData.tenth) {
+        if (!formData.full_name || !formData.email || !formData.phone || !formData.address || !formData.linkedinUrl || !formData.summary || !formData.tech_skills || !formData.soft_skills || !formData.experience || !formData.graduation || !formData.twelfth || !formData.tenth) {
             console.log("please fill all the feilds")
             setError("Filling all the feild are compulsory.")
             return;
@@ -105,7 +105,7 @@ const Cvform = () => {
         setUrl(null)
         console.log(formData)
         try {
-            const response = await axios.post("https://diamond-ore-job-portal-backend.vercel.app/api/candidates/free-resume"
+            const response = await axios.post("http://localhost:5000/api/candidates/free-resume"
                 , formData
             )
 
@@ -113,6 +113,7 @@ const Cvform = () => {
                 console.log(response.data)
                 const myurl = response.data
                 setUrl(myurl)
+                alert("form has been submitted click on dawnload button to dawunload your CV")
                 console.log('Form submitted:', formData);
             }
 
@@ -149,7 +150,7 @@ const Cvform = () => {
         <div>
             <Navbar />
             <div className="flex items-center bg-gray-50">
-                <div className="max-w-screen-xl sm:max-w-screen-lg lg:mx-auto md:max-w-screen-md lg:max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 shadow-lg bg-white rounded-md  ">
+                <div className=" mx-auto max-w-screen-xl sm:max-w-screen-lg lg:mx-auto md:max-w-screen-md lg:max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 shadow-lg bg-white rounded-md  ">
                     <div className="flex rounded-lg mr-4 ">
                         <div className="hidden md:block">
                             <img src={simg} />
@@ -203,7 +204,7 @@ const Cvform = () => {
 
                         </div> */}
                     </div>
-                    <div className="space-y-4 ">
+                    <div className="space-y-4">
                         <form onSubmit={handleSubmit}>
                             {/* Step 1 */}
                             {currentStep === 1 && (
