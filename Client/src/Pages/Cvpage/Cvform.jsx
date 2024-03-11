@@ -105,7 +105,7 @@ const Cvform = () => {
         setUrl(null)
         console.log(formData)
         try {
-            const response = await axios.post("http://localhost:5000/api/candidates/free-resume"
+            const response = await axios.post("https://diamond-ore-job-portal-backend.vercel.app/api/candidates/free-resume"
                 , formData
             )
 
