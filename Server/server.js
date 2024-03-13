@@ -43,7 +43,7 @@ app.use('/api/employee', empController);
 // app.use('/api/contactus', contactUsController);
 
 
-const storeOTP = {};
+const otpStore = {};
 const forgotOtp = {};
 
 app.get("/", (req, res) => {
@@ -54,4 +54,4 @@ app.listen(PORT, () => {
   console.log(`Server is running on port: ${PORT}`);
 });
 
-export default {storeOTP, forgotOtp};
+export default otpStore;
