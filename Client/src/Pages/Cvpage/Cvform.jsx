@@ -6,6 +6,7 @@ import axios from "axios";
 import { Link } from 'react-router-dom';
 
 const Cvform = () => {
+    const [isLoading, setIsLoading] = useState(false);
     const [currentStep, setCurrentStep] = useState(1);
     const [url, setUrl] = useState(null);
     const [error, setError] = useState(null)
@@ -97,13 +98,14 @@ const Cvform = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null)
-        if (!formData.full_name || !formData.email || !formData.phone || !formData.address || !formData.linkedinUrl || !formData.summary || !formData.tech_skills || !formData.soft_skills || !formData.experience || !formData.graduation || !formData.twelfth || !formData.tenth) {
-            console.log("please fill all the feilds")
-            setError("Filling all the feild are compulsory.")
-            return;
-        }
+        // if (!formData.full_name || !formData.email || !formData.phone || !formData.address || !formData.linkedinUrl || !formData.summary || !formData.tech_skills || !formData.soft_skills || !formData.experience || !formData.graduation || !formData.twelfth || !formData.tenth) {
+        //     console.log("please fill all the feilds")
+        //     setError("Filling all the feild are compulsory.")
+        //     return;
+        // }
         setUrl(null)
         console.log(formData)
+        setIsLoading(false)
         try {
             const response = await axios.post("https://diamond-ore-job-portal-backend.vercel.app/api/candidates/free-resume"
                 , formData
@@ -111,6 +113,7 @@ const Cvform = () => {
 
             if (response.status === 200) {
                 console.log(response.data)
+                setIsLoading(true)
                 const myurl = response.data
                 setUrl(myurl)
                 alert("form has been submitted click on dawnload button to dawunload your CV")
@@ -641,6 +644,7 @@ const Cvform = () => {
 
 
                                     </div>
+                                    <button className='p-2 bg-blue-950 rounded-md text-white' onClick={() => alert("please go for premium cv")}>Add Experience</button>
                                     <div className="mt-4 flex justify-between">
                                         <button type="button" onClick={prevStep} className="bg-gray-500 text-white px-4 py-2 rounded-md">Previous</button>
                                         <button type="button" onClick={nextStep} className="bg-blue-950 text-white px-4 py-2 rounded-md">Next</button>
@@ -650,7 +654,8 @@ const Cvform = () => {
 
                             {currentStep === 4 && (
                                 <div>
-                                    <h2 className='font-bold text-4xl mb-2'>Skills</h2>
+                                    <h2 className='font-bold text-4xl '>Skills</h2>
+                                    <div className='w-80 bg-blue-900 h-0.5 mb-2 invisible'></div>
                                     <div className="sm:col-span-2 ">
                                         <h1>Tech Skills</h1>
                                         {formData.tech_skills.map((skill, index) => (
@@ -712,10 +717,18 @@ const Cvform = () => {
                                     </div>
                                     <div className="mt-4 flex justify-between">
                                         <button type="button" onClick={prevStep} className="bg-gray-500 text-white px-4 py-2 rounded-md">Previous</button>
-                                        <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded-md">Submit</button>
                                     </div>
 
-                                    <a href={url} className='bg-blue-950 text-white uppercase p-4 flex justify-center mt-10'> dawnload Your Free CV</a>
+                                    {url ? (
+                                        <a href={url} className='bg-blue-800 hover:bg-blue-950 text-white uppercase px-4 py-2  flex justify-center mt-2 cursor-pointer w-full rounded-md'>Download Your Free CV</a>
+                                    ) : (
+                                        <button type="submit"
+                                            className="bg-green-500 hover:bg-green-800 text-white px-4 py-2 rounded-md mt-2 w-full uppercase"
+                                            
+                                        ><span> {isLoading ? 'Loading...' : 'Submit'}</span> </button>
+                                    )}
+
+                                  
                                 </div>
 
                             )}

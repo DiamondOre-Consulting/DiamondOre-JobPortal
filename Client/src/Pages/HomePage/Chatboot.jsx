@@ -19,7 +19,7 @@ const Chatboot = () => {
         preferredChannel: null,
         currentCTC: null,
     });
-    const [scrollEnabled, setScrollEnabled] = useState(true); 
+    const [scrollEnabled, setScrollEnabled] = useState(true);
     const chatboxBodyRef = useRef(null);
 
     const questions = [
@@ -32,7 +32,7 @@ const Chatboot = () => {
     ];
 
     const introMessage =
-        `Hi! Welcome to the Diamondore Consulting Pvt. Ltd. We're here to help you find your next career opportunity. To get started, please provide us with some information`;
+        `Hi! Welcome to the Diamondore Consulting Pvt . Ltd. We're here to help you find your next career opportunity. To get started, please provide us with some information`;
     const endingMessage = 'Thank you for providing your information. We will contact you soon';
 
     const toggleChatbox = () => {
@@ -109,8 +109,6 @@ const Chatboot = () => {
         });
     };
 
-
-
     useEffect(() => {
         if (chatboxBodyRef.current) {
             chatboxBodyRef.current.scrollTop = chatboxBodyRef.current.scrollHeight;
@@ -173,7 +171,7 @@ const Chatboot = () => {
 
                 </div>
                 {/* Text centered */}
-                <p className=" text-xs mt-2 pb-2">Hii I'm Robo recruiter How Can I Help You Today?</p>
+                <p className=" text-xs mt-2 pb-2 font-bold">Hi I'm Robo Recruiter How may I Help You Today?</p>
             </div>
 
             <div className="fixed bottom-12 sm:bottom-8 right-8">
@@ -196,10 +194,14 @@ const Chatboot = () => {
                             {messages.map((message, index) => (
                                 <div
                                     key={index}
-                                    className={`chat-message ${message.sender === 'user' ? 'text-right mb-2 text-xs' : 'text-left mb-2 text-xs'
-                                        }`}
+                                    className={`chat-message ${message.sender === 'user' ? 'text-right mb-2 text-xs' : 'text-left mb-2 text-xs'}`}
                                 >
-                                    {message.text}
+                                    {/* Apply bold styling to questions */}
+                                    {message.sender === 'chatbot' && questions.includes(message.text) ? (
+                                        <span className="font-bold italic text-blue-950">{message.text}</span>
+                                    ) : (
+                                        <span className='font-bold italic'>{message.text}</span>
+                                    )}
                                 </div>
                             ))}
                         </div>
