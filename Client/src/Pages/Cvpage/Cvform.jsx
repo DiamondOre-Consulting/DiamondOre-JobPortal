@@ -6,6 +6,7 @@ import axios from "axios";
 import { Link } from 'react-router-dom';
 
 const Cvform = () => {
+    const [showPopup, setShowPopup] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [currentStep, setCurrentStep] = useState(1);
     const [url, setUrl] = useState(null);
@@ -51,6 +52,11 @@ const Cvform = () => {
     //     });
     // };
 
+    
+  const handleClose = () => {
+    setShowPopup(false);
+
+  };
 
     const handleTechSkillInputChange = (index, value) => {
         const updatedTechSkills = [...formData.tech_skills];
@@ -98,11 +104,11 @@ const Cvform = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null)
-        // if (!formData.full_name || !formData.email || !formData.phone || !formData.address || !formData.linkedinUrl || !formData.summary || !formData.tech_skills || !formData.soft_skills || !formData.experience || !formData.graduation || !formData.twelfth || !formData.tenth) {
-        //     console.log("please fill all the feilds")
-        //     setError("Filling all the feild are compulsory.")
-        //     return;
-        // }
+        if (!formData.full_name || !formData.email || !formData.phone || !formData.address || !formData.linkedinUrl || !formData.summary || !formData.tech_skills || !formData.soft_skills || !formData.experience || !formData.graduation || !formData.twelfth || !formData.tenth) {
+            console.log("please fill all the feilds")
+            setError("Filling all the feild are compulsory.")
+            return;
+        }
         setUrl(null)
         console.log(formData)
         setIsLoading(false)
@@ -644,7 +650,9 @@ const Cvform = () => {
 
 
                                     </div>
-                                    <button className='p-2 bg-blue-950 rounded-md text-white' onClick={() => alert("please go for premium cv")}>Add Experience</button>
+                                    <button className='p-2 bg-blue-950 rounded-md text-white' onClick={() => {
+                setShowPopup(true);
+              }}>Add Experience</button>
                                     <div className="mt-4 flex justify-between">
                                         <button type="button" onClick={prevStep} className="bg-gray-500 text-white px-4 py-2 rounded-md">Previous</button>
                                         <button type="button" onClick={nextStep} className="bg-blue-950 text-white px-4 py-2 rounded-md">Next</button>
@@ -736,6 +744,35 @@ const Cvform = () => {
 
 
                         </form>
+                        {showPopup ? (
+        <div
+          className={`fixed inset-0 flex items-center justify-center ${showPopup ? "visible" : "hidden"
+            }`}
+        >
+          <section className="rounded-3xl shadow-xl bg-white w-1/2 sm:w-1/2  lg:w-1/4 md:w-1/2">
+            <div className="p-2 lg:p-2 md:p-12 text-center sm:p-12">
+              <h2 className="mt-6 text-sm lg:text-md md:sm sm:text-sm font-bold">
+               You can add only one experience in free version. Contact expert at  <span className="text-blue-950 underline uppercase"> cv geinie</span>
+              </h2>
+              <div className="flex justify-center align-center ">
+
+                <button
+                  className="mt-8 inline-block w-full rounded-full bg-red-500 py-4 text-sm font-bold text-white shadow-xl mb-2"
+                  onClick={handleClose}
+                >
+                 Close
+                </button>
+
+                
+
+              </div>
+
+            </div>
+          </section>
+        </div>
+      ) : (
+        ""
+      )}
                         {error && (
                             <div className="flex items-center justify-center bg-red-300 p-4 rounded-md">
                                 <p className="text-center text-sm text-red-500">{error}</p>

@@ -18,7 +18,7 @@ const CvSection = () => {
                     <img decoding="auto" data-loaded="true" data-src="https://cdn-images.zety.com/images/zety/landings/templates/step_4@2x.png" data-srcset="https://cdn-images.zety.com/images/zety/landings/templates/step_4@1x.png 1x, https://cdn-images.zety.com/images/zety/landings/templates/step_4@2x.png 2x, https://cdn-images.zety.com/images/zety/landings/templates/step_4@3x.png 3x" src="https://cdn-images.zety.com/images/zety/landings/templates/step_4@2x.png" alt="Zety CV builder download step" width="219" height="260" /><noscript>
                         <img src="https://cdn-images.zety.com/images/zety/landings/templates/step_4@2x.png" alt="Zety CV builder download step" width="219" height="260" /></noscript></div></div>
                         <div class="grid-cols-3 gap-2 px-12 lg:px-48 md:px-12 -mt-16 lg:grid sm:block md:grid place-items-center">
-                            <p className="mb-6"><span className='px-4 py-3 bg-blue-950 text-white border border-0 rounded-full mr-2'>1</span>Fill the Form.</p>
+                            <p className="mb-6"><span className='px-4 py-3 bg-blue-950 text-white border border-0 rounded-full mr-2'>1</span>Fill the Form</p>
                             <p className="mb-6"><span className='px-4 py-3 bg-blue-950 text-white border border-0 rounded-full mr-2'>2</span>Click on Save Button</p>
                             <p className="mb-6"><span className='px-4 py-3 bg-blue-950 text-white border border-0 rounded-full mr-2'>3</span>Download Your Resume Now</p>
                            </div>

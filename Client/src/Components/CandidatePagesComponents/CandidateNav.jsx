@@ -42,17 +42,17 @@ const CandidateNav = () => {
         }
       } catch (error) {
         console.error("Error fetching associates:", error);
-        //   if (error.response)
-        //   {
-        //     const status = error.response.status;
-        //     if (status === 404) {
-        //      alert("User Not Found")
-        //     } else {
-        //       console.log("user Not Found")
-        //     }
-        //   } else {
-        //     console.log("User not Found");
-        //   }
+          if (error.response)
+          {
+            const status = error.response.status;
+            if (status === 404) {
+             alert("User Not Found")
+            } else {
+              console.log("user Not Found")
+            }
+          } else {
+            console.log("User not Found");
+          }
       }
     }
     fetchUserData();

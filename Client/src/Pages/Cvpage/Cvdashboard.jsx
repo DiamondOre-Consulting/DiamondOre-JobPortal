@@ -13,7 +13,7 @@ const Cvdashboard = () => {
             <div className=" py-6 sm:py-8 lg:py-18">
                 <div className="mx-auto max-w-screen-xl px-4 md:px-8 bg-white shadow-xl rounded-md p-4">
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 sm:grid-cols-1 md:gap-0 ">
-                        <div className="flex flex-col items-center justify-cetner md:p-4">
+                        <div className="flex flex-col items-center justify-cetner md:p-4">         
                           <img src='https://resume.reachmore.in/wp-content/uploads/2023/04/cv-1.png' className='w-1/2'/>
                          <Link to={'/cv-form'}><button className='text-cetner bg-blue-950 rounded-md text-white p-2 mt-4'>Create Your Free CV</button></Link> 
                         </div>

@@ -48,7 +48,7 @@ import ScaleLoader from "react-spinners/ScaleLoader";
 import { useState } from "react";
 import ForgotPassword from "./Pages/CandidatePage/ForgotPassword";
 import Adminforgotpassword from "./Pages/AdminPage/Adminforgotpassword";
-
+import ErrorPage from './Pages/HomePage/ErrorPage'
 
 function App() {
   let [loading, setLoading] = useState(true);
@@ -132,6 +132,7 @@ function App() {
             <Route path='/employee-dashboard' element={<Employeedashboard/>}/>
             <Route path='/employee-leaves' element={<EmployeeLeaves/>}/>
             <Route path='/employee-performence'element={<EmployeePerformence/>}/>
+            <Route path ='*' element ={<ErrorPage/>}/>
           </Route> 
         </Routes>
       </Router>
