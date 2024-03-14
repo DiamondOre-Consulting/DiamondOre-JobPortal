@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import { useJwt } from "react-jwt";
 import axios from "axios";
-import { Navbar } from '@material-tailwind/react';
 import Footer from '../../Pages/HomePage/Footer';
 import CandidateNav from './CandidateNav';
 
