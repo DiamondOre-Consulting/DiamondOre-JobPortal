@@ -149,7 +149,7 @@ const CandidateNav = () => {
                   Applied Jobs
                 </Link>
                 <a href="https://referbiz.in/" target="_blank">
-                  Reffer & Earn
+                  Refer & Earn
                 </a>
 
               </nav>

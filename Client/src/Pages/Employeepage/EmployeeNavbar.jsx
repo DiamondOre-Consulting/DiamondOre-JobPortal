@@ -113,7 +113,7 @@ const EmployeeNavbar = () => {
                 </Link>
 
                 <a href="https://referbiz.in/" target="_blank">
-                  Reffer & Earn
+                  Refer & Earn
                 </a>
 
 
@@ -212,7 +212,7 @@ const EmployeeNavbar = () => {
                 className={`${menuOpen ? "block" : "hidden"
                   } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
-                Reffer & Earn
+                Refer & Earn
               </li>
             </a>
             <Link

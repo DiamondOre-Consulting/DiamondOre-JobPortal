@@ -128,18 +128,18 @@ const StatsPartners = () => {
           <h2 className="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-1 lg:text-3xl ">Trusted by the best</h2>
           <div className='bg-blue-900 w-56 h-1 align-center mx-auto'></div>
 
-          <div className="overflow-hidden mt-16 text-center flex justify-center">
+          <div className="overflow-hidden mt-16 text-center">
             <Marquee velocity={40}>
-              <img src={abglogo} alt="" className="w-14 sm:w-14 md:w-20 lg:w-44 object-cover mb-4 mr-16" />
-              <img src={sbi} alt="" className="w-14 sm:w-14 md:w-20 lg:w-20 object-cover mb-4 mr-16" />
-              <img src={agarwal} alt="" className="w-14 sm:w-14 md:w-20 lg:w-20 object-cover mb-4 mr-16" />
-              <img src={india} alt="" className="w-14 sm:w-14 md:w-20 lg:w-44 object-cover mb-4  mr-16" />
-              <img src={punjab} alt="" className="w-14 sm:w-14 md:w-20 lg:w-44 object-cover mb-4 mr-16" />
-              <img src={canara} alt="" className="w-14 sm:w-10 md:w-96 lg:w-44 object-cover mb-4 mr-16" />
-              <img src={kotak} alt="" className="w-14 sm:w-10 md:w-10 lg:w-44 object-cover mb-4 mr-16" />
-              <img src="https://www.careinsurance.com/images/care_health_insurance_logo.svg" alt="helthcare" className="w-18 sm:w-14 md:w-20 lg:w-44 object-cover mb-4 mr-16" />
-              <img src="https://www.motilaloswal.com/img/mologo.png?1210" alt="motilal oswal" className="w-14 sm:w-10 md:w-10 lg:w-44 object-cover mb-4 mr-16" />
-              <img src={edelweiss} alt="motilal oswal" className="w-14 sm:w-10 md:w-10 lg:w-44 object-cover mb-4 mr-16" />
+              <img src={abglogo} alt="" className="w-14 sm:w-14 md:w-20 lg:w-44 object-cover mb-4 mr-16 inline-block" />
+              <img src={sbi} alt="" className="w-14 sm:w-14 md:w-20 lg:w-20 object-cover mb-4 mr-16 inline-block" />
+              <img src={agarwal} alt="" className="w-14 sm:w-14 md:w-20 lg:w-20 object-cover mb-4 mr-16 inline-block" />
+              <img src={india} alt="" className="w-14 sm:w-14 md:w-20 lg:w-44 object-cover mb-4  mr-16 inline-block" />
+              <img src={punjab} alt="" className="w-14 sm:w-14 md:w-20 lg:w-44 object-cover mb-4 mr-16 inline-block" />
+              <img src={canara} alt="" className="w-14 sm:w-10 md:w-96 lg:w-44 object-cover mb-4 mr-16 inline-block" />
+              <img src={kotak} alt="" className="w-14 sm:w-10 md:w-10 lg:w-44 object-cover mb-4 mr-16 inline-block" />
+              <img src="https://www.careinsurance.com/images/care_health_insurance_logo.svg" alt="helthcare" className="w-18 sm:w-14 md:w-20 lg:w-44 object-cover mb-4 mr-16 inline-block" />
+              <img src="https://www.motilaloswal.com/img/mologo.png?1210" alt="motilal oswal" className="w-14 sm:w-10 md:w-10 lg:w-44 object-cover mb-4 mr-16 inline-block" />
+              <img src={edelweiss} alt="motilal oswal" className="w-14 sm:w-10 md:w-10 lg:w-44 object-cover mb-4 mr-16 inline-block" />
             </Marquee>
           </div>
 

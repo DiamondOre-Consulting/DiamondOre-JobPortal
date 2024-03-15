@@ -220,7 +220,7 @@ const Signup = ({ toggleForm }) => {
                
                     <button
                       onClick={handleSendOtp}
-                      className={`ml-4 rounded-lg bg-blue-900 hover:bg-blue-950 px-3 py-2 text-sm font-medium text-white  mt-2 mb-2`}
+                      className={` rounded-lg bg-blue-900 hover:bg-blue-950 px-3 py-2 text-sm font-medium text-white  mt-2 mb-2`}
 
                     >
                       Send OTP
@@ -367,7 +367,7 @@ const Signup = ({ toggleForm }) => {
 
               {/* Profile Image upload feild starts  */}
 
-              <div className="mt-1 flex items-center space-x-4">
+              <div className="mt-1 flex items-center  space-x-4">
                 <div className="w-full relative">
 
                   <label  className="block mb-2 text-md font-medium text-gray-900 dark:text-white " for="file_input">Upload File</label>
@@ -381,7 +381,7 @@ const Signup = ({ toggleForm }) => {
 
                 <button
                   onClick={handleUploadImage}
-                  className=" w-1/2 bg-blue-900 hover:bg-blue-950 text-white px-2 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className=" w-1/2 bg-blue-900 hover:bg-blue-950 text-white px-2 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mt-4"
                 >
                   Upload Image
                 </button>

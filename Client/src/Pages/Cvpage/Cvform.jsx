@@ -52,11 +52,11 @@ const Cvform = () => {
     //     });
     // };
 
-    
-  const handleClose = () => {
-    setShowPopup(false);
 
-  };
+    const handleClose = () => {
+        setShowPopup(false);
+
+    };
 
     const handleTechSkillInputChange = (index, value) => {
         const updatedTechSkills = [...formData.tech_skills];
@@ -314,7 +314,7 @@ const Cvform = () => {
                                     <h2 className='font-bold text-4xl mb-2'>Educational Details</h2>
 
                                     <div className="sm:col-span-2">
-                                        <h1>Graduation details</h1>
+                                        <h1>Graduation Details</h1>
 
                                         <input
                                             type="text"
@@ -357,7 +357,7 @@ const Cvform = () => {
                                         />
                                         <input
                                             type="text"
-                                            placeholder="unvirsity name"
+                                            placeholder="University Name"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
                                             value={formData.graduation.university_name}
                                             onChange={(e) =>
@@ -370,7 +370,7 @@ const Cvform = () => {
                                         />
                                         <input
                                             type="text"
-                                            placeholder="unvirsity city"
+                                            placeholder="University city"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
                                             value={formData.graduation.university_city}
                                             onChange={(e) =>
@@ -385,11 +385,11 @@ const Cvform = () => {
 
 
                                         {/*  12th details */}
-                                        <h1>12th DETAILS</h1>
+                                        <h1>12th Details</h1>
 
                                         <input
                                             type="text"
-                                            placeholder="twelfth _feilds"
+                                            placeholder="Twelfth Feild"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
                                             value={formData.twelfth.twelfth_field}
                                             onChange={(e) =>
@@ -402,7 +402,7 @@ const Cvform = () => {
                                         />
                                         <input
                                             type="text"
-                                            placeholder="twelfth_year"
+                                            placeholder="Twelfth Year"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
                                             value={formData.twelfth.twelfth_year}
                                             onChange={(e) =>
@@ -415,7 +415,7 @@ const Cvform = () => {
                                         />
                                         <input
                                             type="text"
-                                            placeholder="twelfth_school name"
+                                            placeholder="Twelfth School Name"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
                                             value={formData.twelfth.twelfth_school_name}
                                             onChange={(e) =>
@@ -428,7 +428,7 @@ const Cvform = () => {
                                         />
                                         <input
                                             type="text"
-                                            placeholder="twelfth school city"
+                                            placeholder="Twelfth School City"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
                                             value={formData.twelfth.twelfth_school_city}
                                             onChange={(e) =>
@@ -441,7 +441,7 @@ const Cvform = () => {
                                         />
                                         <input
                                             type="text"
-                                            placeholder="twelfth_board name"
+                                            placeholder="Twelfth Board Name"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
                                             value={formData.twelfth.twelfth_board_name}
                                             onChange={(e) =>
@@ -453,11 +453,11 @@ const Cvform = () => {
                                             }
                                         />
 
-                                        <h1>10th details</h1>
+                                        <h1>10th Details</h1>
 
                                         <input
                                             type="text"
-                                            placeholder="tenth feilds"
+                                            placeholder="Tenth Feild"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
                                             value={formData.tenth.tenth_field}
                                             onChange={(e) =>
@@ -470,7 +470,7 @@ const Cvform = () => {
                                         />
                                         <input
                                             type="text"
-                                            placeholder="tenth year"
+                                            placeholder="Tenth Year"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
                                             value={formData.tenth.tenth_year}
                                             onChange={(e) =>
@@ -483,7 +483,7 @@ const Cvform = () => {
                                         />
                                         <input
                                             type="text"
-                                            placeholder="tenth school name"
+                                            placeholder="Tenth School Name"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
                                             value={formData.tenth.tenth_school_name}
                                             onChange={(e) =>
@@ -496,7 +496,7 @@ const Cvform = () => {
                                         />
                                         <input
                                             type="text"
-                                            placeholder="tenth school city"
+                                            placeholder="Tenth School City"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
                                             value={formData.tenth.tenth_school_city}
                                             onChange={(e) =>
@@ -509,7 +509,7 @@ const Cvform = () => {
                                         />
                                         <input
                                             type="text"
-                                            placeholder="tenth board name"
+                                            placeholder="Tenth Board Name"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
                                             value={formData.tenth.tenth_board_name}
                                             onChange={(e) =>
@@ -553,7 +553,7 @@ const Cvform = () => {
                                         />
                                         <input
                                             type="text"
-                                            placeholder="starth month"
+                                            placeholder="Start Month"
                                             className="border border-1 rounded-md px-3 py-2 mt-2 w-full"
                                             value={formData.experience.start_month}
                                             onChange={(e) =>
@@ -566,7 +566,7 @@ const Cvform = () => {
                                         />
                                         <input
                                             type="text"
-                                            placeholder="start Year"
+                                            placeholder="Start Year"
                                             className="border border-1 rounded-md px-3 py-2 mt-2 w-full"
                                             value={formData.experience.start_year}
                                             onChange={(e) =>
@@ -579,7 +579,7 @@ const Cvform = () => {
                                         />
                                         <input
                                             type="text"
-                                            placeholder="end_month"
+                                            placeholder="End Month"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
                                             value={formData.experience.end_month}
                                             onChange={(e) =>
@@ -593,7 +593,7 @@ const Cvform = () => {
 
                                         <input
                                             type="text"
-                                            placeholder="end_year"
+                                            placeholder="End Year"
                                             className=" border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
                                             value={formData.experience.end_year}
                                             onChange={(e) =>
@@ -609,7 +609,7 @@ const Cvform = () => {
                                         <input
                                             type="text"
                                             value={formData.experience.company}
-                                            placeholder="company name"
+                                            placeholder="Company Name"
                                             className="border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
                                             onChange={(e) =>
                                                 handleInputChange(
@@ -623,7 +623,7 @@ const Cvform = () => {
                                         <input
                                             type="text"
                                             value={formData.experience.company_city}
-                                            placeholder="company city"
+                                            placeholder="Company City"
                                             className="border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
                                             onChange={(e) =>
                                                 handleInputChange(
@@ -637,7 +637,7 @@ const Cvform = () => {
                                         <textarea
                                             type="text"
                                             value={formData.experience.work_description}
-                                            placeholder="work discription"
+                                            placeholder="Work Discription"
                                             className="border border-1 rounded-md px-3 py-2 mt-2 w-full mb-2"
                                             onChange={(e) =>
                                                 handleInputChange(
@@ -651,8 +651,8 @@ const Cvform = () => {
 
                                     </div>
                                     <button className='p-2 bg-blue-950 rounded-md text-white' onClick={() => {
-                setShowPopup(true);
-              }}>Add Experience</button>
+                                        setShowPopup(true);
+                                    }}>Add Experience</button>
                                     <div className="mt-4 flex justify-between">
                                         <button type="button" onClick={prevStep} className="bg-gray-500 text-white px-4 py-2 rounded-md">Previous</button>
                                         <button type="button" onClick={nextStep} className="bg-blue-950 text-white px-4 py-2 rounded-md">Next</button>
@@ -732,11 +732,11 @@ const Cvform = () => {
                                     ) : (
                                         <button type="submit"
                                             className="bg-green-500 hover:bg-green-800 text-white px-4 py-2 rounded-md mt-2 w-full uppercase"
-                                            
+
                                         ><span> {isLoading ? 'Loading...' : 'Submit'}</span> </button>
                                     )}
 
-                                  
+
                                 </div>
 
                             )}
@@ -745,34 +745,32 @@ const Cvform = () => {
 
                         </form>
                         {showPopup ? (
-        <div
-          className={`fixed inset-0 flex items-center justify-center ${showPopup ? "visible" : "hidden"
-            }`}
-        >
-          <section className="rounded-3xl shadow-xl bg-white w-1/2 sm:w-1/2  lg:w-1/4 md:w-1/2">
-            <div className="p-2 lg:p-2 md:p-12 text-center sm:p-12">
-              <h2 className="mt-6 text-sm lg:text-md md:sm sm:text-sm font-bold">
-               You can add only one experience in free version. Contact expert at  <span className="text-blue-950 underline uppercase"> cv geinie</span>
-              </h2>
-              <div className="flex justify-center align-center ">
+                            <div
+                                className={`fixed inset-0 flex items-center justify-center ${showPopup ? "visible" : "hidden"
+                                    }`}
+                            >
+                                <section className="rounded-3xl shadow-xl bg-white w-1/2 sm:w-1/2  lg:w-1/4 md:w-1/2">
+                                    <div className="p-2 lg:p-2 md:p-12 text-center sm:p-12">
+                                        <h2 className="mt-6 text-sm lg:text-md md:sm sm:text-sm font-bold">
+                                            You can add only one experience in free version. Contact expert at  <span className="text-blue-950 underline uppercase"> cv genie</span>
+                                        </h2>
+                                        <div className="flex justify-center align-center ">
 
-                <button
-                  className="mt-8 inline-block w-full rounded-full bg-red-500 py-4 text-sm font-bold text-white shadow-xl mb-2"
-                  onClick={handleClose}
-                >
-                 Close
-                </button>
+                                            <button
+                                                className="mt-8 inline-block w-full rounded-full bg-red-500 py-4 text-sm font-bold text-white shadow-xl mb-2"
+                                                onClick={handleClose}
+                                            >
+                                                Close
+                                            </button>
 
-                
+                                        </div>
 
-              </div>
-
-            </div>
-          </section>
-        </div>
-      ) : (
-        ""
-      )}
+                                    </div>
+                                </section>
+                            </div>
+                        ) : (
+                            ""
+                        )}
                         {error && (
                             <div className="flex items-center justify-center bg-red-300 p-4 rounded-md">
                                 <p className="text-center text-sm text-red-500">{error}</p>

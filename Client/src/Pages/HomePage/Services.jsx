@@ -54,7 +54,7 @@ const Services = () => {
                             </div>
 
                             <div  className="p-4 md:p-6">
-                                <h3  className="mb-2 text-lg font-semibold md:text-xl">Mutual Funds - Midaas</h3>
+                                <h3  className="mb-2 text-lg font-semibold md:text-xl">Mutual Funds - Midas</h3>
                                 <p  className="text-gray-800 text-sm">Elevate Your Wealth with Midaas Mutual Funds. Expertly crafted investment strategies tailored to your goals. Let Midaas guide you towards financial prosperity and peace of mind. Take control of your future with our proven track record of success.</p>
                             </div>
                         </div>
@@ -67,8 +67,8 @@ const Services = () => {
                             </div>
 
                             <div  className="p-4 md:p-6">
-                                <h3  className="mb-2 text-lg font-semibold md:text-xl">CV~Genie</h3>
-                                <p  className="text-gray-200 text-sm">Elevate Your Career with CV Genie. Our tailored CV services ensure your strengths shine, opening doors to new opportunities. Trust us to craft a standout resume that accelerates your professional journey.</p>
+                                <h3  className="mb-2 text-lg font-semibold md:text-xl">Resume Building</h3>
+                                <p  className="text-gray-200 text-sm">Elevate Your Career with CV~Genie. Our tailored CV services ensure your strengths shine, opening doors to new opportunities. Trust us to craft a standout resume that accelerates your professional journey.</p>
                             </div>
                         </div>
                     </div>
@@ -96,7 +96,7 @@ const Services = () => {
 
                             <div  className="p-4 md:p-6">
                                 <h3  className="mb-2 text-lg font-semibold md:text-xl">IT Services</h3>
-                                <p  className="text-gray-200">Empower Your Business with Expert IT Services. We specialize in creating dynamic websites that captivate your audience and drive growth. Our comprehensive approach ensures seamless integration and unparalleled user experiences. Trust us to elevate your online presence and propel your success in the digital landscape.</p>
+                                <p  className="text-gray-200">Empower Your Business with Expert IT Services. We specialize in creating dynamic websites that captivate your audience and drive growth. Our comprehensive approach ensures seamless integration and unparalleled user experiences. Trust DOC_Labz to elevate your online presence and propel your success in the digital landscape.</p>
                             </div>
                         </div>
 
