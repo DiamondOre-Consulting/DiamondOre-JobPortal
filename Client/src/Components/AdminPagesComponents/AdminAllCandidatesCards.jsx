@@ -32,7 +32,7 @@ const AdminAllCandidatesCards = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/all-candidates",
+          "https://diamondore-jobportal-backend.onrender.com/api/admin-confi/all-candidates",
           {
             headers: {
               Authorization: `Bearer ${token}`

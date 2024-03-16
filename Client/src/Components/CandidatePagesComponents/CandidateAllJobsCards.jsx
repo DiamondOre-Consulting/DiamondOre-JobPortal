@@ -38,7 +38,7 @@ const CandidateAllJobsCards = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/all-jobs"
+          "https://diamondore-jobportal-backend.onrender.com/api/candidates/all-jobs"
         );
         console.log(response.data)
 

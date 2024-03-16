@@ -36,7 +36,7 @@ const AdminAllJobsCards = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/all-jobs"
+          "https://diamondore-jobportal-backend.onrender.com/api/admin-confi/all-jobs"
         );
         if (response.status == 200) {
           console.log(response.data);
@@ -60,7 +60,7 @@ const AdminAllJobsCards = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
-        `https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/remove-job/${id}`,
+        `https://diamondore-jobportal-backend.onrender.com/api/admin-confi/remove-job/${id}`,
         null,
         {
           headers: {

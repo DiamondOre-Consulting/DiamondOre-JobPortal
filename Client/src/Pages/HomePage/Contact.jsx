@@ -22,7 +22,7 @@ const Contact = () => {
         // const formData = { Name, Email, Message };
         try {
             const response = await axios.post(
-                'https://diamond-ore-job-portal-backend.vercel.app/api/candidates/help-contact',
+                'https://diamondore-jobportal-backend.onrender.com/api/candidates/help-contact',
                 {
                     Name,
                     Email,

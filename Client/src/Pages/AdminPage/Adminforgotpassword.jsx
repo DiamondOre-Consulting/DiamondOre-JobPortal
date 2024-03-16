@@ -21,7 +21,7 @@ const Adminforgotpassword = () => {
 
         try {
 
-            const response = await axios.post("https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/forgot-password", {
+            const response = await axios.post("https://diamondore-jobportal-backend.onrender.com/api/admin-confi/forgot-password", {
                 email
             })
 
@@ -47,7 +47,7 @@ const Adminforgotpassword = () => {
         console.log(email,otp,password)
         try {
 
-            const response = await axios.put("https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/update-password",
+            const response = await axios.put("https://diamondore-jobportal-backend.onrender.com/api/admin-confi/update-password",
                 {
                     otp,
                     password,

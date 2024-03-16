@@ -40,7 +40,7 @@ const AdminERP = () => {
     const fetchdata = async () => {
       try{
         const response = await axios.get(
-          "https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/erp/all-erp-data", 
+          "https://diamondore-jobportal-backend.onrender.com/api/admin-confi/erp/all-erp-data", 
           {
             headers: {
               Authorization: `Bearer ${token}`

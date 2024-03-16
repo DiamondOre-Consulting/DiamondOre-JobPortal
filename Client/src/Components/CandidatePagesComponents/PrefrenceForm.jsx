@@ -41,7 +41,7 @@ const PrefrenceForm = () => {
         }
         try {
             const response = await axios.post(
-                "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/add-preference",
+                "https://diamondore-jobportal-backend.onrender.com/api/candidates/add-preference",
                 formData,
                 {
                     headers: {
@@ -88,7 +88,7 @@ const PrefrenceForm = () => {
 
                 // Fetch associates data from the backend
                 const response = await axios.get(
-                    "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/all-jobs"
+                    "https://diamondore-jobportal-backend.onrender.com/api/candidates/all-jobs"
                 );
 
 

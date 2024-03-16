@@ -43,7 +43,7 @@ const UpdateStatus = () => {
     const fetchStatus = async () => {
       try {
         const response = await axios.get(
-          `https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/get-status/${id1}/${id2}`,
+          `https://diamondore-jobportal-backend.onrender.com/api/admin-confi/get-status/${id1}/${id2}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -67,7 +67,7 @@ const UpdateStatus = () => {
     const fetchCandidatenDetail = async () => {
       try {
         const response = await axios.get(
-          `https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/all-candidates/${id1}`,
+          `https://diamondore-jobportal-backend.onrender.com/api/admin-confi/all-candidates/${id1}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -97,7 +97,7 @@ const UpdateStatus = () => {
         return;
       }
       const response = await axios.put(
-        `https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/update-cv-shortlisted/${id1}/${id2}`,
+        `https://diamondore-jobportal-backend.onrender.com/api/admin-confi/update-cv-shortlisted/${id1}/${id2}`,
         {},
         {
           headers: {
@@ -124,7 +124,7 @@ const UpdateStatus = () => {
         return;
       }
       const response = await axios.put(
-        `https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/update-screening/${id1}/${id2}`,
+        `https://diamondore-jobportal-backend.onrender.com/api/admin-confi/update-screening/${id1}/${id2}`,
         {},
         {
           headers: {
@@ -153,7 +153,7 @@ const UpdateStatus = () => {
         return;
       }
       const response = await axios.put(
-        `https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/update-interviewscheduled/${id1}/${id2}`,
+        `https://diamondore-jobportal-backend.onrender.com/api/admin-confi/update-interviewscheduled/${id1}/${id2}`,
         {},
         {
           headers: {
@@ -182,7 +182,7 @@ const UpdateStatus = () => {
         return;
       }
       const response = await axios.put(
-        `https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/update-interviewed/${id1}/${id2}`,
+        `https://diamondore-jobportal-backend.onrender.com/api/admin-confi/update-interviewed/${id1}/${id2}`,
         {},
         {
           headers: {
@@ -211,7 +211,7 @@ const UpdateStatus = () => {
         return;
       }
       const response = await axios.put(
-        `https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/update-shortlisted/${id1}/${id2}`,
+        `https://diamondore-jobportal-backend.onrender.com/api/admin-confi/update-shortlisted/${id1}/${id2}`,
         {},
         {
           headers: {
@@ -240,7 +240,7 @@ const UpdateStatus = () => {
         return;
       }
       const response = await axios.put(
-        `https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/update-joined/${id1}/${id2}`,
+        `https://diamondore-jobportal-backend.onrender.com/api/admin-confi/update-joined/${id1}/${id2}`,
         {},
         {
           headers: {

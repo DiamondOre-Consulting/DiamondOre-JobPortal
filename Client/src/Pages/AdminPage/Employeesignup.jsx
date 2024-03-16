@@ -43,7 +43,7 @@ const Employeesignup = () => {
         console.log(name,email,password)
         try {
           const response = await axios.post(
-            "https://diamond-ore-job-portal-backend.vercel.app/api/employee/add-emp",
+            "https://diamondore-jobportal-backend.onrender.com/api/employee/add-emp",
             {
               name,
               email,

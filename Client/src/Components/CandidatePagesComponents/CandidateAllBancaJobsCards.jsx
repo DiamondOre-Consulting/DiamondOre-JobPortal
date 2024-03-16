@@ -33,7 +33,7 @@ const CandidateAllBancaJobsCards = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/all-banca-jobs",
+          "https://diamondore-jobportal-backend.onrender.com/api/candidates/all-banca-jobs",
           {
             headers: {
               Authorization: `Bearer ${token}`,
