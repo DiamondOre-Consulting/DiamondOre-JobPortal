@@ -14,7 +14,7 @@ const ForgotPassword = () => {
 
     const handleSendOtp = async (e) => {
         e.preventDefault();
-        if(!email){           
+        if (!email) {
             alert("enter you Email id")
             return;
         }
@@ -40,11 +40,11 @@ const ForgotPassword = () => {
     const updatePassword = async (e) => {
         console.log("Clicked")
         e.preventDefault();
-        if(!password || !otp || !email){
+        if (!password || !otp || !email) {
             alert("Filling all the feild are compulsory")
             return;
         }
-        console.log(email,otp,password)
+        console.log(email, otp, password)
         try {
 
             const response = await axios.put("https://diamond-ore-job-portal-backend.vercel.app/api/candidates/update-password",
@@ -54,14 +54,13 @@ const ForgotPassword = () => {
                     email,
                 })
 
-                
-            if (response.status === 200)
-            {
+
+            if (response.status === 200) {
                 alert("Password has been Updated Sucessfully...");
                 console.log("password updated sucessfully")
                 setEmail("");
                 setPassword("");
-                setOtp(""); 
+                setOtp("");
             }
         }
         catch (error) {
@@ -69,15 +68,15 @@ const ForgotPassword = () => {
             if (error.response) {
                 const status = error.response.status;
                 if (status === 404) {
-                  alert("User not found");
+                    alert("User not found");
                 } else {
-                  alert("An error occurred while in updating password. Please try again later.");
+                    alert("An error occurred while in updating password. Please try again later.");
                 }
-              } else {
+            } else {
                 alert("An error occurred while updating password.");
-              }
             }
-        
+        }
+
 
     }
 
