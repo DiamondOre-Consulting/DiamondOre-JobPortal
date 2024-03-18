@@ -25,7 +25,7 @@ const CandidateNav = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/user-data",
+          "https://diamondore-jobportal-backend.onrender.com/api/candidates/user-data",
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -67,7 +67,7 @@ const CandidateNav = () => {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await axios.delete('https://diamond-ore-job-portal-backend.vercel.app/api/candidates/remove-account',
+      const response = await axios.delete('https://diamondore-jobportal-backend.onrender.com/api/candidates/remove-account',
         {
           headers: {
             Authorization: `Bearer ${token}`

@@ -37,7 +37,7 @@ const HomeNewRecommend = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "https://diamond-ore-job-portal-backend.vercel.app/api/candidates/recommended-jobs",
+          "https://diamondore-jobportal-backend.onrender.com/api/candidates/recommended-jobs",
           {
             headers: {
               Authorization: `Bearer ${token}`

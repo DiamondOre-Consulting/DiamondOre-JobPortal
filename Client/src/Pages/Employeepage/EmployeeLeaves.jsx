@@ -33,7 +33,7 @@ const EmployeeLeaves = () => {
         // Fetch leave report
 
         const leaveReportResponse = await axios.get(
-          `https://diamond-ore-job-portal-backend.vercel.app/api/employee/leave-report`,
+          `https://diamondore-jobportal-backend.onrender.com/api/employee/leave-report`,
 
           {
             headers: {

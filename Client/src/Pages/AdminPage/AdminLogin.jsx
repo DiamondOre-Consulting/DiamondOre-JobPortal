@@ -20,11 +20,11 @@ const AdminLogin = () => {
     setError(null);
     // Perform login logic here
     try {
-      const response = await axios.post("https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/login-admin",
-        {
-          email,
-          password
-        });
+      const response= await axios.post("https://diamondore-jobportal-backend.onrender.com/api/admin-confi/login-admin",
+      {
+        email,
+        password
+      });
 
       if (response.status === 200) {
         const token = response.data.token;

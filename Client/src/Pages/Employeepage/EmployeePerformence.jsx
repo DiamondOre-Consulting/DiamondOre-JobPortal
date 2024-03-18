@@ -29,7 +29,7 @@ const EmployeePerformence = () => {
                 // Fetch leave report
 
                 const Response = await axios.get(
-                    `https://diamond-ore-job-portal-backend.vercel.app/api/employee/performance-report`,
+                    `https://diamondore-jobportal-backend.onrender.com/api/employee/performance-report`,
 
                     {
                         headers: {

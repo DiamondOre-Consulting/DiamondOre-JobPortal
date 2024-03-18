@@ -22,7 +22,7 @@ const AdminEditprofile = () => {
           return;
         }
         try {
-          const response = await axios.get("https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/user-data", {
+          const response = await axios.get("https://diamondore-jobportal-backend.onrender.com/api/admin-confi/user-data", {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -54,7 +54,7 @@ const AdminEditprofile = () => {
         const formData = new FormData();
         formData.append("myFileImage", profilePic);
         const response = await axios.post(
-          "https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/upload-profile-pic",
+          "https://diamondore-jobportal-backend.onrender.com/api/admin-confi/upload-profile-pic",
           formData,
           {
             headers: {
@@ -84,7 +84,7 @@ const AdminEditprofile = () => {
         
         //  console.log(userData.profilePic); 
         const token = localStorage.getItem("token");
-        await axios.put('https://diamond-ore-job-portal-backend.vercel.app/api/admin-confi/edit-profile', formData, {
+        await axios.put('https://diamondore-jobportal-backend.onrender.com/api/admin-confi/edit-profile', formData, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data',

@@ -21,7 +21,7 @@ const Login = () => {
     setError(null);
     // Perform login logic here
     try {
-      const response = await axios.post("https://diamond-ore-job-portal-backend.vercel.app/api/candidates/login",
+      const response = await axios.post("https://diamondore-jobportal-backend.onrender.com/api/candidates/login",
         {
           email,
           password

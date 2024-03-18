@@ -28,7 +28,7 @@ const EmployeeNavbar = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "https://diamond-ore-job-portal-backend.vercel.app/api/employee/user-data",
+          "https://diamondore-jobportal-backend.onrender.com/api/employee/user-data",
           {
             headers: {
               Authorization: `Bearer ${token}`,
