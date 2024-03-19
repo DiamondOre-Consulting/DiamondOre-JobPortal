@@ -3,8 +3,10 @@ import Boyimage from "../../assets/Boyimage.jpg";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const HeroNav = () => {
+  
   return (
     <div>
       <section className="overflow-hidden flex flex-between sm:grid sm:grid-cols-2">
@@ -25,12 +27,12 @@ const HeroNav = () => {
               </p>
 
               <div className="mt-4 md:mt-8">
-                <a
-                  href="#"
+                <Link
+                  to={'/login'}
                   className="inline-block rounded bg-blue-900 px-12 py-3 text-sm font-medium text-white transition hover:bg-blue-950 focus:outline-none focus:ring focus:ring-yellow-400"
                 >
                   Get Started Today
-                </a>
+                </Link>
               </div>
             </div>
           </motion.div>
