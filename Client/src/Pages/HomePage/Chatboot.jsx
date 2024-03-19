@@ -117,6 +117,7 @@ const Chatboot = () => {
 
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
+      
     };
 
     const handleSendMessage = () => {

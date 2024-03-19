@@ -1232,7 +1232,9 @@ router.post("/free-resume", async (req, res) => {
       // Parse the signed URL to extract the base URL
       const parsedUrl = new URL(signedUrl);
       const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
-
+      if(!baseUrl){
+        return res.status(404).json({ message: "file not saved" });
+      }
       if(baseUrl){
 
         const newFreeResume = new ResumeTemp({
@@ -1282,6 +1284,7 @@ router.post("/free-resume", async (req, res) => {
       }
      
       res.status(200).send(baseUrl); // Return the URL of the uploaded file
+      
 
   } catch (error) {
       console.log(error);

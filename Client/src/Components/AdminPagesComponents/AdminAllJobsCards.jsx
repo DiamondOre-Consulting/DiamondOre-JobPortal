@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useJwt } from "react-jwt";
 import axios from "axios";
 import PropagateLoader from "react-spinners/PropagateLoader";
+import ReactPaginate from "react-paginate";
 
 
 const AdminAllJobsCards = () => {
@@ -13,6 +14,15 @@ const AdminAllJobsCards = () => {
   const { decodedToken } = useJwt(localStorage.getItem("token"));
   const token = localStorage.getItem("token");
   let [loading, setLoading] = useState(true);
+  const [pageNumber, setPageNumber] = useState(0);
+  const jobsPerPage = 20;
+  const pagesVisited = pageNumber * jobsPerPage;
+  const pageCount = Math.ceil(latestJobs.length / jobsPerPage);
+
+  const changePage = ({ selected }) => {
+    setPageNumber(selected);
+  };
+
 
   const override = {
     display: "flex",
@@ -72,7 +82,7 @@ const AdminAllJobsCards = () => {
         // Job has been deleted successfully, update the state
         alert('Do you Want to delete This Job')
         setLatestJobs(latestJobs.filter(job => job._id !== id));
-        
+
 
       }
     } catch (error) {
@@ -97,7 +107,7 @@ const AdminAllJobsCards = () => {
               />
             </div> :
             <div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
-              {latestJobs.map((latestJob) => (
+              {latestJobs.slice(pagesVisited, pagesVisited + jobsPerPage).map((latestJob) => (
                 <div
                   key={latestJob?._id}
                   className="flex flex-col justify-between h-64 overflow-hidden rounded-lg bg-white shadow-lg shadow-2xl-gray-200 p-4 shadow-lg hover:shadow-2xl "
@@ -114,12 +124,7 @@ const AdminAllJobsCards = () => {
                         <path fillRule="evenodd" d="M8.6 2.6A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4c0-.5.2-1 .6-1.4ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clipRule="evenodd" />
                       </svg>
                     </div>
-
-
-
                   </div>
-
-
                   <div className="w-44 h-0.5 bg-blue-950 md:mb-6 "></div>
                   <p className="text-sm text-gray-600 font-semibold">
                     Industry - <span className="text-blue-950">{latestJob?.Industry}</span>
@@ -141,6 +146,21 @@ const AdminAllJobsCards = () => {
               ))}
             </div>
         }
+        <div className="flex justify-center items-center mt-8 ">
+          <ReactPaginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            pageCount={pageCount}
+            onPageChange={changePage}
+            containerClassName={"pagination flex justify-center mt-8  gap-0 md:gap-2 shadow-lg px-10 py-4 "}
+            previousLinkClassName={"pagination__link border border-gray-300 bg-gray-400 text-black rounded-l px-2 py-1 md:px-4 md:py-2  "}
+            nextLinkClassName={"pagination__link  rounded-r bg-blue-950 text-white px-2 py-1 md:px-4 md:py-2 "}
+            disabledClassName={"pagination__link--disabled opacity-50"}
+            activeClassName={"pagination__link--active bg-blue-500 text-white"}
+            pageLinkClassName={"pagination__link border border-gray-300  px-1 py-1 md:px-3 md:py-1"}
+          />
+
+        </div>
       </div>
     </div>
   );

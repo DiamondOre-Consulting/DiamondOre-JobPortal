@@ -129,8 +129,17 @@ const Cvform = () => {
         }
         catch (error) {
             console.log("error in building resume", error)
-
-        }
+            if (error.response) {
+                const status = error.response.status;
+                if (status === 404) {
+                  setError("Error occured in file submitting");
+                } else {
+                  setError("Error occured in file submitting");
+                }
+              } else {
+                setError("Error occured in file submitting");
+              }
+            }
         // Handle form submission, e.g., submit data to backend
 
     };

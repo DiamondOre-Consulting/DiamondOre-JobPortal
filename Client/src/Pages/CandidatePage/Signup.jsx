@@ -18,7 +18,7 @@ const Signup = ({ toggleForm }) => {
   const [error, setError] = useState(null);
   const [showPass, setShowPass] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
-  
+
 
   const handleUploadImage = async (e) => {
     try {
@@ -40,10 +40,10 @@ const Signup = ({ toggleForm }) => {
         console.log(response.data);
         setProfilePicUrl(response.data);
       }
-      else if(response.status === 500){
+      else if (response.status === 500) {
         setError("Please Upload your profile image Correctly")
       }
-      else{
+      else {
 
         console.log("error occurred in image file uploading")
 
@@ -75,10 +75,10 @@ const Signup = ({ toggleForm }) => {
         setResumeUrl(response.data);
         console.log(response.data);
       }
-      else if(response.status === 500){
+      else if (response.status === 500) {
         setError("Please Upload your resume Correctly")
       }
-      else{
+      else {
 
         console.log("error occurred in resume file uploading")
 
@@ -134,7 +134,7 @@ const Signup = ({ toggleForm }) => {
         console.log("User Registered Successfully!!!");
         navigate('/dashboard')
       }
-     
+
     } catch (error) {
       console.error("Error signing up:", error);
       if (error.response) {
@@ -189,7 +189,7 @@ const Signup = ({ toggleForm }) => {
                   />
 
                   <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
-                    <svg  className="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
 
@@ -204,7 +204,7 @@ const Signup = ({ toggleForm }) => {
 
                 <div className="relative">
                   <input
-                    className="w-full rounded-lg border p-4 pe-12 text-sm shadow-sm"
+                    className="w-8/12 lg:w-9/12 sm:8/12 md:5/12  rounded-lg border p-4 pe-12 text-sm shadow-sm"
                     type="email"
                     id="email"
                     name="email"
@@ -212,20 +212,18 @@ const Signup = ({ toggleForm }) => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
+                  <button
+                    onClick={handleSendOtp}
+                    className={` rounded-lg bg-blue-900 hover:bg-blue-950 px-3 py-3 ml-4 text-sm font-medium text-white  mt-2 mb-2`}
 
-                  <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
-                    <svg  className="h-6 w-6 text-gray-500" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <rect x="3" y="5" width="18" height="14" rx="2" />  <polyline points="3 7 12 13 21 7" /></svg>
-                  </span>
+                  >
+                    Send OTP
+                  </button>
+
                 </div>
-               
-                    <button
-                      onClick={handleSendOtp}
-                      className={` rounded-lg bg-blue-900 hover:bg-blue-950 px-3 py-2 text-sm font-medium text-white  mt-2 mb-2`}
 
-                    >
-                      Send OTP
-                    </button>
-                  
+
+
               </div>
 
               {/* OTP input field starts */}
@@ -358,7 +356,7 @@ const Signup = ({ toggleForm }) => {
                   />
 
                   <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
-                    <svg  className="h-6 w-6 text-gray-500" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" /></svg>
+                    <svg className="h-6 w-6 text-gray-500" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" /></svg>
 
                   </span>
 
@@ -367,46 +365,49 @@ const Signup = ({ toggleForm }) => {
 
               {/* Profile Image upload feild starts  */}
 
-              <div className="mt-1 flex items-center  space-x-4">
-                <div className="w-full relative">
-
-                  <label  className="block mb-2 text-md font-medium text-gray-900 dark:text-white " for="file_input">Upload File</label>
+              <div className="mt-1 ">
+              <label className="block mb-2 text-md font-medium text-gray-900 dark:text-white font-bold text-2xl mb-4" for="file_input">Upload File</label>
+                <div className="flex mb-8">
                   <input
-                    className="w-full rounded-md border-0 p-4 pe-12 text-sm shadow-sm "
+                    className="w-full rounded-md border-0 pe-12 text-sm shadow-sm "
                     type="file"
                     name="profilePic"
                     onChange={(e) => setProfilePic(e.target.files[0])}
                   />
+
+                  <button
+                    onClick={handleUploadImage}
+                    className=" w-1/2 bg-blue-900 hover:bg-blue-950 text-white rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 "
+                  >
+                    Upload Image
+                  </button>
                 </div>
 
-                <button
-                  onClick={handleUploadImage}
-                  className=" w-1/2 bg-blue-900 hover:bg-blue-950 text-white px-2 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mt-4"
-                >
-                  Upload Image
-                </button>
+
               </div>
 
               {/* Profile image upload feild ends  */}
 
               {/* Resume feild starts */}
 
-              <div className="mt-1 flex items-center space-x-4">
-                <div className="w-full relative">
+              <div className="mt-1">
+                <div className=" flex ">
                   <input
-                    className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
+                    className="w-full rounded-lg border-gray-200 pe-12 text-sm shadow-sm"
                     type="file"
                     name="resume"
                     onChange={(e) => setResume(e.target.files[0])}
                   />
+
+                  <button
+                    onClick={handleUploadResume}
+                    className=" w-1/2 bg-blue-900 hover:bg-blue-950 text-white rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  >
+                    Upload Resume
+                  </button>
                 </div>
 
-                <button
-                  onClick={handleUploadResume}
-                  className=" w-1/2 bg-blue-900 hover:bg-blue-950 text-white px-1 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  Upload Resume
-                </button>
+
               </div>
 
               {/* Resume feild ends */}

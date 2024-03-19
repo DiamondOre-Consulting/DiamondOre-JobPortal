@@ -108,24 +108,24 @@ const CandidateAllBancaJobsCards = () => {
                   </Link>
                 </div>
               ))}
-
-              <div className="flex justify-center items-center mt-8 ">
-                <ReactPaginate
-                  previousLabel={"Previous"}
-                  nextLabel={"Next"}
-                  pageCount={pageCount}
-                  onPageChange={changePage}
-                  containerClassName={"pagination flex justify-center mt-8  gap-0 md:gap-2 shadow-lg px-10 py-4 "}
-                  previousLinkClassName={"pagination__link border border-gray-300 bg-gray-400 text-black rounded-l px-2 py-1 md:px-4 md:py-2  "}
-                  nextLinkClassName={"pagination__link  rounded-r bg-blue-950 text-white px-2 py-1 md:px-4 md:py-2 "}
-                  disabledClassName={"pagination__link--disabled opacity-50"}
-                  activeClassName={"pagination__link--active bg-blue-500 text-white"}
-                  pageLinkClassName={"pagination__link border border-gray-300  px-1 py-1 md:px-3 md:py-1"}
-                />
-
-              </div>
             </div>
+            
         }
+        <div className="flex justify-center items-center mt-8 ">
+          <ReactPaginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            pageCount={pageCount}
+            onPageChange={changePage}
+            containerClassName={"pagination flex justify-center mt-8  gap-0 md:gap-2 shadow-lg px-10 py-4 "}
+            previousLinkClassName={"pagination__link border border-gray-300 bg-gray-400 text-black rounded-l px-2 py-1 md:px-4 md:py-2  "}
+            nextLinkClassName={"pagination__link  rounded-r bg-blue-950 text-white px-2 py-1 md:px-4 md:py-2 "}
+            disabledClassName={"pagination__link--disabled opacity-50"}
+            activeClassName={"pagination__link--active bg-blue-500 text-white"}
+            pageLinkClassName={"pagination__link border border-gray-300  px-1 py-1 md:px-3 md:py-1"}
+          />
+
+        </div>
       </div>
     </div>
   )

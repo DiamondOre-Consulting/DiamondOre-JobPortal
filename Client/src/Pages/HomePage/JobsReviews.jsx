@@ -335,7 +335,7 @@ const JobsReviews = () => {
                         <p className="text-2xl font-bold text-blue-950 sm:text-3xl">Murali Iyer</p>
 
                         <p className="mt-4 leading-relaxed text-gray-700">
-                          <span className='text-blue-950 font-bold '>Diamond Ore Consulting Pvt Ltd</span> they are having the rare ability to plain the work and than work the plan .Rahul mathus is a erson with a strategic bend of min his strength is also imaplementation . this make him potent force as a senior front line manager leading a laarge team of people a cool head and great man management sklls is a winning combination that alway kept him ahead of his peers ...
+                          <span className='text-blue-950 font-bold '>Diamond Ore Consulting Pvt Ltd</span> they are having the rare ability to plain the work and than work the plan .Rahul mathur is a person with a strategic bend of min his strength is also imaplementation . this make him potent force as a senior front line manager leading a large team of people a cool head and great man management skills is a winning combination that alway kept him ahead of his peers ...
                         </p>
                       </div>
                     </div>

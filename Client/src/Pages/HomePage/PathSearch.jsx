@@ -271,15 +271,13 @@ const PathSearch = ({ latestJobs }) => {
                         ))}
 
 
-
-                        <div className="flex flex-col overflow-hidden rounded-lg bg-blue-900 hover:bg-blue-950 shadow-lg shadow-gray-800 hover:shadow-2xl shadow-gray-900">
-                            <div className="flex flex-1 flex-col justify-center items-center p-4 sm:p-6">
-                                <h2 className="mb-2 text-2xl font-semibold text-gray-200">
+                        
+                        <div className="flex flex-col justify-center items-center overflow-hidden rounded-lg bg-blue-900 hover:bg-blue-950 shadow-lg shadow-gray-800 hover:shadow-2xl shadow-gray-900">
+                        <Link to={'/all-jobs'}>
+                            <div className="flex flex-col justify-center items-center p-4 sm:p-6">
+                                <h2 className="mb-2 text-center text-2xl font-semibold text-gray-200">
                                     And many more...
                                 </h2>
-                                <Link to={'/all-jobs'}
-                                    className="transition duration-100 "
-                                >
                                     <p className="rounded-md  cursor-pointer px-2 py-1 text-sm font-semibold text-gray-200 ">
 
                                         <svg className="w-6 h-6  mx-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
@@ -287,16 +285,17 @@ const PathSearch = ({ latestJobs }) => {
                                         </svg>
 
                                     </p>
-                                </Link>
+
                             </div>
-
+                            </Link>
                         </div>
-
-                    </div>
+                       
 
                 </div>
+
             </div>
         </div>
+        </div >
 
     )
 }
