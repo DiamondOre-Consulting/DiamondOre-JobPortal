@@ -50,6 +50,11 @@ app.get("/", (req, res) => {
   res.send("Hello Diamondore");
 });
 
+// For any other request, serve the React app's HTML file
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port: ${PORT}`);
 });
