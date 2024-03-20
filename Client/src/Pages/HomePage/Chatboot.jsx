@@ -117,6 +117,7 @@ const Chatboot = () => {
 
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
+      
     };
 
     const handleSendMessage = () => {
@@ -200,7 +201,7 @@ const Chatboot = () => {
                                     {message.sender === 'chatbot' && questions.includes(message.text) ? (
                                         <span className="font-bold italic text-blue-950">{message.text}</span>
                                     ) : (
-                                        <span className='font-bold italic'>{message.text}</span>
+                                        <span className='font-bold'>{message.text}</span>
                                     )}
                                 </div>
                             ))}

@@ -3,12 +3,21 @@ import { Link, useNavigate } from "react-router-dom";
 import { useJwt } from "react-jwt";
 import axios from "axios";
 import PropagateLoader from "react-spinners/PropagateLoader";
+import ReactPaginate from "react-paginate";
 
 const CandidateAllBancaJobsCards = () => {
   let [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [bancaJobs, setBancaJobs] = useState([]);
+  const [pageNumber, setPageNumber] = useState(0);
+  const jobsPerPage = 20;
 
+  const pagesVisited = pageNumber * jobsPerPage;
+  const pageCount = Math.ceil(bancaJobs.length / jobsPerPage);
+
+  const changePage = ({ selected }) => {
+    setPageNumber(selected);
+  };
   const { decodedToken } = useJwt(localStorage.getItem("token"));
 
 
@@ -58,9 +67,9 @@ const CandidateAllBancaJobsCards = () => {
   }, []);
 
   return (
-    <div  className="bg-white py-4 sm:py-8 lg:py-10">
-      <div  className="mx-auto max-w-screen-2xl px-4 md:px-8">
-        <h2  className="mb-8 text-center text-2xl font-bold text-gray-800 md:mb-12 lg:text-3xl">
+    <div className="bg-white py-4 sm:py-8 lg:py-10">
+      <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
+        <h2 className="mb-8 text-center text-2xl font-bold text-gray-800 md:mb-12 lg:text-3xl">
           All Banca Jobs
         </h2>
         {
@@ -74,10 +83,10 @@ const CandidateAllBancaJobsCards = () => {
                 data-testid="loader"
               />
             </div> :
-            <div  className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
-              {bancaJobs.map((bancaJob) => (
+            <div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+              {bancaJobs.slice(pagesVisited, pagesVisited + jobsPerPage).map((bancaJob) => (
                 <div
-                   className="flex flex-col justify-between h-64 overflow-hidden rounded-lg bg-white shadow-lg shadow-2xl-gray-200 p-4 shadow-lg hover:shadow-2xl"
+                  className="flex flex-col justify-between h-64 overflow-hidden rounded-lg bg-white shadow-lg shadow-2xl-gray-200 p-4 shadow-lg hover:shadow-2xl"
                 >
                   <h3 className="text-xl text-blue-950 font-bold">
                     {bancaJob?.JobTitle}
@@ -92,15 +101,31 @@ const CandidateAllBancaJobsCards = () => {
                   </p>
 
                   {(bancaJob?.appliedApplicants == decodedToken?.userId) ? (<p className="text-center text-md text-green-500 font-semibold">Already applied</p>) : ""}
-                  <Link to={`/all-jobs/${bancaJob?._id}`}  className="cursor-pointer w-full flex-col rounded-lg bg-blue-900 p-4 text-center text-white hover:bg-white hover:text-black-100 hover:text-gray-900 border border-blue-950 mt-2">
-                    <span  className="text-md font-bold lg:text-md">
+                  <Link to={`/all-jobs/${bancaJob?._id}`} className="cursor-pointer w-full flex-col rounded-lg bg-blue-900 p-4 text-center text-white hover:bg-white hover:text-black-100 hover:text-gray-900 border border-blue-950 mt-2">
+                    <span className="text-md font-bold lg:text-md">
                       Know More
                     </span>
                   </Link>
                 </div>
               ))}
             </div>
+            
         }
+        <div className="flex justify-center items-center mt-8 ">
+          <ReactPaginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            pageCount={pageCount}
+            onPageChange={changePage}
+            containerClassName={"pagination flex justify-center mt-8  gap-0 md:gap-2 shadow-lg px-10 py-4 "}
+            previousLinkClassName={"pagination__link border border-gray-300 bg-gray-400 text-black rounded-l px-2 py-1 md:px-4 md:py-2  "}
+            nextLinkClassName={"pagination__link  rounded-r bg-blue-950 text-white px-2 py-1 md:px-4 md:py-2 "}
+            disabledClassName={"pagination__link--disabled opacity-50"}
+            activeClassName={"pagination__link--active bg-blue-500 text-white"}
+            pageLinkClassName={"pagination__link border border-gray-300  px-1 py-1 md:px-3 md:py-1"}
+          />
+
+        </div>
       </div>
     </div>
   )

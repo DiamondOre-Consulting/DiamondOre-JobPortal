@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 const CvSection = () => {
     return (
         <section class="mt-24">
-            <h2 class="text-center text-xl lg:text-3xl md:text-2xl px-16 font-bold">Make a job-winning CV in three simple steps</h2>
+            <h2 class="text-center text-xl lg:text-3xl md:text-2xl px-16 font-bold">Craft a job-winning CV in Simple steps</h2>
             <div class="grid grid-cols-3 px-48 py-12 gap-2 flex justify-center align-center place-items-center">
                 <div class="steps__image steps__image2 hidden md:block"><img decoding="auto" data-loaded="true" data-src="https://cdn-images.zety.com/images/zety/landings/templates/step_2@2x.png" data-srcset="https://cdn-images.zety.com/images/zety/landings/templates/step_2@1x.png 1x, https://cdn-images.zety.com/images/zety/landings/templates/step_2@2x.png 2x, https://cdn-images.zety.com/images/zety/landings/templates/step_2@3x.png 3x" src="https://cdn-images.zety.com/images/zety/landings/templates/step_2@2x.png" alt="Zety CV builder template filling step" width="170" height="235" /><noscript>
                     <img src="https://cdn-images.zety.com/images/zety/landings/templates/step_2@2x.png" alt="Zety CV builder template filling step" width="170" height="235" /></noscript></div>
@@ -24,7 +24,7 @@ const CvSection = () => {
                            </div>
                            <div className='flex justify-center align-center mt-16 mb-4'>
 
-                           <Link to={'/cv-dashboard'} rel="nofollow" className='bg-red-400  px-4 text-center py-4 text-white  border border-0 rounded-2xl'>Create your CV now</Link>
+                           <Link to={'/cv-dashboard'} rel="nofollow" className='bg-red-400  px-4 text-center py-4 text-white  border border-0 rounded-2xl'>Create your CV</Link>
 
                            </div>
                            </section>
