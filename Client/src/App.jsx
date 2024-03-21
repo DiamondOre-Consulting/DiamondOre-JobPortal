@@ -86,8 +86,8 @@ function App() {
          :
       <Router>
         <Routes>
-          {/* <Route path="/"> */}
-            <Route index path="/" element={<Homemain/>} />
+          <Route path="/">
+            <Route index element={<Homemain/>} />
             <Route path="/about" element={<AboutUs/>}/>
             <Route path='/services' element={<Services/>}/>
             <Route path="/contact" element={<Contact/>}/>
@@ -133,7 +133,7 @@ function App() {
             <Route path='/employee-leaves' element={<EmployeeLeaves/>}/>
             <Route path='/employee-performence'element={<EmployeePerformence/>}/>
             <Route path ='*' element ={<ErrorPage/>}/>
-          {/* </Route>  */}
+          </Route> 
         </Routes>
       </Router>
 }
