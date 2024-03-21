@@ -103,7 +103,7 @@ function App() {
             <Route path='/prefrence-form' element={<PrefrenceForm/>}/>
             <Route path='/edit-prefrence-form' element={<EditPrefrenceform/>}/>
             <Route path="/dashboard" element={<CandidateHome/>}/>
-            <Route exact path="/all-jobs" element={<CandidateAllJobs/>} />
+            <Route path="/all-jobs" element={<CandidateAllJobs/>} />
             <Route path="/all-jobs/:id" element={<EachJob />} />
             <Route path="/all-applied-jobs" element={<AllAppliedJobs />} />
             <Route path="/all-direct-jobs" element={<AllDirectJobs />} />
