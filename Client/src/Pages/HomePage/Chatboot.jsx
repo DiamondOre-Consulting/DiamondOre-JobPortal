@@ -153,7 +153,7 @@ const Chatboot = () => {
 
     return (
         <div>
-            <div className={`fixed bottom-32 sm:bottom-28 right-8 w-1/2 sm:w-1/4 md:w-1/4 bg-white shadow-lg p-3 ${welcomeopen ? 'block' : 'hidden'}`}>
+            <div className={`fixed bottom-32 z-10 sm:bottom-28 right-8 w-1/2 sm:w-1/4 md:w-1/4 bg-white shadow-lg p-3 ${welcomeopen ? 'block' : 'hidden'}`}>
                 <div className='flex justify-center items-center'>
                     <div className='w-16 h-16 border border-0 rounded-full overflow-hidden -mt-8'>
                         <img
