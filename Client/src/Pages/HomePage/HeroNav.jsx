@@ -22,7 +22,7 @@ const HeroNav = () => {
               </h2>
 
               <p className="text-sm md:mt-4 mt-4">
-                Explore Endless Opportunities with <span className="font-bold">Diamond Ore Consulting</span> Your Gateway to Career. Success, Discover, Connect, Excel,<br />Choose us, Choose Your Future
+                Explore Endless Opportunities with <span className="font-bold">Diamond Ore Consulting.</span> Your Gateway to Career Success. Discover, Connect, Excel.<br />Choose us, Choose Your Future.
               </p>
 
               <div className="mt-4 md:mt-8">
