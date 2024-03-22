@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
-import Logo from '../../assets/Logo.png';
+import Logo from '../../assets/logo2.png';
 import { useJwt } from 'react-jwt';
 
 const Navbar = () => {
@@ -30,32 +30,32 @@ const Navbar = () => {
     console.log(menuOpen);
   };
   return (
-    <div>
+    <div className=''>
       {/* Header and Nav Section Start */}
-      <div className=" pb-6 sm:pb-8 lg:pb-6 z-40">
+      <div className="fixed top-0 z-50 w-full bg-gray-900 backdrop-blur-md bg-opacity-65">
         <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
-          <header className="mb-8 flex items-center justify-between py-2 md:mb-12 md:py-2 xl:mb-8">
+          <header className="flex items-center justify-between py-2 md:mb-2 md:py-2 xl:mb-2 sm:mb-2">
 
-            <img className='w-3/6 sm:w-2/6 md:w-1/6 h-auto z-40' src={Logo} alt="DiamondOre Logo" />
+            <img className='w-3/6 sm:w-2/6 md:w-1/6 h-auto z-40 py-2' src={Logo} alt="DiamondOre Logo" />
 
             <nav className="hidden gap-12 lg:flex cursor-pointer z-40">
-              <Link to={'/'} href="#" className="text-lg font-semibold text-blue-950">
+              <Link to={'/'} href="#" className="text-lg font-semibold text-white">
                 Home
               </Link>
               <Link to={'/about'}
-                className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
+                className="text-lg font-semibold text-white transition duration-100 hover:text-blue-950 active:text-blue-900"
               >
                 About Us
               </Link>
               <Link to={'/services'}
 
-                className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
+                className="text-lg font-semibold text-white transition duration-100 hover:text-blue-950 active:text-blue-900"
               >
                 Services
               </Link>
               <Link to={'/contact'}
 
-                className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
+                className="text-lg font-semibold text-white transition duration-100 hover:text-blue-950 active:text-blue-900"
               >
                 Contact Us
               </Link>
@@ -65,7 +65,7 @@ const Navbar = () => {
               <button
                 type="button"
                 onClick={handleSignup}
-                className="rounded-lg bg-blue-900 px-4 py-3 text-center text-sm font-semibold text-gray-500 outline-none ring-indigo-300 transition duration-100 hover:bg-blue-950 focus-visible:ring active:text-gray-700 md:text-base inline-flex items-center z-40"
+                className="rounded-lg bg-blue-950 backdrop-blur-md bg-opacity-50 px-4 py-3 text-center text-sm font-semibold text-gray-500 outline-none ring-indigo-300 transition duration-100 hover:bg-blue-950 focus-visible:ring active:text-gray-700 md:text-base inline-flex items-center z-40"
               >
                 <svg
                   className="w-4 h-4 text-white "
@@ -106,7 +106,7 @@ const Navbar = () => {
             <Link to={"/"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
-                  } transition ease-in-out delay-150 px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white hover:-translate-y-1 hover:scale-110 duration-250`}
+                  } transition ease-in-out delay-150 px-32 py-3 text-white text-lg font-semibold hover:bg-blue-950 hover:text-white hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Home
               </li>
@@ -114,7 +114,7 @@ const Navbar = () => {
             <Link to={"/about"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                  } px-32 py-3 text-white text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 About Us
               </li>
@@ -122,7 +122,7 @@ const Navbar = () => {
             <Link to={"/services"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                  } px-32 py-3 text-white text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Services
               </li>
@@ -130,7 +130,7 @@ const Navbar = () => {
             <Link to={"/contact"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                  } px-32 py-3 text-white text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Contact Us
               </li>

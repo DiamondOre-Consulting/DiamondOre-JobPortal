@@ -1,7 +1,5 @@
+
 import React from "react";
-import Boyimage from "../../assets/Boyimage.jpg";
-import { LazyLoadImage } from 'react-lazy-load-image-component';
-import 'react-lazy-load-image-component/src/effects/blur.css';
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
@@ -9,21 +7,22 @@ const HeroNav = () => {
   
   return (
     <div>
-      <section className="overflow-hidden flex flex-between sm:grid sm:grid-cols-2">
-        <div className="p-8 md:p-12 lg:px-16 lg:py-24 mr-0 xxs:mr-0">
+      <section className="overflow-hidden flex items-center h-screen bg-cover bg-center" style={{backgroundImage: 'url(https://s3.tebi.io/generalpics/DOC-HomeGIF.gif)'}}>
+        <div className="p-8 md:p-12 lg:px-16 lg:py-40 relative z-10 flex items-center justify-center sm:justify-start">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.6 }}
+            className="text-center sm:text-left text-white"
           >
-            <div className="mx-auto max-w-xl text-left ltr:sm:text-left rtl:sm:text-right">
-              <h2 className="text-5xl font-bold text-gray-700 md:text-5xl sm:text-3xl ">
-                <span className="text-gray-900">Seize the Job You Deserve,<br></br>Right Here!</span>
+            <div className="mx-auto max-w-xl">
+              <h2 className="text-5xl font-bold md:text-5xl sm:text-3xl ">
+                Seize the Job You Deserve,<br />Right Here!
               </h2>
 
-              <p className="text-sm text-gray-500 md:mt-4 mt-4">
-                Explore Endless Opportunities with <span className="text-blue-900 font-bold">Diamond Ore Consulting</span> Your Gateway to Career. Success, Discover, Connect, Excel,<br></br>Choose us, Choose Your Future
+              <p className="text-sm md:mt-4 mt-4">
+                Explore Endless Opportunities with <span className="font-bold">Diamond Ore Consulting</span> Your Gateway to Career. Success, Discover, Connect, Excel,<br />Choose us, Choose Your Future
               </p>
 
               <div className="mt-4 md:mt-8">
@@ -37,20 +36,8 @@ const HeroNav = () => {
             </div>
           </motion.div>
         </div>
-
-        <div className="hidden sm:flex justify-center px-10 ">
-          <LazyLoadImage
-
-            alt="Image by Freepik"
-            effect="blur"
-            src={Boyimage}
-            className="h-56 w-full object-cover rounded-b-full rounded-t-md sm:h-full"
-          />
-
-        </div>
       </section>
     </div>
-
   );
 };
 
