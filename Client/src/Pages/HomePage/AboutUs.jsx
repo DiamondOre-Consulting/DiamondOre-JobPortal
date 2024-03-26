@@ -14,7 +14,7 @@ const AboutUs = () => {
     return (
         <div>
             <Navbar />
-          <div className="h-96 sm:h-44 md:h-96 lg:h-96 bg-cover bg-center overflow-hidden" style={{ backgroundImage: `url(${aboutimg})`, backgroundPosition: "top" }}>
+          <div className="h-96 sm:h-44 md:h-96 lg:h-96 bg-cover bg-center overflow-hidden mt-10" style={{ backgroundImage: `url(${aboutimg})`, backgroundPosition: "top" }}>
                 <div className=" inset-0 bg-black opacity-50"></div>
                 <div className=" inset-0 flex items-center justify-center text-gray-900 text-center">
                     <div>

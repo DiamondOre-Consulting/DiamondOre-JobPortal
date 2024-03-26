@@ -14,7 +14,7 @@ const Footer = () => {
                     <img src={Logo} alt="" />
                 </div>
 
-                <p className="text-gray-500 sm:pr-8">Empowering Success, Enriching Lives. Your journey starts here with <b>Diamond Ore consulting Pvt Ltd.</b>".</p>
+                <p className="text-gray-500 sm:pr-8">Empowering Success, Enriching Lives. Your journey starts here with <b>Diamond Ore Consulting Pvt Ltd.</b></p>
                 </div>
 
                 <div>

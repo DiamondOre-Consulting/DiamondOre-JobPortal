@@ -24,7 +24,7 @@ const CvSection = () => {
                            </div>
                            <div className='flex justify-center align-center mt-16 mb-4'>
 
-                           <Link to={'/cv-dashboard'} rel="nofollow" className='bg-red-400  px-4 text-center py-4 text-white  border border-0 rounded-2xl'>Create your CV</Link>
+                           <Link to={'/cv-dashboard'} rel="nofollow" className='bg-red-400  px-4 text-center py-4 text-white  border border-0 rounded-2xl'>Create Your CV</Link>
 
                            </div>
                            </section>

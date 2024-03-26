@@ -56,7 +56,7 @@ const Beourclient = () => {
     return (
         <>
             <Navbar />
-            <div className='flex flex-col justify-center items-center bg-gray-100 p-8 sm:p-8 lg:p-4'>
+            <div className='flex flex-col justify-center items-center bg-gray-100 p-8 sm:p-8 lg:p-4 mt-20'>
 
                 <div className='bg-blue-950 px-20 md:px-28 rounded-tl-3xl rounded-br-3xl mb-4 text-center'><h1 className='text-2xl font-bold  my-4 text-white sm:text-2xl md:text-2xl lg:text-5xl'>Be Our Client</h1></div>
                 <div className="rounded-md bg-white shadow-gray-500 shadow-xl  lg:col-span-3 lg:p-12 w-full sm:w-full lg:w-1/2">

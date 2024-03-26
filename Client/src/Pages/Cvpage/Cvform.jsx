@@ -167,7 +167,7 @@ const Cvform = () => {
     return (
         <div>
             <Navbar />
-            <div className="flex items-center bg-gray-50">
+            <div className="flex items-center bg-gray-50 mt-10">
                 <div className=" mx-auto max-w-screen-xl sm:max-w-screen-lg lg:mx-auto md:max-w-screen-md lg:max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 shadow-lg bg-white rounded-md  ">
                     <div className="flex rounded-lg mr-4 ">
                         <div className="hidden md:block">

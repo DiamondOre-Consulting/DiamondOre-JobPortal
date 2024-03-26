@@ -14,11 +14,10 @@ const Services = () => {
         <div>
 
             <Navbar />
-            <div className='grid grid-cols-3 sm:cols-2 lg:cols-3 gap-4'>
+            <div className='grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 md:grid-cols-2 gap-2 mt-16'>
                 <div><img src={service2}/></div>
-                <div><img src={service3}/></div>
-                <div><img src={service1}/></div>
-
+                <div><img src={service3} /></div>
+                <div className="hidden lg:block sm:hidden"><img src={service1} alt="Service 1"/></div>
             </div>
 
             <div  className="bg-white py-6 sm:py-8 lg:py-12">
