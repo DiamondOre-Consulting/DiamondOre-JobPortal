@@ -761,7 +761,7 @@ const Cvform = () => {
                                 <section className="rounded-3xl shadow-xl bg-white w-1/2 sm:w-1/2  lg:w-1/4 md:w-1/2">
                                     <div className="p-2 lg:p-2 md:p-12 text-center sm:p-12">
                                         <h2 className="mt-6 text-sm lg:text-md md:sm sm:text-sm font-bold">
-                                            You can add only one experience in free version. Contact expert at  <span className="text-blue-950 underline uppercase"> cv genie</span>
+                                            You can add only one experience in free version. Contact expert at  <span className="text-blue-950 underline uppercase"> CV-Genie</span>
                                         </h2>
                                         <div className="flex justify-center align-center ">
 

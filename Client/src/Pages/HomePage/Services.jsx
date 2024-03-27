@@ -67,7 +67,7 @@ const Services = () => {
 
                             <div  className="p-4 md:p-6">
                                 <h3  className="mb-2 text-lg font-semibold md:text-xl">Resume Building</h3>
-                                <p  className="text-gray-200 text-sm">Elevate Your Career with CV~Genie. Our tailored CV services ensure your strengths shine, opening doors to new opportunities. Trust us to craft a standout resume that accelerates your professional journey.</p>
+                                <p  className="text-gray-200 text-sm">Elevate Your Career with CV-Genie. Our tailored CV services ensure your strengths shine, opening doors to new opportunities. Trust us to craft a standout resume that accelerates your professional journey.</p>
                             </div>
                         </div>
                     </div>
@@ -100,14 +100,6 @@ const Services = () => {
                         </div>
 
                     </div>
-
-
-
-
-
-
-
-
                 </div>
             </div>
 
