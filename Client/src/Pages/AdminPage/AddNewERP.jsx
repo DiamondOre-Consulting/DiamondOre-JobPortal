@@ -80,7 +80,7 @@ const AddERPForm = () => {
     try {
     
       const response = await axios.post(
-        "https://diamondore-jobportal-backend.onrender.com/api/admin-confi/erp/add-erp-data",
+        "https://diamondore-jobportal-backend-zwfh.onrender.com/api/admin-confi/erp/add-erp-data",
         formData,
         {
           headers: {

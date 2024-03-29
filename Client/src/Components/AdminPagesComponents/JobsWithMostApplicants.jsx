@@ -35,7 +35,7 @@ const JobsWithMostApplicants = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "https://diamondore-jobportal-backend.onrender.com/api/admin-confi/jobs-high"
+          "https://diamondore-jobportal-backend-zwfh.onrender.com/api/admin-confi/jobs-high"
         );
         console.log(response.data);
         const all = response.data;

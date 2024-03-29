@@ -45,7 +45,7 @@ const CandidateAllJobsCards = () => {
     const fetchAllJobs = async () => {
       try {
         const response = await axios.get(
-          "https://diamondore-jobportal-backend.onrender.com/api/candidates/all-jobs"
+          "https://diamondore-jobportal-backend-zwfh.onrender.com/api/candidates/all-jobs"
         );
 
         const uniquicities = [

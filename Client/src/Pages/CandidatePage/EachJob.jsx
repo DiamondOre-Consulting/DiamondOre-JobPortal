@@ -51,7 +51,7 @@ const EachJob = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          `https://diamondore-jobportal-backend.onrender.com/api/candidates/all-jobs/${id}`,
+          `https://diamondore-jobportal-backend-zwfh.onrender.com/api/candidates/all-jobs/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -102,7 +102,7 @@ const EachJob = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          `https://diamondore-jobportal-backend.onrender.com/api/candidates/status/${userid}/${id}`,
+          `https://diamondore-jobportal-backend-zwfh.onrender.com/api/candidates/status/${userid}/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -125,7 +125,7 @@ const EachJob = () => {
   const applyJob = async () => {
     try {
       const apply = await axios.post(
-        `https://diamondore-jobportal-backend.onrender.com/api/candidates/apply-job/${id}`,
+        `https://diamondore-jobportal-backend-zwfh.onrender.com/api/candidates/apply-job/${id}`,
         {},
         {
           headers: {

@@ -84,7 +84,7 @@ const Chatboot = () => {
 
     const sendMessage = async (userDetails) => {
         try {
-            const response = await axios.post('https://diamondore-jobportal-backend.onrender.com/api/admin-confi/send-chatbot', userDetails);
+            const response = await axios.post('https://diamondore-jobportal-backend-zwfh.onrender.com/api/admin-confi/send-chatbot', userDetails);
 
             if (response.status === 201) {
                 setMessages((prevMessages) => [

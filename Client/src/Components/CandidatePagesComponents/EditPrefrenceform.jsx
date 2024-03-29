@@ -38,7 +38,7 @@ const EditPrefrenceform = () => {
         e.preventDefault();
         try {
             const response = await axios.put(
-                "https://diamondore-jobportal-backend.onrender.com/api/candidates/edit-preference",
+                "https://diamondore-jobportal-backend-zwfh.onrender.com/api/candidates/edit-preference",
                 formData,
                 {
                     headers: {
@@ -88,7 +88,7 @@ const EditPrefrenceform = () => {
 
                 // Fetch associates data from the backend
                 const response = await axios.get(
-                    "https://diamondore-jobportal-backend.onrender.com/api/candidates/all-jobs"
+                    "https://diamondore-jobportal-backend-zwfh.onrender.com/api/candidates/all-jobs"
                 );
 
 
@@ -119,7 +119,7 @@ const EditPrefrenceform = () => {
 
             try {
 
-                const response = await axios.get("https://diamondore-jobportal-backend.onrender.com/api/candidates/get-pref-data",
+                const response = await axios.get("https://diamondore-jobportal-backend-zwfh.onrender.com/api/candidates/get-pref-data",
 
                     {
                         headers: {

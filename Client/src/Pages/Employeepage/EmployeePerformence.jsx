@@ -29,7 +29,7 @@ const EmployeePerformence = () => {
                 // Fetch leave report
 
                 const Response = await axios.get(
-                    `https://diamondore-jobportal-backend.onrender.com/api/employee/performance-report`,
+                    `https://diamondore-jobportal-backend-zwfh.onrender.com/api/employee/performance-report`,
 
                     {
                         headers: {
