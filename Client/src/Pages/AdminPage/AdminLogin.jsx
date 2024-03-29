@@ -20,7 +20,7 @@ const AdminLogin = () => {
     setError(null);
     // Perform login logic here
     try {
-      const response= await axios.post("https://diamondore-jobportal-backend-zwfh.onrender.com/api/admin-confi/login-admin",
+      const response= await axios.post("api.diamondore.in/api/admin-confi/login-admin",
       {
         email,
         password

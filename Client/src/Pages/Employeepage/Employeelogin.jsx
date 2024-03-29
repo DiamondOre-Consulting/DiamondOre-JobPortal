@@ -19,7 +19,7 @@ const Employeelogin = () => {
         // Perform login logic here
         try {
             console.log(email, password)
-            const response = await axios.post("https://diamondore-jobportal-backend-zwfh.onrender.com/api/employee/login",
+            const response = await axios.post("api.diamondore.in/api/employee/login",
                 {
                     email,
                     password

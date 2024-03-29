@@ -21,7 +21,7 @@ const Adminforgotpassword = () => {
 
         try {
 
-            const response = await axios.post("https://diamondore-jobportal-backend-zwfh.onrender.com/api/admin-confi/forgot-password", {
+            const response = await axios.post("api.diamondore.in/api/admin-confi/forgot-password", {
                 email
             })
 
@@ -47,7 +47,7 @@ const Adminforgotpassword = () => {
         console.log(email,otp,password)
         try {
 
-            const response = await axios.put("https://diamondore-jobportal-backend-zwfh.onrender.com/api/admin-confi/update-password",
+            const response = await axios.put("api.diamondore.in/api/admin-confi/update-password",
                 {
                     otp,
                     password,

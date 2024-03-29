@@ -40,7 +40,7 @@ const AdminERP = () => {
     const fetchdata = async () => {
       try{
         const response = await axios.get(
-          "https://diamondore-jobportal-backend-zwfh.onrender.com/api/admin-confi/erp/all-erp-data", 
+          "api.diamondore.in/api/admin-confi/erp/all-erp-data", 
           {
             headers: {
               Authorization: `Bearer ${token}`

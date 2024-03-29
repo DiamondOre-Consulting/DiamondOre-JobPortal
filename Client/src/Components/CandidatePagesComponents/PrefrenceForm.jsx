@@ -41,7 +41,7 @@ const PrefrenceForm = () => {
         }
         try {
             const response = await axios.post(
-                "https://diamondore-jobportal-backend-zwfh.onrender.com/api/candidates/add-preference",
+                "api.diamondore.in/api/candidates/add-preference",
                 formData,
                 {
                     headers: {
@@ -88,7 +88,7 @@ const PrefrenceForm = () => {
 
                 // Fetch associates data from the backend
                 const response = await axios.get(
-                    "https://diamondore-jobportal-backend-zwfh.onrender.com/api/candidates/all-jobs"
+                    "api.diamondore.in/api/candidates/all-jobs"
                 );
 
 

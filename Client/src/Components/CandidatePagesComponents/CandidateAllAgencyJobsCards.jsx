@@ -41,7 +41,7 @@ const CandidateAllAgencyJobsCards = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "https://diamondore-jobportal-backend-zwfh.onrender.com/api/candidates/all-agency-jobs",
+          "api.diamondore.in/api/candidates/all-agency-jobs",
           {
             headers: {
               Authorization: `Bearer ${token}`,

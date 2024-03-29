@@ -22,7 +22,7 @@ const Contact = () => {
         // const formData = { Name, Email, Message };
         try {
             const response = await axios.post(
-                'https://diamondore-jobportal-backend-zwfh.onrender.com/api/candidates/help-contact',
+                'api.diamondore.in/api/candidates/help-contact',
                 {
                     Name,
                     Email,

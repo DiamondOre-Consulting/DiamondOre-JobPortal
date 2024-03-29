@@ -43,7 +43,7 @@ const Employeesignup = () => {
         console.log(name,email,password)
         try {
           const response = await axios.post(
-            "https://diamondore-jobportal-backend-zwfh.onrender.com/api/employee/add-emp",
+            "api.diamondore.in/api/employee/add-emp",
             {
               name,
               email,

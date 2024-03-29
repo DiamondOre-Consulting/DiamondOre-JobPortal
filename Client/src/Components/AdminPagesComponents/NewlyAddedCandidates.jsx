@@ -28,7 +28,7 @@ const NewlyAddedCandidates = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "https://diamondore-jobportal-backend-zwfh.onrender.com/api/admin-confi/all-candidates",
+          "api.diamondore.in/api/admin-confi/all-candidates",
           {
             headers: {
                 Authorization: `Bearer ${token}`

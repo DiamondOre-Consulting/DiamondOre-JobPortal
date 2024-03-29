@@ -33,7 +33,7 @@ const EmployeeLeaves = () => {
         // Fetch leave report
 
         const leaveReportResponse = await axios.get(
-          `https://diamondore-jobportal-backend-zwfh.onrender.com/api/employee/leave-report`,
+          `api.diamondore.in/api/employee/leave-report`,
 
           {
             headers: {
