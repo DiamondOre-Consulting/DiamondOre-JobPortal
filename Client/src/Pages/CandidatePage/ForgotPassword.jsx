@@ -21,7 +21,7 @@ const ForgotPassword = () => {
 
         try {
 
-            const response = await axios.post("api.diamondore.in/api/candidates/forgot-password", {
+            const response = await axios.post("https://api.diamondore.in/api/candidates/forgot-password", {
                 email
             })
 
@@ -47,7 +47,7 @@ const ForgotPassword = () => {
         console.log(email, otp, password)
         try {
 
-            const response = await axios.put("api.diamondore.in/api/candidates/update-password",
+            const response = await axios.put("https://api.diamondore.in/api/candidates/update-password",
                 {
                     otp,
                     password,

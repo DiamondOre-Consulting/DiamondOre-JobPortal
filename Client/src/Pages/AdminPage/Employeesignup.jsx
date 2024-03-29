@@ -43,7 +43,7 @@ const Employeesignup = () => {
         console.log(name,email,password)
         try {
           const response = await axios.post(
-            "api.diamondore.in/api/employee/add-emp",
+            "https://api.diamondore.in/api/employee/add-emp",
             {
               name,
               email,

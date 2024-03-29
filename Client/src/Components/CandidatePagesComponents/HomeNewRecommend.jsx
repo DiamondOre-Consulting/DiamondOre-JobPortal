@@ -37,7 +37,7 @@ const HomeNewRecommend = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "api.diamondore.in/api/candidates/recommended-jobs",
+          "https://api.diamondore.in/api/candidates/recommended-jobs",
           {
             headers: {
               Authorization: `Bearer ${token}`

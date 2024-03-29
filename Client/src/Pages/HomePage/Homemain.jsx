@@ -24,7 +24,7 @@ const Homemain = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "api.diamondore.in/api/candidates/all-jobs"
+          "https://api.diamondore.in/api/candidates/all-jobs"
         );
         console.log(response.data);
         const all = response.data;

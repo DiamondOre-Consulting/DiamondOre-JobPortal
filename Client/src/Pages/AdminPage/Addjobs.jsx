@@ -38,7 +38,7 @@ const AddJobs = () => {
       formData.append("myFile", sheet);
       console.log(sheet);
       const response = await axios.post(
-        "api.diamondore.in/api/jobs/upload-ops",
+        "https://api.diamondore.in/api/jobs/upload-ops",
         formData,
         {
         headers: {
@@ -67,7 +67,7 @@ const AddJobs = () => {
       const token = localStorage.getItem("token");
       console.log(sheeturl)
       const response = await axios.post(
-        "api.diamondore.in/api/jobs/upload-job-excel",
+        "https://api.diamondore.in/api/jobs/upload-job-excel",
         {
           url: sheeturl,
         },

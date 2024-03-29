@@ -34,7 +34,7 @@ const AdminEditPerfomence = () => {
                 }
                
                 const response = await axios.get(
-                    `api.diamondore.in/api/admin-confi/all-employees/${id}`,
+                    `https://api.diamondore.in/api/admin-confi/all-employees/${id}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -67,7 +67,7 @@ const AdminEditPerfomence = () => {
                 // Fetch leave report
 
                 const leaveReportResponse = await axios.get(
-                    `api.diamondore.in/api/admin-confi/performance-report/${id}`,
+                    `https://api.diamondore.in/api/admin-confi/performance-report/${id}`,
 
                     {
                         headers: {
@@ -116,7 +116,7 @@ const AdminEditPerfomence = () => {
 
             // Save form data
             const response = await axios.post(
-                `api.diamondore.in/api/admin-confi/add-performance-report/${id}`,
+                `https://api.diamondore.in/api/admin-confi/add-performance-report/${id}`,
                 {
                     month,
                     year,

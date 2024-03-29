@@ -84,7 +84,7 @@ const Chatboot = () => {
 
     const sendMessage = async (userDetails) => {
         try {
-            const response = await axios.post('api.diamondore.in/api/admin-confi/send-chatbot', userDetails);
+            const response = await axios.post('https://api.diamondore.in/api/admin-confi/send-chatbot', userDetails);
 
             if (response.status === 201) {
                 setMessages((prevMessages) => [

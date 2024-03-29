@@ -22,7 +22,7 @@ const Contact = () => {
         // const formData = { Name, Email, Message };
         try {
             const response = await axios.post(
-                'api.diamondore.in/api/candidates/help-contact',
+                'https://api.diamondore.in/api/candidates/help-contact',
                 {
                     Name,
                     Email,

@@ -25,7 +25,7 @@ const CandidateNav = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "api.diamondore.in/api/candidates/user-data",
+          "https://api.diamondore.in/api/candidates/user-data",
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -67,7 +67,7 @@ const CandidateNav = () => {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await axios.delete('api.diamondore.in/api/candidates/remove-account',
+      const response = await axios.delete('https://api.diamondore.in/api/candidates/remove-account',
         {
           headers: {
             Authorization: `Bearer ${token}`

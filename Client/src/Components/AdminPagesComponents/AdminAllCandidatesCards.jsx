@@ -32,7 +32,7 @@ const AdminAllCandidatesCards = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "api.diamondore.in/api/admin-confi/all-candidates",
+          "https://api.diamondore.in/api/admin-confi/all-candidates",
           {
             headers: {
               Authorization: `Bearer ${token}`

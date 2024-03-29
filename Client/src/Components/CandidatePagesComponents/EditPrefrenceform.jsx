@@ -38,7 +38,7 @@ const EditPrefrenceform = () => {
         e.preventDefault();
         try {
             const response = await axios.put(
-                "api.diamondore.in/api/candidates/edit-preference",
+                "https://api.diamondore.in/api/candidates/edit-preference",
                 formData,
                 {
                     headers: {
@@ -88,7 +88,7 @@ const EditPrefrenceform = () => {
 
                 // Fetch associates data from the backend
                 const response = await axios.get(
-                    "api.diamondore.in/api/candidates/all-jobs"
+                    "https://api.diamondore.in/api/candidates/all-jobs"
                 );
 
 
@@ -119,7 +119,7 @@ const EditPrefrenceform = () => {
 
             try {
 
-                const response = await axios.get("api.diamondore.in/api/candidates/get-pref-data",
+                const response = await axios.get("https://api.diamondore.in/api/candidates/get-pref-data",
 
                     {
                         headers: {

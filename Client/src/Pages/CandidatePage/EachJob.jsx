@@ -51,7 +51,7 @@ const EachJob = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          `api.diamondore.in/api/candidates/all-jobs/${id}`,
+          `https://api.diamondore.in/api/candidates/all-jobs/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -102,7 +102,7 @@ const EachJob = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          `api.diamondore.in/api/candidates/status/${userid}/${id}`,
+          `https://api.diamondore.in/api/candidates/status/${userid}/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -125,7 +125,7 @@ const EachJob = () => {
   const applyJob = async () => {
     try {
       const apply = await axios.post(
-        `api.diamondore.in/api/candidates/apply-job/${id}`,
+        `https://api.diamondore.in/api/candidates/apply-job/${id}`,
         {},
         {
           headers: {
