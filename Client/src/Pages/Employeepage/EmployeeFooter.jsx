@@ -24,7 +24,7 @@ export const EmployeeFooter = () => {
                            
 
                             <div>
-                                <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">CV genie</a>
+                                <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">CV-Genie</a>
                             </div>
 
                            

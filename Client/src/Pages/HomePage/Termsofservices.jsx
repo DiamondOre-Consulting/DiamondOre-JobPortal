@@ -6,7 +6,7 @@ const Termsofservices = () => {
     return (
         <div>
             <Navbar />
-            <div>
+            <div className='mt-24'>
                 <div className='flex justify-center items-center'> <h1 className='text-center text-3xl font-bold text-blue-950'>Terms Of Services</h1><svg  className="h-16 w-16 text-blue-900" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <path d="M9 5H7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2V7a2 2 0 0 0 -2 -2h-2" />  <rect x="9" y="3" width="6" height="4" rx="2" />  <path d="M9 14l2 2l4 -4" /></svg></div>
                 <div className='w-36 bg-blue-950 items-center h-1 text-cetner mx-auto border rounded '></div>
             </div>

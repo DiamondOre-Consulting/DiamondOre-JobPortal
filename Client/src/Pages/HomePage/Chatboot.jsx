@@ -165,7 +165,7 @@ const Chatboot = () => {
                     {/* Close button in the top right corner */}
 
 
-                    <button className="text-red-500 hover:text-red-700 absolute top-1 right-4 text-2xl" onClick={closeWelcomeBox} >
+                    <button className="bg-red-400 hover:bg-red-500 rounded-full text-gray-200 absolute top-1 right-4 text-sm px-2 py-1" onClick={closeWelcomeBox} >
                         X
                     </button>
 
@@ -175,7 +175,7 @@ const Chatboot = () => {
                 <p className=" text-xs mt-2 pb-2 font-bold">Hi I'm Robo Recruiter How may I Help You Today?</p>
             </div>
 
-            <div className="fixed bottom-12 sm:bottom-8 right-8">
+            <div className="fixed bottom-12 sm:bottom-8 right-8 z-10">
                 <div className="chat-icon w-16 float-right cursor-pointer" onClick={toggleChatbox}>
                     {!isOpen && <img src={chatboat} className="w-14" />}
                 </div>

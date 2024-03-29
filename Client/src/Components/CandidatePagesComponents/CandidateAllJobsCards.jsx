@@ -122,13 +122,13 @@ const CandidateAllJobsCards = () => {
   };
 
   return (
-    <div className="sm:py-8 ">
-      <div className="flex flex-wrap items-center justify-center mx-auto px-6 mb-16">
+    <div className="sm:py-8 mt-24">
+      <div className="flex flex-wrap items-center justify-center mx-auto  mb-16">
         <div className="relative">
           <h2 className="bg-blue-900 text-white px-4 py-2 text-center mb-1 border-md">City</h2>
           <button
             onClick={toggleDropdownCity}
-            className="border flex align-center border-gray-400 text-black font-bold py-1 sm:px-2 md:px-4 lg:px-6 rounded focus:outline-none focus:shadow-outline"
+            className="border mx-2 flex align-center border-gray-400 text-black font-bold py-1 px-6 rounded focus:outline-none focus:shadow-outline"
             type="button"
           >
             {showselectedcity}  <svg className="h-5 w-5 text-gray-600 float-right " viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">  <polyline points="6 9 12 15 18 9" /></svg>
@@ -219,17 +219,17 @@ const CandidateAllJobsCards = () => {
         </div>
         <button
           onClick={handleSearch}
-          className="flex justify-center mt-3 h-12 w-12 text-center items-center ml-4 bg-blue-900 hover:bg-blue-950 text-white font-bold py-0 px-4 rounded-full focus:outline-none focus:shadow-outline"
+          className="flex justify-center mt-3 h-12 w-12 text-center items-center ml-4 bg-blue-900 hover:bg-blue-950 text-white font-bold py-0 px-10 rounded-md focus:outline-none focus:shadow-outline"
           type="button"
         >
-          <svg className="h-6 w-6 text-white text-center" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">  <circle cx="11" cy="11" r="8" />  <line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+          Search
         </button>
         <button
           onClick={handleClearFilters}
           className="ml-4 bg-red-500 hover:bg-red-600 mt-3  h-12 text-white font-bold px-4 rounded focus:outline-none focus:shadow-outline"
           type="button"
         >
-          Clear Filters
+         <svg class="h-8 w-8 text-gray-100"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="4" y1="7" x2="20" y2="7" />  <line x1="10" y1="11" x2="10" y2="17" />  <line x1="14" y1="11" x2="14" y2="17" />  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
         </button>
       </div>
       <div className="mx-auto max-w-screen-2xl px-4 md:px-8">

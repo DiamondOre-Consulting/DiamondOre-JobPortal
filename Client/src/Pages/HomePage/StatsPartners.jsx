@@ -135,7 +135,7 @@ const StatsPartners = () => {
               <img src={agarwal} alt="" className="w-14 sm:w-14 md:w-20 lg:w-20 object-cover mb-4 mr-16 inline-block" />
               <img src={india} alt="" className="w-14 sm:w-14 md:w-20 lg:w-32 object-cover mb-4  mr-16 inline-block" />
               <img src={punjab} alt="" className="w-14 sm:w-14 md:w-20 lg:w-44 object-cover mb-4 mr-16 inline-block" />
-              <img src={canara} alt="" className="w-20 sm:w-32 md:w-96 lg:w-44 object-cover mb-4 mr-16 inline-block" />
+              <img src={canara} alt="" className="w-20 sm:w-32 md:w-20 lg:w-44 object-cover mb-4 mr-16 inline-block" />
               <img src={kotak} alt="" className="w-20 sm:w-32 md:w-10 lg:w-44 object-cover mb-4 mr-16 inline-block" />
               <img src="https://www.careinsurance.com/images/care_health_insurance_logo.svg" alt="helthcare" className="w-18 sm:w-14 md:w-20 lg:w-44 object-cover mb-4 mr-16 inline-block" />
               <img src="https://www.motilaloswal.com/img/mologo.png?1210" alt="motilal oswal" className="w-14 sm:w-10 md:w-10 lg:w-44 object-cover mb-4 mr-16 inline-block" />

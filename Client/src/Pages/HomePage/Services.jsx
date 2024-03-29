@@ -14,11 +14,10 @@ const Services = () => {
         <div>
 
             <Navbar />
-            <div className='grid grid-cols-3 sm:cols-2 lg:cols-3 gap-4'>
+            <div className='grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 md:grid-cols-2 gap-2 mt-16'>
                 <div><img src={service2}/></div>
-                <div><img src={service3}/></div>
-                <div><img src={service1}/></div>
-
+                <div><img src={service3} /></div>
+                <div className="hidden lg:block sm:hidden"><img src={service1} alt="Service 1"/></div>
             </div>
 
             <div  className="bg-white py-6 sm:py-8 lg:py-12">
@@ -68,7 +67,7 @@ const Services = () => {
 
                             <div  className="p-4 md:p-6">
                                 <h3  className="mb-2 text-lg font-semibold md:text-xl">Resume Building</h3>
-                                <p  className="text-gray-200 text-sm">Elevate Your Career with CV~Genie. Our tailored CV services ensure your strengths shine, opening doors to new opportunities. Trust us to craft a standout resume that accelerates your professional journey.</p>
+                                <p  className="text-gray-200 text-sm">Elevate Your Career with CV-Genie. Our tailored CV services ensure your strengths shine, opening doors to new opportunities. Trust us to craft a standout resume that accelerates your professional journey.</p>
                             </div>
                         </div>
                     </div>
@@ -101,14 +100,6 @@ const Services = () => {
                         </div>
 
                     </div>
-
-
-
-
-
-
-
-
                 </div>
             </div>
 

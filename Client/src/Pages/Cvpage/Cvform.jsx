@@ -167,7 +167,7 @@ const Cvform = () => {
     return (
         <div>
             <Navbar />
-            <div className="flex items-center bg-gray-50">
+            <div className="flex items-center bg-gray-50 mt-10">
                 <div className=" mx-auto max-w-screen-xl sm:max-w-screen-lg lg:mx-auto md:max-w-screen-md lg:max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 shadow-lg bg-white rounded-md  ">
                     <div className="flex rounded-lg mr-4 ">
                         <div className="hidden md:block">
@@ -761,7 +761,7 @@ const Cvform = () => {
                                 <section className="rounded-3xl shadow-xl bg-white w-1/2 sm:w-1/2  lg:w-1/4 md:w-1/2">
                                     <div className="p-2 lg:p-2 md:p-12 text-center sm:p-12">
                                         <h2 className="mt-6 text-sm lg:text-md md:sm sm:text-sm font-bold">
-                                            You can add only one experience in free version. Contact expert at  <span className="text-blue-950 underline uppercase"> cv genie</span>
+                                            You can add only one experience in free version. Contact expert at  <span className="text-blue-950 underline uppercase"> CV-Genie</span>
                                         </h2>
                                         <div className="flex justify-center align-center ">
 

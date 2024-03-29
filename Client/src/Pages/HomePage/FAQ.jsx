@@ -36,7 +36,7 @@ const FAQ = () => {
   return (
     <div>
         <Navbar/>
-        <div>
+        <div className='mt-24'>
             <h1 className='text-center text-3xl font-bold text-blue-950'>Frequently Asked Question</h1>
             <div className='w-72 bg-blue-950 items-center h-1 text-cetner mx-auto border rounded mt-2'></div>
         </div>

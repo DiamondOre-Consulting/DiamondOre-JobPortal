@@ -59,7 +59,7 @@ const Contact = () => {
         <div>
             <Navbar />
 
-            <section className="">
+            <section className="mt-12">
                 <div className="mx-auto max-w-screen-xl px-6 py-8 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 gap-x-16 gap-y-8 lg:grid-cols-5">
                         <div className="lg:col-span-2 lg:py-12">
@@ -69,7 +69,7 @@ const Contact = () => {
 
                             <div className="mt-8">
                                 <a href="" className="text-xl font-bold text-gray-600">+91 9773693017</a><br></br>
-                                <a href="" className="text-xl font-bold text-gray-600"> hr@diamondore.in</a>
+                                <a href="" className="text-xl font-bold text-gray-600">hr@diamondore.in</a>
                                 <address className="mt-2 not-italic">B-127, Second Floor, B Block, Sector 63, Noida, Uttar Pradesh 201301</address>
                                 <div className='flex my-3'>
                                     <Link to={'https://youtube.com/@DiamondOre-Career?si=mqRnjJzO1gzsU0lu'}> <svg className="h-8 w-8 text-gray-700 mr-3 hover:text-blue-950" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">  <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />  <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" /></svg></Link>
