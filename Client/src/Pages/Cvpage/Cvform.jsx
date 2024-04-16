@@ -113,7 +113,7 @@ const Cvform = () => {
         console.log(formData)
         setIsLoading(false)
         try {
-            const response = await axios.post("https://diamondore-jobportal-backend.onrender.com/api/candidates/free-resume"
+            const response = await axios.post("https://api.diamondore.in/api/candidates/free-resume"
                 , formData
             )
 

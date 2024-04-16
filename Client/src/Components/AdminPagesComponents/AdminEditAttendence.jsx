@@ -34,7 +34,7 @@ const AdminEditAttendence = () => {
                 }
 
                 const response = await axios.get(
-                    `https://diamondore-jobportal-backend.onrender.com/api/admin-confi/all-employees/${id}`,
+                    `https://api.diamondore.in/api/admin-confi/all-employees/${id}`,
                     {
                         headers:
                         {
@@ -72,7 +72,7 @@ const AdminEditAttendence = () => {
                 // Fetch leave report
 
                 const leaveReportResponse = await axios.get(
-                    `https://diamondore-jobportal-backend.onrender.com/api/admin-confi/leave-report/${id}`,
+                    `https://api.diamondore.in/api/admin-confi/leave-report/${id}`,
 
                     {
                         headers: {
@@ -118,7 +118,7 @@ const AdminEditAttendence = () => {
 
             // Save form data
             const response = await axios.post(
-                `https://diamondore-jobportal-backend.onrender.com/api/admin-confi/add-leave-report/${id}`,
+                `https://api.diamondore.in/api/admin-confi/add-leave-report/${id}`,
                 {
                     month,
                     year,

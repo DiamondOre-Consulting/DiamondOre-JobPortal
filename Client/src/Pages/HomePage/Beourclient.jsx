@@ -24,7 +24,7 @@ const Beourclient = () => {
         // const formData = { Name, Email, Message };
         try {
             const response = await axios.post(
-                'https://diamondore-jobportal-backend.onrender.com/api/admin-confi/client-form',
+                'https://api.diamondore.in/api/admin-confi/client-form',
                 {
                     name,
                     email,

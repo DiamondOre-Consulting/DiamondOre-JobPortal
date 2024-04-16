@@ -50,7 +50,7 @@ const EachCandidate = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          `https://diamondore-jobportal-backend.onrender.com/api/admin-confi/all-candidates/${id}`,
+          `https://api.diamondore.in/api/admin-confi/all-candidates/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -72,7 +72,7 @@ const EachCandidate = () => {
   useEffect(() => {
     const fetchCandidateAppliedJobs = async () => {
         try {
-            const response = await axios.get(`https://diamondore-jobportal-backend.onrender.com/api/admin-confi/all-applied-jobs/${id}`, {
+            const response = await axios.get(`https://api.diamondore.in/api/admin-confi/all-applied-jobs/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

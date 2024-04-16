@@ -27,7 +27,7 @@ const Signup = ({ toggleForm }) => {
       const formData = new FormData();
       formData.append("myFileImage", profilePic);
       const response = await axios.post(
-        "https://diamondore-jobportal-backend.onrender.com/api/candidates/upload-profile-pic",
+        "https://api.diamondore.in/api/candidates/upload-profile-pic",
         formData,
         {
           headers: {
@@ -61,7 +61,7 @@ const Signup = ({ toggleForm }) => {
       const formData = new FormData();
       formData.append("myFileResume", resume);
       const response = await axios.post(
-        "https://diamondore-jobportal-backend.onrender.com/api/candidates/upload-resume",
+        "https://api.diamondore.in/api/candidates/upload-resume",
         formData,
         {
           headers: {
@@ -96,7 +96,7 @@ const Signup = ({ toggleForm }) => {
     try {
       // Simulate OTP sent successfully
       // For demonstration purposes, setting OTP sent to true after a delay
-      const response = await axios.post("https://diamondore-jobportal-backend.onrender.com/api/candidates/send-otp", {
+      const response = await axios.post("https://api.diamondore.in/api/candidates/send-otp", {
         email
       })
 
@@ -118,7 +118,7 @@ const Signup = ({ toggleForm }) => {
 
     try {
       const response = await axios.post(
-        "https://diamondore-jobportal-backend.onrender.com/api/candidates/signup",
+        "https://api.diamondore.in/api/candidates/signup",
         {
           name,
           email,

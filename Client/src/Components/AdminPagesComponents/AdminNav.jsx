@@ -25,7 +25,7 @@ const AdminNav = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "https://diamondore-jobportal-backend.onrender.com/api/admin-confi/user-data",
+          "https://api.diamondore.in/api/admin-confi/user-data",
           {
             headers: {
               Authorization: `Bearer ${token}`,

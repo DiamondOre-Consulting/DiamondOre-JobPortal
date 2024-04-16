@@ -28,7 +28,7 @@ const EmployeeNavbar = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "https://diamondore-jobportal-backend.onrender.com/api/employee/user-data",
+          "https://api.diamondore.in/api/employee/user-data",
           {
             headers: {
               Authorization: `Bearer ${token}`,

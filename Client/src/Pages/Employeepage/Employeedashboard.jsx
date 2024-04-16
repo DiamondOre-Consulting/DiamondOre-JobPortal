@@ -43,7 +43,7 @@ const Employeedashboard = () => {
     const fetchdata = async () => {
       try{
         const response = await axios.get(
-          "https://diamondore-jobportal-backend.onrender.com/api/employee/all-erp-data", 
+          "https://api.diamondore.in/api/employee/all-erp-data", 
           {
             headers: {
               Authorization: `Bearer ${token}`
