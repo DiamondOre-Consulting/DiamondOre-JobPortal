@@ -43,19 +43,19 @@ const Navbar = () => {
                 Home
               </Link>
               <Link to={'/about'}
-                className="text-lg font-semibold text-white transition duration-100 hover:text-blue-950 active:text-blue-900"
+                className="text-lg font-semibold text-white transition duration-100  active:text-blue-900"
               >
                 About Us
               </Link>
               <Link to={'/services'}
 
-                className="text-lg font-semibold text-white transition duration-100 hover:text-blue-950 active:text-blue-900"
+                className="text-lg font-semibold text-white transition duration-100  active:text-blue-900"
               >
                 Services
               </Link>
               <Link to={'/contact'}
 
-                className="text-lg font-semibold text-white transition duration-100 hover:text-blue-950 active:text-blue-900"
+                className="text-lg font-semibold text-white transition duration-100  active:text-blue-900"
               >
                 Contact Us
               </Link>

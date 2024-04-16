@@ -265,7 +265,7 @@ const Cvform = () => {
                                         name="linkedinUrl"
                                         value={formData.linkedinUrl}
                                         onChange={handleChange}
-                                        placeholder="Linkdin URL"
+                                        placeholder="Linkedin URL"
                                         className="border border-1 rounded-md px-3 py-2 mt-2 w-full"
                                     />
                                     <textarea
