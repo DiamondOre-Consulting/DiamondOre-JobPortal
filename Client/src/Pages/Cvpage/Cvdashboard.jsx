@@ -19,7 +19,7 @@ const Cvdashboard = () => {
                         </div>
                         <div className="flex flex-col items-center md:p-4 ">
                         <img src='https://resume.reachmore.in/wp-content/uploads/elementor/thumbs/content-q5o0plnhjih7vuukntguq16uqn83zcmrbuh4zzltoo.webp' className='w-1/2'/>
-                          <Link to={'/'}><button className='text-cetner p-2 bg-blue-950 rounded-md text-white mt-4'>Create a premium CV</button></Link>                        </div>
+                          <a href='https://www.cvgenie.in/' target='_blank'><button className='text-cetner p-2 bg-blue-950 rounded-md text-white mt-4'>Create a premium CV</button></a>                        </div>
 
                     </div>
                 </div>
