@@ -49,6 +49,7 @@ import { useState } from "react";
 import ForgotPassword from "./Pages/CandidatePage/ForgotPassword";
 import Adminforgotpassword from "./Pages/AdminPage/Adminforgotpassword";
 import ErrorPage from './Pages/HomePage/ErrorPage'
+import FreeConsultation from "./Pages/HomePage/FreeConsultation";
 
 function App() {
   let [loading, setLoading] = useState(true);
@@ -94,6 +95,7 @@ function App() {
             <Route path="/signup" element={<Signup/>} />
             <Route path="/login" element={<Login/>} />
             <Route path='/forgot-password' element={<ForgotPassword/>}/>
+            <Route path='/get-free-consultation' element={<FreeConsultation/>}/>
             <Route path='/cv-dashboard' element={<Cvdashboard/>}/>
             <Route path='/cv-form'element={<Cvform/>}/>
             <Route path='/be-our-client' element={<Beourclient/>}/>
