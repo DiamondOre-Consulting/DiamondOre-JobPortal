@@ -19,7 +19,7 @@ const FreeConsultation = () => {
                             <div className="flex w-full items-center justify-between space-x-6 p-6">
                                 <div className="flex-1 truncate">
                                     <div className="flex items-center space-x-3">
-                                        <h3 className="truncate text-lg font-semibold text-gray-900">BM ,PSU Banca</h3>
+                                        <h3 className="truncate text-lg font-semibold text-gray-900">BM , PSU Banca</h3>
                                         <span className="inline-flex flex-shrink-0 items-center rounded-full bg-green-50 px-1.5 py-0.5 text-xs font-medium text-red-600 ring-1 ring-inset ring-green-600/20">Pinky</span>
 
                                     </div>
@@ -32,7 +32,7 @@ const FreeConsultation = () => {
                             </div>
                             <div>
                                 <div className="-mt-px flex divide-x divide-gray-200">
-                                    <div className="flex w-0 flex-1 hover:bg-blue-900 hover:text-white">
+                                    <div className="flex w-0 flex-1 hover:bg-blue-900 hover:rounded-md hover:text-white bg-blue-100">
                                         <a href="https://meetpro.club/PinkyYadav" target='_blank' className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold ">
                                             <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                 <path fill-rule="evenodd" d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.263-.15-3.326-.43A13.022 13.022 0 012.43 8.326 13.019 13.019 0 012 5V3.5z" clip-rule="evenodd" />
@@ -49,7 +49,7 @@ const FreeConsultation = () => {
                             <div className="flex w-full items-center justify-between space-x-6 p-6">
                                 <div className="flex-1 truncate">
                                     <div className="flex items-center space-x-3">
-                                        <h3 className="truncate text-lg font-semibold text-gray-900">Direct - Fls, Flm</h3>
+                                        <h3 className="truncate text-md font-semibold text-gray-900">Direct - FLS, FLM</h3>
                                         <span className="inline-flex flex-shrink-0 items-center rounded-full bg-green-50 px-1.5 py-0.5 text-xs font-medium text-red-600 ring-1 ring-inset ring-green-600/20">Amaan</span>
 
                                     </div>
@@ -62,7 +62,7 @@ const FreeConsultation = () => {
                             </div>
                             <div>
                                 <div className="-mt-px flex divide-x divide-gray-200">
-                                    <div className="flex w-0 flex-1 hover:bg-blue-900 hover:text-white">
+                                    <div className="flex w-0 flex-1 hover:bg-blue-900 hover:rounded-md hover:text-white bg-blue-100">
                                         <a href="https://meetpro.club/Amaan" target='_blank' className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold ">
                                             <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                 <path fill-rule="evenodd" d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.263-.15-3.326-.43A13.022 13.022 0 012.43 8.326 13.019 13.019 0 012 5V3.5z" clip-rule="evenodd" />
@@ -92,7 +92,7 @@ const FreeConsultation = () => {
                             </div>
                             <div>
                                 <div className="-mt-px flex divide-x divide-gray-200">
-                                    <div className="flex w-0 flex-1 hover:bg-blue-900 hover:text-white">
+                                    <div className="flex w-0 flex-1 hover:bg-blue-900 hover:rounded-md hover:text-white bg-blue-100">
                                         <a href="https://meetpro.club/Surajsamrat" target='_blank' className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold">
                                             <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                 <path fill-rule="evenodd" d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.263-.15-3.326-.43A13.022 13.022 0 012.43 8.326 13.019 13.019 0 012 5V3.5z" clip-rule="evenodd" />
@@ -122,7 +122,7 @@ const FreeConsultation = () => {
                             </div>
                             <div>
                                 <div className="-mt-px flex divide-x divide-gray-200">
-                                    <div className="flex w-0 flex-1 hover:bg-blue-900 hover:text-white">
+                                    <div className="flex w-0 flex-1 hover:bg-blue-900 hover:rounded-md hover:text-white bg-blue-100">
                                         <a href="https://meetpro.club/AshwiniBhaskar" target='_blank' className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold ">
                                             <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                 <path fill-rule="evenodd" d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.263-.15-3.326-.43A13.022 13.022 0 012.43 8.326 13.019 13.019 0 012 5V3.5z" clip-rule="evenodd" />
@@ -136,11 +136,11 @@ const FreeConsultation = () => {
                         </li>
 
 
-                        <li className="md:col-span-2 col-span-2 divide-y divide-gray-200 rounded-lg bg-white shadow">
+                        <li className="md:col-span-1 col-span-2 divide-y divide-gray-200 rounded-lg bg-white shadow">
                             <div className="flex w-full items-center justify-between space-x-6 p-6">
                                 <div className="flex-1 truncate">
                                     <div className="flex items-center space-x-3">
-                                        <h3 className="truncate text-md font-semibold text-gray-900">Variable Agency/Partner channel, non sales, senior positions</h3>
+                                        <h3 className="truncate text-sm font-semibold text-gray-900 text-wrap">Variable Agency/Partner channel, non sales, senior positions</h3>
                                         <span className="inline-flex flex-shrink-0 items-center rounded-full bg-green-50 px-1.5 py-0.5 text-xs font-medium text-red-600 ring-1 ring-inset ring-green-600/20">Swati</span>
 
                                     </div>
@@ -153,8 +153,38 @@ const FreeConsultation = () => {
                             </div>
                             <div>
                                 <div className="-mt-px flex divide-x divide-gray-200">
-                                    <div className="flex w-0 flex-1 hover:bg-blue-900 hover:text-white">
+                                    <div className="flex w-0 flex-1 hover:bg-blue-900 hover:rounded-md hover:text-white bg-blue-100">
                                         <a href="https://meetpro.club/swatichauhan" target='_blank' className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold ">
+                                            <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <path fill-rule="evenodd" d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.263-.15-3.326-.43A13.022 13.022 0 012.43 8.326 13.019 13.019 0 012 5V3.5z" clip-rule="evenodd" />
+                                            </svg>
+                                            Book Free Consultation
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </li>
+
+                        <li className="md:col-span-1 col-span-2 divide-y divide-gray-200 rounded-lg bg-white shadow">
+                            <div className="flex w-full items-center justify-between space-x-6 p-6">
+                                <div className="flex-1 truncate">
+                                    <div className="flex items-center space-x-3">
+                                        <h3 className="truncate text-lg font-semibold text-gray-900">NBFC</h3>
+                                        <span className="inline-flex flex-shrink-0 items-center rounded-full bg-green-50 px-1.5 py-0.5 text-xs font-medium text-red-600 ring-1 ring-inset ring-green-600/20">Sakshi Singh</span>
+
+                                    </div>
+
+                                </div>
+
+                                <img className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" src="https://w7.pngwing.com/pngs/4/736/png-transparent-female-avatar-girl-face-woman-user-flat-classy-users-icon.png" alt="" />
+
+
+                            </div>
+                            <div className=''>
+                                <div className=" -mt-px -mb-0 flex ">
+                                    <div className="flex w-0 mt-10 flex-1 hover:bg-blue-900 hover:rounded-md hover:text-white bg-blue-100">
+                                        <a href="https://meetpro.club/SakshiSingh" target='_blank' className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold ">
                                             <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                 <path fill-rule="evenodd" d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.263-.15-3.326-.43A13.022 13.022 0 012.43 8.326 13.019 13.019 0 012 5V3.5z" clip-rule="evenodd" />
                                             </svg>
