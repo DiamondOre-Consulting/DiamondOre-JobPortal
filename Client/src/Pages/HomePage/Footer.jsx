@@ -26,7 +26,7 @@ const Footer = () => {
                     </div>
 
                     <div>
-                    <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">CV-Genie</a>
+                    <a href="https://www.cvgenie.in/" target='_blank' className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">CV-Genie</a>
                     </div>
 
                     <div>
