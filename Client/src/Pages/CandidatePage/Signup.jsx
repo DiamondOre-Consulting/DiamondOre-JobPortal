@@ -80,7 +80,7 @@ const Signup = ({ toggleForm }) => {
         // console.log(response.data);
         setResumeUrl(response.data);
         console.log(response.data);
-        setShowLoader(false);
+        setShowLoaderResume(false);
       }
       else if (response.status === 500) {
         setError("Please Upload your resume Correctly")
