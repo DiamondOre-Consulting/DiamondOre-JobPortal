@@ -29,13 +29,13 @@ const HeroNav = () => {
                 <div className="flex items-center">
                 <Link
                   to={'/login'}
-                  className="inline-block rounded bg-blue-900 px-12 py-3 text-sm font-medium text-white transition hover:bg-blue-950 focus:outline-none focus:ring focus:ring-yellow-400"
+                  className="inline-block rounded bg-blue-900 px-4 md:px-12 py-3 text-sm font-medium text-white transition hover:bg-blue-950 focus:outline-none focus:ring focus:ring-yellow-400"
                 >
                   Get Started Today
                 </Link>
                 <Link
                   to={'/get-free-consultation'}
-                  className="inline-block ml-4 rounded bg-blue-900 px-12 py-3 text-sm font-medium text-white transition hover:bg-blue-950 focus:outline-none focus:ring focus:ring-yellow-400"
+                  className="inline-block ml-4 rounded bg-blue-900 px-4 md:px-12 py-3 text-sm font-medium text-white transition hover:bg-blue-950 focus:outline-none focus:ring focus:ring-yellow-400"
                 >
                   Book Free Consultation
                 </Link>
