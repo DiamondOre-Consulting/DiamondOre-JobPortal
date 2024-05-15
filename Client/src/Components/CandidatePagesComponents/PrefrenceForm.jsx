@@ -16,7 +16,7 @@ const PrefrenceForm = () => {
     });
     const [userInputs, setUserInputs] = useState([]);
     const [step, setStep] = useState(0);
-    cosnt[error, setError] = useState(null)
+    const[error, setError] = useState(null)
     const token = localStorage.getItem("token");
     const navigate = useNavigate();
 
