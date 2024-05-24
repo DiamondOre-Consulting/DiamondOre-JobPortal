@@ -1,12 +1,22 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import PopUpBox from "./PopUpBox";
 
 const HeroNav = () => {
+
+  const [showModal, setShowModal] = useState(true);
+ 
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
   
   return (
+
     <div>
+      {showModal && <PopUpBox closeModal={closeModal} setShowModal={setShowModal} />} 
       <section className="overflow-hidden flex items-center h-screen bg-cover bg-center" style={{backgroundImage: 'url(https://s3.tebi.io/generalpics/DOC-HomeGIF.gif)'}}>
         <div className="p-8 md:p-12 lg:px-16 lg:py-40 relative z-10 flex items-center justify-center sm:justify-start">
           <motion.div
