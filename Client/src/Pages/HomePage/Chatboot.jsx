@@ -61,27 +61,11 @@ const Chatboot = () => {
 
     useEffect(() => {
         const handleScroll = () => {
-            if (scrollEnabled && !welcomeopen) {
+            if (scrollEnabled && !welcomeopen) { // Check if scroll is enabled and welcome box is open
                 const scrollPosition = window.scrollY;
                 // Open the welcome box if the user scrolls down even a little bit
                 if (scrollPosition > 50) {
                     setWelcomeOpen(true);
-                }
-            }
-
-            // Show certificate image when the user scrolls further down
-            if (!welcomeopen) {
-                const scrollPosition = window.scrollY;
-                const windowHeight = window.innerHeight;
-                const certificateImage = document.getElementById('certificateImage');
-
-                if (certificateImage) {
-                    const certificateImagePosition = certificateImage.offsetTop;
-                    const imageTopPosition = certificateImagePosition - scrollPosition;
-
-                    if (imageTopPosition < windowHeight * 0.8) {
-                        setWelcomeOpen(true);
-                    }
                 }
             }
         };
@@ -92,7 +76,6 @@ const Chatboot = () => {
             window.removeEventListener('scroll', handleScroll);
         };
     }, [scrollEnabled, welcomeopen]);
-
 
     const closeWelcomeBox = () => {
         setWelcomeOpen(false);
@@ -135,7 +118,7 @@ const Chatboot = () => {
 
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
-
+      
     };
 
     const handleSendMessage = () => {
@@ -171,7 +154,7 @@ const Chatboot = () => {
 
     return (
         <div>
-            <div className={`fixed bottom-56 z-10 right-8 ${welcomeopen ? 'block' : 'hidden'}`}>
+            <div className={`fixed bottom-60 md:bottom-56 z-10 right-8 ${welcomeopen ? 'block' : 'hidden'}`}>
             <img id="certificateImage" src={certificate} alt="" className='h-28 w-38' />
 
             </div>
