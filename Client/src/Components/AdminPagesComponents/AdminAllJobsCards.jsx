@@ -18,6 +18,8 @@ const AdminAllJobsCards = () => {
   const jobsPerPage = 20;
   const pagesVisited = pageNumber * jobsPerPage;
   const pageCount = Math.ceil(latestJobs.length / jobsPerPage);
+  const [popup, setPopUP] = useState(false)
+  const [jobToDelete, setJobToDelete] = useState(null);
 
   const changePage = ({ selected }) => {
     setPageNumber(selected);
@@ -66,11 +68,10 @@ const AdminAllJobsCards = () => {
   }, []);
 
 
-  const deleteJob = async (id) => {
+  const deleteJob = async () => {
     try {
-      const token = localStorage.getItem("token");
       const response = await axios.put(
-        `https://api.diamondore.in/api/admin-confi/remove-job/${id}`,
+        `https://api.diamondore.in/api/admin-confi/remove-job/${jobToDelete}`,
         null,
         {
           headers: {
@@ -79,15 +80,17 @@ const AdminAllJobsCards = () => {
         }
       );
       if (response.status === 201) {
-        // Job has been deleted successfully, update the state
-        alert('Do you Want to delete This Job')
-        setLatestJobs(latestJobs.filter(job => job._id !== id));
-
-
+        setPopUP(false);
+        setLatestJobs(latestJobs.filter((job) => job._id !== jobToDelete));
       }
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleDeleteClick = (id) => {
+    setJobToDelete(id);
+    setPopUP(true)
   };
   return (
     <div className="bg-white py-4 sm:py-8 lg:py-10">
@@ -119,7 +122,7 @@ const AdminAllJobsCards = () => {
                       </h3>
                     </div>
 
-                    <div className="p-1 border border-0 shadow-xl border-rounded h-fit rounded-full hover:bg-red-900 cursor-pointer" onClick={() => deleteJob(latestJob._id)}>
+                    <div className="p-1 border border-0 shadow-xl border-rounded h-fit rounded-full hover:bg-red-900 cursor-pointer" onClick={() => handleDeleteClick(latestJob?._id)}>
                       <svg className="w-[22px] h-[22px] text-red-800 dark:text-white hover:text-gray-100" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                         <path fillRule="evenodd" d="M8.6 2.6A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4c0-.5.2-1 .6-1.4ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clipRule="evenodd" />
                       </svg>
@@ -162,6 +165,43 @@ const AdminAllJobsCards = () => {
 
         </div>
       </div>
+
+      {popup && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-60">
+          <div className="bg-white rounded-lg shadow-xl max-w-md mx-auto p-6">
+            <div className="flex justify-end p-2">
+              <button
+                type="button"
+                className="text-gray-400 bg-transparent hover:bg-gray-200 -mt-6 -mr-4 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+                onClick={() => setPopUP(false)}
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path>
+                </svg>
+              </button>
+            </div>
+
+            <div className=" pt-0 text-center">
+              <svg className="w-10 h-10 text-red-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <h3 className="text-xl font-normal text-gray-500 mt-5 mb-6">Are you sure you want to delete this job?</h3>
+              <button
+                onClick={deleteJob}
+                className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-base inline-flex items-center px-3 py-2.5 text-center mr-2"
+              >
+                Yes, I'm sure
+              </button>
+              <button
+                onClick={() => setPopUP(false)}
+                className="text-gray-900 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-cyan-200 border border-gray-200 font-medium inline-flex items-center rounded-lg text-base px-3 py-2.5 text-center"
+              >
+                No, cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
