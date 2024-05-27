@@ -18,8 +18,8 @@ const RnRLeaderboard = ({ RnRinterns, RnRRecruiter }) => {
 
             <div className="lg:py-24">
               <div  className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table  className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                  <thead  className="text-xs text-gray-700 uppercase  dark:bg-gray-700 dark:text-gray-400">
+                <table  className="w-full text-sm text-left rtl:text-right text-gray-500 ">
+                  <thead  className="text-xs text-gray-700 uppercase   ">
                     <tr className='bg-blue-900 text-white'>
                       <th scope="col"  className="px-6 py-3">
                         Title
@@ -37,10 +37,10 @@ const RnRLeaderboard = ({ RnRinterns, RnRRecruiter }) => {
                   </thead>
                   <tbody>
                     {RnRinterns?.map((interns) => (
-                      <tr  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                      <tr  className="bg-white border-b   hover:bg-gray-50 ">
                         <th
                           scope="row"
-                           className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                           className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
                         >
                           {interns.title}
                         </th>
@@ -72,8 +72,8 @@ const RnRLeaderboard = ({ RnRinterns, RnRRecruiter }) => {
 
             <div  className="lg:py-24">
               <div  className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table  className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                  <thead  className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <table  className="w-full text-sm text-left rtl:text-right text-gray-500 ">
+                  <thead  className="text-xs text-gray-700 uppercase bg-gray-50  ">
                     <tr className='bg-blue-900 text-white'>
                       <th scope="col"  className="px-6 py-3">
                         Title
@@ -92,10 +92,10 @@ const RnRLeaderboard = ({ RnRinterns, RnRRecruiter }) => {
                   <tbody>
                     {RnRRecruiter?.map((recuiter) => (
 
-                      <tr  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                      <tr  className="bg-white border-b   hover:bg-gray-50 ">
                         <th
                           scope="row"
-                           className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                           className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
                         >
                           {recuiter.title}
                         </th>

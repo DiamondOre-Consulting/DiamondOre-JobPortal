@@ -254,8 +254,8 @@ const AdminEmployeeAttendence = () => {
                             <div>
                                 <h2 className='text-center font-bold  mb-1 text-2xl mt-2 text-blue-950'>Attendence</h2>
                                 <div  className="relative overflow-x-auto">
-                                    <table  className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 bg-gray-50">
-                                        <thead  className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                                    <table  className="w-full text-sm text-left rtl:text-right text-gray-500  bg-gray-50">
+                                        <thead  className="text-xs text-gray-700 uppercase bg-gray-100  ">
 
                                             <tr>
                                                 <th scope="col" className="px-6 py-3 rounded-s-lg ">
@@ -282,7 +282,7 @@ const AdminEmployeeAttendence = () => {
                                         <tbody>
                                             {Month.map((month, index) => (
                                                 <tr key={index}>
-                                                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
                                                         {month}
                                                     </th>
                                                     {/* Display attendance details for each month */}
@@ -314,8 +314,8 @@ const AdminEmployeeAttendence = () => {
                             <div>
                                 <h2 className='text-center font-bold  mb-1 mb-1 text-2xl mt-2 text-blue-950'>Performence</h2>
                                 <div  className="relative overflow-x-auto">
-                                    <table  className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 bg-gray-50">
-                                        <thead  className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                                    <table  className="w-full text-sm text-left rtl:text-right text-gray-500  bg-gray-50">
+                                        <thead  className="text-xs text-gray-700 uppercase bg-gray-100  ">
 
                                             <tr>
                                                 <th scope="col" className="px-6 py-3 rounded-s-lg ">
@@ -339,7 +339,7 @@ const AdminEmployeeAttendence = () => {
                                         <tbody>
                                             {Month.map((month, index) => (
                                                 <tr key={index}>
-                                                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
                                                         {month}
                                                     </th>
                                                     {/* Display attendance details for each month */}

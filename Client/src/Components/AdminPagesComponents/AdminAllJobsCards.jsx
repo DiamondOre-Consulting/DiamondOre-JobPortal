@@ -123,7 +123,7 @@ const AdminAllJobsCards = () => {
                     </div>
 
                     <div className="p-1 border border-0 shadow-xl border-rounded h-fit rounded-full hover:bg-red-900 cursor-pointer" onClick={() => handleDeleteClick(latestJob?._id)}>
-                      <svg className="w-[22px] h-[22px] text-red-800 dark:text-white hover:text-gray-100" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-[22px] h-[22px] text-red-800  hover:text-gray-100" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                         <path fillRule="evenodd" d="M8.6 2.6A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4c0-.5.2-1 .6-1.4ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clipRule="evenodd" />
                       </svg>
                     </div>

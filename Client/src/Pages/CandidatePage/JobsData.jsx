@@ -76,7 +76,7 @@ const JobsData = () => {
                   </a>
                 </h2>
                 <p className="rounded-md bg-blue-900 hover:bg-blue-950 px-2 py-1 text-sm font-semibold text-gray-200 ">
-                  <svg className="w-6 h-6 dark:text-white mx-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                  <svg className="w-6 h-6  mx-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
                   </svg>
                 </p>
@@ -158,7 +158,7 @@ const JobsData = () => {
                   </a>
                 </h2>
                 <p className="rounded-md bg-blue-900 hover:bg-blue-950 px-2 py-1 text-sm font-semibold text-gray-200 ">
-                  <svg className="w-6 h-6 dark:text-white mx-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                  <svg className="w-6 h-6  mx-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
                   </svg>
                 </p>
