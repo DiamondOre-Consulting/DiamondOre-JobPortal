@@ -6,18 +6,27 @@ import PopUpBox from "./PopUpBox";
 
 const HeroNav = () => {
 
-  const [showModal, setShowModal] = useState(true);
- 
+  const [showModal, setShowModal] = useState(() => {
+    const isPopupShown = sessionStorage.getItem('isPopupShown');
+    return !isPopupShown;
+  });
+
+  useEffect(() => {
+    if (showModal) {
+      sessionStorage.setItem('isPopupShown', 'true');
+    }
+  }, [showModal]);
+
 
   const closeModal = () => {
     setShowModal(false);
   };
-  
+
   return (
 
     <div>
-      {showModal && <PopUpBox closeModal={closeModal} setShowModal={setShowModal} />} 
-      <section className="overflow-hidden flex items-center h-screen bg-cover bg-center" style={{backgroundImage: 'url(https://s3.tebi.io/generalpics/DOC-HomeGIF.gif)'}}>
+      {showModal && <PopUpBox closeModal={closeModal} setShowModal={setShowModal} />}
+      <section className="overflow-hidden flex items-center h-screen bg-cover bg-center" style={{ backgroundImage: 'url(https://s3.tebi.io/generalpics/DOC-HomeGIF.gif)' }}>
         <div className="p-8 md:p-12 lg:px-16 lg:py-40 relative z-10 flex items-center justify-center sm:justify-start">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -37,21 +46,21 @@ const HeroNav = () => {
 
               <div className="mt-4 md:mt-8">
                 <div className="flex items-center">
-                <Link
-                  to={'/login'}
-                  className="inline-block rounded bg-blue-900 px-4 md:px-12 py-3 text-sm font-medium text-white transition hover:bg-blue-950 focus:outline-none focus:ring focus:ring-yellow-400"
-                >
-                  Get Started Today
-                </Link>
-                <Link
-                  to={'/get-free-consultation'}
-                  className="inline-block ml-4 rounded bg-blue-900 px-4 md:px-12 py-3 text-sm font-medium text-white transition hover:bg-blue-950 focus:outline-none focus:ring focus:ring-yellow-400"
-                >
-                  Book Free Consultation
-                </Link>
+                  <Link
+                    to={'/login'}
+                    className="inline-block rounded bg-blue-900 px-4 md:px-12 py-3 text-sm font-medium text-white transition hover:bg-blue-950 focus:outline-none focus:ring focus:ring-yellow-400"
+                  >
+                    Get Started Today
+                  </Link>
+                  <Link
+                    to={'/get-free-consultation'}
+                    className="inline-block ml-4 rounded bg-blue-900 px-4 md:px-12 py-3 text-sm font-medium text-white transition hover:bg-blue-950 focus:outline-none focus:ring focus:ring-yellow-400"
+                  >
+                    Book Free Consultation
+                  </Link>
 
                 </div>
-                
+
               </div>
             </div>
           </motion.div>
