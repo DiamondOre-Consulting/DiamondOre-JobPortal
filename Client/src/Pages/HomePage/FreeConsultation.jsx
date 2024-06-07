@@ -13,8 +13,8 @@ const FreeConsultation = () => {
                 </div>
 
                 <div className='mt-20 px-4 md:px-10'>
-                    <ul className="grid grid-cols-1 gap-4 lg:gap-6 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 mb-10 shadow-md">
-                        <li className="divide-y divide-gray-200 rounded-lg bg-white shadow">
+               
+                        <li className="divide-y divide-gray-200 rounded-lg bg-white shadow flex-col flex-col justify-center md:w-1/2  mx-auto mb-10">
                             <div className="flex w-full items-center justify-between space-x-6 p-6">
                                 <div className="flex-1 truncate">
                                     <div className="flex items-center space-x-3">
@@ -42,7 +42,7 @@ const FreeConsultation = () => {
                                 </div>
                             </div>
                         </li>
-                    </ul>
+                   
 
                     <ul className="grid grid-cols-1 gap-4 lg:gap-6 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-4">
                         {[
