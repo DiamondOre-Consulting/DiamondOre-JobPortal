@@ -21,6 +21,17 @@ import PerformanceReport from "../Models/PerformanceReport.js";
 import ChatBotMessages from "../Models/ChatBotMessages.js";
 import ClientForm from "../Models/ClientForm.js";
 
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import axios from "axios";
+import node_xj from "xls-to-json";
+import { fileURLToPath } from 'url';
+import xlsx from 'xlsx';
+import readXlsxFile from "read-excel-file/node"
+import DSR from "../Models/DSR.js";
+import JobsTesting from "../Models/JobsTesting.js";
+
 dotenv.config();
 
 const secretKey = process.env.JWT_SECRET_ADMIN;
@@ -1431,6 +1442,264 @@ router.put("/update-password", async (req, res) => {
   } catch (error) {
     console.error("Error updating Admin Password:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const credentialsResumes = {
+  accessKeyId: "rjRpgCugr4BV9iTw",
+  secretAccessKey: "KBhGM26n6kLYZnigoZk6QJnB3GTqHYvMEQ1ihuZs"
+};
+
+const s3ClientResumes = new S3Client({
+  endpoint: "https://s3.tebi.io",
+  credentials: credentialsResumes,
+  region: "global"
+});
+
+router.post('/upload-dsr', async (req, res) => {
+  try {
+    const file = req.files && req.files.myFile; // Change 'myFile' to match the key name in Postman
+
+    if (!file) {
+      return res.status(400).send('No file uploaded');
+    }
+
+    // Generate a unique identifier
+    const uniqueIdentifier = uuidv4();
+
+    // Get the file extension from the original file name
+    const fileExtension = file.name.split('.').pop();
+
+    // Create a unique filename by appending the unique identifier to the original filename
+    const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
+
+    // Convert file to base64
+    const base64Data = file.data.toString('base64');
+
+    // Create a buffer from the base64 data
+    const fileBuffer = Buffer.from(base64Data, 'base64');
+
+    const uploadData = await s3ClientResumes.send(
+      new PutObjectCommand({
+        Bucket: "resumes",
+        Key: uniqueFileName, // Use the unique filename for the S3 object key
+        Body: fileBuffer // Provide the file buffer as the Body
+      })
+    );
+
+    // Generate a public URL for the uploaded file
+    const getObjectCommand = new GetObjectCommand({
+      Bucket: "resumes",
+      Key: uniqueFileName
+    });
+
+    const signedUrl = await getSignedUrl(s3ClientResumes, getObjectCommand); // Generate URL valid for 1 hour
+
+    // Parse the signed URL to extract the base URL
+    const parsedUrl = new URL(signedUrl);
+    const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
+
+    // Send the URL as a response
+    res.status(200).send(baseUrl);
+
+    // Log the URL in the console
+    console.log("File uploaded. URL:", baseUrl);
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    return res.status(500).send('Error uploading file');
+  }
+});
+
+const downloadFile = async (url, outputFilePath) => {
+  const writer = fs.createWriteStream(outputFilePath);
+
+  const response = await axios({
+    url: url,
+    method: 'GET',
+    responseType: 'stream',
+  });
+
+  response.data.pipe(writer);
+
+  return new Promise((resolve, reject) => {
+    writer.on('finish', resolve);
+    writer.on('error', reject);
+  });
+};
+
+router.post("/upload-dsr-excel", async (req, res) => {
+  const { url } = req.body;
+  const outputFilePath = path.join(__dirname, 'dsrFile.xlsx');
+  try {
+    console.log(url);
+    await downloadFile(url, outputFilePath);
+    node_xj(
+      {
+        input:
+          outputFilePath,
+        output: null,
+        lowerCaseHeaders: true,
+        allowEmptyKey: false,
+      },
+      async (err, result) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ error: "Error converting Excel to JSON", err });
+        }
+        console.log(result);
+
+        // Assuming the result is an array of job objects
+        const dsrAdd = await DSR.insertMany(result);
+        console.log(dsrAdd);
+        if (dsrAdd) {
+          return res
+            .status(200)
+            .json({ message: "DSR Added successfully!!!" });
+        } else {
+          return res.status(500).json({ message: "Something went wrong!!" });
+        }
+      }
+    );
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
+  } finally {
+    // Clean up: Delete the temporary file
+    fs.unlinkSync(outputFilePath);
+  }
+});
+
+// router.post('/uploadops', upload.single('file'), async (req, res) => {
+//   const file = req.file;
+//   const workbook = xlsx.readFile(file.path);
+//   const sheetName = workbook.SheetNames[0];
+//   const data = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+//   try {
+//     await JobsTesting.insertMany(data);
+//     res.status(200).send('Open Positions data uploaded successfully');
+//   } catch (error) {
+//     res.status(500).send('Error uploading Open Positions data');
+//   }
+// });
+
+
+// router.post('/upload-test-jobs', async (req, res) => {
+//   try {
+//     const file = req.files && req.files.myFile; // Change 'myFile' to match the key name in Postman
+
+//     if (!file) {
+//       return res.status(400).send('No file uploaded');
+//     }
+
+//     // Generate a unique identifier
+//     const uniqueIdentifier = uuidv4();
+
+//     // Get the file extension from the original file name
+//     const fileExtension = file.name.split('.').pop();
+
+//     // Create a unique filename by appending the unique identifier to the original filename
+//     const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
+
+//     // Convert file to base64
+//     const base64Data = file.data.toString('base64');
+
+//     // Create a buffer from the base64 data
+//     const fileBuffer = Buffer.from(base64Data, 'base64');
+
+//     const uploadData = await s3ClientResumes.send(
+//       new PutObjectCommand({
+//         Bucket: "resumes",
+//         Key: uniqueFileName, // Use the unique filename for the S3 object key
+//         Body: fileBuffer // Provide the file buffer as the Body
+//       })
+//     );
+
+//     // Generate a public URL for the uploaded file
+//     const getObjectCommand = new GetObjectCommand({
+//       Bucket: "resumes",
+//       Key: uniqueFileName
+//     });
+
+//     const signedUrl = await getSignedUrl(s3ClientResumes, getObjectCommand); // Generate URL valid for 1 hour
+
+//     // Parse the signed URL to extract the base URL
+//     const parsedUrl = new URL(signedUrl);
+//     const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
+
+//     // Send the URL as a response
+//     res.status(200).send(baseUrl);
+
+//     // Log the URL in the console
+//     console.log("File uploaded. URL:", baseUrl);
+//   } catch (error) {
+//     console.error("Error uploading file:", error);
+//     return res.status(500).send('Error uploading file');
+//   }
+// });
+
+// router.post("/upload-test-jobs-excel", async (req, res) => {
+//   const { url } = req.body;
+//   const outputFilePath = path.join(__dirname, 'jobFile.xlsx');
+//   try {
+//     console.log(url);
+//     await downloadFile(url, outputFilePath);
+//     node_xj(
+//       {
+//         input:
+//           outputFilePath,
+//         output: null,
+//         lowerCaseHeaders: true,
+//         allowEmptyKey: false,
+//       },
+//       async (err, result) => {
+//         if (err) {
+//           return res
+//             .status(500)
+//             .json({ error: "Error converting Excel to JSON", err });
+//         }
+//         console.log(result);
+
+//         // Assuming the result is an array of job objects
+//         const jobsAdd = await JobsTesting.insertMany(result);
+//         console.log(jobsAdd);
+//         if (jobsAdd) {
+//           return res
+//             .status(200)
+//             .json({ message: "Jobs Added successfully!!!" });
+//         } else {
+//           return res.status(500).json({ message: "Something went wrong!!" });
+//         }
+//       }
+//     );
+//   } catch (err) {
+//     return res.status(400).json({ message: err.message });
+//   } finally {
+//     // Clean up: Delete the temporary file
+//     fs.unlinkSync(outputFilePath);
+//   }
+// });
+
+
+router.get('/findJobs/:phone', async (req, res) => {
+  try {
+    const candidate = await DSR.findOne({ phone: req.params.phone });
+    if (!candidate) {
+      return res.status(404).send('Candidate not found');
+    }
+    const suitableJobs = await Jobs.find({
+      City: candidate.currentLocation,
+      Channel: candidate.currentChannel,
+      MaxSalary: { 
+        $gt: candidate.currentCTC,
+        $lte: candidate.currentCTC * 1.30 // Not more than 30% of current CTC
+      }
+    });
+    res.json(suitableJobs);
+  } catch (error) {
+    res.status(500).send(error.message);
   }
 });
 
