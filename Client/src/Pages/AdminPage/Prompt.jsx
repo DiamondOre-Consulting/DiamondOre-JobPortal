@@ -39,12 +39,12 @@ const Prompt = () => {
 
             const response = await axios.post(
                 'https://api.diamondore.in/api/admin-confi/upload-dsr',
-                formData,
-              
+                formData
             );
 
             if (response.status === 200) {
-                setsheeturl(response.data.url); // Assuming the response contains a URL
+                setsheeturl(response.data); // Assuming the response contains a URL
+                console.log(response.data)
             } else {
                 console.error('Failed to upload file:', response.data);
             }
@@ -60,8 +60,7 @@ const Prompt = () => {
         try {
             const response = await axios.post(
                 'https://api.diamondore.in/api/admin-confi/upload-dsr-excel',
-                { url: sheeturl },
-               
+                { url: sheeturl }
             );
 
             if (response.status === 200) {
@@ -138,10 +137,10 @@ const Prompt = () => {
                     )}
                 </button>
                 {sheeturl && (
-                    <div className="flex justify-center align-center items-center ml-2">
+                    <div className='flex justify-center align-center items-center ml-2'>
                         <button
-                            type="button"
-                            className="bg-green-500 text-white p-2 px-12 flex items-center justify-center rounded-md"
+                            type='submit'
+                            className='bg-green-500 text-white p-2 px-12 flex items-center justify-center rounded-md'
                             onClick={handlesubmit}
                         >
                             Submit DSR
@@ -217,7 +216,7 @@ const Prompt = () => {
                 )
             )}
 
-            <AdminFooter/>
+            <AdminFooter />
         </>
     );
 };
