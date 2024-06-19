@@ -166,6 +166,8 @@ const AdminNav = () => {
                 >
                   Edit Profile
                 </Link>
+
+                
                 <Link to={'/admin-signup'} 
                 className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
                 onClick={toggleDropdown}
@@ -285,6 +287,16 @@ const AdminNav = () => {
                 Edit Profile
               </li>
             </Link>
+
+            <Link to={"/admin/prompt"}>
+              <li
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-28 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+              >
+                Prompt
+              </li>
+            </Link>
+
             <Link
               to="#"
               className="px-32 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250"

@@ -116,7 +116,7 @@ const Prompt = () => {
             <h1 className="text-4xl font-bold text-center">Prompt</h1>
             <div className="w-40 bg-blue-950 h-0.5 text-center mx-auto"></div>
 
-            <div className="flex justify-center align-center items-center mt-10">
+            <div className="flex justify-center align-center items-center mt-10 px-4">
                 <input
                     type="file"
                     id="myFile"
@@ -186,7 +186,7 @@ const Prompt = () => {
                 </div>
             ) : (
                 profile && (
-                    <div className="px-40 py-4">
+                    <div className="px-4 md:px-40 py-4">
                         <h2 className="text-2xl font-bold mb-4 text-center">SuitableJobs</h2>
 
                         <div className="relative overflow-x-auto">
