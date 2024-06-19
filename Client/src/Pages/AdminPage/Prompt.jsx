@@ -210,8 +210,8 @@ const Prompt = () => {
                                             <td className="px-6 py-4">{job.Industry}</td>
                                             <td className="px-6 py-4">{job.Channel}</td>
                                             <td className="px-6 py-4">{job.City}</td>
-                                            <td className="px-6 py-4">{job.MinExperience}</td>
-                                            <td className="px-6 py-4">{job.MaxSalary}</td>
+                                            <td className="px-6 py-4 text-center">{job.MinExperience}</td>
+                                            <td className="px-6 py-4 text-center">{job.MaxSalary}</td>
                                         </tr>
                                     ))}
                                 </tbody>
