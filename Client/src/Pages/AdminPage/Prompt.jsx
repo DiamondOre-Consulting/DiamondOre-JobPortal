@@ -81,9 +81,14 @@ const Prompt = () => {
                 `https://api.diamondore.in/api/admin-confi/findJobs/${phone}`
             );
             if (response.status === 200) {
-                setProfile(response.data);
-                setError('');
-                // setPhone("")
+                if (response.data.length === 0) {
+                    setError('Suitable job not found !!');
+                    setProfile(null);
+                }
+                else {
+                    setProfile(response.data);
+                    setError('');
+                }
             } else {
                 setError('No data found');
                 setProfile(null);
