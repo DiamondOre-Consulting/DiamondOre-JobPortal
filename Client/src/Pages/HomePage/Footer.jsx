@@ -30,7 +30,7 @@ const Footer = () => {
                     </div>
 
                     <div>
-                        <a href="#"className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">DOC_Labz</a>
+                        <a href="https://www.doclabz.com/" target="_blank" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">DOC-Labz</a>
                     </div>
 
                     <div>

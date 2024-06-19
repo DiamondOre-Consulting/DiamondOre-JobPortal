@@ -95,7 +95,7 @@ const Services = () => {
 
                             <div  className="p-4 md:p-6">
                                 <h3  className="mb-2 text-lg font-semibold md:text-xl">IT Services</h3>
-                                <p  className="text-gray-200">Empower Your Business with Expert IT Services. We specialize in creating dynamic websites that captivate your audience and drive growth. Our comprehensive approach ensures seamless integration and unparalleled user experiences. Trust DOC_Labz to elevate your online presence and propel your success in the digital landscape.</p>
+                                <p  className="text-gray-200">Empower Your Business with Expert IT Services. We specialize in creating dynamic websites that captivate your audience and drive growth. Our comprehensive approach ensures seamless integration and unparalleled user experiences. Trust DOC-Labz to elevate your online presence and propel your success in the digital landscape.</p>
                             </div>
                         </div>
 
