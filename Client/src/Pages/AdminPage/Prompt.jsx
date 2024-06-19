@@ -36,13 +36,9 @@ const Prompt = () => {
             formData.append('myFile', sheet);
 
             const response = await axios.post(
-                'http://localhost:5000/api/admin-confi/upload-dsr',
+                'https://api.diamondore.in/api/admin-confi/upload-dsr',
                 formData,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                }
+              
             );
 
             if (response.status === 200) {
@@ -61,13 +57,9 @@ const Prompt = () => {
         e.preventDefault();
         try {
             const response = await axios.post(
-                'http://localhost:5000/api/admin-confi/upload-dsr-excel',
+                'https://api.diamondore.in/api/admin-confi/upload-dsr-excel',
                 { url: sheeturl },
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`,
-                    },
-                }
+               
             );
 
             if (response.status === 200) {
@@ -85,7 +77,7 @@ const Prompt = () => {
         try {
             setShowLoader(true);
             const response = await axios.get(
-                `http://localhost:5000/api/admin-confi/findJobs/${phone}`
+                `https://api.diamondore.in/api/admin-confi/findJobs/${phone}`
             );
             if (response.status === 200) {
                 setProfile(response.data);
