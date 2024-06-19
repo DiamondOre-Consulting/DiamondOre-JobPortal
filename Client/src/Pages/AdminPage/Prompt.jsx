@@ -3,6 +3,7 @@ import AdminNav from '../../Components/AdminPagesComponents/AdminNav';
 import axios from 'axios';
 import { useJwt } from 'react-jwt';
 import { useNavigate } from 'react-router-dom';
+import AdminFooter from '../../Components/AdminPagesComponents/AdminFooter';
 
 const Prompt = () => {
     const [sheet, setSheet] = useState(null);
@@ -214,6 +215,8 @@ const Prompt = () => {
                     </div>
                 )
             )}
+
+            <AdminFooter/>
         </>
     );
 };
