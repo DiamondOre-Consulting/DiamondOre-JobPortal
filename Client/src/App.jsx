@@ -50,6 +50,7 @@ import ForgotPassword from "./Pages/CandidatePage/ForgotPassword";
 import Adminforgotpassword from "./Pages/AdminPage/Adminforgotpassword";
 import ErrorPage from './Pages/HomePage/ErrorPage'
 import FreeConsultation from "./Pages/HomePage/FreeConsultation";
+import Prompt from "./Pages/AdminPage/Prompt";
 
 function App() {
   let [loading, setLoading] = useState(true);
@@ -120,6 +121,7 @@ function App() {
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/admin/all-jobs" element={<AdminAllJobs />} />
             <Route path="/admin/add-jobs" element={<AddJobs />} />
+            <Route path="/admin/prompt" element={<Prompt/>}/>
             <Route path="/admin/all-jobs/:id" element={<AdminEachJob />} />
             <Route path="/admin/all-candidates" element={<AdminAllCandidates />} />
             <Route path="/admin/all-candidates/:id" element={<EachCandidate />} />

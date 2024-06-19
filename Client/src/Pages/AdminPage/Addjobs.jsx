@@ -112,7 +112,7 @@ const AddJobs = () => {
           type="file"
           id="myFile"
           name="myFile"
-          accept=".pdf,.doc,.docx,.xlxs"
+      
           onChange={(e) => setSheet(e.target.files[0])}
           className="p-2"
         />
