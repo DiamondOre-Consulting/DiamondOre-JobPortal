@@ -70,9 +70,10 @@ const JobsReviews = () => {
                 Don't just take our word for it...
               </h2>
 
-              <p className="mt-4 text-gray-700" style={{  }}>
-                Our commitment to excellence and unwavering reliability make them our go-to partner for success. Highly recommended for a trusted and proficient collaboration.
+              <p className="mt-4 text-gray-700">
+                Our commitment to excellence and unwavering reliability make Diamond Ore Consulting Pvt. Ltd., a trusted placement consulting company, our go-to partner for success. Highly recommended for a trusted and proficient collaboration.
               </p>
+
 
               <div className="hidden lg:mt-8 lg:flex lg:gap-4">
                 <button
@@ -336,6 +337,80 @@ const JobsReviews = () => {
 
                         <p className="mt-4 leading-relaxed text-gray-700">
                           <span className='text-blue-950 font-bold '>Diamond Ore Consulting Pvt Ltd</span> they are having the rare ability to plain the work and than work the plan .Rahul mathur is a person with a strategic bend of min his strength is also imaplementation . this make him potent force as a senior front line manager leading a large team of people a cool head and great man management skills is a winning combination that alway kept him ahead of his peers ...
+                        </p>
+                      </div>
+                    </div>
+
+                  </blockquote>
+                </div>
+
+                <div className="keen-slider__slide shadow-lg shadow-gray-400">
+                  <blockquote
+                    className="flex h-full flex-col justify-between bg-white p-6 shadow-sm sm:p-8 lg:p-12"
+                  >
+                    <div>
+                      <div className="flex gap-0.5 text-yellow-500">
+                        <svg
+                          className="h-5 w-5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                          />
+                        </svg>
+
+                        <svg
+                          className="h-5 w-5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                          />
+                        </svg>
+
+                        <svg
+                          className="h-5 w-5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                          />
+                        </svg>
+
+                        <svg
+                          className="h-5 w-5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                          />
+                        </svg>
+
+                        <svg
+                          className="h-5 w-5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                          />
+                        </svg>
+                      </div>
+
+                      <div className="mt-4">
+                        <p className="text-2xl font-bold text-blue-950 sm:text-3xl">Zuheb Sidd</p>
+
+                        <p className="mt-4 leading-relaxed text-gray-700">
+                        I want to express my utmost gratitude to Diamond Ore Consulting Pvt Ltd and their HR team for their exceptional support in finding me the perfect job. Their professionalism, dedication, and personalized approach made the entire job search process smooth and efficient. I highly recommend their services to anyone seeking employment assistance. Thank you for helping me secure a fantastic opportunity!
                         </p>
                       </div>
                     </div>

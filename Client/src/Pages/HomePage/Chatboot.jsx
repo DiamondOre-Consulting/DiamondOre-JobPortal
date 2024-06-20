@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react'
-import chatboat from '../../assets/Chatboat.svg'
+import React, { useState, useEffect, useRef } from 'react';
+import chatboat from '../../assets/Chatboat.svg';
 import axios from "axios";
-import popupimg from '../../assets/Logo robo recruiter 1.gif'
-import certificate from '..//../assets/certificate.jpg'
+import popupimg from '../../assets/Logo robo recruiter 1.gif';
+import certificate from '../../assets/certificate.jpg';
 
 const Chatboot = () => {
 
@@ -21,6 +21,7 @@ const Chatboot = () => {
         currentCTC: null,
     });
     const [scrollEnabled, setScrollEnabled] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const chatboxBodyRef = useRef(null);
 
     const questions = [
@@ -57,8 +58,6 @@ const Chatboot = () => {
         setMessages([]);
     };
 
-
-
     useEffect(() => {
         const handleScroll = () => {
             if (scrollEnabled && !welcomeopen) { // Check if scroll is enabled and welcome box is open
@@ -81,7 +80,6 @@ const Chatboot = () => {
         setWelcomeOpen(false);
         setScrollEnabled(false); // Disable scroll after closing welcome box
     };
-
 
     const sendMessage = async (userDetails) => {
         try {
@@ -118,7 +116,6 @@ const Chatboot = () => {
 
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
-      
     };
 
     const handleSendMessage = () => {
@@ -145,20 +142,27 @@ const Chatboot = () => {
         }
     };
 
-
-
     const isSendButtonDisabled = messages[messages.length - 1]?.text === endingMessage;
 
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
 
-
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
 
     return (
         <div>
             <div className={`fixed bottom-60 md:bottom-56 z-10 right-8 ${welcomeopen ? 'block' : 'hidden'}`}>
-            <img id="certificateImage" src={certificate} alt="" className='h-28 w-38' />
-
+                <img
+                    id="certificateImage"
+                    src={certificate}
+                    alt="Certificate"
+                    className='h-28 w-38 cursor-pointer'
+                    onClick={openModal}
+                />
             </div>
-          
 
             <div className={`fixed bottom-32 z-10 sm:bottom-28 right-8 w-1/2 sm:w-1/4 md:w-1/4 bg-white shadow-lg p-3 ${welcomeopen ? 'block' : 'hidden'}`}>
                 <div className='flex justify-center items-center'>
@@ -169,31 +173,21 @@ const Chatboot = () => {
                             className="w-full h-full object-cover"
                         />
                     </div>
-                    {/* Close button in the top right corner */}
-
-
-                    <button className="bg-red-400 hover:bg-red-500 rounded-full text-gray-200 absolute top-1 right-4 text-sm px-2 py-1" onClick={closeWelcomeBox} >
+                    <button className="bg-red-400 hover:bg-red-500 rounded-full text-gray-200 absolute top-1 right-4 text-sm px-2 py-1" onClick={closeWelcomeBox}>
                         X
                     </button>
-
-
                 </div>
-                {/* Text centered */}
-                <p className=" text-xs mt-2 pb-2 font-bold">Hi I'm Robo Recruiter How may I Help You Today?</p>
+                <p className="text-xs mt-2 pb-2 font-bold">Hi I'm Robo Recruiter How may I Help You Today?</p>
             </div>
-           
-
 
             <div className="fixed bottom-12 sm:bottom-8 right-8 z-10">
-
                 <div className="chat-icon w-16 float-right cursor-pointer" onClick={toggleChatbox}>
-                    
                     {!isOpen && <img src={chatboat} className="w-14" />}
                 </div>
                 {isOpen && (
                     <div className="chatbox bg-white shadow-lg shadow-gray-400 rounded-lg p-4 w-72">
                         <div className="chatbox-header flex justify-between items-center border-b-2 border-gray-200 pb-2 mb-2">
-                            <span className="text-lg font-bold ">Welcome</span>
+                            <span className="text-lg font-bold">Welcome</span>
                             <button className="text-red-500 hover:text-red-700" onClick={closeChatbox}>
                                 Close
                             </button>
@@ -208,7 +202,6 @@ const Chatboot = () => {
                                     key={index}
                                     className={`chat-message ${message.sender === 'user' ? 'text-right mb-2 text-xs' : 'text-left mb-2 text-xs'}`}
                                 >
-                                    {/* Apply bold styling to questions */}
                                     {message.sender === 'chatbot' && questions.includes(message.text) ? (
                                         <span className="font-bold italic text-blue-950">{message.text}</span>
                                     ) : (
@@ -237,8 +230,20 @@ const Chatboot = () => {
                     </div>
                 )}
             </div>
+
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ">
+                    <div className="bg-gray-200 p-6 rounded-md w-full max-w-lg mx-4 transform transition-transform duration-500">
+                        <svg onClick={closeModal} class="h-6 w-6 float-right -mt-5 mb-2 -mr-4 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        <img src={certificate} alt="Certificate" className="max-w-full max-h-full" />
+
+                    </div>
+                </div>
+            )}
         </div>
-    )
+    );
 }
 
-export default Chatboot
+export default Chatboot;
