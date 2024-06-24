@@ -75,6 +75,10 @@ const Prompt = () => {
     };
 
     const handleSearch = async () => {
+        if (phone.length < 10) {
+            setError('Invalid phone number. Please enter at least 10 digits.');
+            return;
+        }
         try {
             setShowLoader2(true);
             const response = await axios.get(
@@ -187,7 +191,7 @@ const Prompt = () => {
             ) : (
                 profile && (
                     <div className="px-4 md:px-40 py-4">
-                        <h2 className="text-2xl font-bold mb-4 text-center">SuitableJobs</h2>
+                        <h2 className="text-2xl font-bold mb-4 text-center">Recommended Jobs</h2>
 
                         <div className="relative overflow-x-auto">
                             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">

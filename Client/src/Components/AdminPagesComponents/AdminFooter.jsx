@@ -14,7 +14,7 @@ const AdminFooter = () => {
                                     <img src={Logo} alt="" />
                                 </div>
 
-                                <p className="text-gray-500 sm:pr-8">Empowering Success, Enriching Lives. Your journey starts here with <b>Diamond Ore consolting Pvt Ltd.</b>".</p>
+                                <p className="text-gray-500 sm:pr-8">Empowering Success, Enriching Lives. Your journey starts here with <b>Diamond Ore Consulting Pvt Ltd,</b> your trusted placement consulting company.</p>
                             </div>
 
                             <div>
