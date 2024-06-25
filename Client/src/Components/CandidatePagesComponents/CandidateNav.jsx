@@ -148,6 +148,12 @@ const CandidateNav = () => {
                 >
                   Applied Jobs
                 </Link>
+                <Link
+                  to={'/portfolio'}
+                  className="text-md font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
+                >
+                  Create Portfolio
+                </Link>
                 <a href="https://referbiz.in/" target="_blank">
                   Refer & Earn
                 </a>
@@ -250,6 +256,16 @@ const CandidateNav = () => {
                 Applied jobs
               </li>
             </Link>
+
+            <Link to={"/portfolio"}>
+              <li
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-24 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+              >
+                Create Portfolio
+              </li>
+            </Link>
+
             <a href="https://referbiz.in/" target="_blank">
               <li
                 className={`${menuOpen ? "block" : "hidden"

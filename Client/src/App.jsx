@@ -51,6 +51,8 @@ import Adminforgotpassword from "./Pages/AdminPage/Adminforgotpassword";
 import ErrorPage from './Pages/HomePage/ErrorPage'
 import FreeConsultation from "./Pages/HomePage/FreeConsultation";
 import Prompt from "./Pages/AdminPage/Prompt";
+import Portfolio from "./Pages/CandidatePage/CandidatePortfolioPage/Portfolio";
+import Portfoliowebste from "./Pages/CandidatePage/CandidatePortfolioPage/Portfoliowebste";
 
 function App() {
   let [loading, setLoading] = useState(true);
@@ -114,6 +116,8 @@ function App() {
             <Route path="/all-banca-jobs" element={<AllBancaJobs />} />
             <Route path="/all-other-jobs" element={<AllOtherJobs />} />
             <Route path='/edit/profile-page' element={<CandidateEditprofile/>}/>
+            <Route path="/portfolio" element={<Portfolio/>}/>
+            <Route path="/my-portfolio" element={<Portfoliowebste/>}/>
             <Route path='/admin/edit-profile'element={<AdminEditprofile/>} />
             <Route path="/admin-signup" element={<AdminSignup />} />
             <Route path="/admin-login" element={<AdminLogin />} />

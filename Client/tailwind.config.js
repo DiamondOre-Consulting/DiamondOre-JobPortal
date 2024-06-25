@@ -12,6 +12,10 @@ export default {
       maxWidth: {
         'xxs': '412px',
       },
+      colors: {
+        'bgcolor': '#D7CCC1',
+        'profilecolor' : '#F4ECE6'
+      },
     },
   },
   plugins: [],
