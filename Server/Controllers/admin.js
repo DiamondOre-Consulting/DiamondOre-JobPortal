@@ -1694,7 +1694,7 @@ router.get('/findJobs/:phone', async (req, res) => {
       Channel: candidate.currentChannel,
       MaxSalary: { 
         $gt: candidate.currentCTC,
-        $lte: candidate.currentCTC * 1.30 // Not more than 30% of current CTC
+        $lte: candidate.currentCTC * 1.50 // Not more than 50% of current CTC
       }
     });
     res.json(suitableJobs);
