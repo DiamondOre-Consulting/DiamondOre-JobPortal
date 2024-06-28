@@ -27,7 +27,8 @@ const HeroNav = () => {
 
     <div>
       {showModal && <PopUpBox closeModal={closeModal} setShowModal={setShowModal} />}
-      <section className="overflow-hidden flex items-center h-screen bg-cover bg-center" style={{ backgroundImage: 'url(https://s3.tebi.io/generalpics/DOC-HomeGIF.gif)' }}>
+      <section className="relative overflow-hidden flex items-center h-screen bg-cover bg-center" style={{ backgroundImage: 'url(https://s3.tebi.io/generalpics/DOC-HomeGIF.gif)' }}>
+        <div className="absolute inset-0 bg-black opacity-40"></div>
         <div className="p-8 md:p-12 lg:px-16 lg:py-40 relative z-10 flex items-center justify-center sm:justify-start">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

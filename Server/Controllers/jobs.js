@@ -55,7 +55,7 @@ const addedJobsMailToAllTheCandidates = async (candidateEmail, candidateName) =>
       <p>Dear ${candidateName},</p>
       <p>We are thrilled to announce that a new job opportunity has just been added to our platform at Diamond Ore Pvt Ltd! We believe that these jobs could be a perfect fit for with your skills and experience.</p>
       <p>Best regards</p>
-      <a href="https://diamond-ore-job-portal.vercel.app/" style="color:blue;">Diamond Ore pvt.Ltd</p>
+      <a href="https://www.diamondore.in/" style="color:blue;">Diamond Ore pvt.Ltd</p>
     `,
     };
 

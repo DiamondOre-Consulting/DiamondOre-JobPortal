@@ -171,10 +171,7 @@ const Prompt = () => {
                         type="button"
                         onClick={handleSearch}
                         className="absolute inline-flex items-center h-10 px-4 py-2 text-sm text-white transition duration-150 ease-in-out rounded-full outline-none right-3 top-3 bg-blue-950 sm:px-6 sm:text-base sm:font-medium hover:bg-blue-950 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-950"
-                    >
-                        <svg className="-ml-0.5 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16l4-4 4 4m0 0l-4-4m4 4H4" />
-                        </svg>
+                    > 
                         Search
                     </button>
                 </div>
