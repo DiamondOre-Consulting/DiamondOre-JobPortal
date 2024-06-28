@@ -41,17 +41,17 @@ const HeroNav = () => {
                 Seize the Job You Deserve,<br />Right Here!
               </h2>
 
-              <p className="text-sm md:mt-4 mt-4">
+              <p className="text-md md:mt-4 mt-4">
               Explore Endless Opportunities with <span className="font-bold">Diamond Ore Consulting,</span> <br></br> your <span className="font-bold ">placement consulting company</span> and Gateway to Career Success. Discover, Connect, Excel.<br />Choose us, Choose Your Future.
               </p>
 
               <div className="mt-4 md:mt-8">
                 <div className="flex items-center">
                   <Link
-                    to={'/login'}
+                    to={'/all-jobs'}
                     className="inline-block rounded bg-blue-900 px-4 md:px-12 py-3 text-sm font-medium text-white transition hover:bg-blue-950 focus:outline-none focus:ring focus:ring-yellow-400"
                   >
-                    Get Started Today
+                    Find Current Job Openings
                   </Link>
                   <Link
                     to={'/get-free-consultation'}
