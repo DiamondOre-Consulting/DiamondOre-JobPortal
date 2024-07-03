@@ -26,11 +26,12 @@ import path from "path";
 import fs from "fs";
 import axios from "axios";
 import node_xj from "xls-to-json";
-import { fileURLToPath } from 'url';
-import xlsx from 'xlsx';
-import readXlsxFile from "read-excel-file/node"
+import { fileURLToPath } from "url";
+import xlsx from "xlsx";
+import readXlsxFile from "read-excel-file/node";
 import DSR from "../Models/DSR.js";
 import JobsTesting from "../Models/JobsTesting.js";
+import RecruitersAndKAMs from "../Models/RecruitersAndKAMs.js";
 
 dotenv.config();
 
@@ -329,17 +330,16 @@ router.put("/remove-job/:id", AdminAuthenticateToken, async (req, res) => {
     const job = await Jobs.findByIdAndUpdate(
       { _id: id },
       {
-        $set: { JobStatus: false }
+        $set: { JobStatus: false },
       }
     );
 
-    res.status(201).json({ message: "Job has been removed from list!!!" })
-
+    res.status(201).json({ message: "Job has been removed from list!!!" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Something went wrong!!!" });
   }
-})
+});
 
 // FETCH POSITIONS WITH HIGH NUMMBER OF APPLICANTS
 router.get("/jobs-high", async (req, res) => {
@@ -527,10 +527,14 @@ router.put(
       );
 
       console.log(cvShortlistedJob);
-      const CandidateUser = await Candidates.findById({ _id: id1 })
+      const CandidateUser = await Candidates.findById({ _id: id1 });
       // cv shorlisted confirmation mail
 
-      const CvShortlistedSucessfully = async (CandidateUser, cvShortlistedJob, user) => {
+      const CvShortlistedSucessfully = async (
+        CandidateUser,
+        cvShortlistedJob,
+        user
+      ) => {
         try {
           const transporter = nodemailer.createTransport({
             service: "gmail",
@@ -560,8 +564,8 @@ router.put(
           console.error("Error sending Mail:", error);
           throw error;
         }
-      }
-      await CvShortlistedSucessfully(CandidateUser, cvShortlistedJob, user)
+      };
+      await CvShortlistedSucessfully(CandidateUser, cvShortlistedJob, user);
 
       return res
         .status(201)
@@ -605,11 +609,14 @@ router.put(
         }
       );
 
-
-      const CandidateUser = await Candidates.findById({ _id: id1 })
+      const CandidateUser = await Candidates.findById({ _id: id1 });
 
       // CV Screening mail
-      const CvScreeningSucessfully = async (CandidateUser, screeningJob, user) => {
+      const CvScreeningSucessfully = async (
+        CandidateUser,
+        screeningJob,
+        user
+      ) => {
         try {
           const transporter = nodemailer.createTransport({
             service: "gmail",
@@ -640,8 +647,8 @@ router.put(
           console.error("Error sending Mail:", error);
           throw error;
         }
-      }
-      await CvScreeningSucessfully(CandidateUser, screeningJob, user)
+      };
+      await CvScreeningSucessfully(CandidateUser, screeningJob, user);
       return res
         .status(201)
         .json({ message: "Screening status updated sucessfully!!!" });
@@ -689,10 +696,14 @@ router.put(
         }
       );
 
-      const CandidateUser = await Candidates.findById({ _id: id1 })
+      const CandidateUser = await Candidates.findById({ _id: id1 });
 
       // Interview Shedule
-      const InterviewScheduledSucessfully = async (CandidateUser, interviewScheduledJob, user) => {
+      const InterviewScheduledSucessfully = async (
+        CandidateUser,
+        interviewScheduledJob,
+        user
+      ) => {
         try {
           const transporter = nodemailer.createTransport({
             service: "gmail",
@@ -721,8 +732,12 @@ router.put(
           console.error("Error sending Mail:", error);
           throw error;
         }
-      }
-      await InterviewScheduledSucessfully(CandidateUser, interviewScheduledJob, user)
+      };
+      await InterviewScheduledSucessfully(
+        CandidateUser,
+        interviewScheduledJob,
+        user
+      );
       return res
         .status(201)
         .json({ message: "Interview scheduled status updated sucessfully!!!" });
@@ -820,7 +835,7 @@ router.put(
         }
       );
 
-      const CandidateUser = await Candidates.findById({ _id: id1 })
+      const CandidateUser = await Candidates.findById({ _id: id1 });
       // Shrtlisted for job mail
 
       const shortlistedforjob = async (CandidateUser, shortlistedJob, user) => {
@@ -854,8 +869,8 @@ router.put(
           console.error("Error sending Mail:", error);
           throw error;
         }
-      }
-      await shortlistedforjob(CandidateUser, shortlistedJob, user)
+      };
+      await shortlistedforjob(CandidateUser, shortlistedJob, user);
 
       return res
         .status(201)
@@ -908,7 +923,7 @@ router.put(
         }
       );
 
-      const CandidateUser = await Candidates.findById({ _id: id1 })
+      const CandidateUser = await Candidates.findById({ _id: id1 });
       // Shrtlisted for job mail
 
       const Joiningstatusmail = async (CandidateUser, JoinedJob, user) => {
@@ -924,7 +939,8 @@ router.put(
           const mailOptions = {
             from: "Diamondore.in <harshkr2709@gmail.com>",
             to: `Recipient <${CandidateUser.email}>`,
-            subject: "Congratulations on Successfully Joining Your New Company!",
+            subject:
+              "Congratulations on Successfully Joining Your New Company!",
             html: `
              <p style="color:green; text-align:center;">Congratulations!</p>
              <p>Dear ${CandidateUser?.name},</p>
@@ -946,8 +962,8 @@ router.put(
           console.error("Error sending Mail:", error);
           throw error;
         }
-      }
-      await Joiningstatusmail(CandidateUser, JoinedJob, user)
+      };
+      await Joiningstatusmail(CandidateUser, JoinedJob, user);
 
       return res
         .status(201)
@@ -1062,16 +1078,14 @@ router.get("/all-employees/:id", AdminAuthenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const { email } = req.user;
-    const user = await Admin.findOne({ email })
+    const user = await Admin.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: 'user not Found' })
+      return res.status(404).json({ message: "user not Found" });
     }
 
     const oneEmployee = await Employees.findById({ _id: id }, { password: 0 });
     console.log(oneEmployee);
     return res.status(201).json(oneEmployee);
-
-
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Something went wrong!!!" });
@@ -1087,9 +1101,15 @@ router.post("/add-leave-report/:id", async (req, res) => {
       req.body;
 
     // Find the existing report for the given month and year
-    const reportExists = await LeaveReport.findOne({ employeeId: id, month: month, year: year });
+    const reportExists = await LeaveReport.findOne({
+      employeeId: id,
+      month: month,
+      year: year,
+    });
     if (reportExists) {
-      return res.status(409).json({ message: "This month's or year's report already exists" });
+      return res
+        .status(409)
+        .json({ message: "This month's or year's report already exists" });
     }
 
     const currentReport = await LeaveReport.findOne({ employeeId: id });
@@ -1106,8 +1126,8 @@ router.post("/add-leave-report/:id", async (req, res) => {
           lateDays,
           halfDays,
           adjustedLeaves,
-          totalLeaves: currentLeaves - adjustedLeaves + 16
-        })
+          totalLeaves: currentLeaves - adjustedLeaves + 16,
+        });
       } else {
         newReport = new LeaveReport({
           employeeId: id,
@@ -1117,8 +1137,8 @@ router.post("/add-leave-report/:id", async (req, res) => {
           lateDays,
           halfDays,
           adjustedLeaves,
-          totalLeaves: currentLeaves - adjustedLeaves
-        })
+          totalLeaves: currentLeaves - adjustedLeaves,
+        });
       }
       await newReport.save();
     } else {
@@ -1130,8 +1150,8 @@ router.post("/add-leave-report/:id", async (req, res) => {
         lateDays,
         halfDays,
         adjustedLeaves,
-        totalLeaves: 16 - adjustedLeaves
-      })
+        totalLeaves: 16 - adjustedLeaves,
+      });
 
       await newReport.save();
     }
@@ -1151,9 +1171,15 @@ router.post("/add-performance-report/:id", async (req, res) => {
     const { id } = req.params;
     const { month, year, multipleOf4x, monthlyIncentive, kpiScore } = req.body;
 
-    const reportExists = await PerformanceReport.findOne({ employeeId: id, month: month, year: year });
+    const reportExists = await PerformanceReport.findOne({
+      employeeId: id,
+      month: month,
+      year: year,
+    });
     if (reportExists) {
-      return res.status(409).json({ message: "This month's or year's report already exists" });
+      return res
+        .status(409)
+        .json({ message: "This month's or year's report already exists" });
     }
 
     const currentReport = await PerformanceReport.findOne({ employeeId: id });
@@ -1168,8 +1194,8 @@ router.post("/add-performance-report/:id", async (req, res) => {
           year,
           multipleOf4x,
           monthlyIncentive,
-          kpiScore
-        })
+          kpiScore,
+        });
       } else {
         newReport = new PerformanceReport({
           employeeId: id,
@@ -1177,8 +1203,8 @@ router.post("/add-performance-report/:id", async (req, res) => {
           year,
           multipleOf4x,
           monthlyIncentive,
-          kpiScore
-        })
+          kpiScore,
+        });
       }
       await newReport.save();
     } else {
@@ -1188,19 +1214,20 @@ router.post("/add-performance-report/:id", async (req, res) => {
         year,
         multipleOf4x,
         monthlyIncentive,
-        kpiScore
-      })
+        kpiScore,
+      });
 
       await newReport.save();
     }
 
-    res.status(200).json({ message: "Performance report submitted", newReport })
-
+    res
+      .status(200)
+      .json({ message: "Performance report submitted", newReport });
   } catch (error) {
     console.log(error, "Something went wrong!!!");
     res.status(500).json("Something went wrong!!!", error);
   }
-})
+});
 
 // GET LEAVE REPORT OF AN EMPLOYEE
 router.get("/leave-report/:id", AdminAuthenticateToken, async (req, res) => {
@@ -1228,31 +1255,35 @@ router.get("/leave-report/:id", AdminAuthenticateToken, async (req, res) => {
 });
 
 // GET PERFORMANCE REPORT OF AN EMPLOYEE
-router.get("/performance-report/:id", AdminAuthenticateToken, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { email } = req.user;
+router.get(
+  "/performance-report/:id",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { email } = req.user;
 
-    // Find the user in the database
-    const user = await Admin.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      // Find the user in the database
+      const user = await Admin.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const latestData = await PerformanceReport.find({ employeeId: id });
+
+      if (!latestData) {
+        return res
+          .status(404)
+          .json({ message: "No Performance Report data found" });
+      }
+
+      res.status(200).json(latestData);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
     }
-
-    const latestData = await PerformanceReport.find({ employeeId: id });
-
-    if (!latestData) {
-      return res
-        .status(404)
-        .json({ message: "No Performance Report data found" });
-    }
-
-    res.status(200).json(latestData);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
   }
-})
+);
 
 // CHATBOT MESSAGE RECIEVE
 router.post("/send-chatbot", async (req, res) => {
@@ -1277,8 +1308,8 @@ router.post("/send-chatbot", async (req, res) => {
       phone: userPhone,
       preferredCity: userPreferredCity,
       preferredChannel: userPreferredChannel,
-      currentCTC: userCurrentCTC
-    })
+      currentCTC: userCurrentCTC,
+    });
 
     await newChatBotMsg.save();
 
@@ -1299,7 +1330,9 @@ router.post("/send-chatbot", async (req, res) => {
     const info = await transporter.sendMail(mailOptions);
     console.log("Email sent: " + info.response);
 
-    res.status(201).json({ message: "ROBO_RECRUITER Sent message successfully!!!" });
+    res
+      .status(201)
+      .json({ message: "ROBO_RECRUITER Sent message successfully!!!" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "An error occurred" });
@@ -1327,8 +1360,8 @@ router.post("/client-form", async (req, res) => {
       email: userEmail,
       phone: userPhone,
       designation: userDesignation,
-      company: userCompany
-    })
+      company: userCompany,
+    });
 
     await newClientMsg.save();
 
@@ -1355,7 +1388,7 @@ router.post("/client-form", async (req, res) => {
   }
 });
 
-// FORGOT PASSWORD 
+// FORGOT PASSWORD
 // Send OTP via email using Nodemailer For Forgot Password
 const sendOTPByEmailForgotPassword = async (email, otp) => {
   try {
@@ -1449,50 +1482,50 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const credentialsResumes = {
   accessKeyId: "rjRpgCugr4BV9iTw",
-  secretAccessKey: "KBhGM26n6kLYZnigoZk6QJnB3GTqHYvMEQ1ihuZs"
+  secretAccessKey: "KBhGM26n6kLYZnigoZk6QJnB3GTqHYvMEQ1ihuZs",
 };
 
 const s3ClientResumes = new S3Client({
   endpoint: "https://s3.tebi.io",
   credentials: credentialsResumes,
-  region: "global"
+  region: "global",
 });
 
-router.post('/upload-dsr', async (req, res) => {
+router.post("/upload-dsr", async (req, res) => {
   try {
     const file = req.files && req.files.myFile; // Change 'myFile' to match the key name in Postman
 
     if (!file) {
-      return res.status(400).send('No file uploaded');
+      return res.status(400).send("No file uploaded");
     }
 
     // Generate a unique identifier
     const uniqueIdentifier = uuidv4();
 
     // Get the file extension from the original file name
-    const fileExtension = file.name.split('.').pop();
+    const fileExtension = file.name.split(".").pop();
 
     // Create a unique filename by appending the unique identifier to the original filename
     const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
 
     // Convert file to base64
-    const base64Data = file.data.toString('base64');
+    const base64Data = file.data.toString("base64");
 
     // Create a buffer from the base64 data
-    const fileBuffer = Buffer.from(base64Data, 'base64');
+    const fileBuffer = Buffer.from(base64Data, "base64");
 
     const uploadData = await s3ClientResumes.send(
       new PutObjectCommand({
         Bucket: "resumes",
         Key: uniqueFileName, // Use the unique filename for the S3 object key
-        Body: fileBuffer // Provide the file buffer as the Body
+        Body: fileBuffer, // Provide the file buffer as the Body
       })
     );
 
     // Generate a public URL for the uploaded file
     const getObjectCommand = new GetObjectCommand({
       Bucket: "resumes",
-      Key: uniqueFileName
+      Key: uniqueFileName,
     });
 
     const signedUrl = await getSignedUrl(s3ClientResumes, getObjectCommand); // Generate URL valid for 1 hour
@@ -1508,7 +1541,7 @@ router.post('/upload-dsr', async (req, res) => {
     console.log("File uploaded. URL:", baseUrl);
   } catch (error) {
     console.error("Error uploading file:", error);
-    return res.status(500).send('Error uploading file');
+    return res.status(500).send("Error uploading file");
   }
 });
 
@@ -1517,28 +1550,27 @@ const downloadFile = async (url, outputFilePath) => {
 
   const response = await axios({
     url: url,
-    method: 'GET',
-    responseType: 'stream',
+    method: "GET",
+    responseType: "stream",
   });
 
   response.data.pipe(writer);
 
   return new Promise((resolve, reject) => {
-    writer.on('finish', resolve);
-    writer.on('error', reject);
+    writer.on("finish", resolve);
+    writer.on("error", reject);
   });
 };
 
 router.post("/upload-dsr-excel", async (req, res) => {
   const { url } = req.body;
-  const outputFilePath = path.join(__dirname, 'dsrFile.xlsx');
+  const outputFilePath = path.join(__dirname, "dsrFile.xlsx");
   try {
     console.log(url);
     await downloadFile(url, outputFilePath);
     node_xj(
       {
-        input:
-          outputFilePath,
+        input: outputFilePath,
         output: null,
         lowerCaseHeaders: true,
         allowEmptyKey: false,
@@ -1555,9 +1587,7 @@ router.post("/upload-dsr-excel", async (req, res) => {
         const dsrAdd = await DSR.insertMany(result);
         console.log(dsrAdd);
         if (dsrAdd) {
-          return res
-            .status(200)
-            .json({ message: "DSR Added successfully!!!" });
+          return res.status(200).json({ message: "DSR Added successfully!!!" });
         } else {
           return res.status(500).json({ message: "Something went wrong!!" });
         }
@@ -1584,7 +1614,6 @@ router.post("/upload-dsr-excel", async (req, res) => {
 //     res.status(500).send('Error uploading Open Positions data');
 //   }
 // });
-
 
 // router.post('/upload-test-jobs', async (req, res) => {
 //   try {
@@ -1682,25 +1711,93 @@ router.post("/upload-dsr-excel", async (req, res) => {
 //   }
 // });
 
-
-router.get('/findJobs/:phone', async (req, res) => {
+router.get("/findJobs/:phone", async (req, res) => {
   try {
     const candidate = await DSR.findOne({ phone: req.params.phone });
     if (!candidate) {
-      return res.status(404).send('Candidate not found');
+      return res.status(404).send("Candidate not found");
     }
     const suitableJobs = await Jobs.find({
       City: candidate.currentLocation,
       Channel: candidate.currentChannel,
-      MaxSalary: { 
+      MaxSalary: {
         $gt: candidate.currentCTC,
-        $lte: candidate.currentCTC * 1.50 // Not more than 50% of current CTC
-      }
+        $lte: candidate.currentCTC * 1.5, // Not more than 50% of current CTC
+      },
     });
-    res.json(suitableJobs);
+    res.status(201).json(suitableJobs);
   } catch (error) {
     res.status(500).send(error.message);
   }
 });
+
+// BULK
+router.get("/find-bulk-jobs", async (req, res) => {
+  try {
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, "0");
+    const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const year = String(now.getFullYear()).slice(-2); // Get last two digits of the year
+
+    const formattedDate = `${day}/${month}/${year}`;
+    console.log(formattedDate);
+    const candidates = await DSR.find({currentDate: formattedDate});
+    if (!candidates.length) {
+      return res.status(404).send("No candidates found");
+    }
+
+    const recommendations = [];
+
+    for (const candidate of candidates) {
+      const suitableJobs = await Jobs.find({
+        City: candidate.currentLocation,
+        Channel: candidate.currentChannel,
+        MaxSalary: {
+          $gt: candidate.currentCTC,
+          $lte: candidate.currentCTC * 1.5, // Not more than 50% of current CTC
+        },
+      });
+
+      recommendations.push({
+        candidate: candidate,
+        jobs: suitableJobs,
+      });
+    }
+
+    res.status(200).json(recommendations);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+// REGISTER RECRUITER AND KAM
+router.post("/register-recruiter-kam", async (req, res) => {
+  try {
+    const {name, email} = req.body;
+
+    if (!name || !email) {
+      return res.status(402).json({message: "Both name and email are required!!!"})
+    }
+
+    const findEmp = await RecruitersAndKAMs.exists({email});
+    if(findEmp) {
+      return res.status(401).json({message: "This Recruiter or KAM already has been registered!!!"});
+    }
+
+    const newEmp = new RecruitersAndKAMs({
+      name,
+      email
+    })
+
+    await newEmp.save();
+
+    if (newEmp) {
+      return res.status(201).json({message: "New Recruiter or KAM got resgitered!!!"});
+    }
+  } catch(error) {
+    console.log(error.message);
+    res.status(500).json(error.message)
+  }
+})
 
 export default router;

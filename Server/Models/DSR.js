@@ -28,6 +28,18 @@ const dsrSchema = new mongoose.Schema({
   currentLocation: {
     type: String,
     required: true
+  },
+  recruiterName: {
+    type: String,
+    required: true
+  },
+  kamName: {
+    type: String,
+    required: true
+  },
+  currentDate: {
+    type: String,
+    required: true
   }
 });
 
