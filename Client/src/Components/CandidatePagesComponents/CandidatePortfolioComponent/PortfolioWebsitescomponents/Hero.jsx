@@ -1,6 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import gsap from 'gsap';
 
 const Hero = () => {
+
+    useEffect(() => {
+        gsap.to('.hellotext', { opacity: 1, y: 0 , duration: 1, delay: 0.5 });
+        // gsap.to('.abouttext', { opacity: 1, y: 0, duration: 1, delay: 0.5, stagger:0.25 });
+    }, []);
+
+
     return (
         <div className='flex justify-center items-center min-h-screen'>
             <div className='bg-profilecolor z-40 h-96 w-96 shadow-xl'>
@@ -8,13 +16,11 @@ const Hero = () => {
                     <img src="https://img.freepik.com/free-photo/portrait-smiling-successful-businesswoman-looking-into-camera-sitting-restaurant-business-lady-with-stylish-hairstyle-wears-elegant-suit-business-meeting-attractive-appearance_8353-12611.jpg" className='w-44 h-44 rounded-full ' alt="" />
                     <div className=' text-center'>
                         <div className='leading-5 mt-2 mb-6'>
-                            <span className='font-extrabold'>Maya </span><br></br>
-                            <span className='font-extrabold'>Nelson</span>
+                            <span className='font-extrabold myfont'>Maya </span><br></br>
+                            <span className='font-extrabold myfont'>Nelson</span>
                         </div>
                         <div className='bg-blue-500 w-28 h-0.5 mb-4 rounded-md mx-auto'></div>
                         <span className='uppercase '>Project Manager</span>
-
-
                     </div>
                     <div className='w-full bg-white py-4 px-4 mt-6 flex justify-center'>
                         <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0 0 32 32" className='mr-2'>
@@ -33,20 +39,17 @@ const Hero = () => {
                 </div>
             </div>
 
-
             {/* right side  */}
             <div className='bg-white z-40 h-96 w-80'>
                 <div className='flex flex-col px-4 py-4'>
-                    <h1 className='font-extrabold text-7xl'>Hello</h1>
+                    <h1 className='font-extrabold text-7xl myfont py-1 hellotext'>Hello</h1>
                     <span className='mt-6'> Here's who i am & what i do</span>
                     
                     <div className='flex mt-6'>
                         <button className='rounded-full border border-1 border-black px-6 mr-6'>Resume</button>
                         <button className='rounded-full border border-1 border-black px-2 mr-6'>Contact Us</button>
                     </div>
-
                     <p className='mt-10'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore adipisci quam porro numquam. Magni est consequatur optio similique, possimus nulla, odio aperiam tempora aut aliquid, tempore hic. Natus, inventore animi.</p>
-
                 </div>
             </div>
         </div>
