@@ -114,7 +114,7 @@ const Prompt = () => {
         try{
 
             const response = await axios.get(
-                `https://api.diamondore.in/api/admin-confi/findJobs/${phone}`
+                `https://api.diamondore.in/api/admin-confi/find-bulk-jobs`
             );
             if(response.status === 200){
                 alert("email has been Sent successfully")
