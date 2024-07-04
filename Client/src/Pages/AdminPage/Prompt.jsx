@@ -86,12 +86,13 @@ const Prompt = () => {
             );
             if (response.status === 201) {
                 if (response.data.length === 0) {
-                    setError('Suitable job not found !!');
-                    setProfile(null);
-                }
-                else {
                     setProfile(response.data);
                     setError('');
+                }
+                else {
+                    setError('Suitable job not found !!');
+                    setProfile(null);
+                  
                 }
             } else {
                 setError('No data found');
