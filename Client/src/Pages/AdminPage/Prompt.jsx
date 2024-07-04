@@ -84,16 +84,9 @@ const Prompt = () => {
             const response = await axios.get(
                 `https://api.diamondore.in/api/admin-confi/findJobs/${phone}`
             );
-            if (response.status === 201) {
-                if (response.data.length === 0) {
+            if (response.status === 201) {      
                     setProfile(response.data);
                     setError('');
-                }
-                else {
-                    setError('Suitable job not found !!');
-                    setProfile(null);
-                  
-                }
             } else {
                 setError('No data found');
                 setProfile(null);
