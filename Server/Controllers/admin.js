@@ -1601,6 +1601,7 @@ router.post("/upload-dsr-excel", async (req, res) => {
   }
 });
 
+
 // SEARCH JOBS 
 router.get("/findJobs/:phone", async (req, res) => {
   try {
@@ -1616,11 +1617,12 @@ router.get("/findJobs/:phone", async (req, res) => {
         $lte: candidate.currentCTC * 1.5, // Not more than 50% of current CTC
       },
     });
-    res.status(201).json(suitableJobs, candidate);
+    res.status(201).json({ suitableJobs, candidateName: candidate.candidateName });
   } catch (error) {
     res.status(500).send(error.message);
   }
-}); 
+});
+
 
 // BULK
 // Send OTP via email using Nodemailer
@@ -1634,14 +1636,46 @@ const sendJobsToRecByEmail = async (eMailIdRec, candidate, suitableJobs) => {
       },
     });
 
+    const jobRows = suitableJobs.map(job => `
+      <tr>
+        <td style="border: 1px solid #ddd; padding: 8px;">${job.Company}</td>
+        <td style="border: 1px solid #ddd; padding: 8px;">${job.JobTitle}</td>
+        <td style="border: 1px solid #ddd; padding: 8px;">${job.Industry}</td>
+        <td style="border: 1px solid #ddd; padding: 8px;">${job.Channel}</td>
+        <td style="border: 1px solid #ddd; padding: 8px;">${job.Zone}</td>
+        <td style="border: 1px solid #ddd; padding: 8px;">${job.City}</td>
+        <td style="border: 1px solid #ddd; padding: 8px;">${job.State}</td>
+      </tr>
+    `).join('');
+
+    const htmlContent = `
+      <h1 style="color: blue; text-align: center; font-size: 2rem">DiamondOre Consulting Pvt. Ltd.</h1>
+      <h3 style="color: black; font-size: 1.3rem; text-align: center;">Jobs for candidate: ${candidate.candidateName}</h3>
+      <table style="border-collapse: collapse; width: 100%;">
+        <thead>
+          <tr style="background-color: #f2f2f2;">
+            <th style="border: 1px solid #ddd; padding: 8px;">Company</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Job Title</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Industry</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Channel</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Zone</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">City</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">State</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${jobRows}
+        </tbody>
+      </table>
+    `;
+
     const mailOptions = {
       from: "Diamondore.in <harshkr2709@gmail.com>",
       to: `Recipient <${eMailIdRec}>`,
       subject: "Recommended Jobs",
       text: `Jobs for candidate: ${candidate.name}`,
-      html: `<h1 style="color: blue; text-align: center; font-size: 2rem">Diamond Consulting Pvt. Ltd.</h1> </br> <h3 style="color: black; font-size: 1.3rem; text-align: center;">Suitable Jobs are: ${suitableJobs}</h3>`,
+      html: htmlContent,
     };
-
     const info = await transporter.sendMail(mailOptions);
     console.log("Email sent: " + info.response);
 
@@ -1662,12 +1696,47 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
       },
     });
 
+
+    const jobRows = suitableJobs.map(job => `
+      <tr>
+        <td style="border: 1px solid #ddd; padding: 8px;">${job.Company}</td>
+        <td style="border: 1px solid #ddd; padding: 8px;">${job.JobTitle}</td>
+        <td style="border: 1px solid #ddd; padding: 8px;">${job.Industry}</td>
+        <td style="border: 1px solid #ddd; padding: 8px;">${job.Channel}</td>
+        <td style="border: 1px solid #ddd; padding: 8px;">${job.Zone}</td>
+        <td style="border: 1px solid #ddd; padding: 8px;">${job.City}</td>
+        <td style="border: 1px solid #ddd; padding: 8px;">${job.State}</td>
+      </tr>
+    `).join('');
+
+    const htmlContent = `
+      <h1 style="color: blue; text-align: center; font-size: 2rem">DiamondOre Consulting Pvt. Ltd.</h1>
+      <h3 style="color: black; font-size: 1.3rem; text-align: center;">Jobs for candidate: ${candidate.candidateName}</h3>
+      <table style="border-collapse: collapse; width: 100%;">
+        <thead>
+          <tr style="background-color: #f2f2f2;">
+            <th style="border: 1px solid #ddd; padding: 8px;">Company</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Job Title</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Industry</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Channel</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Zone</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">City</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">State</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${jobRows}
+        </tbody>
+      </table>
+    `;
+
+
     const mailOptions = {
       from: "Diamondore.in <harshkr2709@gmail.com>",
       to: `Recipient <${eMailIdKam}>`,
       subject: "Recommended Jobs",
-      text: `Jobs for candidate: ${candidate.name}`,
-      html: `<h1 style="color: blue; text-align: center; font-size: 2rem">Diamond Consulting Pvt. Ltd.</h1> </br> <h3 style="color: black; font-size: 1.3rem; text-align: center;">Suitable Jobs are: ${suitableJobs}</h3>`,
+      text: `Jobs for candidate: ${candidate.candidateName}`,
+      html: htmlContent,
     };
 
     const info = await transporter.sendMail(mailOptions);

@@ -8,7 +8,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   // const { decodedToken } = useJwt(localStorage.getItem("token"));
-  const { decodedToken } = useJwt(token || "No decoded Token Found yet"); 
+  const { decodedToken } = useJwt(token || "No decoded Token Found yet");
 
   const handleSignup = () => {
     if (token && decodedToken && decodedToken.exp * 1000 > Date.now()) {
@@ -58,6 +58,12 @@ const Navbar = () => {
                 className="text-lg font-semibold text-white transition duration-100  active:text-blue-900"
               >
                 Contact Us
+              </Link>
+              <Link to={'/search-job'}
+
+                className="text-lg font-semibold text-white transition duration-100  active:text-blue-900"
+              >
+                Search Job
               </Link>
             </nav>
 

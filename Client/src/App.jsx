@@ -53,6 +53,7 @@ import FreeConsultation from "./Pages/HomePage/FreeConsultation";
 import Prompt from "./Pages/AdminPage/Prompt";
 import Portfolio from "./Pages/CandidatePage/CandidatePortfolioPage/Portfolio";
 import Portfoliowebste from "./Pages/CandidatePage/CandidatePortfolioPage/Portfoliowebste";
+import SearchJob from "./Pages/HomePage/SearchJob";
 
 function App() {
   let [loading, setLoading] = useState(true);
@@ -95,6 +96,7 @@ function App() {
             <Route path="/about" element={<AboutUs/>}/>
             <Route path='/services' element={<Services/>}/>
             <Route path="/contact" element={<Contact/>}/>
+            <Route path='/search-job' element={<SearchJob/>}/>
             <Route path="/signup" element={<Signup/>} />
             <Route path="/login" element={<Login/>} />
             <Route path='/forgot-password' element={<ForgotPassword/>}/>
