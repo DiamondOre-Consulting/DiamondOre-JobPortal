@@ -141,6 +141,16 @@ const Navbar = () => {
                 Contact Us
               </li>
             </Link>
+
+            <Link to={"/search-job"}>
+              <li
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-32 py-3 text-white text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+              >
+                Search Job
+              </li>
+            </Link>
+
             <a href='#'>
               <li
                 onClick={handleSignup}

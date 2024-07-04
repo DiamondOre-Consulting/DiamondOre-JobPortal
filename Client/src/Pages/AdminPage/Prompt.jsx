@@ -108,13 +108,38 @@ const Prompt = () => {
         }
     };
     
+
+    const handlesendbulkjobs = async () =>{
+        e.preventDefault();
+        try{
+
+            const response = await axios.get(
+                `https://api.diamondore.in/api/admin-confi/findJobs/${phone}`
+            );
+            if(response.status === 200){
+                alert("email has been Sent successfully")
+            }
+
+        } catch(error){
+            console.log(error)
+            if (error.response) {
+                const status = error.response.status;
+                if (status === 404) {
+                   
+                    console.log("No Candidate Found");
+                }
+            }
+
+
+        }
+    }
       
 
     return (
         <>
             <AdminNav />
-
-            <h1 className="text-4xl font-bold text-center">Prompt</h1>
+            <button className= " bg-blue-900 px-6 py-2 text-gray-100 float-right mr-10" onClick={handlesendbulkjobs}>Send Bulk Jobs</button>
+            <h1 className="text-4xl ml-40 font-bold text-center">Prompt</h1>
             <div className="w-40 bg-blue-950 h-0.5 text-center mx-auto"></div>
 
             <div className="flex justify-center align-center items-center mt-10 px-4">
