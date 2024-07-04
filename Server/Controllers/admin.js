@@ -1601,116 +1601,7 @@ router.post("/upload-dsr-excel", async (req, res) => {
   }
 });
 
-// router.post('/uploadops', upload.single('file'), async (req, res) => {
-//   const file = req.file;
-//   const workbook = xlsx.readFile(file.path);
-//   const sheetName = workbook.SheetNames[0];
-//   const data = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
-
-//   try {
-//     await JobsTesting.insertMany(data);
-//     res.status(200).send('Open Positions data uploaded successfully');
-//   } catch (error) {
-//     res.status(500).send('Error uploading Open Positions data');
-//   }
-// });
-
-// router.post('/upload-test-jobs', async (req, res) => {
-//   try {
-//     const file = req.files && req.files.myFile; // Change 'myFile' to match the key name in Postman
-
-//     if (!file) {
-//       return res.status(400).send('No file uploaded');
-//     }
-
-//     // Generate a unique identifier
-//     const uniqueIdentifier = uuidv4();
-
-//     // Get the file extension from the original file name
-//     const fileExtension = file.name.split('.').pop();
-
-//     // Create a unique filename by appending the unique identifier to the original filename
-//     const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
-
-//     // Convert file to base64
-//     const base64Data = file.data.toString('base64');
-
-//     // Create a buffer from the base64 data
-//     const fileBuffer = Buffer.from(base64Data, 'base64');
-
-//     const uploadData = await s3ClientResumes.send(
-//       new PutObjectCommand({
-//         Bucket: "resumes",
-//         Key: uniqueFileName, // Use the unique filename for the S3 object key
-//         Body: fileBuffer // Provide the file buffer as the Body
-//       })
-//     );
-
-//     // Generate a public URL for the uploaded file
-//     const getObjectCommand = new GetObjectCommand({
-//       Bucket: "resumes",
-//       Key: uniqueFileName
-//     });
-
-//     const signedUrl = await getSignedUrl(s3ClientResumes, getObjectCommand); // Generate URL valid for 1 hour
-
-//     // Parse the signed URL to extract the base URL
-//     const parsedUrl = new URL(signedUrl);
-//     const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
-
-//     // Send the URL as a response
-//     res.status(200).send(baseUrl);
-
-//     // Log the URL in the console
-//     console.log("File uploaded. URL:", baseUrl);
-//   } catch (error) {
-//     console.error("Error uploading file:", error);
-//     return res.status(500).send('Error uploading file');
-//   }
-// });
-
-// router.post("/upload-test-jobs-excel", async (req, res) => {
-//   const { url } = req.body;
-//   const outputFilePath = path.join(__dirname, 'jobFile.xlsx');
-//   try {
-//     console.log(url);
-//     await downloadFile(url, outputFilePath);
-//     node_xj(
-//       {
-//         input:
-//           outputFilePath,
-//         output: null,
-//         lowerCaseHeaders: true,
-//         allowEmptyKey: false,
-//       },
-//       async (err, result) => {
-//         if (err) {
-//           return res
-//             .status(500)
-//             .json({ error: "Error converting Excel to JSON", err });
-//         }
-//         console.log(result);
-
-//         // Assuming the result is an array of job objects
-//         const jobsAdd = await JobsTesting.insertMany(result);
-//         console.log(jobsAdd);
-//         if (jobsAdd) {
-//           return res
-//             .status(200)
-//             .json({ message: "Jobs Added successfully!!!" });
-//         } else {
-//           return res.status(500).json({ message: "Something went wrong!!" });
-//         }
-//       }
-//     );
-//   } catch (err) {
-//     return res.status(400).json({ message: err.message });
-//   } finally {
-//     // Clean up: Delete the temporary file
-//     fs.unlinkSync(outputFilePath);
-//   }
-// });
-
+// SEARCH JOBS 
 router.get("/findJobs/:phone", async (req, res) => {
   try {
     const candidate = await DSR.findOne({ phone: req.params.phone });
@@ -1725,13 +1616,69 @@ router.get("/findJobs/:phone", async (req, res) => {
         $lte: candidate.currentCTC * 1.5, // Not more than 50% of current CTC
       },
     });
-    res.status(201).json(suitableJobs);
+    res.status(201).json(suitableJobs, candidate);
   } catch (error) {
     res.status(500).send(error.message);
   }
-});
+}); 
 
 // BULK
+// Send OTP via email using Nodemailer
+const sendJobsToRecByEmail = async (eMailIdRec, candidate, suitableJobs) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "harshkr2709@gmail.com",
+        pass: "frtohlwnukisvrzh",
+      },
+    });
+
+    const mailOptions = {
+      from: "Diamondore.in <harshkr2709@gmail.com>",
+      to: `Recipient <${eMailIdRec}>`,
+      subject: "Recommended Jobs",
+      text: `Jobs for candidate: ${candidate.name}`,
+      html: `<h1 style="color: blue; text-align: center; font-size: 2rem">Diamond Consulting Pvt. Ltd.</h1> </br> <h3 style="color: black; font-size: 1.3rem; text-align: center;">Suitable Jobs are: ${suitableJobs}</h3>`,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent: " + info.response);
+
+    // console.log(info);
+  } catch (error) {
+    console.error("Error sending OTP:", error);
+    throw error;
+  }
+};
+
+const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "harshkr2709@gmail.com",
+        pass: "frtohlwnukisvrzh",
+      },
+    });
+
+    const mailOptions = {
+      from: "Diamondore.in <harshkr2709@gmail.com>",
+      to: `Recipient <${eMailIdKam}>`,
+      subject: "Recommended Jobs",
+      text: `Jobs for candidate: ${candidate.name}`,
+      html: `<h1 style="color: blue; text-align: center; font-size: 2rem">Diamond Consulting Pvt. Ltd.</h1> </br> <h3 style="color: black; font-size: 1.3rem; text-align: center;">Suitable Jobs are: ${suitableJobs}</h3>`,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent: " + info.response);
+
+    // console.log(info);
+  } catch (error) {
+    console.error("Error sending OTP:", error);
+    throw error;
+  }
+};
 router.get("/find-bulk-jobs", async (req, res) => {
   try {
     const now = new Date();
@@ -1762,6 +1709,19 @@ router.get("/find-bulk-jobs", async (req, res) => {
         candidate: candidate,
         jobs: suitableJobs,
       });
+
+      if(suitableJobs) {
+        const findRec = await RecruitersAndKAMs.findOne({
+          name: candidate.recruiterName
+        });
+        const findKam = await RecruitersAndKAMs.findOne({
+          name: candidate.kamName
+        })
+        const eMailIdRec = findRec.email;
+        const eMailIdKam = findKam.email;
+        await sendJobsToRecByEmail(eMailIdRec, candidate, suitableJobs)
+        await sendJobsToKamByEmail(eMailIdKam, candidate, suitableJobs)
+      }
     }
 
     res.status(200).json(recommendations);
