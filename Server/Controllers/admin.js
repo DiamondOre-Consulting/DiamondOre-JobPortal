@@ -1710,7 +1710,7 @@ router.get("/find-bulk-jobs", async (req, res) => {
         jobs: suitableJobs,
       });
 
-      if(suitableJobs) {
+      if(suitableJobs.length > 0) {
         const findRec = await RecruitersAndKAMs.findOne({
           name: candidate.recruiterName
         });
