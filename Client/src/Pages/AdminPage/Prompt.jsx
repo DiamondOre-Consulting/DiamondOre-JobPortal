@@ -76,36 +76,38 @@ const Prompt = () => {
 
     const handleSearch = async () => {
         if (phone.length < 10) {
-          setError('Invalid phone number. Please enter at least 10 digits.');
-          return;
+            setError('Invalid phone number. Please enter at least 10 digits.');
+            return;
         }
         try {
-          setShowLoader2(true);
-          const response = await axios.get(
-            `https://api.diamondore.in/api/admin-confi/findJobs/${phone}`
-          );
-          if (response.status === 201) {
-            setProfile(response.data);
-            setError('');
-          } else {
-            setError('No data found');
-            setProfile(null);
-          }
-        } catch (error) {
-          console.error('Error searching for profile:', error);
-          setError(error.response?.data || 'An error occurred');
-          setProfile(null);
-          if (error.response) {
-            const status = error.response.status;
-            if (status === 404) {
-              setError('Suitable job not found !!');
-              console.log("Suitable job not found !!");
+            setShowLoader2(true);
+            const response = await axios.get(
+                `https://api.diamondore.in/api/admin-confi/findJobs/${phone}`
+            );
+            console.log('API Response:', response); // Log the response for debugging
+            if (response.status === 201) {
+                setProfile(response.data);
+                setError('');
+            } else {
+                setError('No data found');
+                setProfile(null);
             }
-          }
+        } catch (error) {
+            console.error('Error searching for profile:', error);
+            setError(error.response?.data || 'An error occurred');
+            setProfile(null);
+            if (error.response) {
+                const status = error.response.status;
+                if (status === 404) {
+                    setError('Suitable job not found !!');
+                    console.log("Suitable job not found !!");
+                }
+            }
         } finally {
-          setShowLoader2(false);
+            setShowLoader2(false);
         }
-      };
+    };
+    
       
 
     return (
