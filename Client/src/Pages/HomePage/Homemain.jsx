@@ -45,10 +45,10 @@ const Homemain = () => {
 
   const submitCallReq = async (e) => {
     e.preventDefault();
-    const payload = { name, phone };
+    // const payload = { name, phone };
 
     try {
-      const response = await axios.post('/api/candidates/request-call', payload, {
+      const response = await axios.post('http://localhost:5000/api/candidates/request-call', {name, phone}, {
         headers: {
           'Content-Type': 'application/json',
         },

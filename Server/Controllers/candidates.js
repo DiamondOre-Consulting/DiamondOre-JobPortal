@@ -1325,12 +1325,12 @@ router.post("/request-call", async (req, res) => {
 
     // Compose the email
     const mailOptions = {
-      from: "DOC_Labz <helpdesk2.rasonline@gmail.com>",
+      from: "Diamond Ore <helpdesk2.rasonline@gmail.com>",
       to: "helpdesk2.rasonline@gmail.com",
       subject: `CALL REQUEST FROM DOC: New Message Received from ${name}`,
       text: `A new message has been submitted by ${name}.`,
       html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${name}</h4> </br>
-                    <h4 style="font-size:1rem; display:flex; justify-content: center;">Phone No: ${userPhone}</h4> </br>`,
+                    <h4 style="font-size:1rem; display:flex; justify-content: center;">Phone No: ${phone}</h4> </br>`,
       cc: 'rahul@rasonline.in'
     };
 
