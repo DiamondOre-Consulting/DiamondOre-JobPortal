@@ -20,9 +20,9 @@ import CandidateContact from "../Models/CandidateContact.js";
 import PreferenceForm from "../Models/PreferenceForm.js";
 import RemovedCandidates from "../Models/RemovedCandidates.js";
 import fs from "fs";
-import { fileURLToPath } from 'url';
-import mammoth from "mammoth"
-import Docxtemplater from "docxtemplater"; 
+import { fileURLToPath } from "url";
+import mammoth from "mammoth";
+import Docxtemplater from "docxtemplater";
 import PizZip from "pizzip";
 import ResumeTemp from "../Models/ResumeTemp.js";
 
@@ -733,12 +733,11 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
           console.error("Error sending Mail :", error);
           throw error;
         }
-      }
-      
+      };
 
       // appliedjob by candidate mail to admin
-      const CandidateUser = await Candidates.findById({ _id: userId })
-      const CandidateAppliedJob = async (job,CandidateUser) => {
+      const CandidateUser = await Candidates.findById({ _id: userId });
+      const CandidateAppliedJob = async (job, CandidateUser) => {
         try {
           const transporter = nodemailer.createTransport({
             service: "gmail",
@@ -769,9 +768,9 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
           console.error("Error sending Mail to admin:", error);
           throw error;
         }
-      }
-      await jobAppliedSucessfully(email, job)
-      await CandidateAppliedJob(CandidateUser,job)
+      };
+      await jobAppliedSucessfully(email, job);
+      await CandidateAppliedJob(CandidateUser, job);
 
       res
         .status(201)
@@ -966,7 +965,6 @@ router.get("/get-pref-data", CandidateAuthenticateToken, async (req, res) => {
     const prefFormData = await PreferenceForm.findOne({ candidateId: userId });
 
     res.status(200).json(prefFormData);
-
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Something went wrong!!!" });
@@ -986,44 +984,44 @@ router.delete(
         return res.status(404).json({ message: "User not found" });
       }
 
-    const deletedUser = new RemovedCandidates({
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      password: user.password,
-      profilePic: user.profilePic,
-      resume: user.resume,
-      preferredFormStatus: user.preferredFormStatus,
-      allAppliedJobs: user.allAppliedJobs,
-      allShortlistedJobs: user.allShortlistedJobs,
-    });
+      const deletedUser = new RemovedCandidates({
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        password: user.password,
+        profilePic: user.profilePic,
+        resume: user.resume,
+        preferredFormStatus: user.preferredFormStatus,
+        allAppliedJobs: user.allAppliedJobs,
+        allShortlistedJobs: user.allShortlistedJobs,
+      });
 
       await deletedUser.save();
 
-    if (deletedUser) {
-      await Candidates.findByIdAndDelete({ _id: userId });
-    }
+      if (deletedUser) {
+        await Candidates.findByIdAndDelete({ _id: userId });
+      }
 
-    // mail when candidate delete account
-    const sendDeleteAccountEmail = async (deletedUser) => {
-      try {
-        const transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            user: "harshkr2709@gmail.com",
-            pass: "frtohlwnukisvrzh",
-          },
-        });
+      // mail when candidate delete account
+      const sendDeleteAccountEmail = async (deletedUser) => {
+        try {
+          const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              user: "harshkr2709@gmail.com",
+              pass: "frtohlwnukisvrzh",
+            },
+          });
 
-        const mailOptions = {
-          from: "Diamondore.in <harshkr2709@gmail.com>",
-          to: `Recipient <${deletedUser.email}>`,
-          subject: `Account Deletion Notification: ${deletedUser?.name}`,
-          text: `Dear,
+          const mailOptions = {
+            from: "Diamondore.in <harshkr2709@gmail.com>",
+            to: `Recipient <${deletedUser.email}>`,
+            subject: `Account Deletion Notification: ${deletedUser?.name}`,
+            text: `Dear,
           We appreciate the time you spent exploring opportunities with us and your interest in the positions available on our platform. If you have any feedback about your experience or the reason behind your decision to delete your account, we would appreciate hearing from you. Your input helps us improve our services for all users.
           If you ever decide to return or have any questions, please feel free to reach out to us. 
           Thank you for considering opportunities with us, and we wish you the best in your future endeavors.`,
-          html: `
+            html: `
             <p>Dear ${deletedUser?.name},</p>
             <p>We regret to inform you that your account has been deleted from Diamond Ore pvt.Ltd</p>
             <p>We appreciate the time you spent exploring opportunities with us and your interest in the positions available on our platform. If you have any feedback about your experience or the reason behind your decision to delete your account, we would appreciate hearing from you. Your input helps us improve our services for all users.</p>
@@ -1032,27 +1030,33 @@ router.delete(
             <p>Best regards</p>
             <p style="color:green;">Diamond Ore pvt.Ltd</p>
           `,
-        };
+          };
 
-        const info = await transporter.sendMail(mailOptions);
-        console.log("Email sent: " + info.response);
-        // console.log(info);
-      } catch (error) {
-        console.error("Error sending Mail:", error);
-        throw error;
-      }
-    };
+          const info = await transporter.sendMail(mailOptions);
+          console.log("Email sent: " + info.response);
+          // console.log(info);
+        } catch (error) {
+          console.error("Error sending Mail:", error);
+          throw error;
+        }
+      };
 
-    await sendDeleteAccountEmail(deletedUser);
+      await sendDeleteAccountEmail(deletedUser);
 
-    res.status(200).json({ message: "Candidate has been removed from Candidates DB and Transferred to DeletedCandidates Schema!!!" });
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+      res
+        .status(200)
+        .json({
+          message:
+            "Candidate has been removed from Candidates DB and Transferred to DeletedCandidates Schema!!!",
+        });
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
   }
-});
+);
 
-// FORGOT PASSWORD 
+// FORGOT PASSWORD
 // Send OTP via email using Nodemailer For Forgot Password
 const sendOTPByEmailForgotPassword = async (email, otp) => {
   try {
@@ -1157,138 +1161,185 @@ const s3ClientFreeResumes = new S3Client({
 
 router.post("/free-resume", async (req, res) => {
   try {
-      const { full_name, address, phone, email,linkedinUrl,summary,tech_skills, soft_skills, experience, graduation, twelfth, tenth } = req.body;
-      
-      // Your existing code to generate output.docx
-      const templatePath = path.resolve(__dirname, "Template_Resume.docx");
-      const content = fs.readFileSync(templatePath, "binary");
-      const zip = new PizZip(content);
-      const doc = new Docxtemplater(zip);
+    const {
+      full_name,
+      address,
+      phone,
+      email,
+      linkedinUrl,
+      summary,
+      tech_skills,
+      soft_skills,
+      experience,
+      graduation,
+      twelfth,
+      tenth,
+    } = req.body;
 
-      doc.render({
+    // Your existing code to generate output.docx
+    const templatePath = path.resolve(__dirname, "Template_Resume.docx");
+    const content = fs.readFileSync(templatePath, "binary");
+    const zip = new PizZip(content);
+    const doc = new Docxtemplater(zip);
+
+    doc.render({
+      full_name: full_name,
+      address: address,
+      phone: phone,
+      email: email,
+      linkedinUrl: linkedinUrl,
+      summary: summary,
+      tech_skills: [tech_skills],
+      soft_skills: [soft_skills],
+      designation: experience.designation,
+      start_month: experience.start_month,
+      start_year: experience.start_year,
+      end_month: experience.end_month,
+      end_year: experience.end_year,
+      company: experience.company,
+      company_city: experience.company_city,
+      work_description: experience.work_description,
+      degree_name: graduation.degree_name,
+      degree_field: graduation.degree_field,
+      graduation_year: graduation.graduation_year,
+      university_name: graduation.university_name,
+      university_city: graduation.university_city,
+      twelfth_field: twelfth.twelfth_field,
+      twelfth_year: twelfth.twelfth_year,
+      twelfth_school_name: twelfth.twelfth_school_name,
+      twelfth_school_city: twelfth.twelfth_school_city,
+      twelfth_board_name: twelfth.twelfth_board_name,
+      tenth_field: tenth.tenth_field,
+      tenth_year: tenth.tenth_year,
+      tenth_school_name: tenth.tenth_school_name,
+      tenth_school_city: tenth.tenth_school_city,
+      tenth_board_name: tenth.tenth_board_name,
+    });
+
+    // Save Word document
+    const buffer = doc
+      .getZip()
+      .generate({ type: "nodebuffer", compression: "DEFLATE" });
+    const outputPath = path.resolve(__dirname, `${full_name}_free_resume.docx`);
+    fs.writeFileSync(outputPath, buffer);
+
+    // Upload the generated file to Tebi
+    const upload_data = await s3ClientFreeResumes.send(
+      new PutObjectCommand({
+        Bucket: "freeresumesbuild",
+        Key: `${full_name}_free_resume.docx`,
+        Body: fs.readFileSync(outputPath),
+      })
+    );
+
+    // Generate a presigned URL for the uploaded file
+    // const url = await s3Client.getSignedUrlPromise(
+    //     new GetObjectCommand({
+    //         Bucket: "freeresumesbuild",
+    //         Key: `${full_name}_free_resume.docx`
+    //     })
+    // );
+
+    const getObjectCommand = new GetObjectCommand({
+      Bucket: "freeresumesbuild",
+      Key: `${full_name}_free_resume.docx`,
+    });
+
+    const signedUrl = await getSignedUrl(s3Client, getObjectCommand); // Generate URL valid for 1 hour
+
+    // Parse the signed URL to extract the base URL
+    const parsedUrl = new URL(signedUrl);
+    const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
+    if (!baseUrl) {
+      return res.status(404).json({ message: "file not saved" });
+    }
+    if (baseUrl) {
+      const newFreeResume = new ResumeTemp({
         full_name: full_name,
         address: address,
         phone: phone,
         email: email,
         linkedinUrl: linkedinUrl,
         summary: summary,
-        tech_skills: [tech_skills],
-        soft_skills: [soft_skills],
-        designation: experience.designation,
-        start_month: experience.start_month,
-        start_year: experience.start_year,
-        end_month: experience.end_month,
-        end_year: experience.end_year,
-        company: experience.company,
-        company_city: experience.company_city,
-        work_description: experience.work_description,
-        degree_name: graduation.degree_name,
-        degree_field: graduation.degree_field,
-        graduation_year: graduation.graduation_year,
-        university_name: graduation.university_name,
-        university_city: graduation.university_city,
-        twelfth_field: twelfth.twelfth_field,
-        twelfth_year: twelfth.twelfth_year,
-        twelfth_school_name: twelfth.twelfth_school_name,
-        twelfth_school_city:twelfth.twelfth_school_city,
-        twelfth_board_name: twelfth.twelfth_board_name,
-        tenth_field: tenth.tenth_field,
-        tenth_year: tenth.tenth_year,
-        tenth_school_name: tenth.tenth_school_name,
-        tenth_school_city: tenth.tenth_school_city,
-        tenth_board_name: tenth.tenth_board_name
+        tech_skills: tech_skills,
+        soft_skills: soft_skills,
+        experience: {
+          designation: experience.designation,
+          start_month: experience.start_month,
+          start_year: experience.start_year,
+          end_month: experience.end_month,
+          end_year: experience.end_year,
+          company: experience.company,
+          company_city: experience.company_city,
+          work_description: experience.work_description,
+        },
+        graduation: {
+          degree_name: graduation.degree_name,
+          degree_field: graduation.degree_field,
+          graduation_year: graduation.graduation_year,
+          university_name: graduation.university_name,
+          university_city: graduation.university_city,
+        },
+        twelfth: {
+          twelfth_field: twelfth.twelfth_field,
+          twelfth_year: twelfth.twelfth_year,
+          twelfth_school_name: twelfth.twelfth_school_name,
+          twelfth_school_city: twelfth.twelfth_school_city,
+          twelfth_board_name: twelfth.twelfth_board_name,
+        },
+        tenth: {
+          tenth_field: tenth.tenth_field,
+          tenth_year: tenth.tenth_year,
+          tenth_school_name: tenth.tenth_school_name,
+          tenth_school_city: tenth.tenth_school_city,
+          tenth_board_name: tenth.tenth_board_name,
+        },
+        resumeLink: baseUrl,
       });
+      await newFreeResume.save();
+    }
 
-
-      // Save Word document
-      const buffer = doc.getZip().generate({ type: "nodebuffer", compression: "DEFLATE" });
-      const outputPath = path.resolve(__dirname, `${full_name}_free_resume.docx`);
-      fs.writeFileSync(outputPath, buffer);
-
-      // Upload the generated file to Tebi
-      const upload_data = await s3ClientFreeResumes.send(
-          new PutObjectCommand({
-              Bucket: "freeresumesbuild",
-              Key: `${full_name}_free_resume.docx`,
-              Body: fs.readFileSync(outputPath)
-          })
-      );
-
-      // Generate a presigned URL for the uploaded file
-      // const url = await s3Client.getSignedUrlPromise(
-      //     new GetObjectCommand({
-      //         Bucket: "freeresumesbuild",
-      //         Key: `${full_name}_free_resume.docx`
-      //     })
-      // );
-
-      const getObjectCommand = new GetObjectCommand({
-        Bucket: "freeresumesbuild",
-        Key: `${full_name}_free_resume.docx`,
-      });
-  
-      const signedUrl = await getSignedUrl(s3Client, getObjectCommand); // Generate URL valid for 1 hour
-  
-      // Parse the signed URL to extract the base URL
-      const parsedUrl = new URL(signedUrl);
-      const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
-      if(!baseUrl){
-        return res.status(404).json({ message: "file not saved" });
-      }
-      if(baseUrl){
-
-        const newFreeResume = new ResumeTemp({
-          full_name: full_name,
-          address: address,
-          phone: phone,
-          email: email,
-          linkedinUrl: linkedinUrl,
-          summary: summary,
-          tech_skills: tech_skills,
-          soft_skills: soft_skills,
-          experience: {
-            designation: experience.designation,
-            start_month: experience.start_month,
-            start_year:  experience.start_year,
-            end_month: experience.end_month,
-            end_year: experience.end_year,
-            company: experience.company,
-            company_city: experience.company_city,
-            work_description: experience.work_description,
-          },
-          graduation: {
-            degree_name: graduation.degree_name,
-            degree_field: graduation.degree_field,
-            graduation_year: graduation.graduation_year,
-            university_name: graduation.university_name,
-            university_city: graduation.university_city,
-          },
-          twelfth: {
-            twelfth_field: twelfth.twelfth_field,
-            twelfth_year: twelfth.twelfth_year,
-            twelfth_school_name: twelfth.twelfth_school_name,
-            twelfth_school_city: twelfth.twelfth_school_city,
-            twelfth_board_name: twelfth.twelfth_board_name          
-          },
-          tenth: {
-            tenth_field: tenth.tenth_field,
-            tenth_year: tenth.tenth_year,
-            tenth_school_name: tenth.tenth_school_name,
-            tenth_school_city: tenth.tenth_school_city,
-            tenth_board_name: tenth.tenth_board_name,
-          },
-          resumeLink: baseUrl,
-
-        })
-        await newFreeResume.save()
-      }
-     
-      res.status(200).send(baseUrl); // Return the URL of the uploaded file
-      
-
+    res.status(200).send(baseUrl); // Return the URL of the uploaded file
   } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: "Something went wrong!!!" , error });
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong!!!", error });
+  }
+});
+
+// REQUEST A CALL BACK
+router.post("/request-call", async (req, res) => {
+  try {
+    const { name, phone } = req.body;
+
+    if (!name || !phone) {
+      return res.status(401).json({ message: "Both fields are required!!!" });
+    }
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "helpdesk2.rasonline@gmail.com",
+        pass: "fnhwhrbfgjctngwg",
+      },
+    });
+
+    // Compose the email
+    const mailOptions = {
+      from: "DOC_Labz <helpdesk2.rasonline@gmail.com>",
+      to: "helpdesk2.rasonline@gmail.com",
+      subject: `CALL REQUEST FROM DOC: New Message Received from ${name}`,
+      text: `A new message has been submitted by ${name}.`,
+      html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${name}</h4> </br>
+                    <h4 style="font-size:1rem; display:flex; justify-content: center;">Phone No: ${userPhone}</h4> </br>`,
+      cc: 'rahul@rasonline.in'
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent: " + info.response);
+    res.status(200).json("Email sent sucessfully!!!");
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: "Something went wrong!!!", error });
   }
 });
 

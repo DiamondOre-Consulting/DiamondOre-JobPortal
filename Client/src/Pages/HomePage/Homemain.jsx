@@ -12,6 +12,8 @@ import CvSection from './CvSection';
 const Homemain = () => {
   const [latestJobs, setLatestJobs] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
 
   useEffect(() => {
     const fetchLatestJobs = async () => {
@@ -41,6 +43,31 @@ const Homemain = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const submitCallReq = async (e) => {
+    e.preventDefault();
+    const payload = { name, phone };
+
+    try {
+      const response = await axios.post('/api/candidates/request-call', payload, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status === 200) {
+        // Handle successful form submission (e.g., show a success message, close the popup)
+        alert('Form submitted successfully!');
+        closePopup();
+      } else {
+        // Handle form submission error
+        alert('Failed to submit the form');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error.message);
+      alert('An error occurred while submitting the form');
+    }
+  }
+
   const closePopup = () => {
     setShowPopup(false);
   };
@@ -64,19 +91,21 @@ const Homemain = () => {
                 &times;
               </button>
               <h2 className="text-2xl mb-4">Request a Call Back from Our Team</h2>
-              <form>
+              <form onSubmit={submitCallReq}>
                 <div className="mb-4">
                   <label htmlFor="name" className="block text-gray-700">Name:</label>
-                  <input type="text" id="name" className="w-full px-3 py-2 border rounded-lg" />
+                  <input type="text" id="name" className="w-full px-3 py-2 border rounded-lg" value={name}
+              onChange={(e) => setName(e.target.value)} />
                 </div>
                 <div className="mb-4">
                   <label htmlFor="phone" className="block text-gray-700">Phone:</label>
-                  <input type="text" id="phone" className="w-full px-3 py-2 border rounded-lg" />
+                  <input type="text" id="phone" className="w-full px-3 py-2 border rounded-lg" value={phone}
+              onChange={(e) => setPhone(e.target.value)} />
                 </div>
-                <div className="mb-4">
+                {/* <div className="mb-4">
                   <label htmlFor="resume" className="block text-gray-700">Upload Resume:</label>
                   <input type="file" id="resume" className="w-full px-3 py-2 border rounded-lg" />
-                </div>
+                </div> */}
                 <button type="submit" className="w-full bg-blue-900 text-white py-2 rounded-lg hover:bg-blue-950">Submit</button>
               </form>
             </div>

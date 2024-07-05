@@ -1623,7 +1623,6 @@ router.get("/findJobs/:phone", async (req, res) => {
   }
 });
 
-
 // BULK
 // Send OTP via email using Nodemailer
 const sendJobsToRecByEmail = async (eMailIdRec, candidate, suitableJobs) => {
@@ -1788,6 +1787,7 @@ router.get("/find-bulk-jobs", async (req, res) => {
         })
         const eMailIdRec = findRec.email;
         const eMailIdKam = findKam.email;
+        console.log(eMailIdKam, eMailIdRec);
         await sendJobsToRecByEmail(eMailIdRec, candidate, suitableJobs)
         await sendJobsToKamByEmail(eMailIdKam, candidate, suitableJobs)
       }
