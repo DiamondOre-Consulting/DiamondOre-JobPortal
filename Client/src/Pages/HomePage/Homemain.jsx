@@ -46,6 +46,31 @@ const Homemain = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const submitCallReq = async (e) => {
+    e.preventDefault();
+    // const payload = { name, phone };
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/candidates/request-call', {name, phone}, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status === 200) {
+        // Handle successful form submission (e.g., show a success message, close the popup)
+        alert('Form submitted successfully!');
+        closePopup();
+      } else {
+        // Handle form submission error
+        alert('Failed to submit the form');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error.message);
+      alert('An error occurred while submitting the form');
+    }
+  }
+
   const closePopup = () => {
     setShowPopup(false);
   };
@@ -131,7 +156,7 @@ const Homemain = () => {
                   <label htmlFor="phone" className="block text-gray-700" value={phone} onChange={(e) => setPhone(e.target.value)}>Phone:</label>
                   <input type="text" id="phone" className="w-full px-3 py-2 border rounded-lg" />
                 </div>
-                <div className="mb-4">
+                {/* <div className="mb-4">
                   <label htmlFor="resume" className="block text-gray-700">Upload Resume:</label>
                   <input type="file" id="resume" className="w-full px-3 py-2 border rounded-lg" onChange={(e) => setResume(e.target.files[0])} />
 
