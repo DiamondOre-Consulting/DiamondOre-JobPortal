@@ -54,6 +54,7 @@ import Prompt from "./Pages/AdminPage/Prompt";
 import Portfolio from "./Pages/CandidatePage/CandidatePortfolioPage/Portfolio";
 import Portfoliowebste from "./Pages/CandidatePage/CandidatePortfolioPage/Portfoliowebste";
 import SearchJob from "./Pages/HomePage/SearchJob";
+import PostReview from "./Pages/HomePage/PostReview";
 
 function App() {
   let [loading, setLoading] = useState(true);
@@ -97,6 +98,7 @@ function App() {
             <Route path='/services' element={<Services/>}/>
             <Route path="/contact" element={<Contact/>}/>
             <Route path='/search-job' element={<SearchJob/>}/>
+            <Route path="/post-review" element={<PostReview/>}/>
             <Route path="/signup" element={<Signup/>} />
             <Route path="/login" element={<Login/>} />
             <Route path='/forgot-password' element={<ForgotPassword/>}/>

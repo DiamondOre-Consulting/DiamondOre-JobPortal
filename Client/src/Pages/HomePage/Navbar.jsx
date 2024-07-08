@@ -65,6 +65,13 @@ const Navbar = () => {
               >
                 Search Job
               </Link>
+
+              <Link to={'/post-review'}
+
+                className="text-lg font-semibold text-white transition duration-100  active:text-blue-900"
+              >
+                Post Reviews
+              </Link>
             </nav>
 
             <div className="hidden lg:inline-block relative text-left">
@@ -148,6 +155,16 @@ const Navbar = () => {
                   } px-32 py-3 text-white text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Search Job
+              </li>
+            </Link>
+
+
+            <Link to={"/post-review"}>
+              <li
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-32 py-3 text-white text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+              >
+                Post Reviews
               </li>
             </Link>
 
