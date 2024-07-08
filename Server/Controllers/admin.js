@@ -32,6 +32,7 @@ import readXlsxFile from "read-excel-file/node";
 import DSR from "../Models/DSR.js";
 import JobsTesting from "../Models/JobsTesting.js";
 import RecruitersAndKAMs from "../Models/RecruitersAndKAMs.js";
+import ClientReviews from "../Models/ClientReviews.js";
 
 dotenv.config();
 
@@ -1826,6 +1827,24 @@ router.post("/register-recruiter-kam", async (req, res) => {
   } catch(error) {
     console.log(error.message);
     res.status(500).json(error.message)
+  }
+})
+
+// DELETE A REVIEW
+router.delete("/delete-review/:id", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const {id} = req.params;
+
+    const deleteReview = await ClientReviews.findByIdAndDelete({_id: id});
+    if(!deleteReview) {
+      return res.status(403).json({message: "No review found!!!"});
+    }
+
+    res.status(200).json({message: "Review deleted successfully!!!"});
+
+  } catch(error) {
+    console.log(error.message);
+    res.status(500).json({message: "Something went wrong!!!", error})
   }
 })
 
