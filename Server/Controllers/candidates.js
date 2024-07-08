@@ -1293,6 +1293,43 @@ router.post("/free-resume", async (req, res) => {
   }
 });
 
+// REQUEST A CALL BACK
+router.post("/request-call", async (req, res) => {
+  try {
+    const { name, phone } = req.body;
+
+    if (!name || !phone) {
+      return res.status(401).json({ message: "Both fields are required!!!" });
+    }
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "helpdesk2.rasonline@gmail.com",
+        pass: "fnhwhrbfgjctngwg",
+      },
+    });
+
+    // Compose the email
+    const mailOptions = {
+      from: "Diamond Ore <helpdesk2.rasonline@gmail.com>",
+      to: "helpdesk2.rasonline@gmail.com",
+      subject: `CALL REQUEST FROM DOC: New Message Received from ${name}`,
+      text: `A new message has been submitted by ${name}.`,
+      html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${name}</h4> </br>
+                    <h4 style="font-size:1rem; display:flex; justify-content: center;">Phone No: ${phone}</h4> </br>`,
+      cc: 'rahul@rasonline.in'
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent: " + info.response);
+    res.status(200).json("Email sent sucessfully!!!");
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: "Something went wrong!!!", error });
+  }
+});
+
 // GIVE A REVIEW
 router.post("/post-review", async (req, res) => {
   try {
