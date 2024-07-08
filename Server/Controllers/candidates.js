@@ -25,6 +25,7 @@ import mammoth from "mammoth";
 import Docxtemplater from "docxtemplater";
 import PizZip from "pizzip";
 import ResumeTemp from "../Models/ResumeTemp.js";
+import ClientReviews from "../Models/ClientReviews.js";
 
 dotenv.config();
 
@@ -1342,5 +1343,43 @@ router.post("/request-call", async (req, res) => {
     res.status(500).json({ message: "Something went wrong!!!", error });
   }
 });
+
+// GIVE A REVIEW
+router.post("/post-review", async (req, res) => {
+  try {
+    const {name, email, reviewFor, diamonds, review} = req.body;
+
+    if(!reviewFor || !diamonds) {
+      return res.status(401).json({message: "Review for and diamonds are required fields!!!"});
+    }
+
+    const newReview = new ClientReviews({
+      name,
+      email,
+      reviewFor,
+      diamonds,
+      review
+    })
+
+    await newReview.save();
+
+    res.status(200).json({message: "Review posted sucessfully!!!"});
+  } catch(error) {
+    console.log(error.message);
+    res.status(500).json({message: "Something went wrong!!!", error})
+  }
+})
+
+// FETCH ALL REVIEWS
+router.get("/all-reviews", async (req, res) => {
+  try {
+    const allReviews = await ClientReviews.find(-1);
+
+    res.status(201).json(allReviews);
+  } catch(error) {
+    console.log(error.message);
+    res.status(500).json({message: ""})
+  }
+})
 
 export default router;
