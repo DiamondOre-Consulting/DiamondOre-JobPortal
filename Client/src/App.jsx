@@ -55,6 +55,7 @@ import Portfolio from "./Pages/CandidatePage/CandidatePortfolioPage/Portfolio";
 import Portfoliowebste from "./Pages/CandidatePage/CandidatePortfolioPage/Portfoliowebste";
 import SearchJob from "./Pages/HomePage/SearchJob";
 import PostReview from "./Pages/HomePage/PostReview";
+import AllReviews from "./Pages/AdminPage/AllReviews";
 
 function App() {
   let [loading, setLoading] = useState(true);
@@ -139,6 +140,7 @@ function App() {
             <Route path='/admin-all-employee'element={<AdminEmployeeAttendence/>}/>
             <Route path='/admin-all-employee/attendence/:id'element={<AdminEditAttendence/>}/>
             <Route path='/admin-all-employee/performence/:id'element={<AdminEditPerfomence/>}/>
+            <Route path='/admin/all-reviews' element={<AllReviews/>}/>
             <Route path='/employee-signup' element={<Employeesignup/>}/>
             <Route path='/employee-login'element={<Employeelogin/>}/>
             <Route path='/employee-dashboard' element={<Employeedashboard/>}/>

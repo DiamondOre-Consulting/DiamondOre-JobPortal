@@ -183,6 +183,13 @@ const AdminNav = () => {
                   Prompt
                 </Link>
 
+                <Link
+                  to={'/admin/all-reviews'}
+                  className="cursor-pointer text-md font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
+                >
+                  All Reviews
+                </Link>
+
               </nav>
 
               <div
@@ -339,6 +346,14 @@ const AdminNav = () => {
                   } px-24 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 All Employees
+              </li>
+            </Link>
+            <Link to={"/admin/all-reviews"}>
+              <li
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-24 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+              >
+                All Reviews
               </li>
             </Link>
             <Link to={"/admin/edit-profile"}>

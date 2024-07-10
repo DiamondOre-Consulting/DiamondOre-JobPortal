@@ -1359,7 +1359,7 @@ router.post("/post-review", async (req, res) => {
 // FETCH ALL REVIEWS
 router.get("/all-reviews", async (req, res) => {
   try {
-    const allReviews = await ClientReviews.find(-1);
+    const allReviews = await ClientReviews.find();
 
     res.status(201).json(allReviews);
   } catch(error) {

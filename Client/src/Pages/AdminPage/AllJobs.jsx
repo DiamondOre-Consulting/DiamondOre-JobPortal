@@ -33,11 +33,16 @@ const AdminAllJobs = () => {
     }
   }, [decodedToken]);
 
+  
+
   return (
     <div className="bg-white  ">
       <AdminNav />
       <AdminAllJobsCards />
       <AdminFooter />
+
+
+    
     </div>
   );
 };
