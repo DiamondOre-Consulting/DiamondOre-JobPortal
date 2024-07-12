@@ -125,6 +125,7 @@ const Prompt = () => {
             if (error.response) {
                 const status = error.response.status;
                 if (status === 404) {
+                    alert('No Candidata Found')
                     console.log("No Candidate Found");
                 }
             }

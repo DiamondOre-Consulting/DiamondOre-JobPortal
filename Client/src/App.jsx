@@ -56,6 +56,7 @@ import Portfoliowebste from "./Pages/CandidatePage/CandidatePortfolioPage/Portfo
 import SearchJob from "./Pages/HomePage/SearchJob";
 import PostReview from "./Pages/HomePage/PostReview";
 import AllReviews from "./Pages/AdminPage/AllReviews";
+import EmpDrawerSidebar from "./Components/EmployeeComponents/EmpDrawerSidebar";
 
 function App() {
   let [loading, setLoading] = useState(true);
@@ -143,9 +144,10 @@ function App() {
             <Route path='/admin/all-reviews' element={<AllReviews/>}/>
             <Route path='/employee-signup' element={<Employeesignup/>}/>
             <Route path='/employee-login'element={<Employeelogin/>}/>
-            <Route path='/employee-dashboard' element={<Employeedashboard/>}/>
+            {/* <Route path='/employee-dashboard' element={<Employeedashboard/>}/> */}
             <Route path='/employee-leaves' element={<EmployeeLeaves/>}/>
             <Route path='/employee-performence'element={<EmployeePerformence/>}/>
+            <Route path="/employee-dashboard/*" element={<EmpDrawerSidebar />} />
             <Route path ='*' element ={<ErrorPage/>}/>
           </Route> 
         </Routes>
