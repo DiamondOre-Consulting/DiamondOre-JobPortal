@@ -29,6 +29,9 @@ import logo from '..//../assets/logo2.png';
 import { useJwt } from 'react-jwt';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import KPIscore from './KPIscore';
+import Incentive from './Incentive';
+import AccountHandling from './AccountHandling';
 
 const drawerWidth = 240;
 
@@ -151,6 +154,55 @@ export default function EmpDrawerSidebar() {
     fetchData();
   }, [decodedToken, token, navigate]);
 
+
+  // profile
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          // Token not found in local storage, handle the error or redirect to the login page
+          console.error("No token found");
+          navigate("/employee-login");
+          return;
+        }
+
+        // Fetch associates data from the backend
+        const response = await axios.get(
+          "https://api.diamondore.in/api/employee/user-data",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.status == 200) {
+          console.log(response.data);
+          setUserData(response.data);
+        } else {
+          console.log(response.data);
+          setUserData("Did not get any response!!!");
+        }
+      } catch (error) {
+        console.error("Error fetching employee data:", error);
+        // Handle error and show appropriate message
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  // logout
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/employee-login";
+    console.log("Logging out");
+  };
+
+
   const theme = useTheme();
   const [open, setOpen] = useState(false);
 
@@ -184,20 +236,15 @@ export default function EmpDrawerSidebar() {
             <MenuIcon />
           </IconButton>
           <Typography variant='h6' noWrap component='div'>
-            <img src={logo} alt='' className='w-40' />
+            <img src={logo} alt='' className='w-40 cursor-pointer' />
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <IconButton
-            style={{ color: 'white' }}
-            aria-label='user profile'
-            onClick={() => handleNavigation('/profile')}
-          >
-            <AccountCircleIcon />
-          </IconButton>
+          <img src={userData?.profilePic} alt="" className='w-8 mr-2' />
+        
           <IconButton
             style={{ color: 'white' }}
             aria-label='logout'
-            onClick={() => handleNavigation('/logout')}
+            onClick={handleLogout}
           >
             <LogoutIcon />
           </IconButton>
@@ -216,6 +263,7 @@ export default function EmpDrawerSidebar() {
             { text: 'Goal Sheet', icon: <TaskOutlinedIcon />, path: '/goal-sheet' },
             { text: 'Incentive', icon: <MonetizationOnOutlinedIcon />, path: '/incentive' },
             { text: 'KPI-Score', icon: <DialpadOutlinedIcon />, path: '/kpi-score' },
+            { text: 'Account Handling', icon: <AccountCircleIcon />, path: '/acount-handling' },
           ].map((item) => (
             <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
@@ -244,9 +292,12 @@ export default function EmpDrawerSidebar() {
       <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
         <Routes>
-          <Route path='/' element={<EmpHome empofthemonth={empofthemonth} latestnews={latestnews} hrname={hrname} client={client} RnRRecruiter={RnRRecruiter} RnRinterns={RnRinterns} Joinings={Joinings} />} />
-          <Route path='/home' element={<EmpHome empofthemonth={empofthemonth} latestnews={latestnews} hrname={hrname} client={client} RnRRecruiter={RnRRecruiter} RnRinterns={RnRinterns} Joinings={Joinings} />} />
+          <Route path='/' element={<EmpHome empofthemonth={empofthemonth} latestnews={latestnews} hrname={hrname} client={client} RnRRecruiter={RnRRecruiter} RnRinterns={RnRinterns} Joinings={Joinings}  userData={userData}/>} />
+          <Route path='/home' element={<EmpHome empofthemonth={empofthemonth} latestnews={latestnews} hrname={hrname} client={client} RnRRecruiter={RnRRecruiter} RnRinterns={RnRinterns} Joinings={Joinings} userData={userData} />} />
           <Route path='/goal-sheet' element={<EmpGoalSheet />} />
+          <Route path='/kpi-score' element={<KPIscore/>}/>
+          <Route path='/acount-handling' element={<AccountHandling userData={userData}/>}/>
+          <Route path='/incentive' element={<Incentive/>}/>
         </Routes>
       </Box>
     </Box>

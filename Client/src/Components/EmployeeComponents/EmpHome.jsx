@@ -2,14 +2,17 @@ import React from 'react'
 
 
 
-const EmpHome = ({ empofthemonth, latestnews, hrname, client, RnRinterns, RnRRecruiter, Joinings }) => {
+const EmpHome = ({ empofthemonth, latestnews, hrname, client, RnRinterns, RnRRecruiter, Joinings , userData }) => {
 
 
     return (
         <>
 
+        <span className='text-4xl font-bold text-gray-700'>Welcome,</span>
+        <span className='font-bold text-4xl ml-2 text-gray-700'>{userData?.name}</span>
+
             {latestnews?.map((newNews) => (
-                <div id="alert-additional-content-3" class="p-4 mb-4 text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800" role="alert">
+                <div id="alert-additional-content-3" class="p-4 mb-4 text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800 mt-8" role="alert">
                     <div class="flex items-center">
                         <svg class="flex-shrink-0 w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
@@ -37,14 +40,14 @@ const EmpHome = ({ empofthemonth, latestnews, hrname, client, RnRinterns, RnRRec
             {/* Employee Of the Month  */}
 
             <div className='my-10 '>
-                <div className='grid grid-cols-3 px-6'>
+                <div className='grid grid-cols-1 md:grid-cols-3 px-6'>
                     <div className='col'>
                         <div className='absolute border border-blue-900 border-2 opacity-1 h-40 w-60 mt-10 '></div>
                         <div><img className="relative bottom-1 left-10  w-60 h-40 " src="https://easy-feedback.de/wp-content/uploads/2022/10/Employee-Journey-What-it-is-and-how-to-improve-it.jpg" alt="" /></div>
                     </div>
 
-                    <div className='col-span-2 flex flex-col '>
-                        <h1 className='uppercase font-bold text-5xl text-gray-700'>Employee of the month</h1>
+                    <div className='md:col-span-2  mt-20 md:mt-0 flex flex-col '>
+                        <h1 className='uppercase font-bold text-3xl md:text-5xl text-gray-700'>Employee of the month</h1>
 
                         <div className='mt-4'>
                             <h1 className='font-bold text-xl'>{empofthemonth}</h1>
@@ -61,8 +64,8 @@ const EmpHome = ({ empofthemonth, latestnews, hrname, client, RnRinterns, RnRRec
 
             {/* hr and clints div */}
 
-            <div className='mt-20 px-6'>
-                <div className='grid grid-cols-2 gap-10'>
+            <div className='mt-10 md:mt-20 px-6'>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-10'>
                     <div className=''>
                         <h1 className='uppercase text-2xl font-semibold  text-gray-900 px-10 py-2 text-center'> Top 5 hr</h1>
                         <table className="w-full text-sm text-center rtl:text-right text-gray-500 border border-1">
@@ -126,9 +129,9 @@ const EmpHome = ({ empofthemonth, latestnews, hrname, client, RnRinterns, RnRRec
 
             {/* leaderbord & joinings */}
 
-            <div className='mt-20 px-6'>
-                <div className='grid grid-cols-2 gap-10'>
-                    <div className=''>
+            <div className='mt-20 px-2'>
+                <div className='grid grid-cols-1 md:grid-cols-2 md:gap-10'>
+                    <div className='md:overflow-auto overflow-scroll'>
                         <h1 className='uppercase text-2xl font-semibold  text-gray-900 px-10 py-2 text-center'>R & R LeaderBoard</h1>
                         <table className="w-full text-sm text-left rtl:text-right text-gray-500 border border-1 ">
                             <thead className="text-xs text-gray-700 uppercase   text-center">
@@ -166,7 +169,7 @@ const EmpHome = ({ empofthemonth, latestnews, hrname, client, RnRinterns, RnRRec
                             </tbody>
                         </table>
                     </div>
-                    <div className=''>
+                    <div className='md:overflow-auto overflow-scroll'>
                         <h1 className='uppercase text-xl font-semibold  text-gray-900 px-10 py-2 text-center'>R & R LeaderBoard Recruiter</h1>
                         <table className="w-full text-sm text-left rtl:text-right text-gray-500 border border-1 ">
                             <thead className="text-xs text-gray-700 uppercase bg-gray-50  ">
@@ -211,7 +214,7 @@ const EmpHome = ({ empofthemonth, latestnews, hrname, client, RnRinterns, RnRRec
                 </div>
             </div>
 
-            <div className='mt-6 mb-10'>
+            <div className='mt-6 mb-10 md:overflow-auto overflow-scroll'>
                 <h1 className='uppercase text-xl font-semibold  text-gray-900 px-10 py-2 text-center'> This Week's Joinings</h1>
                 <table className="w-full text-sm text-center rtl:text-right text-gray-500 border">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 text-center border">
