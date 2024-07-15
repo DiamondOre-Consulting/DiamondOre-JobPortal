@@ -64,7 +64,7 @@ const EmpHome = ({ empofthemonth, latestnews, hrname, client, RnRinterns, RnRRec
 
             {/* hr and clints div */}
 
-            <div className='mt-10 md:mt-20 px-6'>
+            <div className='mt-10 md:mt-20 md:px-6'>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-10'>
                     <div className=''>
                         <h1 className='uppercase text-2xl font-semibold  text-gray-900 px-10 py-2 text-center'> Top 5 hr</h1>

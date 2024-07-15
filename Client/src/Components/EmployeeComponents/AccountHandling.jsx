@@ -41,7 +41,7 @@ const AccountHandling = ({ userData }) => {
     };
     return (
         <div>
-            <h1 className='text-4xl font-bold'>Account Handling</h1>
+            <h1 className='text-3xl md:text-4xl font-bold'>Account Handling</h1>
             <div className='w-20 h-0.5 bg-blue-900'></div>
 
             <div className="relative w-full max-w-xl my-8 md:my-16 flex flex-col items-start space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 px-4 py-4 border-2 border-dashed border-gray-400 dark:border-gray-400 shadow-lg rounded-lg">
@@ -64,7 +64,7 @@ const AccountHandling = ({ userData }) => {
             <div className='flex justify-end mb-1'>
             <button className='bg-blue-900 px-4 py-2 text-gray-100 rounded-full' onClick={()=> setPopUpForm(true)}> Add Data</button>
             </div>
-            <div className="flex flex-col mb-10">
+            <div className="flex flex-col mb-10 w-72 md:w-full">
                 <div className="-m-1.5 overflow-x-auto">
                     <div className="p-1.5 min-w-full inline-block align-middle">
                         <div className="overflow-hidden border">
