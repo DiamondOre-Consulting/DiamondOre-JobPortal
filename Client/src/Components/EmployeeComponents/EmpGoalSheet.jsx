@@ -8,8 +8,13 @@ const EmpGoalSheet = () => {
                 <div className='w-20 h-0.5 bg-blue-900'></div>
 
 
+                <div className='flex justify-end '>
+                    <select className='p-2'>
+                        <option>Select Year</option>
+                    </select>
+                </div>
 
-                <div className='md:overflow-auto overflow-scroll mt-10 w-72 md:w-full'>
+                <div className='md:overflow-auto overflow-scroll mt-10 w-72 md:w-full mb-4'>
                     <table className="w-full text-sm text-left rtl:text-right text-gray-500 md:overflow-auto overflow-scroll border  ">
                         <thead className="text-xs text-gray-700 uppercase bg-gray-50  ">
                             <tr className=' text-white text-center'>
@@ -46,11 +51,15 @@ const EmpGoalSheet = () => {
 
                         </tbody>
                     </table>
+                  
                 </div>
 
                
 
             </div>
+            {/* <span className='border p-2 mt-4 border-2 border-gray-500 flex justify-end inline'>
+                        Incentive
+                 </span> */}
         </>
     )
 }

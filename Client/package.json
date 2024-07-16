@@ -16,6 +16,8 @@
     "@mui/icons-material": "^5.16.1",
     "@mui/material": "^5.16.1",
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
+    "@react-three/drei": "^9.108.3",
+    "@react-three/fiber": "^8.16.8",
     "@types/react-router-dom": "^5.3.3",
     "axios": "^1.6.5",
     "chart.js": "^4.4.3",
@@ -35,8 +37,10 @@
     "react-router-dom": "^6.21.1",
     "react-slick": "^0.30.2",
     "react-spinners": "^0.13.8",
+    "react-treebeard": "^3.2.4",
     "slick-carousel": "^1.8.1",
-    "styled-components": "^6.1.11"
+    "styled-components": "^6.1.11",
+    "three": "^0.166.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
