@@ -63,9 +63,9 @@ router.get("/all-erp-data", AdminAuthenticateToken, async (req, res) => {
 
     const allData = await ERP.findOne().sort({_id: -1});
 
-    console.log(allData);
+    const findEmp = await Employees.findById({_id: allData.EmpOfMonth});
 
-    res.status(200).json(allData);
+    res.status(200).json({allData, findEmp});
   } catch (error) {
     console.log(error, "Something went wrong!!!");
     res.status(500).json("Something went wrong!!!", error);

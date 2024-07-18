@@ -133,7 +133,9 @@ router.get("/all-erp-data", EmployeeAuthenticateToken, async (req, res) => {
 
     console.log(allData.EmpOfMonth);
 
-    res.status(200).json(allData);
+    const findEmp = await Employees.findById({_id: allData.EmpOfMonth});
+
+    res.status(200).json({allData, findEmp});
   } catch (error) {
     console.log(error, "Something went wrong!!!");
     res.status(500).json("Something went wrong!!!", error);
