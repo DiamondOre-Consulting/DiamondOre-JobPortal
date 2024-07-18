@@ -9,6 +9,7 @@ import AdminAuthenticateToken from "../Middlewares/AdminAuthenticateToken.js";
 import Admin from "../Models/Admin.js";
 import LeaveReport from "../Models/LeaveReport.js";
 import PerformanceReport from "../Models/PerformanceReport.js";
+import AccountHandling from "../Models/AccountHandling.js";
 
 dotenv.config();
 
@@ -19,7 +20,7 @@ const router = express.Router();
 // EMPLOYEE SIGNUP
 router.post("/add-emp", AdminAuthenticateToken, async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { empType, name, email, password, dob, doj } = req.body;
     const { userId } = req.user;
 
     const user = await Admin.findById({ _id: userId });
@@ -35,12 +36,17 @@ router.post("/add-emp", AdminAuthenticateToken, async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newEmp = new Employees({
+      empType,
       name,
       email,
       password: hashedPassword,
+      dob,
+      doj
     });
 
     await newEmp.save();
+
+
 
     res
       .status(201)
@@ -181,5 +187,44 @@ router.get("/performance-report", EmployeeAuthenticateToken, async (req, res) =>
         res.status(500).json({ error: "Internal server error" });
     }
 })
+
+// SET ACCOUNT HANDLING
+router.put("/set-account-handling", EmployeeAuthenticateToken, async (req, res) => {
+  try {
+    const {userId} = req.user;
+    const { hrName, clientName, phone, channel, zone } = req.body;
+
+    // Find the employee by userId
+    const employee = await Employees.findById(userId);
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    // Find the account details for the specified userId
+    let accountHandling = await AccountHandling.findOne({ owner: userId });
+    if (!accountHandling) {
+      accountHandling = new AccountHandling({ owner: userId, accountHandlingStatus: true, accountDetails: [] });
+    }
+
+    // Push new details to accountHandling array
+    accountHandling.accountDetails.push({
+      detail: {
+        hrName: hrName,
+        clientName: clientName,
+        phone: phone,
+        channel: channel,
+        zone: zone
+      },
+    });
+
+    // Save the updated goal sheet
+    await accountHandling.save();
+
+    res.status(200).json({ message: "Account details updated successfully" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
 
 export default router;

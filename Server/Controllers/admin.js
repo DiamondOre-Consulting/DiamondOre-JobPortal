@@ -33,6 +33,7 @@ import DSR from "../Models/DSR.js";
 import JobsTesting from "../Models/JobsTesting.js";
 import RecruitersAndKAMs from "../Models/RecruitersAndKAMs.js";
 import ClientReviews from "../Models/ClientReviews.js";
+import GoalSheet from "../Models/GoalSheet.js";
 
 dotenv.config();
 
@@ -1053,239 +1054,6 @@ router.put("/edit-profile", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
-// FETCHING ALL employees
-router.get("/all-employees", AdminAuthenticateToken, async (req, res) => {
-  try {
-    const { email } = req.user;
-
-    const user = await Admin.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const allEmployees = await Employees.find({}, { password: 0 });
-
-    console.log(allEmployees);
-
-    return res.status(200).json(allEmployees);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "Something went wrong!!!" });
-  }
-});
-
-// FETCHING A Employee
-router.get("/all-employees/:id", AdminAuthenticateToken, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { email } = req.user;
-    const user = await Admin.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "user not Found" });
-    }
-
-    const oneEmployee = await Employees.findById({ _id: id }, { password: 0 });
-    console.log(oneEmployee);
-    return res.status(201).json(oneEmployee);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "Something went wrong!!!" });
-  }
-});
-
-// EMPLOYEE LEAVE REPORT
-// ADD LEAVE REPORT
-router.post("/add-leave-report/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { month, year, absentDays, lateDays, halfDays, adjustedLeaves } =
-      req.body;
-
-    // Find the existing report for the given month and year
-    const reportExists = await LeaveReport.findOne({
-      employeeId: id,
-      month: month,
-      year: year,
-    });
-    if (reportExists) {
-      return res
-        .status(409)
-        .json({ message: "This month's or year's report already exists" });
-    }
-
-    const currentReport = await LeaveReport.findOne({ employeeId: id });
-
-    let newReport = {};
-    if (currentReport) {
-      let currentLeaves = currentReport.totalLeaves;
-      if (month == "April" || month == "Apr") {
-        newReport = new LeaveReport({
-          employeeId: id,
-          month,
-          year,
-          absentDays,
-          lateDays,
-          halfDays,
-          adjustedLeaves,
-          totalLeaves: currentLeaves - adjustedLeaves + 16,
-        });
-      } else {
-        newReport = new LeaveReport({
-          employeeId: id,
-          month,
-          year,
-          absentDays,
-          lateDays,
-          halfDays,
-          adjustedLeaves,
-          totalLeaves: currentLeaves - adjustedLeaves,
-        });
-      }
-      await newReport.save();
-    } else {
-      newReport = new LeaveReport({
-        employeeId: id,
-        month,
-        year,
-        absentDays,
-        lateDays,
-        halfDays,
-        adjustedLeaves,
-        totalLeaves: 16 - adjustedLeaves,
-      });
-
-      await newReport.save();
-    }
-
-    res
-      .status(200)
-      .json({ message: "Leave report submitted successfully!!!", newReport });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-// ADD PERFORMANCE REPORT
-router.post("/add-performance-report/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { month, year, multipleOf4x, monthlyIncentive, kpiScore } = req.body;
-
-    const reportExists = await PerformanceReport.findOne({
-      employeeId: id,
-      month: month,
-      year: year,
-    });
-    if (reportExists) {
-      return res
-        .status(409)
-        .json({ message: "This month's or year's report already exists" });
-    }
-
-    const currentReport = await PerformanceReport.findOne({ employeeId: id });
-
-    let newReport = {};
-    if (currentReport) {
-      let currentLeaves = currentReport.totalLeaves;
-      if (month == "April" || month == "Apr") {
-        newReport = new PerformanceReport({
-          employeeId: id,
-          month,
-          year,
-          multipleOf4x,
-          monthlyIncentive,
-          kpiScore,
-        });
-      } else {
-        newReport = new PerformanceReport({
-          employeeId: id,
-          month,
-          year,
-          multipleOf4x,
-          monthlyIncentive,
-          kpiScore,
-        });
-      }
-      await newReport.save();
-    } else {
-      newReport = new PerformanceReport({
-        employeeId: id,
-        month,
-        year,
-        multipleOf4x,
-        monthlyIncentive,
-        kpiScore,
-      });
-
-      await newReport.save();
-    }
-
-    res
-      .status(200)
-      .json({ message: "Performance report submitted", newReport });
-  } catch (error) {
-    console.log(error, "Something went wrong!!!");
-    res.status(500).json("Something went wrong!!!", error);
-  }
-});
-
-// GET LEAVE REPORT OF AN EMPLOYEE
-router.get("/leave-report/:id", AdminAuthenticateToken, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { email } = req.user;
-
-    // Find the user in the database
-    const user = await Admin.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const latestData = await LeaveReport.find({ employeeId: id });
-
-    if (!latestData) {
-      return res.status(404).json({ message: "No Leave Report data found" });
-    }
-
-    res.status(200).json(latestData);
-  } catch (error) {
-    console.log(error, "Something went wrong!!!");
-    res.status(500).json("Something went wrong!!!", error);
-  }
-});
-
-// GET PERFORMANCE REPORT OF AN EMPLOYEE
-router.get(
-  "/performance-report/:id",
-  AdminAuthenticateToken,
-  async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { email } = req.user;
-
-      // Find the user in the database
-      const user = await Admin.findOne({ email });
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      const latestData = await PerformanceReport.find({ employeeId: id });
-
-      if (!latestData) {
-        return res
-          .status(404)
-          .json({ message: "No Performance Report data found" });
-      }
-
-      res.status(200).json(latestData);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  }
-);
-
 // CHATBOT MESSAGE RECIEVE
 router.post("/send-chatbot", async (req, res) => {
   try {
@@ -1749,6 +1517,7 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
     throw error;
   }
 };
+
 router.get("/find-bulk-jobs", async (req, res) => {
   try {
     const now = new Date();
@@ -1847,5 +1616,379 @@ router.delete("/delete-review/:id", AdminAuthenticateToken, async (req, res) => 
     res.status(500).json({message: "Something went wrong!!!", error})
   }
 })
+
+// --------------------------------------------------------------------------------
+
+// EMPLOYEE SECTION
+
+// SIGNUP IS IN employees.js
+
+// FETCHING ALL employees
+router.get("/all-employees", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { email } = req.user;
+
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const allEmployees = await Employees.find({}, { password: 0 });
+
+    console.log(allEmployees);
+
+    return res.status(200).json(allEmployees);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong!!!" });
+  }
+});
+
+// FETCHING A Employee
+router.get("/all-employees/:id", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { email } = req.user;
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "user not Found" });
+    }
+
+    const oneEmployee = await Employees.findById({ _id: id }, { password: 0 });
+    console.log(oneEmployee);
+    return res.status(201).json(oneEmployee);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong!!!" });
+  }
+});
+
+// EMPLOYEE LEAVE REPORT
+// ADD LEAVE REPORT
+router.post("/add-leave-report/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { month, year, absentDays, lateDays, halfDays, adjustedLeaves } =
+      req.body;
+
+    // Find the existing report for the given month and year
+    const reportExists = await LeaveReport.findOne({
+      employeeId: id,
+      month: month,
+      year: year,
+    });
+    if (reportExists) {
+      return res
+        .status(409)
+        .json({ message: "This month's or year's report already exists" });
+    }
+
+    const currentReport = await LeaveReport.findOne({ employeeId: id });
+
+    let newReport = {};
+    if (currentReport) {
+      let currentLeaves = currentReport.totalLeaves;
+      if (month == "April" || month == "Apr") {
+        newReport = new LeaveReport({
+          employeeId: id,
+          month,
+          year,
+          absentDays,
+          lateDays,
+          halfDays,
+          adjustedLeaves,
+          totalLeaves: currentLeaves - adjustedLeaves + 16,
+        });
+      } else {
+        newReport = new LeaveReport({
+          employeeId: id,
+          month,
+          year,
+          absentDays,
+          lateDays,
+          halfDays,
+          adjustedLeaves,
+          totalLeaves: currentLeaves - adjustedLeaves,
+        });
+      }
+      await newReport.save();
+    } else {
+      newReport = new LeaveReport({
+        employeeId: id,
+        month,
+        year,
+        absentDays,
+        lateDays,
+        halfDays,
+        adjustedLeaves,
+        totalLeaves: 16 - adjustedLeaves,
+      });
+
+      await newReport.save();
+    }
+
+    res
+      .status(200)
+      .json({ message: "Leave report submitted successfully!!!", newReport });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// ADD PERFORMANCE REPORT
+router.post("/add-performance-report/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { month, year, multipleOf4x, monthlyIncentive, kpiScore } = req.body;
+
+    const reportExists = await PerformanceReport.findOne({
+      employeeId: id,
+      month: month,
+      year: year,
+    });
+    if (reportExists) {
+      return res
+        .status(409)
+        .json({ message: "This month's or year's report already exists" });
+    }
+
+    const currentReport = await PerformanceReport.findOne({ employeeId: id });
+
+    let newReport = {};
+    if (currentReport) {
+      let currentLeaves = currentReport.totalLeaves;
+      if (month == "April" || month == "Apr") {
+        newReport = new PerformanceReport({
+          employeeId: id,
+          month,
+          year,
+          multipleOf4x,
+          monthlyIncentive,
+          kpiScore,
+        });
+      } else {
+        newReport = new PerformanceReport({
+          employeeId: id,
+          month,
+          year,
+          multipleOf4x,
+          monthlyIncentive,
+          kpiScore,
+        });
+      }
+      await newReport.save();
+    } else {
+      newReport = new PerformanceReport({
+        employeeId: id,
+        month,
+        year,
+        multipleOf4x,
+        monthlyIncentive,
+        kpiScore,
+      });
+
+      await newReport.save();
+    }
+
+    res
+      .status(200)
+      .json({ message: "Performance report submitted", newReport });
+  } catch (error) {
+    console.log(error, "Something went wrong!!!");
+    res.status(500).json("Something went wrong!!!", error);
+  }
+});
+
+// GET LEAVE REPORT OF AN EMPLOYEE
+router.get("/leave-report/:id", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { email } = req.user;
+
+    // Find the user in the database
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const latestData = await LeaveReport.find({ employeeId: id });
+
+    if (!latestData) {
+      return res.status(404).json({ message: "No Leave Report data found" });
+    }
+
+    res.status(200).json(latestData);
+  } catch (error) {
+    console.log(error, "Something went wrong!!!");
+    res.status(500).json("Something went wrong!!!", error);
+  }
+});
+
+// GET PERFORMANCE REPORT OF AN EMPLOYEE
+router.get(
+  "/performance-report/:id",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { email } = req.user;
+
+      // Find the user in the database
+      const user = await Admin.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const latestData = await PerformanceReport.find({ employeeId: id });
+
+      if (!latestData) {
+        return res
+          .status(404)
+          .json({ message: "No Performance Report data found" });
+      }
+
+      res.status(200).json(latestData);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
+);
+
+// CREATE A GOAL SHEET OF AN EMPLOYEE
+router.post("/create-goalsheet/:id", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const {id} = req.params;
+    const {year} = req.body;
+
+    const goalSheetExist = await GoalSheet.findOne({owner: id, year: year});
+    if(goalSheetExist) {
+      return res.status(402).json({message: "Employee already has a goal sheet!!!"});
+    }
+
+    const newGoalSheet = new GoalSheet({
+      owner: id,
+      year
+    });
+
+    await newGoalSheet.save();
+
+    res.status(201).json({message: `New Goal sheet has been added for ${year}`})
+  } catch(error) {
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
+  }
+})
+
+// SET GOAL SHEET OF AN EMPLOYEE
+router.put("/set-goalsheet", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { empId, year, month, noOfJoinings, revenue, cost } = req.body;
+
+    // Find the employee by empId
+    const employee = await Employees.findById(empId);
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    // Find the goal sheet for the specified empId and year
+    let goalSheet = await GoalSheet.findOne({ owner: empId, year: year });
+    if (!goalSheet) {
+      goalSheet = new GoalSheet({ owner: empId, year: year, goalSheetDetails: [] });
+    }
+
+    // Calculate target
+    const target = cost * 4;
+
+    // Calculate cumulativeCost
+    let cumulativeCost = cost;
+    const [joinDay, joinMonth, joinYear] = employee.doj.split('/').map(Number);
+    if (joinMonth !== month || joinYear !== year) {
+      if (month === 1) { // January
+        const lastYearGoalSheet = await GoalSheet.findOne({ owner: empId, year: year - 1 });
+        if (lastYearGoalSheet) {
+          const lastYearDecemberDetails = lastYearGoalSheet.goalSheetDetails.find(detail => detail.goalSheet.month === 12);
+          if (lastYearDecemberDetails) {
+            cumulativeCost += lastYearDecemberDetails.goalSheet.cumulativeCost;
+          }
+        }
+      } else {
+        const previousMonthDetails = goalSheet.goalSheetDetails.find(detail => detail.goalSheet.month === month - 1);
+        if (previousMonthDetails) {
+          cumulativeCost += previousMonthDetails.goalSheet.cumulativeCost;
+        }
+      }
+    }
+
+    // Calculate cumulativeRevenue
+    let cumulativeRevenue = revenue;
+    if (joinMonth !== month || joinYear !== year) {
+      if (month === 1) { // January
+        const lastYearGoalSheet = await GoalSheet.findOne({ owner: empId, year: year - 1 });
+        if (lastYearGoalSheet) {
+          const lastYearDecemberDetails = lastYearGoalSheet.goalSheetDetails.find(detail => detail.goalSheet.month === 12);
+          if (lastYearDecemberDetails) {
+            cumulativeRevenue += lastYearDecemberDetails.goalSheet.cumulativeRevenue;
+          }
+        }
+      } else {
+        const previousMonthDetails = goalSheet.goalSheetDetails.find(detail => detail.goalSheet.month === month - 1);
+        if (previousMonthDetails) {
+          cumulativeRevenue += previousMonthDetails.goalSheet.cumulativeRevenue;
+        }
+      }
+    }
+
+    // Calculate achYTD and achMTD
+    const achYTD = cumulativeRevenue / cumulativeCost;
+    const achMTD = revenue / cost;
+
+    // Incentive plans
+    let noOfJoiningIncentive = 0;
+    let mtdIncentive = 0;
+    if (noOfJoinings === 3) {
+      noOfJoiningIncentive = 1000;
+    } else if (noOfJoinings ===4) {
+      noOfJoiningIncentive = 1500;
+    } else if (noOfJoinings >= 5) {
+      noOfJoiningIncentive = 2000;
+    } 
+
+    if (achMTD === 4) {
+      mtdIncentive = 1000;
+    } else if(achMTD >= 5) {
+      mtdIncentive = 2000;
+    }
+
+    const totalIncentive = noOfJoiningIncentive + mtdIncentive;
+    // Push new details to goalSheetDetails array
+    goalSheet.goalSheetDetails.push({
+      goalSheet: {
+        month: month,
+        noOfJoining: noOfJoinings,
+        cost: cost,
+        revenue: revenue,
+        target: target,
+        cumulativeCost: cumulativeCost,
+        cumulativeRevenue: cumulativeRevenue,
+        achYTD: achYTD,
+        achMTD: achMTD,
+        incentive: totalIncentive,
+      },
+    });
+
+    // Save the updated goal sheet
+    await goalSheet.save();
+
+    res.status(200).json({ message: "Goal sheet updated successfully" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// CREATE ACCOUNT HANDLING FOR AN EMPLOYEE
+router.post("/create-account-handling", AdminAuthenticateToken, )
 
 export default router;
