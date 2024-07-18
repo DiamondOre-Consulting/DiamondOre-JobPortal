@@ -129,9 +129,9 @@ router.get("/all-erp-data", EmployeeAuthenticateToken, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const allData = await ERP.find({});
+    const allData = await ERP.findOne().sort({_id: -1});
 
-    console.log(allData);
+    console.log(allData.EmpOfMonth);
 
     res.status(200).json(allData);
   } catch (error) {
@@ -226,5 +226,15 @@ router.put("/set-account-handling", EmployeeAuthenticateToken, async (req, res) 
     res.status(500).json({ message: error.message });
   }
 });
+
+// FETCH MY ACCOUNT HANDLING DETAIL
+router.get("/accounts/:id", async (req, res) => {
+  try {
+
+  } catch(error) {
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
+  }
+})
 
 export default router;

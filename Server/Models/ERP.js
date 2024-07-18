@@ -2,7 +2,8 @@ import mongoose from "mongoose";
 
 const erpSchema = new mongoose.Schema({
   EmpOfMonth: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Employees",
   },
   Top5HRs: [
     {

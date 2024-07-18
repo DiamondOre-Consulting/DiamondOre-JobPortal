@@ -61,7 +61,7 @@ router.get("/all-erp-data", AdminAuthenticateToken, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const allData = await ERP.find({});
+    const allData = await ERP.findOne().sort({_id: -1});
 
     console.log(allData);
 
