@@ -229,10 +229,16 @@ router.put("/set-account-handling", EmployeeAuthenticateToken, async (req, res) 
   }
 });
 
-// FETCH MY ACCOUNT HANDLING DETAIL
+// FETCH ACCOUNT HANDLING DETAIL
 router.get("/accounts/:id", async (req, res) => {
   try {
+    const {id} = req.params;
 
+    const findEmp = await AccountHandling.findOne({owner: id});
+    if(!findEmp) {
+      return res.status(402).json({message: "No account handling details"})
+    }
+    
   } catch(error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
