@@ -10,6 +10,7 @@ import Admin from "../Models/Admin.js";
 import LeaveReport from "../Models/LeaveReport.js";
 import PerformanceReport from "../Models/PerformanceReport.js";
 import AccountHandling from "../Models/AccountHandling.js";
+import GoalSheet from "../Models/GoalSheet.js";
 
 dotenv.config();
 
@@ -229,16 +230,51 @@ router.put("/set-account-handling", EmployeeAuthenticateToken, async (req, res) 
   }
 });
 
-// FETCH ACCOUNT HANDLING DETAIL
+// FETCH ALL ACCOUNT HANDLING
+router.get("/accounts", async (req, res) => {
+  try {
+    const allAccounts = await AccountHandling.find();
+    if(!allAccounts) {
+      return res.status(402).json({message: "No account found!!!"});
+    }
+
+    res.status(200).json(allAccounts);
+  } catch(error) {
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
+  }
+})
+
+// FETCH ACCOUNT HANDLING DETAIL OF AN EMPLOYEE
 router.get("/accounts/:id", async (req, res) => {
   try {
     const {id} = req.params;
 
-    const findEmp = await AccountHandling.findOne({owner: id});
-    if(!findEmp) {
+    const findAccount = await AccountHandling.findOne({owner: id});
+    if(!findAccount) {
       return res.status(402).json({message: "No account handling details"})
     }
+
+    res.status(200).json({findAccount});
     
+  } catch(error) {
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
+  }
+})
+
+// GET MY GOALSHEET
+router.get("/my-goalsheet", EmployeeAuthenticateToken, async (req, res) => {
+  try {
+     const {userId} = req.user;
+
+     const allGoalSheets = await GoalSheet.find({owner: userId});
+     if (allGoalSheets.length === 0) {
+      return res.status(402).json({message: "No goal sheet found!!!"});
+     }
+
+     res.status(200).json(allGoalSheets);
+
   } catch(error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });

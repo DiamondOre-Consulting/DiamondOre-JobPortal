@@ -1557,9 +1557,9 @@ router.get("/find-bulk-jobs", async (req, res) => {
           name: candidate.kamName
         })
         const eMailIdRec = findRec.email;
-        const eMailIdKam = findKam.email;
+        // const eMailIdKam = findKam.email;
         await sendJobsToRecByEmail(eMailIdRec, candidate, suitableJobs)
-        await sendJobsToKamByEmail(eMailIdKam, candidate, suitableJobs)
+        // await sendJobsToKamByEmail(eMailIdKam, candidate, suitableJobs)
       }
     }
 
@@ -1988,7 +1988,21 @@ router.put("/set-goalsheet", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
-// CREATE ACCOUNT HANDLING FOR AN EMPLOYEE
-router.post("/create-account-handling", AdminAuthenticateToken, )
+// GET AN EMPLOYEE's GOAL SHEETS
+router.get("/goalsheet/:id", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const {id} = req.params;
+
+    const findGoalSheets = await GoalSheet.find({owner: id});
+    if (findGoalSheets.length === 0) {
+      return res.status(402).json({message: "No goalsheet found!!!"});
+    }
+
+    res.status(200).json(findGoalSheets);
+  } catch(error) {
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
+  }
+})
 
 export default router;
