@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
 import Employees from "../Models/Employees.js";
 import EmployeeAuthenticateToken from "../Middlewares/EmployeeAuthenticateToken.js";
 import ERP from "../Models/ERP.js";
@@ -42,12 +43,10 @@ router.post("/add-emp", AdminAuthenticateToken, async (req, res) => {
       email,
       password: hashedPassword,
       dob,
-      doj
+      doj,
     });
 
     await newEmp.save();
-
-
 
     res
       .status(201)
@@ -111,7 +110,7 @@ router.get("/user-data", EmployeeAuthenticateToken, async (req, res) => {
       id,
       name,
       email,
-      profilePic
+      profilePic,
     });
   } catch (error) {
     console.error("Error logging in:", error);
@@ -130,13 +129,13 @@ router.get("/all-erp-data", EmployeeAuthenticateToken, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const allData = await ERP.findOne().sort({_id: -1});
+    const allData = await ERP.findOne().sort({ _id: -1 });
 
     console.log(allData.EmpOfMonth);
 
-    const findEmp = await Employees.findById({_id: allData.EmpOfMonth});
+    const findEmp = await Employees.findById({ _id: allData.EmpOfMonth });
 
-    res.status(200).json({allData, findEmp});
+    res.status(200).json({ allData, findEmp });
   } catch (error) {
     console.log(error, "Something went wrong!!!");
     res.status(500).json("Something went wrong!!!", error);
@@ -154,7 +153,7 @@ router.get("/leave-report", EmployeeAuthenticateToken, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const latestData = await LeaveReport.find({employeeId: userId});
+    const latestData = await LeaveReport.find({ employeeId: userId });
 
     if (!latestData) {
       return res.status(404).json({ message: "No Leave Report data found" });
@@ -168,117 +167,173 @@ router.get("/leave-report", EmployeeAuthenticateToken, async (req, res) => {
 });
 
 // GET PERFORMANCE REPORT
-router.get("/performance-report", EmployeeAuthenticateToken, async (req, res) => {
+router.get(
+  "/performance-report",
+  EmployeeAuthenticateToken,
+  async (req, res) => {
     try {
-        const { userId, email } = req.user;
+      const { userId, email } = req.user;
 
-        // Find the user in the database
-        const user = await Employees.findOne({ email });
-        if (!user) {
-          return res.status(404).json({ message: "User not found" });
-        }
-    
-        const latestData = await PerformanceReport.find({employeeId: userId});
-    
-        if (!latestData) {
-          return res.status(404).json({ message: "No Performance Report data found" });
-        }
-    
-        res.status(200).json(latestData);
-    } catch(error) {
-        console.error(err);
-        res.status(500).json({ error: "Internal server error" });
+      // Find the user in the database
+      const user = await Employees.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const latestData = await PerformanceReport.find({ employeeId: userId });
+
+      if (!latestData) {
+        return res
+          .status(404)
+          .json({ message: "No Performance Report data found" });
+      }
+
+      res.status(200).json(latestData);
+    } catch (error) {
+      console.error(err);
+      res.status(500).json({ error: "Internal server error" });
     }
-})
+  }
+);
 
 // SET ACCOUNT HANDLING
-router.put("/set-account-handling", EmployeeAuthenticateToken, async (req, res) => {
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: "harshkr2709@gmail.com",
+    pass: "frtohlwnukisvrzh",
+  },
+});
+router.put(
+  "/set-account-handling",
+  EmployeeAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { userId } = req.user;
+      const { hrName, clientName, phone, channel, zone } = req.body;
+
+      // Find the employee by userId
+      const employee = await Employees.findById(userId);
+      if (!employee) {
+        return res.status(404).json({ message: "Employee not found" });
+      }
+
+      // Check if any accountHandling has the same phone but different owner
+      const duplicatePhone = await AccountHandling.findOne({
+        "accountDetails.detail.phone": phone,
+        owner: { $ne: userId },
+      });
+
+      if (duplicatePhone) {
+        // Update the requests field of the duplicatePhone document
+        duplicatePhone.requests.push({
+          reqDetail: {
+            employee: userId,
+            status: null, // This will default to null as per your schema
+          },
+        });
+
+        await duplicatePhone.save();
+
+        // Send email notification to admin
+        const mailOptions = {
+          from: "harshkr2709@gmail.com",
+          to: "hr@diamondore.in",
+          subject: "Duplicate Phone Number Request",
+          text: `An employee: ${employee} has requested to use a duplicate phone number: ${phone}.`,
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.error("Error sending email:", error);
+          } else {
+            console.log("Email sent:", info.response);
+          }
+        });
+        return res
+          .status(400)
+          .json({ message: "Phone number already in use by another account, the request to use this phone number has been sent to Admin" });
+      }
+
+      // Find the account details for the specified userId
+      let accountHandling = await AccountHandling.findOne({ owner: userId });
+      if (!accountHandling) {
+        accountHandling = new AccountHandling({
+          owner: userId,
+          accountHandlingStatus: true,
+          accountDetails: [],
+        });
+      }
+
+      // Push new details to accountHandling array
+      accountHandling.accountDetails.push({
+        detail: {
+          hrName: hrName,
+          clientName: clientName,
+          phone: phone,
+          channel: channel,
+          zone: zone,
+        },
+      });
+
+      // Save the updated goal sheet
+      await accountHandling.save();
+
+      res.status(200).json({ message: "Account details updated successfully" });
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).json({ message: error.message });
+    }
+  }
+);
+
+// FETCH ALL ACCOUNT HANDLING
+router.get("/accounts", async (req, res) => {
   try {
-    const {userId} = req.user;
-    const { hrName, clientName, phone, channel, zone } = req.body;
-
-    // Find the employee by userId
-    const employee = await Employees.findById(userId);
-    if (!employee) {
-      return res.status(404).json({ message: "Employee not found" });
+    const allAccounts = await AccountHandling.find();
+    if (!allAccounts) {
+      return res.status(402).json({ message: "No account found!!!" });
     }
 
-    // Find the account details for the specified userId
-    let accountHandling = await AccountHandling.findOne({ owner: userId });
-    if (!accountHandling) {
-      accountHandling = new AccountHandling({ owner: userId, accountHandlingStatus: true, accountDetails: [] });
-    }
-
-    // Push new details to accountHandling array
-    accountHandling.accountDetails.push({
-      detail: {
-        hrName: hrName,
-        clientName: clientName,
-        phone: phone,
-        channel: channel,
-        zone: zone
-      },
-    });
-
-    // Save the updated goal sheet
-    await accountHandling.save();
-
-    res.status(200).json({ message: "Account details updated successfully" });
+    res.status(200).json(allAccounts);
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
   }
 });
 
-// FETCH ALL ACCOUNT HANDLING
-router.get("/accounts", async (req, res) => {
-  try {
-    const allAccounts = await AccountHandling.find();
-    if(!allAccounts) {
-      return res.status(402).json({message: "No account found!!!"});
-    }
-
-    res.status(200).json(allAccounts);
-  } catch(error) {
-    console.error(error.message);
-    res.status(500).json({ message: error.message });
-  }
-})
-
 // FETCH ACCOUNT HANDLING DETAIL OF AN EMPLOYEE
 router.get("/accounts/:id", async (req, res) => {
   try {
-    const {id} = req.params;
+    const { id } = req.params;
 
-    const findAccount = await AccountHandling.findOne({owner: id});
-    if(!findAccount) {
-      return res.status(402).json({message: "No account handling details"})
+    const findAccount = await AccountHandling.findOne({ owner: id });
+    if (!findAccount) {
+      return res.status(402).json({ message: "No account handling details" });
     }
 
-    res.status(200).json({findAccount});
-    
-  } catch(error) {
+    res.status(200).json({ findAccount });
+  } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
   }
-})
+});
 
 // GET MY GOALSHEET
 router.get("/my-goalsheet", EmployeeAuthenticateToken, async (req, res) => {
   try {
-     const {userId} = req.user;
+    const { userId } = req.user;
 
-     const allGoalSheets = await GoalSheet.find({owner: userId});
-     if (allGoalSheets.length === 0) {
-      return res.status(402).json({message: "No goal sheet found!!!"});
-     }
+    const allGoalSheets = await GoalSheet.find({ owner: userId });
+    if (allGoalSheets.length === 0) {
+      return res.status(402).json({ message: "No goal sheet found!!!" });
+    }
 
-     res.status(200).json(allGoalSheets);
-
-  } catch(error) {
+    res.status(200).json(allGoalSheets);
+  } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
   }
-})
+});
 
 export default router;

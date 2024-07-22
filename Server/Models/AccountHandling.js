@@ -42,6 +42,23 @@ const accountHandlingSchema = new mongoose.Schema({
     ],
     default: [],
   },
+  requests: {
+    type: [
+      {
+        reqDetail: {
+          employee: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Employees"
+          },
+          status: {
+            type: Boolean,
+            default: null
+          }
+        }
+      }
+    ],
+    default: []
+  },
   createdAt: {
     type: Date,
     default: Date.now
