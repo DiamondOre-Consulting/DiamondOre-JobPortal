@@ -14,6 +14,7 @@ const EachEmployeeGoalSheet = () => {
     const [employees, setEmployees] = useState([]);
     const [goalsheetform, setGoalSheetForm] = useState(false);
     const [selectedEmployee, setSelectedEmployee] = useState({});
+    const [goalSheetData, setGoalSheetData] = useState([]);
     const [year, setYear] = useState('');
     const [month, setMonth] = useState('');
     const [noOfJoinings, setNoOfJoinings] = useState('');
@@ -22,6 +23,7 @@ const EachEmployeeGoalSheet = () => {
     const [showSubmitLoader, setShowSubmitLoader] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
     const navigate = useNavigate();
+    
 
     // Submit the goal sheet form
     const handleSetGoalSheet = async (e) => {
@@ -89,11 +91,50 @@ const EachEmployeeGoalSheet = () => {
     };
 
 
+    // getGoalSheet
+
+    useEffect(() => {
+        const handleGoalSheet = async () => {
+
+            try {
+                const token = localStorage.getItem("token");
+                const response = await axios.get(`http://localhost:5000/api/admin-confi/goalsheet/${id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+
+                )
+
+                if (response.status === 200) {
+                    console.log("responsedata", response.data)
+                    setGoalSheetData(response.data)
+                }
+            }
+            catch (error) {
+                console.log(error)
+            }
+        }
+
+        handleGoalSheet();
+    }, [])
+
     return (
         <>
             {/* <AdminNav /> */}
+            <div className='flex'>
+                <h1 className='mx-auto text-4xl font-bold text-center mb-4'>Goal Sheet</h1>
 
-            <h1 className='mx-auto text-4xl font-bold text-center'>Goal Sheet</h1>
+                <select className='float-right mb-4 py-2 px-2 rounded-full'>
+                    <option>Select Year</option>
+                    {
+                        goalSheetData.map((y) => (
+                            <option key={y.year}>{y.year}</option>
+                        ))
+                    }
+                </select>
+            </div>
             <div className=' grid grid-cols-3 gap-10 py-6 px-10'>
 
                 <div className='border col-1'>
@@ -216,7 +257,59 @@ const EachEmployeeGoalSheet = () => {
                     </Snackbar>
                 </div>
 
+
                 <div className='border col-span-2'>
+
+
+                    <div class="container mx-auto overflow-x-auto h-96 relative">
+
+                        <table id="example" class="table-auto w-full ">
+                            <thead className='sticky top-0 bg-blue-900 text-gray-100 text-xs shadow'>
+                                <tr className=''>
+                                    <th class="px-4  py-2">Month</th>
+                                    <th class="px-4 py-2 ">No. of Joinings</th>
+                                    <th class="px-4 py-2">Revenue</th>
+                                    <th class="px-4 py-2">Cost</th>
+                                    <th class="px-4 py-2">Target</th>
+                                    <th class="px-4 py-2">Cumulative Cost</th>
+                                    <th class="px-4 py-2">Cumulative Revenue</th>
+                                    <th class="px-4 py-2">achYTD</th>
+                                    <th class="px-4 py-2">achMTD</th>
+                                    <th class="px-4 py-2">Incentive</th>
+
+                                </tr>
+                            </thead>
+
+
+                            <tbody>
+                                {
+                                    goalSheetData.map((data) => (
+                                        data.goalSheetDetails.map((detail) => (
+                                            <tr key={detail._id} className='text-center'>
+                                                <td class="border px-4 py-2">{detail.goalSheet.month}</td>
+                                                <td class="border px-4 py-2">{detail.goalSheet.noOfJoining}</td>
+                                                <td class="border px-4 py-2">{detail.goalSheet.revenue}</td>
+                                                <td class="border px-4 py-2">{detail.goalSheet.cost}</td>
+                                                <td class="border px-4 py-2">{detail.goalSheet.target}</td>
+                                                <td class="border px-4 py-2">{detail.goalSheet.cumulativeCost}</td>
+                                                <td class="border px-4 py-2">{detail.goalSheet.cumulativeRevenue}</td>
+                                                <td class="border px-4 py-2">{detail.goalSheet.achYTD}</td>
+                                                <td className="border px-4 py-2">{detail.goalSheet.achMTD}</td>
+                                                <td class="border px-4 py-2">{detail.goalSheet.incentive}</td>
+
+
+
+                                            </tr>
+
+                                        ))
+                                    ))
+                                }
+
+
+
+                            </tbody>
+                        </table>
+                    </div>
 
                 </div>
 
