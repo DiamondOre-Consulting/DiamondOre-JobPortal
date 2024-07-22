@@ -2,7 +2,9 @@ import React from 'react'
 
 
 
-const EmpHome = ({ empofthemonth, latestnews, hrname, client, RnRinterns, RnRRecruiter, Joinings , userData }) => {
+const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruiter, Joinings , userData }) => {
+
+    console.log( "employee", employee)
 
 
     return (
@@ -50,7 +52,7 @@ const EmpHome = ({ empofthemonth, latestnews, hrname, client, RnRinterns, RnRRec
                         <h1 className='uppercase font-bold text-3xl md:text-5xl text-gray-700'>Employee of the month</h1>
 
                         <div className='mt-4'>
-                            <h1 className='font-bold text-xl capitilized'>{empofthemonth}</h1>
+                            <h1 className='font-bold text-xl capitilized'>{employee?.name}</h1>
                             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga quisquam ratione facere quaerat quam. Iste dolorum, quod sed nihil sint, debitis vel illo, voluptas labore odit nulla dolore? Libero exercitationem fuga harum quo! Delectus sequi ut est sunt, a doloremque ipsum impedit culpa maiores possimus suscipit nostrum id quidem, odio nihil aut expedita, perspiciatis repudiandae. Soluta voluptates rerum hic odit?</p>
                         </div>
                     </div>

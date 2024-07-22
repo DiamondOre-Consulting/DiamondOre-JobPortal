@@ -60,11 +60,11 @@ const AllReviews = () => {
 
     return (
         <>
-            <AdminNav />
+            {/* <AdminNav /> */}
             <div>
                 <h1 className='text-center font-bold text-3xl'>All Reviews</h1>
                 <div className="main mt-10 mb-10">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-4 md:px-20 px-10 ">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-4 md:px-10 px-4 ">
                         {allreviews.map((review) => (
                             <div key={review._id} className="max-w-md">
                                 <div className="bg-white shadow-xl rounded-md overflow-hidden h-full flex flex-col">
@@ -137,7 +137,7 @@ const AllReviews = () => {
                 </div>
             )}
 
-            <Footer />
+            {/* <Footer /> */}
         </>
     );
 };

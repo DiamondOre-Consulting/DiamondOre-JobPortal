@@ -96,7 +96,7 @@ const AdminEachJob = () => {
 
   return (
     <div className="bg-white  ">
-      <AdminNav />
+      {/* <AdminNav /> */}
       <div>
         <h1 className="text-center text-5xl text-bold py-lg font-bold ">Each Job</h1>
         <div className="w-44 h-1 bg-blue-950 mx-auto"></div>
@@ -184,7 +184,7 @@ const AdminEachJob = () => {
                   <span  className="text-md font-bold lg:text-md">Download Resume</span>
                 </a>
                 <Link
-                  to={`/update-status/${jobs?._id}/${id}`}
+                  to={`/admin-dashboard/update-status/${jobs?._id}/${id}`}
                    className="cursor-pointer w-full flex-col rounded-lg bg-white p-4 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200"
                 >
                   <span  className="text-md font-bold lg:text-md">Update Status</span>
@@ -194,7 +194,7 @@ const AdminEachJob = () => {
           ))}
         </div>
       </div>
-      <AdminFooter />
+      {/* <AdminFooter /> */}
     </div>
   );
 };

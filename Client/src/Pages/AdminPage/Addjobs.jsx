@@ -94,7 +94,7 @@ const AddJobs = () => {
 
   return (
     <div>
-      <AdminNav />
+      {/* <AdminNav /> */}
       <h1 className='text-3xl  text-blue-950 text-center'>Upload youe Excel Sheet</h1>
       <div className='w-48 bg-blue-950 h-0.5 text-center mx-auto  my-3'></div>
 
@@ -127,7 +127,7 @@ const AddJobs = () => {
       )} */}
       <button type='submit' className='bg-blue-950 text-white p-2 px-12 flex items-center justify-center mx-auto rounded-md mt-1' onClick={handlesubmit}>Submit</button>
 
-      <AdminFooter />
+      {/* <AdminFooter /> */}
     </div>
   )
 }

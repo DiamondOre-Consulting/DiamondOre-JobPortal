@@ -57,6 +57,9 @@ import SearchJob from "./Pages/HomePage/SearchJob";
 import PostReview from "./Pages/HomePage/PostReview";
 import AllReviews from "./Pages/AdminPage/AllReviews";
 import EmpDrawerSidebar from "./Components/EmployeeComponents/EmpDrawerSidebar";
+import AllEmployee from "./Pages/AdminPage/AllEmployee";
+import EachEmployeeGoalSheet from "./Pages/AdminPage/EachEmployeeGoalSheet";
+import AdminDrawerSidebar from "./Components/AdminPagesComponents/AdminDrawerSidebar";
 
 function App() {
   let [loading, setLoading] = useState(true);
@@ -128,8 +131,11 @@ function App() {
             <Route path="/admin-signup" element={<AdminSignup />} />
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path='/admin/forgot-password' element={<Adminforgotpassword/>}/>
-            <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            {/* <Route path="/admin-dashboard" element={<AdminDashboard />} /> */}
+            <Route path="/admin-dashboard/*" element={<AdminDrawerSidebar/>}/>
             <Route path="/admin/all-jobs" element={<AdminAllJobs />} />
+            <Route path='/admin/all-employee' element={<AllEmployee/>}/>
+            <Route path='/admin/goal-sheet/:id' element={<EachEmployeeGoalSheet/>}/>
             <Route path="/admin/add-jobs" element={<AddJobs />} />
             <Route path="/admin/prompt" element={<Prompt/>}/>
             <Route path="/admin/all-jobs/:id" element={<AdminEachJob />} />

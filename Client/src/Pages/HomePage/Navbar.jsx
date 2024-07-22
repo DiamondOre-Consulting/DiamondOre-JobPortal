@@ -39,36 +39,36 @@ const Navbar = () => {
             <img className='w-3/6 sm:w-2/6 md:w-1/6 h-auto z-40 py-2' src={Logo} alt="DiamondOre Logo" />
 
             <nav className="hidden gap-12 lg:flex cursor-pointer z-40">
-              <Link to={'/'} href="#" className="text-lg font-semibold text-white">
+              <Link to={'/'} href="#" className="text-md font-semibold text-white">
                 Home
               </Link>
               <Link to={'/about'}
-                className="text-lg font-semibold text-white transition duration-100  active:text-blue-900"
+                className="text-md font-semibold text-white transition duration-100  active:text-blue-900"
               >
                 About Us
               </Link>
               <Link to={'/services'}
 
-                className="text-lg font-semibold text-white transition duration-100  active:text-blue-900"
+                className="text-md font-semibold text-white transition duration-100  active:text-blue-900"
               >
                 Services
               </Link>
               <Link to={'/contact'}
 
-                className="text-lg font-semibold text-white transition duration-100  active:text-blue-900"
+                className="text-md font-semibold text-white transition duration-100  active:text-blue-900"
               >
                 Contact Us
               </Link>
               <Link to={'/search-job'}
 
-                className="text-lg font-semibold text-white transition duration-100  active:text-blue-900"
+                className="text-md font-semibold text-white transition duration-100  active:text-blue-900"
               >
                 Search Job
               </Link>
 
               <Link to={'/post-review'}
 
-                className="text-lg font-semibold text-white transition duration-100  active:text-blue-900"
+                className="text-md font-semibold text-white transition duration-100  active:text-blue-900"
               >
                 Post Reviews
               </Link>
@@ -119,7 +119,7 @@ const Navbar = () => {
             <Link to={"/"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
-                  } transition ease-in-out delay-150 px-32 py-3 text-white text-lg font-semibold hover:bg-blue-950 hover:text-white hover:-translate-y-1 hover:scale-110 duration-250`}
+                  } transition ease-in-out delay-150 px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Home
               </li>
@@ -127,7 +127,7 @@ const Navbar = () => {
             <Link to={"/about"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-3 text-white text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                  } px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 About Us
               </li>
@@ -135,7 +135,7 @@ const Navbar = () => {
             <Link to={"/services"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-3 text-white text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                  } px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Services
               </li>
@@ -143,7 +143,7 @@ const Navbar = () => {
             <Link to={"/contact"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-3 text-white text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                  } px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Contact Us
               </li>
@@ -152,7 +152,7 @@ const Navbar = () => {
             <Link to={"/search-job"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-3 text-white text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                  } px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Search Job
               </li>
@@ -162,7 +162,7 @@ const Navbar = () => {
             <Link to={"/post-review"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-3 text-white text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                  } px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Post Reviews
               </li>
@@ -172,7 +172,7 @@ const Navbar = () => {
               <li
                 onClick={handleSignup}
                 className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-3 text-lg font-semibold bg-blue-900 text-white hover:bg-blue-950 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                  } px-32 py-3 text-md font-semibold bg-blue-900 text-white hover:bg-blue-950 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Signin
               </li>

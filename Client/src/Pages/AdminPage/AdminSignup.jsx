@@ -101,10 +101,10 @@ const AdminSignup = ({ toggleForm }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen ">
+    <div className="flex items-center justify-center  ">
     <div className="mx-auto max-w-screen-xl px-4  sm:px-6 bg-white rounded-md ">
       <div className="grid grid-cols-1 md:grid-cols-2">
-        <div className="p-6 space-y-4">
+        <div className=" space-y-4">
         <form
           onSubmit={handleAdminSignup}
           className="mb-0 mt-6 space-y-4 rounded-lg p-4 sm:p-6 lg:p-8 "

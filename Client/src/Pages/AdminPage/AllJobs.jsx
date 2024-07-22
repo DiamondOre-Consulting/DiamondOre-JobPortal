@@ -37,9 +37,9 @@ const AdminAllJobs = () => {
 
   return (
     <div className="bg-white  ">
-      <AdminNav />
+      {/* <AdminNav /> */}
       <AdminAllJobsCards />
-      <AdminFooter />
+      {/* <AdminFooter /> */}
 
 
     

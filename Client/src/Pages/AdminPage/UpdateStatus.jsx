@@ -263,7 +263,7 @@ const UpdateStatus = () => {
 
   return (
     <div className="bg-white  ">
-      <AdminNav />
+      {/* <AdminNav /> */}
       <div  className="bg-white py-6 sm:py-8 lg:py-12">
         <div  className="mx-auto max-w-screen-2xl px-4 md:px-8">
           <div  className="flex flex-col overflow-hidden rounded-lg bg-gray-200 sm:flex-row lg:h-90">
@@ -521,7 +521,7 @@ const UpdateStatus = () => {
           </div>
         </div>
       </div>
-      <AdminFooter />
+      {/* <AdminFooter /> */}
     </div>
   );
 };

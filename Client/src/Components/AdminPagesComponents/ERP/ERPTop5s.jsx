@@ -5,95 +5,67 @@ import top5client from '..//..//..//assets/Top 5 Clients Clear BG.png'
 const ERPTop5s = ({ hrname, client }) => {
   return (
     <div>
-      <section className="bg-gray-50">
-        <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16">
-            <div className="relative h-64 overflow-hidden rounded-lg sm:h-80 lg:order-last lg:h-full">
-              <img
-                alt="Party"
-                src={top5hr}
-                className="absolute inset-0 h-full w-full object-cover object-top"
-              />
-            </div>
+      <div className='mt-10 md:mt-20 md:px-6'>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-10'>
+          <div className=''>
+            <h1 className='uppercase text-2xl font-semibold  text-gray-900 px-10 py-2 text-center'> Top 5 hr</h1>
+            <table className="w-full text-sm text-center rtl:text-right text-gray-500 border border-1">
+              <thead className="text-xs text-gray-700 uppercase bg-white  ">
+                <tr className="bg-blue-900 text-white">
+                  <th scope="col" className="px-6 py-3">
+                    serial No
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Top5hrs
+                  </th>
+                </tr>
 
-            <div className="lg:py-24">
-              <div  className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table  className="w-full text-sm text-left rtl:text-right text-gray-500 ">
-                  <thead  className="text-xs text-gray-700 uppercase bg-white  ">
-                    <tr className="bg-blue-900 text-white">
-                      <th scope="col"  className="px-6 py-3">
-                        serial No
-                      </th>
-                      <th scope="col"  className="px-6 py-3">
-                        Top5hrs
-                      </th>
-                    </tr>
+                {hrname?.map((hrs) => (
+                  <tr>
+                    <th scope="col" className="px-6 py-3">
+                      {hrs.serialNumber}
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      {hrs.name}
+                    </th>
+                  </tr>
+                ))}
+              </thead>
+              <tbody>
 
-                    {hrname?.map((hrs) => (
-                      <tr>
-                        <th scope="col"  className="px-6 py-3">
-                          {hrs.serialNumber}
-                        </th>
-                        <th scope="col"  className="px-6 py-3">
-                          {hrs.name}
-                        </th>
-                      </tr>
-                    ))}
-                  </thead>
-                  <tbody>
-
-                  </tbody>
-                </table>
-              </div>
-            </div>
+              </tbody>
+            </table>
           </div>
-        </div>
-      </section>
-<hr className="bg-black"></hr>
-      <section className="bg-gray-200">
-        <div  className="mx-auto py-24 max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
-          <div  className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16">
-            <div  className="relative h-64 overflow-hidden rounded-lg sm:h-80 lg:h-full">
-              <img
-                alt="Party"
-                src={top5client}
-                 className="absolute inset-0 h-full w-full object-cover object-top"
-              />
-            </div>
-
-            <div className="lg:py-24">
-              <div  className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table  className="w-full text-sm text-left rtl:text-right text-gray-500 ">
-                  <thead  className="text-xs text-gray-700 uppercase bg-white  ">
-                    <tr className="bg-blue-900 text-white">
-                      <th scope="col"  className="px-6 py-3">
-                        S. No.
-                      </th>
-                      <th scope="col"  className="px-6 py-3">
-                        Top5Client
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  {client?.map((cl) => (
-                      <tr className="bg-white">
-                        <th scope="col"  className="px-6 py-3">
-                          {cl.serialNumber}
-                        </th>
-                        <th scope="col"  className="px-6 py-3">
-                          {cl.name}
-                        </th>
-                      </tr>
-                    ))}
-
-
-                  </tbody>
-                </table>
-              </div>
-            </div>
+          <div className=''>
+            <h1 className='uppercase text-xl font-semibold  text-gray-900 px-10 py-2 text-center'> Top 5 Clients</h1>
+            <table className="w-full text-sm text-center rtl:text-right text-gray-500 border border-1">
+              <thead className="text-xs text-gray-700 uppercase bg-white  ">
+                <tr className="bg-blue-900 text-white">
+                  <th scope="col" className="px-6 py-3">
+                    S. No.
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Top5Client
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {client?.map((cl) => (
+                  <tr className="bg-white">
+                    <th scope="col" className="px-6 py-3">
+                      {cl.serialNumber}
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      {cl.name}
+                    </th>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
+
         </div>
-      </section>
+      </div>
     </div>
   );
 };

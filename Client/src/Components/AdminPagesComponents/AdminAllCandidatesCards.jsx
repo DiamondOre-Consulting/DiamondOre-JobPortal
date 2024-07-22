@@ -87,7 +87,7 @@ const AdminAllCandidatesCards = () => {
                     </p>
                     <p className="text-sm text-gray-600 font-semibold">Phone Number - <span className="text-blue-950">{latestCandidate?.phone}</span></p>
 
-                    <Link to={`/admin/all-candidates/${latestCandidate?._id}`}  className="cursor-pointer w-full flex-col rounded-lg bg-blue-900 p-4 text-center text-white hover:bg-white hover:text-black-100 hover:text-gray-900 border border-blue-950 mt-2">
+                    <Link to={`/admin-dashboard/each-candidate/${latestCandidate?._id}`}  className="cursor-pointer w-full flex-col rounded-lg bg-blue-900 p-4 text-center text-white hover:bg-white hover:text-black-100 hover:text-gray-900 border border-blue-950 mt-2">
                       <span  className="text-md font-bold lg:text-md">
                         Know More
                       </span>

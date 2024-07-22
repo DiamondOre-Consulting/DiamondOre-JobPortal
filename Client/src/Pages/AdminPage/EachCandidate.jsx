@@ -94,7 +94,7 @@ const EachCandidate = () => {
 
   return (
     <div className="bg-white  ">
-      <AdminNav />
+      {/* <AdminNav /> */}
       <div className="my-2 flex flex-col justify-between text-center">
         <div  className="bg-white py-6 sm:py-8 lg:py-12">
           <h2  className="mb-8 text-center text-2xl font-bold text-gray-800 md:mb-12 lg:text-3xl">
@@ -169,7 +169,7 @@ const EachCandidate = () => {
           </div>
         </div>
       </div>
-      <AdminFooter />
+      {/* <AdminFooter /> */}
     </div>
   );
 };

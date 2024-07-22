@@ -137,7 +137,7 @@ const Prompt = () => {
 
     return (
         <>
-            <AdminNav />
+            {/* <AdminNav /> */}
             <button className= " bg-blue-900 px-6 py-2 text-gray-100 float-right mr-10 rounded-md" onClick={handlesendbulkjobs}>Send Bulk Jobs</button>
             <div className='flex flex-col mt-20 md:mt-10'>
             <h1 className="text-4xl ml-0 font-bold text-center">Prompt</h1>
@@ -246,7 +246,7 @@ const Prompt = () => {
                 )
             )}
 
-            <AdminFooter />
+            {/* <AdminFooter /> */}
         </>
     );
 };

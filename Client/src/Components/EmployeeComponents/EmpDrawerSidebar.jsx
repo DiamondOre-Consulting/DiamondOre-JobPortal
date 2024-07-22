@@ -100,7 +100,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function EmpDrawerSidebar() {
-  const [empofthemonth, setempofthemonth] = useState(null);
+  const [employee, setEmployee] = useState(null);
   const [latestnews, setlatestnews] = useState(null);
   const [hrname, sethrname] = useState(null);
   const [client, setclient] = useState(null);
@@ -134,9 +134,10 @@ export default function EmpDrawerSidebar() {
         );
 
         if (response.status === 200) {
-          const lastData = response.data.reverse()[0];
-
-          setempofthemonth(lastData.EmpOfMonth);
+          const lastData = response.data.allData;
+          const empdata = response.data.findEmp;
+          console.log(response.data);
+          setEmployee(empdata);
           setlatestnews(lastData.BreakingNews || []);
           sethrname(lastData.Top5HRs || []);
           setclient(lastData.Top5Clients || []);
@@ -292,8 +293,8 @@ export default function EmpDrawerSidebar() {
       <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
         <Routes>
-          <Route path='/' element={<EmpHome empofthemonth={empofthemonth} latestnews={latestnews} hrname={hrname} client={client} RnRRecruiter={RnRRecruiter} RnRinterns={RnRinterns} Joinings={Joinings}  userData={userData}/>} />
-          <Route path='/home' element={<EmpHome empofthemonth={empofthemonth} latestnews={latestnews} hrname={hrname} client={client} RnRRecruiter={RnRRecruiter} RnRinterns={RnRinterns} Joinings={Joinings} userData={userData} />} />
+          <Route path='/' element={<EmpHome employee={employee} latestnews={latestnews} hrname={hrname} client={client} RnRRecruiter={RnRRecruiter} RnRinterns={RnRinterns} Joinings={Joinings}  userData={userData} />} />
+          <Route path='/home' element={<EmpHome employee={employee} latestnews={latestnews} hrname={hrname} client={client} RnRRecruiter={RnRRecruiter} RnRinterns={RnRinterns} Joinings={Joinings} userData={userData} />} />
           <Route path='/goal-sheet' element={<EmpGoalSheet />} />
           <Route path='/kpi-score' element={<KPIscore/>}/>
           <Route path='/acount-handling' element={<AccountHandling userData={userData}/>}/>
