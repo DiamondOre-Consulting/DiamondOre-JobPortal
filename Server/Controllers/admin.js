@@ -2003,6 +2003,19 @@ router.get("/goalsheet/:id", AdminAuthenticateToken, async (req, res) => {
     console.error(error.message);
     res.status(500).json({ message: error.message });
   }
+});
+
+// OVER WRITE EMPLOYEE's ACCOUNT HANDLING DETAILS
+router.put("/account-handling/:id", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const {id} = req.params;
+
+    
+    
+  } catch(error) {
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
+  }
 })
 
 export default router;
