@@ -183,7 +183,7 @@ const AdminSignup = ({ toggleForm }) => {
             </div>
             <button
                 onClick={handleSendOtp}
-                className={`ml-4 rounded-lg bg-blue-950 px-3 py-2 text-sm font-medium text-white mt-2`}
+                className={` rounded-lg bg-blue-950 px-3 py-2 text-sm font-medium text-white mt-2`}
                 
               >
                 Send OTP
@@ -317,7 +317,7 @@ const AdminSignup = ({ toggleForm }) => {
 
             <button
               onClick={handleUploadImage}
-              className="bg-blue-950 hover:bg-blue-950 text-white px-1 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="bg-blue-950 hover:bg-blue-950 text-white px-1 w-1/2 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               Upload Image
             </button>

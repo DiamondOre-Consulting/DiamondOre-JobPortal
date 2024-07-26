@@ -9,6 +9,7 @@ const AccountHandling = ({ userData }) => {
     const [showSubmitLoader, setShowSubmitLoader] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [refresh, setRefresh] = useState(false);
+    const [accountdetails , setAccountDetails] = useState([])
     const [form, setForm] = useState({
         hrName: '',
         zone: '',
@@ -28,6 +29,7 @@ const AccountHandling = ({ userData }) => {
                 if (response.status === 200) {
                     setRows(response.data);
                     console.log("Account handling data", response.data);
+                    setAccountDetails(response.data);
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -126,7 +128,7 @@ const AccountHandling = ({ userData }) => {
                                 </thead>
 
                                 <tbody className="divide-y divide-gray-200 dark:divide-neutral-700 text-center">
-                                    {rows.accountDetails?.map((row, index) => (
+                                    {accountdetails?.findAccount?.accountDetails?.map((row, index) => (
                                         <tr key={index}>
                                             <td className="px-6 py-4 whitespace-nowrap border text-sm font-medium text-gray-800 dark:text-neutral-200">{index + 1}</td>
                                             <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 dark:text-neutral-200">{row.detail.hrName}</td>

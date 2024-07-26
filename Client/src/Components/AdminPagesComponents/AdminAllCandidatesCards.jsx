@@ -72,7 +72,7 @@ const AdminAllCandidatesCards = () => {
                 data-testid="loader"
               />
             </div> :
-            <div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-3">
               {latestCandidates.map((latestCandidate) => (
                 <div>
                   <div
