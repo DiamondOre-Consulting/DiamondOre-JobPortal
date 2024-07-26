@@ -34,6 +34,7 @@ import JobsTesting from "../Models/JobsTesting.js";
 import RecruitersAndKAMs from "../Models/RecruitersAndKAMs.js";
 import ClientReviews from "../Models/ClientReviews.js";
 import GoalSheet from "../Models/GoalSheet.js";
+import AccountHandling from "../Models/AccountHandling.js";
 
 dotenv.config();
 
@@ -2005,12 +2006,37 @@ router.get("/goalsheet/:id", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
+// GET ALL THE DUPLICATE PHONE NUMBER REQUESTS 
+router.get("/duplicate-phone-requests", AdminAuthenticateToken, async (req, res) => {
+  try {
+        // Find all AccountHandling documents with non-empty requests
+        const duplicatePhoneRequests = await AccountHandling.find({ "requests.0": { $exists: true } });
+        if(!duplicatePhoneRequests) {
+          return res.status(402).json({message: "No Accounts available with duplicate requests!!!"})
+        } 
+  
+      res.status(200).json(duplicatePhoneRequests);
+  } catch(error) {
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
+  }
+})
+
 // OVER WRITE EMPLOYEE's ACCOUNT HANDLING DETAILS
 router.put("/account-handling/:id", AdminAuthenticateToken, async (req, res) => {
   try {
     const {id} = req.params;
+    const {status} = req.body;
 
-    
+    const findAccount = await AccountHandling.findById({_id: id});
+    if(!findAccount) {
+      return res.status(402).json({message: "No account found with this id!!!"});
+    }
+
+    if(status === "true") {
+      
+      return res.status()
+    }
     
   } catch(error) {
     console.error(error.message);

@@ -752,6 +752,7 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
           const mailOptions = {
             from: "Diamondore.in <harshkr2709@gmail.com>",
             to: `Recipient <hr@diamondore.in>`,
+            cc: ['rahul@rasonline.in', 'rahul@diamondore.in'],
             subject: `A new applicant applied for ${job.JobTitle}`,
             html: `
             <ul>
