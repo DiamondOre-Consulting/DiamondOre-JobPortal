@@ -54,6 +54,8 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import EmployeeBranchesPage from '../../Pages/AdminPage/EmployeeBranchesPage';
+import erpicon from '../../assets/erpicon.png'
 
 const drawerWidth = 240;
 
@@ -238,7 +240,7 @@ const AdminDrawerSidebar = () => {
                         { text: 'Home', icon: <HomeIcon />, path: '/home' },
                         { text: 'All Jobs', icon: <WorkIcon />, path: '/all-Jobs' },
                         { text: 'All Candidate', icon: <GroupIcon />, path: '/all-candidates' },
-                        { text: 'ERP', icon: <MonetizationOnOutlinedIcon />, path: '/erp-dashboard' },
+                        { text: 'ERP', icon: <img src={erpicon} className='w-6 h-6' />, path: '/erp-dashboard' },
                         { text: 'Add Jobs', icon: <DomainAddIcon />, path: '/add-jobs' },
                         { text: 'All Reviews', icon: <ReviewsIcon />, path: '/all-reviews' },
                         { text: 'All Employees', icon: <BadgeIcon />, path: '/all-employees' },
@@ -289,6 +291,7 @@ const AdminDrawerSidebar = () => {
                     <Route path='/add-jobs' element={<AddJobs />} />
                     <Route path='/all-reviews' element={<AllReviews />} />
                     <Route path='/all-employees' element={<AllEmployee />} />
+                    <Route path='/employee/:id' element={<EmployeeBranchesPage/>}/>
                     <Route path='/goal-sheet/:id' element={<EachEmployeeGoalSheet />} />
                     <Route path='/add-recruiter' element={<AddRecruiter />} />
                     <Route path='/add-employee' element={<Employeesignup />} />

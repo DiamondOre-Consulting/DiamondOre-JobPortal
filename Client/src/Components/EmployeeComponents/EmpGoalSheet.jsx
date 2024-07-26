@@ -1,6 +1,56 @@
-import React from 'react'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
 
 const EmpGoalSheet = () => {
+    const [selectedYear, setSelectedYear] = useState('');
+    const [allGoalSheetData, setAllGoalSheetData] = useState([]);
+    const [filteredGoalSheetData, setFilteredGoalSheetData] = useState([]);
+
+
+    useEffect(() => {
+        const handleGoalSheet = async () => {
+
+            try {
+                const token = localStorage.getItem("token");
+                const response = await axios.get(`http://localhost:5000/api/employee/my-goalsheet`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+
+                )
+
+                if (response.status === 200) {
+                    console.log("responsedata", response.data)
+                    setAllGoalSheetData(response.data);
+
+                }
+            }
+            catch (error) {
+                console.log(error)
+            }
+        }
+
+        handleGoalSheet();
+    }, [])
+
+
+
+    useEffect(() => {
+        if (selectedYear) {
+            const filteredData = allGoalSheetData.filter(item => item.year === parseInt(selectedYear));
+            setFilteredGoalSheetData(filteredData);
+        } else {
+            setFilteredGoalSheetData([]);
+        }
+    }, [selectedYear, allGoalSheetData]);
+
+    const handleYearChange = (e) => {
+        setSelectedYear(e.target.value);
+    };
+
+
     return (
         <>
             <div>
@@ -8,53 +58,70 @@ const EmpGoalSheet = () => {
                 <div className='w-20 h-0.5 bg-blue-900'></div>
 
 
-                <div className='flex justify-end '>
-                    <select className='p-2'>
+
+                <div className='col-span-2'>
+
+                    <select className='float-right mb-4 py-2 px-2 rounded-full' value={selectedYear}
+                        onChange={handleYearChange}>
                         <option>Select Year</option>
+                        {
+                            allGoalSheetData.map((y) => (
+                                <option value={y.year} key={y.year}>{y.year}</option>
+                            ))
+                        }
                     </select>
+                    <div class="container mx-auto overflow-x-auto h-96 relative">
+                        <table id="example" class="table-auto w-full ">
+                            <thead className='sticky top-0 bg-blue-900 text-gray-100 text-xs shadow'>
+                                <tr className=''>
+                                    <th class="px-4  py-2">Month</th>
+                                    <th class="px-4 py-2 ">No. of Joinings</th>
+                                    <th class="px-4 py-2">Revenue</th>
+                                    <th class="px-4 py-2">Cost</th>
+                                    <th class="px-4 py-2">Target</th>
+                                    <th class="px-4 py-2">Cumulative Cost</th>
+                                    <th class="px-4 py-2">Cumulative Revenue</th>
+                                    <th class="px-4 py-2">achYTD</th>
+                                    <th class="px-4 py-2">achMTD</th>
+                                    <th class="px-4 py-2">Incentive</th>
+
+                                </tr>
+                            </thead>
+
+
+                            <tbody>
+                                {filteredGoalSheetData.length > 0 ? (
+                                    filteredGoalSheetData.map((data) => (
+                                        <React.Fragment key={data._id}>
+                                            {data.goalSheetDetails.map((detail, index) => (
+                                                <tr key={`${data._id}-${index}`} className='text-center'>
+                                                    <td className="border px-4 py-2">{detail.goalSheet.month}</td>
+                                                    <td className="border px-4 py-2">{detail.goalSheet.noOfJoining}</td>
+                                                    <td className="border px-4 py-2">{detail.goalSheet.revenue}</td>
+                                                    <td className="border px-4 py-2">{detail.goalSheet.cost}</td>
+                                                    <td className="border px-4 py-2">{detail.goalSheet.target}</td>
+                                                    <td className="border px-4 py-2">{detail.goalSheet.cumulativeCost}</td>
+                                                    <td className="border px-4 py-2">{detail.goalSheet.cumulativeRevenue}</td>
+                                                    <td className="border px-4 py-2">{detail.goalSheet.achYTD}</td>
+                                                    <td className="border px-4 py-2">{detail.goalSheet.achMTD}</td>
+                                                    <td className="border px-4 py-2">{detail.goalSheet.incentive}</td>
+                                                </tr>
+                                            ))}
+                                        </React.Fragment>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="10" className="text-center">No data available for the selected year.</td>
+                                    </tr>
+                                )}
+                            </tbody>
+
+                        </table>
+                    </div>
+
                 </div>
 
-                <div className='md:overflow-auto overflow-scroll mt-10 w-72 md:w-full mb-4'>
-                    <table className="w-full text-sm text-left rtl:text-right text-gray-500 md:overflow-auto overflow-scroll border  ">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-50  ">
-                            <tr className=' text-white text-center'>
-                                <th class="py-3 px-6 border text-center text-xs text-gray-800 font-bold">Month</th>
-                                <th class="py-3 px-6 border text-center text-xs text-gray-800 font-bold">Year</th>
-                                <th class="py-3 px-6 border text-center text-xs text-gray-800 font-bold">No. of Joinings</th>
-                                <th class="py-3 px-6 border text-center text-xs text-gray-800 font-bold">Revenue</th>
-                                <th class="py-3 px-6 border text-center text-xs text-gray-800 font-bold">Cost</th>
-                                <th class="py-3 px-6 border text-center text-xs text-gray-800 font-bold">Target</th>
-                                <th class="py-3 px-6 border text-center text-xs text-gray-800 font-bold">Cumulative Cost</th>
-                                <th class="py-3 px-6 border text-center text-xs text-gray-800 font-bold">CV Revenue</th>
-                                <th class="py-3 px-6 border text-center text-xs text-gray-800 font-bold">ACHYTD</th>
-                                <th class="py-3 px-6 border text-center text-xs text-gray-800 font-bold">ACHMTD</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr className="bg-white border-b hover:bg-gray-50 text-center ">
 
-
-                                <td class="py-4 px-6 border-b border-gray-200">Select Month</td>
-                                <td class="py-4 px-6 border-b border-gray-200">2024</td>
-                                <td class="py-4 px-6 border-b border-gray-200">1</td>
-                                <td class="py-4 px-6 border-b border-gray-200">2300</td>
-                                <td class="py-4 px-6 border-b border-gray-200">4300</td>
-                                <td class="py-4 px-6 border-b border-gray-200">1</td>
-                                <td class="py-4 px-6 border-b border-gray-200">2300</td>
-                                <td class="py-4 px-6 border-b border-gray-200">4300</td>
-                                <td class="py-4 px-6 border-b border-gray-200">1</td>
-                                <td class="py-4 px-6 border-b border-gray-200">2300</td>
-
-                            </tr>
-
-
-
-                        </tbody>
-                    </table>
-                  
-                </div>
-
-               
 
             </div>
             {/* <span className='border p-2 mt-4 border-2 border-gray-500 flex justify-end inline'>

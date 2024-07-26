@@ -59,7 +59,7 @@ const AllEmployee = () => {
 
                 <div className='grid grid-cols-1 md:grid-cols-4 gap-8 mb-10'>
                     {employees.map((emp) => (
-                        <Link to={`/admin-dashboard/goal-sheet/${emp?._id}`}
+                        <Link to={`/admin-dashboard/employee/${emp?._id}`}
                             className="bg-white flex justify-between dark:bg-gray-700 relative shadow-xl overflow-hidden hover:shadow-2xl cursor-pointer group rounded-xl p-5 transition-all duration-500 transform"
                             key={emp._id}
                         >

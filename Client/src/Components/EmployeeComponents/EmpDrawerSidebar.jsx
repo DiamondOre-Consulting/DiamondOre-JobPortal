@@ -32,6 +32,11 @@ import { useEffect, useState } from 'react';
 import KPIscore from './KPIscore';
 import Incentive from './Incentive';
 import AccountHandling from './AccountHandling';
+import AllAccounts from './AllAccounts';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import goalsheeticon from '../../assets/goalsheeticon.png';
+import incentiveicon from '../../assets/incentiveicon.png';
+import kpiicon from '../../assets/kpiicon.png'
 
 const drawerWidth = 240;
 
@@ -219,6 +224,8 @@ export default function EmpDrawerSidebar() {
     navigate(`/employee-dashboard${path}`);
   };
 
+ 
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -260,11 +267,12 @@ export default function EmpDrawerSidebar() {
         <Divider />
         <List>
           {[
-            { text: 'Home', icon: <HomeIcon />, path: '/home' },
-            { text: 'Goal Sheet', icon: <TaskOutlinedIcon />, path: '/goal-sheet' },
-            { text: 'Incentive', icon: <MonetizationOnOutlinedIcon />, path: '/incentive' },
-            { text: 'KPI-Score', icon: <DialpadOutlinedIcon />, path: '/kpi-score' },
-            { text: 'Account Handling', icon: <AccountCircleIcon />, path: '/acount-handling' },
+            { text: 'Home', icon: <HomeIcon sx={{ fontSize: 30 }} />, path: '/home' },
+            { text: 'Goal Sheet', icon: <img src={goalsheeticon} className='w-8 h-8' />, path: '/goal-sheet' },
+            { text: 'Incentive', icon: <img src={incentiveicon} className='w-8 h-8'/>, path: '/incentive' },
+            { text: 'KPI-Score', icon: <img src={kpiicon} className='w-8 h-8' />, path: '/kpi-score' },
+            { text: 'Account Handling', icon: <AccountCircleIcon sx={{ fontSize: 30 }} />, path: '/acount-handling' },
+            { text: 'All Accounts', icon: <ManageAccountsIcon  sx={{ fontSize: 30 }}/>, path: '/all-accounts' },
           ].map((item) => (
             <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
@@ -273,6 +281,7 @@ export default function EmpDrawerSidebar() {
                   minHeight: 48,
                   justifyContent: open ? 'initial' : 'center',
                   px: 2.5,
+                 
                 }}
               >
                 <ListItemIcon
@@ -280,6 +289,7 @@ export default function EmpDrawerSidebar() {
                     minWidth: 0,
                     mr: open ? 3 : 'auto',
                     justifyContent: 'center',
+                    
                   }}
                 >
                   {item.icon}
@@ -299,6 +309,7 @@ export default function EmpDrawerSidebar() {
           <Route path='/kpi-score' element={<KPIscore/>}/>
           <Route path='/acount-handling' element={<AccountHandling userData={userData}/>}/>
           <Route path='/incentive' element={<Incentive/>}/>
+          <Route path='/all-accounts' element={<AllAccounts/>}/>
         </Routes>
       </Box>
     </Box>

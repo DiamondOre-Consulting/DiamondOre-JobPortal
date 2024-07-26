@@ -90,7 +90,7 @@ const NewlyAddedCandidates = () => {
             <div
                className="flex flex-col justify-center h-48 overflow-hidden rounded-lg bg-gray-200 p-4 shadow-lg"
             >
-                <Link to={`/admin-dashboard/all-jobs`}  className="cursor-pointer w-full flex-col rounded-lg bg-white p-4 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200">
+                <Link to={`/admin-dashboard/all-candidates`}  className="cursor-pointer w-full flex-col rounded-lg bg-white p-4 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200">
                   <span  className="text-md font-bold lg:text-md">
                     All Candidates
                   </span>

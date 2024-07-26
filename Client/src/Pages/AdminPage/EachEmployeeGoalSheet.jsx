@@ -23,7 +23,10 @@ const EachEmployeeGoalSheet = () => {
     const [showSubmitLoader, setShowSubmitLoader] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
     const navigate = useNavigate();
-    
+    const [selectedYear, setSelectedYear] = useState('');
+    const [allGoalSheetData, setAllGoalSheetData] = useState([]);
+    const [filteredGoalSheetData, setFilteredGoalSheetData] = useState([]);
+
 
     // Submit the goal sheet form
     const handleSetGoalSheet = async (e) => {
@@ -109,7 +112,8 @@ const EachEmployeeGoalSheet = () => {
 
                 if (response.status === 200) {
                     console.log("responsedata", response.data)
-                    setGoalSheetData(response.data)
+                    setAllGoalSheetData(response.data);
+
                 }
             }
             catch (error) {
@@ -120,25 +124,39 @@ const EachEmployeeGoalSheet = () => {
         handleGoalSheet();
     }, [])
 
+
+
+    useEffect(() => {
+        if (selectedYear) {
+            const filteredData = allGoalSheetData.filter(item => item.year === parseInt(selectedYear));
+            setFilteredGoalSheetData(filteredData);
+        } else {
+            setFilteredGoalSheetData([]);
+        }
+    }, [selectedYear, allGoalSheetData]);
+
+    const handleYearChange = (e) => {
+        setSelectedYear(e.target.value);
+    };
+    
+    
+    
+    
+
+
+
     return (
         <>
             {/* <AdminNav /> */}
             <div className='flex'>
-                <h1 className='mx-auto text-4xl font-bold text-center mb-4'>Goal Sheet</h1>
+                <h1 className='mx-auto text-2xl md:text-4xl font-bold text-center mb-4'>Goal Sheet</h1>
 
-                <select className='float-right mb-4 py-2 px-2 rounded-full'>
-                    <option>Select Year</option>
-                    {
-                        goalSheetData.map((y) => (
-                            <option key={y.year}>{y.year}</option>
-                        ))
-                    }
-                </select>
+               
             </div>
-            <div className=' grid grid-cols-3 gap-10 py-6 px-10'>
+            <div className=' grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-10 py-6 px-2 md:px-10'>
 
-                <div className='border col-1'>
-                    <div className="bg-white border-blue-900  p-8 rounded-lg shadow-lg relative max-w-md md:w-full mx-10 md:mx-0">
+                <div className=' md:col-1'>
+                    <div className="bg-white border-blue-900  p-8 rounded-lg shadow-lg relative max-w-md md:w-full mb-10 md:mt-0">
 
                         <h2 className="text-2xl mb-4">Update Goal Sheet</h2>
                         <form onSubmit={handleSetGoalSheet}>
@@ -258,11 +276,18 @@ const EachEmployeeGoalSheet = () => {
                 </div>
 
 
-                <div className='border col-span-2'>
+                <div className='col-span-2'>
 
-
+                <select className='float-right mb-4 py-2 px-2 rounded-full' value={selectedYear}
+                    onChange={handleYearChange}>
+                    <option>Select Year</option>
+                    {
+                        allGoalSheetData.map((y) => (
+                            <option value={y.year} key={y.year}>{y.year}</option>
+                        ))
+                    }
+                </select>
                     <div class="container mx-auto overflow-x-auto h-96 relative">
-
                         <table id="example" class="table-auto w-full ">
                             <thead className='sticky top-0 bg-blue-900 text-gray-100 text-xs shadow'>
                                 <tr className=''>
@@ -282,32 +307,32 @@ const EachEmployeeGoalSheet = () => {
 
 
                             <tbody>
-                                {
-                                    goalSheetData.map((data) => (
-                                        data.goalSheetDetails.map((detail) => (
-                                            <tr key={detail._id} className='text-center'>
-                                                <td class="border px-4 py-2">{detail.goalSheet.month}</td>
-                                                <td class="border px-4 py-2">{detail.goalSheet.noOfJoining}</td>
-                                                <td class="border px-4 py-2">{detail.goalSheet.revenue}</td>
-                                                <td class="border px-4 py-2">{detail.goalSheet.cost}</td>
-                                                <td class="border px-4 py-2">{detail.goalSheet.target}</td>
-                                                <td class="border px-4 py-2">{detail.goalSheet.cumulativeCost}</td>
-                                                <td class="border px-4 py-2">{detail.goalSheet.cumulativeRevenue}</td>
-                                                <td class="border px-4 py-2">{detail.goalSheet.achYTD}</td>
-                                                <td className="border px-4 py-2">{detail.goalSheet.achMTD}</td>
-                                                <td class="border px-4 py-2">{detail.goalSheet.incentive}</td>
-
-
-
-                                            </tr>
-
-                                        ))
+                                {filteredGoalSheetData.length > 0 ? (
+                                    filteredGoalSheetData.map((data) => (
+                                        <React.Fragment key={data._id}>
+                                            {data.goalSheetDetails.map((detail, index) => (
+                                                <tr key={`${data._id}-${index}`} className='text-center'>
+                                                    <td className="border px-4 py-2">{detail.goalSheet.month}</td>
+                                                    <td className="border px-4 py-2">{detail.goalSheet.noOfJoining}</td>
+                                                    <td className="border px-4 py-2">{detail.goalSheet.revenue}</td>
+                                                    <td className="border px-4 py-2">{detail.goalSheet.cost}</td>
+                                                    <td className="border px-4 py-2">{detail.goalSheet.target}</td>
+                                                    <td className="border px-4 py-2">{detail.goalSheet.cumulativeCost}</td>
+                                                    <td className="border px-4 py-2">{detail.goalSheet.cumulativeRevenue}</td>
+                                                    <td className="border px-4 py-2">{detail.goalSheet.achYTD}</td>
+                                                    <td className="border px-4 py-2">{detail.goalSheet.achMTD}</td>
+                                                    <td className="border px-4 py-2">{detail.goalSheet.incentive}</td>
+                                                </tr>
+                                            ))}
+                                        </React.Fragment>
                                     ))
-                                }
-
-
-
+                                ) : (
+                                    <tr>
+                                        <td colSpan="10" className="text-center">No data available for the selected year.</td>
+                                    </tr>
+                                )}
                             </tbody>
+
                         </table>
                     </div>
 
@@ -316,6 +341,52 @@ const EachEmployeeGoalSheet = () => {
 
             </div>
 
+
+            {/*  */}
+
+
+            <div className="p-4">
+                {/* <div className="mb-4">
+                    <label htmlFor="year" className="block text-sm font-medium text-gray-700">Select Year:</label>
+                    <select
+                        id="year"
+                        value={selectedYear}
+                        onChange={handleYearChange}
+                        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                    >
+                        <option value="">-- Select Year --</option>
+                        <option value="2021">2021</option>
+                        <option value="2022">2022</option>
+                        <option value="2023">2023</option>
+                    </select>
+                </div> */}
+
+                {/* {filteredGoalSheetData.length > 0 ? (
+                    <div>
+                        {filteredGoalSheetData.map((data) => (
+                            <div key={data._id} className="mb-6 p-4 border border-gray-300 rounded-md shadow-md">
+                                <h3 className="text-lg font-semibold mb-2">Year: {data.year}</h3>
+                                {data.goalSheetDetails.map((detail) => (
+                                    <div key={detail._id} className="mb-4 p-2 border-b border-gray-200">
+                                        <h4 className="text-md font-medium">Month: {detail.goalSheet.month}</h4>
+                                        <p>No of Joining: {detail.goalSheet.noOfJoining}</p>
+                                        <p>Cost: {detail.goalSheet.cost}</p>
+                                        <p>Revenue: {detail.goalSheet.revenue}</p>
+                                        <p>Target: {detail.goalSheet.target}</p>
+                                        <p>Cumulative Cost: {detail.goalSheet.cumulativeCost}</p>
+                                        <p>Cumulative Revenue: {detail.goalSheet.cumulativeRevenue}</p>
+                                        <p>Achievement YTD: {detail.goalSheet.achYTD}</p>
+                                        <p>Achievement MTD: {detail.goalSheet.achMTD}</p>
+                                        <p>Incentive: {detail.goalSheet.incentive}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p>No data available for the selected year.</p>
+                )} */}
+            </div>
             {/* <Footer /> */}
         </>
     )
