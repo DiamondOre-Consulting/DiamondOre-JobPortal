@@ -295,7 +295,20 @@ router.get("/accounts", async (req, res) => {
       return res.status(402).json({ message: "No account found!!!" });
     }
 
-    res.status(200).json(allAccounts);
+    const empNames = [];
+    const empAccounts = [];
+    for(let i=0; i<allAccounts.length; i++) {
+      const empName = await Employees.findById(allAccounts[i].owner).select('name');
+      if (empName) {
+        empNames.push(empName);
+        empAccounts.push({ ...allAccounts[i]._doc, ownerName: empName.name });
+      }
+    }
+    
+    console.log(empNames);
+    // console.log(empAccounts);
+
+    res.status(200).json(empAccounts);
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
