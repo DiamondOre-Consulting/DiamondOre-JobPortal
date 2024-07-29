@@ -2,81 +2,76 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 
 const AllAccounts = () => {
-
     const [allAccountsData, setAllAccountsData] = useState([]);
 
     useEffect(() => {
         const fetchAllAccount = async () => {
             try {
-
-                const response = await axios.get('http://localhost:5000/api/employee/accounts', {
-
-                })
-
+                const response = await axios.get('http://localhost:5000/api/employee/accounts');
                 if (response.status === 200) {
-                    console.log("all accounts data ", response.data)
-                    setAllAccountsData(response.data)
+                    setAllAccountsData(response.data);
                 }
-
-            }
-            catch (error) {
-                console.log(error)
+            } catch (error) {
+                console.log(error);
             }
         }
 
         fetchAllAccount();
-    }, [])
+    }, []);
+
+    const groupedData = allAccountsData.reduce((acc, account) => {
+        const ownerName = account.ownerName;
+        if (!acc[ownerName]) {
+            acc[ownerName] = [];
+        }
+        acc[ownerName].push(account);
+        return acc;
+    }, {});
+
     return (
         <>
             <div>
-
-                <h1 className='text-3xl text-center'>All Accounts</h1>
+                <h1 className='text-3xl text-center'>All Accounts</h1> 
                 <div className='w-40 h-1 bg-blue-900 mx-auto'></div>
 
-                <div>
-                    <table id="example" class="table-auto w-full mt-10">
-                        <thead className='sticky top-0 bg-blue-900 text-gray-100 text-xs shadow'>
-                            <tr className=''>
-                                <th class="px-4  py-2">HR Name</th>
-                                <th class="px-4 py-2 ">Client Name</th>
-                                <th class="px-4 py-2">Phone</th>
-                                <th class="px-4 py-2">Zone</th>
+                
 
-                            </tr>
-                        </thead>
-
-
-                        <tbody>
-                            {allAccountsData.length > 0 ? (
-                                allAccountsData.map((data) => (
-                                    <React.Fragment key={data._id}>
-                                        {data.accountDetails.map((detail, index) => (
-                                            <tr key={`${data._id}-${index}`} className='text-center'>
-                                                <td className="border px-4 py-2">{detail.detail.hrName}</td>
-                                                <td className="border px-4 py-2">{detail.detail.clientName}</td>
-                                                <td className="border px-4 py-2">{detail.detail.phone}</td>
-                                                <td className="border px-4 py-2">{detail.detail.zone}</td>
-
-                                            </tr>
-                                        ))}
-                                    </React.Fragment>
-                                ))
-                            ) : (
+                {Object.keys(groupedData).map(ownerName => (
+                    <div key={ownerName}>
+                        <h2 className='text-2xl text-center mt-8 font-bold'> Account Holder : {ownerName}</h2>
+                        <table id="example" className="table-auto w-full mt-4">
+                            <thead className='sticky top-0 bg-blue-900 text-gray-100 text-xs shadow'>
                                 <tr>
-                                    <td colSpan="10" className="text-center">No data available for the selected year.</td>
+                                    <th className="px-4 py-2">HR Name</th>
+                                    <th className="px-4 py-2">Client Name</th>
+                                    <th className="px-4 py-2">Phone</th>
+                                    <th className="px-4 py-2">Zone</th>
                                 </tr>
-                            )}
-                        </tbody>
+                            </thead>
+                            <tbody>
+                                {groupedData[ownerName].flatMap(account =>
+                                    account.accountDetails.map((detail, index) => (
+                                        <tr key={`${account._id}-${index}`} className='text-center'>
+                                            <td className="border px-4 py-2">{detail.detail.hrName}</td>
+                                            <td className="border px-4 py-2">{detail.detail.clientName}</td>
+                                            <td className="border px-4 py-2">{detail.detail.phone}</td>
+                                            <td className="border px-4 py-2">{detail.detail.zone}</td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                ))}
 
-                    </table>
-
-                </div>
-
-
+                {allAccountsData.length === 0 && (
+                    <div className="text-center mt-10">
+                        No data available .
+                    </div>
+                )}
             </div>
-
         </>
-    )
+    );
 }
 
-export default AllAccounts
+export default AllAccounts;

@@ -46,19 +46,19 @@ const EmployeeBranchesPage = () => {
                 <div className='grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-10 md:px-20 px-2   my-20 '>
 
                     <div className='rounded-md relative flex h-60 items-center justify-center overflow-hidden bg-blue-900 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-blue-950 before:duration-500 before:ease-out hover:shadow-blue-950 hover:before:h-96 hover:before:w-96'>
-                        <Link className='relative z-10 text-xl'>Add Account Handling</Link>
+                        <Link to={`/admin-dashboard/each-account/${id}`} className='relative z-10 text-xl cursor-pointer'>Account Handling</Link>
                     </div>
 
                     <div className='rounded-md relative flex h-60 items-center justify-center overflow-hidden bg-blue-900 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-blue-950 before:duration-500 before:ease-out hover:shadow-blue-950 hover:before:h-96 hover:before:w-96'>
-                        <Link className='relative z-10 text-xl'>Add KPI</Link>
+                        <Link className='relative z-10 text-xl'>KPI Score</Link>
                     </div>
 
                      <Link to={`/admin-dashboard/goal-sheet/${id}`}  className='rounded-md relative flex h-60 items-center justify-center overflow-hidden bg-blue-900 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-blue-950 before:duration-500 before:ease-out hover:shadow-blue-950 hover:before:h-96 hover:before:w-96'>
-                        <Link to={`/admin-dashboard/goal-sheet/${id}`} className='relative z-10 text-xl'>Add Goal Sheet</Link>
+                        <Link to={`/admin-dashboard/goal-sheet/${id}`} className='relative z-10 text-xl'>Goal Sheet</Link>
                     </Link>
 
                     <div className='rounded-md relative flex h-60 items-center justify-center overflow-hidden bg-blue-900 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-blue-950 before:duration-500 before:ease-out hover:shadow-blue-950 hover:before:h-96 hover:before:w-96'>
-                        <Link className='relative z-10 text-xl'>Add Incentive</Link>
+                        <Link className='relative z-10 text-xl'>Incentive</Link>
                     </div>
 
 

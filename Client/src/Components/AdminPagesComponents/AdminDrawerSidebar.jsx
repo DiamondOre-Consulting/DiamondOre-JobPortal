@@ -56,6 +56,10 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import EmployeeBranchesPage from '../../Pages/AdminPage/EmployeeBranchesPage';
 import erpicon from '../../assets/erpicon.png'
+import AllEmployeeAccounts from '../../Pages/AdminPage/AllEmployeeAccounts';
+import EachEmployeeAccounts from '../../Pages/AdminPage/EachEmployeeAccounts';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+
 
 const drawerWidth = 240;
 
@@ -248,8 +252,8 @@ const AdminDrawerSidebar = () => {
                         { text: 'Add Employee', icon: <PersonAddIcon />, path: '/add-employee' },
                         { text: 'Prompt', icon: <SaveAsIcon />, path: '/prompt' },
                         { text: 'Make Admin', icon: <AdminPanelSettingsIcon />, path: '/make-admin' },
-                        { text: 'Edit Profile', icon: <AccountBoxIcon />, path: '/edit-profile' }
-
+                        { text: 'Edit Profile', icon: <AccountBoxIcon />, path: '/edit-profile' },
+                        { text: 'All Accounts', icon: <ManageAccountsIcon />, path: '/all-accounts' },
 
                     ].map((item) => (
                         <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
@@ -293,11 +297,13 @@ const AdminDrawerSidebar = () => {
                     <Route path='/all-employees' element={<AllEmployee />} />
                     <Route path='/employee/:id' element={<EmployeeBranchesPage/>}/>
                     <Route path='/goal-sheet/:id' element={<EachEmployeeGoalSheet />} />
+                    <Route path='/each-account/:id' element={<EachEmployeeAccounts/>}/>
                     <Route path='/add-recruiter' element={<AddRecruiter />} />
                     <Route path='/add-employee' element={<Employeesignup />} />
                     <Route path='/prompt' element={<Prompt />} />
                     <Route path='/make-admin' element={<AdminSignup />} />
                     <Route path='/edit-profile' element={<AdminEditprofile />} />
+                    <Route path='/all-accounts' element={<AllEmployeeAccounts/>}/>
                 </Routes>
                 <AdminFooter />
             </Box>

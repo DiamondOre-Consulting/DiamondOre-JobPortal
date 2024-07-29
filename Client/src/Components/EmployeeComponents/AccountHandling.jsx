@@ -9,7 +9,8 @@ const AccountHandling = ({ userData }) => {
     const [showSubmitLoader, setShowSubmitLoader] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [refresh, setRefresh] = useState(false);
-    const [accountdetails , setAccountDetails] = useState([])
+    const [accountdetails, setAccountDetails] = useState([])
+    const [error, setError] = useState('');
     const [form, setForm] = useState({
         hrName: '',
         zone: '',
@@ -36,7 +37,7 @@ const AccountHandling = ({ userData }) => {
             }
         };
         fetchData();
-    }, [refresh , userData?.id]);
+    }, [refresh, userData?.id]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -66,12 +67,30 @@ const AccountHandling = ({ userData }) => {
                 setShowSubmitLoader(false);
                 setSnackbarOpen(true);
                 setPopUpForm(false);
+                window.location.reload();
                 setRefresh(!refresh);
+
             }
         } catch (error) {
-            console.error('Error submitting data:', error);
+            if (error.response && error.response.status === 400) {
+                const { message } = error.response.data;
+                console.log(error)
+                setError(message);
+                setForm({
+                    hrName: '',
+                    zone: '',
+                    channel: '',
+                    clientName: '',
+                    phone: '',
+                });
+                
+            }
+            else {
+                setError("Something went wrong. Please try again later.");
+            }
+
             setShowSubmitLoader(false);
-            setPopUpForm(false);
+
         }
     };
 
@@ -152,6 +171,11 @@ const AccountHandling = ({ userData }) => {
                 <div className='fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50'>
                     <form onSubmit={handleSubmit} className=" rounded-lg shadow-xl bg-white w-4/5 sm:w-3/5 lg:w-1/4 mt-10 relative p-6">
                         <h2 className="text-xl font-semibold mb-4">Add Details</h2>
+                        {error && (
+                            <div className="mt-4 text-red-500 text-sm">
+                                {error}
+                            </div>
+                        )}
                         <div className="grid gap-4 grid-cols-1">
                             <input
                                 type="text"
