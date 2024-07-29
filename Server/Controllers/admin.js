@@ -23,7 +23,7 @@ import ClientForm from "../Models/ClientForm.js";
 
 import multer from "multer";
 import path from "path";
-import fs from "fs";
+import fs, { stat } from "fs";
 import axios from "axios";
 import node_xj from "xls-to-json";
 import { fileURLToPath } from "url";
@@ -1371,8 +1371,7 @@ router.post("/upload-dsr-excel", async (req, res) => {
   }
 });
 
-
-// SEARCH JOBS 
+// SEARCH JOBS
 router.get("/findJobs/:phone", async (req, res) => {
   try {
     const candidate = await DSR.findOne({ phone: req.params.phone });
@@ -1387,12 +1386,13 @@ router.get("/findJobs/:phone", async (req, res) => {
         $lte: candidate.currentCTC * 1.5, // Not more than 50% of current CTC
       },
     });
-    res.status(201).json({ suitableJobs, candidateName: candidate.candidateName });
+    res
+      .status(201)
+      .json({ suitableJobs, candidateName: candidate.candidateName });
   } catch (error) {
     res.status(500).send(error.message);
   }
 });
-
 
 // BULK
 // Send OTP via email using Nodemailer
@@ -1406,7 +1406,9 @@ const sendJobsToRecByEmail = async (eMailIdRec, candidate, suitableJobs) => {
       },
     });
 
-    const jobRows = suitableJobs.map(job => `
+    const jobRows = suitableJobs
+      .map(
+        (job) => `
       <tr>
         <td style="border: 1px solid #ddd; padding: 8px;">${job.Company}</td>
         <td style="border: 1px solid #ddd; padding: 8px;">${job.JobTitle}</td>
@@ -1416,7 +1418,9 @@ const sendJobsToRecByEmail = async (eMailIdRec, candidate, suitableJobs) => {
         <td style="border: 1px solid #ddd; padding: 8px;">${job.City}</td>
         <td style="border: 1px solid #ddd; padding: 8px;">${job.State}</td>
       </tr>
-    `).join('');
+    `
+      )
+      .join("");
 
     const htmlContent = `
       <h1 style="color: blue; text-align: center; font-size: 2rem">DiamondOre Consulting Pvt. Ltd.</h1>
@@ -1466,8 +1470,9 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
       },
     });
 
-
-    const jobRows = suitableJobs.map(job => `
+    const jobRows = suitableJobs
+      .map(
+        (job) => `
       <tr>
         <td style="border: 1px solid #ddd; padding: 8px;">${job.Company}</td>
         <td style="border: 1px solid #ddd; padding: 8px;">${job.JobTitle}</td>
@@ -1477,7 +1482,9 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
         <td style="border: 1px solid #ddd; padding: 8px;">${job.City}</td>
         <td style="border: 1px solid #ddd; padding: 8px;">${job.State}</td>
       </tr>
-    `).join('');
+    `
+      )
+      .join("");
 
     const htmlContent = `
       <h1 style="color: blue; text-align: center; font-size: 2rem">DiamondOre Consulting Pvt. Ltd.</h1>
@@ -1499,7 +1506,6 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
         </tbody>
       </table>
     `;
-
 
     const mailOptions = {
       from: "Diamondore.in <harshkr2709@gmail.com>",
@@ -1528,7 +1534,7 @@ router.get("/find-bulk-jobs", async (req, res) => {
 
     const formattedDate = `${day}/${month}/${year}`;
     console.log(formattedDate);
-    const candidates = await DSR.find({currentDate: formattedDate});
+    const candidates = await DSR.find({ currentDate: formattedDate });
     if (!candidates.length) {
       return res.status(404).send("No candidates found");
     }
@@ -1550,16 +1556,16 @@ router.get("/find-bulk-jobs", async (req, res) => {
         jobs: suitableJobs,
       });
 
-      if(suitableJobs.length > 0) {
+      if (suitableJobs.length > 0) {
         const findRec = await RecruitersAndKAMs.findOne({
-          name: candidate.recruiterName
+          name: candidate.recruiterName,
         });
         const findKam = await RecruitersAndKAMs.findOne({
-          name: candidate.kamName
-        })
+          name: candidate.kamName,
+        });
         const eMailIdRec = findRec.email;
         // const eMailIdKam = findKam.email;
-        await sendJobsToRecByEmail(eMailIdRec, candidate, suitableJobs)
+        await sendJobsToRecByEmail(eMailIdRec, candidate, suitableJobs);
         // await sendJobsToKamByEmail(eMailIdKam, candidate, suitableJobs)
       }
     }
@@ -1573,50 +1579,61 @@ router.get("/find-bulk-jobs", async (req, res) => {
 // REGISTER RECRUITER AND KAM
 router.post("/register-recruiter-kam", async (req, res) => {
   try {
-    const {name, email} = req.body;
+    const { name, email } = req.body;
 
     if (!name || !email) {
-      return res.status(402).json({message: "Both name and email are required!!!"})
+      return res
+        .status(402)
+        .json({ message: "Both name and email are required!!!" });
     }
 
-    const findEmp = await RecruitersAndKAMs.exists({email});
-    if(findEmp) {
-      return res.status(401).json({message: "This Recruiter or KAM already has been registered!!!"});
+    const findEmp = await RecruitersAndKAMs.exists({ email });
+    if (findEmp) {
+      return res
+        .status(401)
+        .json({
+          message: "This Recruiter or KAM already has been registered!!!",
+        });
     }
 
     const newEmp = new RecruitersAndKAMs({
       name,
-      email
-    })
+      email,
+    });
 
     await newEmp.save();
 
     if (newEmp) {
-      return res.status(201).json({message: "New Recruiter or KAM got resgitered!!!"});
+      return res
+        .status(201)
+        .json({ message: "New Recruiter or KAM got resgitered!!!" });
     }
-  } catch(error) {
+  } catch (error) {
     console.log(error.message);
-    res.status(500).json(error.message)
+    res.status(500).json(error.message);
   }
-})
+});
 
 // DELETE A REVIEW
-router.delete("/delete-review/:id", AdminAuthenticateToken, async (req, res) => {
-  try {
-    const {id} = req.params;
+router.delete(
+  "/delete-review/:id",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
 
-    const deleteReview = await ClientReviews.findByIdAndDelete({_id: id});
-    if(!deleteReview) {
-      return res.status(403).json({message: "No review found!!!"});
+      const deleteReview = await ClientReviews.findByIdAndDelete({ _id: id });
+      if (!deleteReview) {
+        return res.status(403).json({ message: "No review found!!!" });
+      }
+
+      res.status(200).json({ message: "Review deleted successfully!!!" });
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).json({ message: "Something went wrong!!!", error });
     }
-
-    res.status(200).json({message: "Review deleted successfully!!!"});
-
-  } catch(error) {
-    console.log(error.message);
-    res.status(500).json({message: "Something went wrong!!!", error})
   }
-})
+);
 
 // --------------------------------------------------------------------------------
 
@@ -1858,29 +1875,37 @@ router.get(
 );
 
 // CREATE A GOAL SHEET OF AN EMPLOYEE
-router.post("/create-goalsheet/:id", AdminAuthenticateToken, async (req, res) => {
-  try {
-    const {id} = req.params;
-    const {year} = req.body;
+router.post(
+  "/create-goalsheet/:id",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { year } = req.body;
 
-    const goalSheetExist = await GoalSheet.findOne({owner: id, year: year});
-    if(goalSheetExist) {
-      return res.status(402).json({message: "Employee already has a goal sheet!!!"});
+      const goalSheetExist = await GoalSheet.findOne({ owner: id, year: year });
+      if (goalSheetExist) {
+        return res
+          .status(402)
+          .json({ message: "Employee already has a goal sheet!!!" });
+      }
+
+      const newGoalSheet = new GoalSheet({
+        owner: id,
+        year,
+      });
+
+      await newGoalSheet.save();
+
+      res
+        .status(201)
+        .json({ message: `New Goal sheet has been added for ${year}` });
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).json({ message: error.message });
     }
-
-    const newGoalSheet = new GoalSheet({
-      owner: id,
-      year
-    });
-
-    await newGoalSheet.save();
-
-    res.status(201).json({message: `New Goal sheet has been added for ${year}`})
-  } catch(error) {
-    console.error(error.message);
-    res.status(500).json({ message: error.message });
   }
-})
+);
 
 // SET GOAL SHEET OF AN EMPLOYEE
 router.put("/set-goalsheet", AdminAuthenticateToken, async (req, res) => {
@@ -1896,7 +1921,11 @@ router.put("/set-goalsheet", AdminAuthenticateToken, async (req, res) => {
     // Find the goal sheet for the specified empId and year
     let goalSheet = await GoalSheet.findOne({ owner: empId, year: year });
     if (!goalSheet) {
-      goalSheet = new GoalSheet({ owner: empId, year: year, goalSheetDetails: [] });
+      goalSheet = new GoalSheet({
+        owner: empId,
+        year: year,
+        goalSheetDetails: [],
+      });
     }
 
     // Calculate target
@@ -1904,18 +1933,27 @@ router.put("/set-goalsheet", AdminAuthenticateToken, async (req, res) => {
 
     // Calculate cumulativeCost
     let cumulativeCost = cost;
-    const [joinDay, joinMonth, joinYear] = employee.doj.split('/').map(Number);
+    const [joinDay, joinMonth, joinYear] = employee.doj.split("/").map(Number);
     if (joinMonth !== month || joinYear !== year) {
-      if (month === 1) { // January
-        const lastYearGoalSheet = await GoalSheet.findOne({ owner: empId, year: year - 1 });
+      if (month === 1) {
+        // January
+        const lastYearGoalSheet = await GoalSheet.findOne({
+          owner: empId,
+          year: year - 1,
+        });
         if (lastYearGoalSheet) {
-          const lastYearDecemberDetails = lastYearGoalSheet.goalSheetDetails.find(detail => detail.goalSheet.month === 12);
+          const lastYearDecemberDetails =
+            lastYearGoalSheet.goalSheetDetails.find(
+              (detail) => detail.goalSheet.month === 12
+            );
           if (lastYearDecemberDetails) {
             cumulativeCost += lastYearDecemberDetails.goalSheet.cumulativeCost;
           }
         }
       } else {
-        const previousMonthDetails = goalSheet.goalSheetDetails.find(detail => detail.goalSheet.month === month - 1);
+        const previousMonthDetails = goalSheet.goalSheetDetails.find(
+          (detail) => detail.goalSheet.month === month - 1
+        );
         if (previousMonthDetails) {
           cumulativeCost += previousMonthDetails.goalSheet.cumulativeCost;
         }
@@ -1925,16 +1963,26 @@ router.put("/set-goalsheet", AdminAuthenticateToken, async (req, res) => {
     // Calculate cumulativeRevenue
     let cumulativeRevenue = revenue;
     if (joinMonth !== month || joinYear !== year) {
-      if (month === 1) { // January
-        const lastYearGoalSheet = await GoalSheet.findOne({ owner: empId, year: year - 1 });
+      if (month === 1) {
+        // January
+        const lastYearGoalSheet = await GoalSheet.findOne({
+          owner: empId,
+          year: year - 1,
+        });
         if (lastYearGoalSheet) {
-          const lastYearDecemberDetails = lastYearGoalSheet.goalSheetDetails.find(detail => detail.goalSheet.month === 12);
+          const lastYearDecemberDetails =
+            lastYearGoalSheet.goalSheetDetails.find(
+              (detail) => detail.goalSheet.month === 12
+            );
           if (lastYearDecemberDetails) {
-            cumulativeRevenue += lastYearDecemberDetails.goalSheet.cumulativeRevenue;
+            cumulativeRevenue +=
+              lastYearDecemberDetails.goalSheet.cumulativeRevenue;
           }
         }
       } else {
-        const previousMonthDetails = goalSheet.goalSheetDetails.find(detail => detail.goalSheet.month === month - 1);
+        const previousMonthDetails = goalSheet.goalSheetDetails.find(
+          (detail) => detail.goalSheet.month === month - 1
+        );
         if (previousMonthDetails) {
           cumulativeRevenue += previousMonthDetails.goalSheet.cumulativeRevenue;
         }
@@ -1950,15 +1998,15 @@ router.put("/set-goalsheet", AdminAuthenticateToken, async (req, res) => {
     let mtdIncentive = 0;
     if (noOfJoinings === 3) {
       noOfJoiningIncentive = 1000;
-    } else if (noOfJoinings ===4) {
+    } else if (noOfJoinings === 4) {
       noOfJoiningIncentive = 1500;
     } else if (noOfJoinings >= 5) {
       noOfJoiningIncentive = 2000;
-    } 
+    }
 
     if (achMTD === 4) {
       mtdIncentive = 1000;
-    } else if(achMTD >= 5) {
+    } else if (achMTD >= 5) {
       mtdIncentive = 2000;
     }
 
@@ -1992,123 +2040,164 @@ router.put("/set-goalsheet", AdminAuthenticateToken, async (req, res) => {
 // GET AN EMPLOYEE's GOAL SHEETS
 router.get("/goalsheet/:id", AdminAuthenticateToken, async (req, res) => {
   try {
-    const {id} = req.params;
+    const { id } = req.params;
 
-    const findGoalSheets = await GoalSheet.find({owner: id});
+    const findGoalSheets = await GoalSheet.find({ owner: id });
     if (findGoalSheets.length === 0) {
-      return res.status(402).json({message: "No goalsheet found!!!"});
+      return res.status(402).json({ message: "No goalsheet found!!!" });
     }
 
     res.status(200).json(findGoalSheets);
-  } catch(error) {
+  } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
   }
 });
 
-// GET ALL THE DUPLICATE PHONE NUMBER REQUESTS 
-router.get("/duplicate-phone-requests", AdminAuthenticateToken, async (req, res) => {
-  try {
-        // Find all AccountHandling documents with non-empty requests
-        const duplicatePhoneRequests = await AccountHandling.find({ "requests.0": { $exists: true } });
-        if(!duplicatePhoneRequests) {
-          return res.status(402).json({message: "No Accounts available with duplicate requests!!!"})
-        } 
-  
+// GET ALL THE DUPLICATE PHONE NUMBER REQUESTS
+router.get(
+  "/duplicate-phone-requests",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      // Find all AccountHandling documents with non-empty requests
+      const duplicatePhoneRequests = await AccountHandling.find({
+        "requests.0": { $exists: true },
+      });
+      if (!duplicatePhoneRequests) {
+        return res
+          .status(402)
+          .json({
+            message: "No Accounts available with duplicate requests!!!",
+          });
+      }
+
       res.status(200).json(duplicatePhoneRequests);
-  } catch(error) {
-    console.error(error.message);
-    res.status(500).json({ message: error.message });
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).json({ message: error.message });
+    }
   }
-})
+);
 
 const transporter = nodemailer.createTransport({
-  service: 'Gmail',
+  service: "Gmail",
   auth: {
     user: "harshkr2709@gmail.com",
     pass: "frtohlwnukisvrzh",
   },
 });
 
-// OVER WRITE EMPLOYEE's ACCOUNT HANDLING DETAILS
-router.put("/account-handling/:id", AdminAuthenticateToken, async (req, res) => {
-  try {
-    const {id} = req.params;
-    const {status} = req.body;
+// STATUS UPDATE EMPLOYEE's ACCOUNT HANDLING DETAILS
+router.put(
+  "/account-handling/:id",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
 
-    const findAccount = await AccountHandling.findById({_id: id});
-    if(!findAccount) {
-      return res.status(402).json({message: "No account found with this id!!!"});
-    }
-
-    if (status === "true") {
-      const requestToUpdate = findAccount.requests.find(req => req.reqDetail.status === null);
-      if (!requestToUpdate) {
-        return res.status(400).json({ message: "No pending request found to update!" });
+      const findAccount = await AccountHandling.findById({ _id: id });
+      if (!findAccount) {
+        return res
+          .status(402)
+          .json({ message: "No account found with this id!!!" });
       }
 
-      const previousOwnerEmail = findAccount.owner.email;
-      const newOwnerId = requestToUpdate.reqDetail.employee;
-      
-      // Fetch new owner's email
-      const newOwner = await Employees.findById(newOwnerId);
-      if (!newOwner) {
-        return res.status(404).json({ message: "New owner not found!" });
+      if (status === "true") {
+        const requestToUpdate = findAccount.requests.find(
+          (req) => req.reqDetail.status === null
+        );
+        if (!requestToUpdate) {
+          return res
+            .status(400)
+            .json({ message: "No pending request found to update!" });
+        }
+
+        const previousOwnerEmail = findAccount.owner.email;
+        const newOwnerId = requestToUpdate.reqDetail.employee;
+
+        // Fetch new owner's email
+        const newOwner = await Employees.findById(newOwnerId);
+        if (!newOwner) {
+          return res.status(404).json({ message: "New owner not found!" });
+        }
+        const newOwnerEmail = newOwner.email;
+
+        // Update request status to true
+        requestToUpdate.reqDetail.status = true;
+
+        // Update owner of the AccountHandling
+        findAccount.owner = newOwnerId;
+
+        // Save the updated AccountHandling document
+        await findAccount.save();
+
+        // Send email to the previous owner
+        const previousOwnerMailOptions = {
+          from: "harshkr2709@gmail.com",
+          to: previousOwnerEmail,
+          subject: "Account Handling Ownership Update",
+          text: `The AccountHandling with ID: ${id} has been removed from your list.`,
+        };
+
+        transporter.sendMail(previousOwnerMailOptions, (error, info) => {
+          if (error) {
+            console.error("Error sending email to previous owner:", error);
+          } else {
+            console.log("Email sent to previous owner:", info.response);
+          }
+        });
+
+        // Send email to the new owner
+        const newOwnerMailOptions = {
+          from: "harshkr2709@gmail.com",
+          to: newOwnerEmail,
+          subject: "New Account Handling Ownership",
+          text: `You have been assigned the AccountHandling with ID: ${id}.`,
+        };
+
+        transporter.sendMail(newOwnerMailOptions, (error, info) => {
+          if (error) {
+            console.error("Error sending email to new owner:", error);
+          } else {
+            console.log("Email sent to new owner:", info.response);
+          }
+        });
+
+        return res
+          .status(200)
+          .json({
+            message: "AccountHandling updated successfully and emails sent.",
+          });
       }
-      const newOwnerEmail = newOwner.email;
 
-      // Update request status to true
-      requestToUpdate.reqDetail.status = true;
+      if (status === "false") {
+        const previousOwnerEmail = findAccount.owner.email;
 
-      // Update owner of the AccountHandling
-      findAccount.owner = newOwnerId;
+        // Send email to the previous owner
+        const previousOwnerMailOptions = {
+          from: "harshkr2709@gmail.com",
+          to: previousOwnerEmail,
+          subject: "Account Handling Ownership Update",
+          text: `The AccountHandling with ID: ${id} access has been denied by the Admin.`,
+        };
 
-      // Save the updated AccountHandling document
-      await findAccount.save();
+        transporter.sendMail(previousOwnerMailOptions, (error, info) => {
+          if (error) {
+            console.error("Error sending email to previous owner:", error);
+          } else {
+            console.log("Email sent to previous owner:", info.response);
+          }
+        });
+      }
 
-      // Send email to the previous owner
-      const previousOwnerMailOptions = {
-        from: 'harshkr2709@gmail.com',
-        to: previousOwnerEmail,
-        subject: 'Account Handling Ownership Update',
-        text: `The AccountHandling with ID: ${id} has been removed from your list.`
-      };
-
-      transporter.sendMail(previousOwnerMailOptions, (error, info) => {
-        if (error) {
-          console.error('Error sending email to previous owner:', error);
-        } else {
-          console.log('Email sent to previous owner:', info.response);
-        }
-      });
-
-      // Send email to the new owner
-      const newOwnerMailOptions = {
-        from: 'harshkr2709@gmail.com',
-        to: newOwnerEmail,
-        subject: 'New Account Handling Ownership',
-        text: `You have been assigned the AccountHandling with ID: ${id}.`
-      };
-
-      transporter.sendMail(newOwnerMailOptions, (error, info) => {
-        if (error) {
-          console.error('Error sending email to new owner:', error);
-        } else {
-          console.log('Email sent to new owner:', info.response);
-        }
-      });
-
-      return res.status(200).json({ message: "AccountHandling updated successfully and emails sent." });
+      res.status(400).json({ message: "Invalid status value provided." });
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).json({ message: error.message });
     }
-    
-
-    res.status(400).json({ message: "Invalid status value provided." });
-
-    
-  } catch(error) {
-    console.error(error.message);
-    res.status(500).json({ message: error.message });
   }
-})
+);
 
 export default router;
