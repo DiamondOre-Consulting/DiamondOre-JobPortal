@@ -50,6 +50,9 @@ const accountHandlingSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "Employees"
           },
+          accountPhone: {
+            type: String,
+          },
           status: {
             type: Boolean,
             default: null

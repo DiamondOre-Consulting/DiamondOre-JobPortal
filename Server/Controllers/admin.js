@@ -2089,115 +2089,217 @@ const transporter = nodemailer.createTransport({
 });
 
 // STATUS UPDATE EMPLOYEE's ACCOUNT HANDLING DETAILS
-router.put(
-  "/account-handling/:id",
-  AdminAuthenticateToken,
-  async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { status } = req.body;
+// router.put(
+//   "/account-handling/:id",
+//   AdminAuthenticateToken,
+//   async (req, res) => {
+//     try {
+//       const { id } = req.params;
+//       const { status } = req.body;
 
-      const findAccount = await AccountHandling.findById({ _id: id });
-      if (!findAccount) {
-        return res
-          .status(402)
-          .json({ message: "No account found with this id!!!" });
-      }
+//       const findAccount = await AccountHandling.findById({ _id: id });
+//       if (!findAccount) {
+//         return res
+//           .status(402)
+//           .json({ message: "No account found with this id!!!" });
+//       }
 
-      if (status === "true") {
-        const requestToUpdate = findAccount.requests.find(
-          (req) => req.reqDetail.status === null
-        );
-        if (!requestToUpdate) {
-          return res
-            .status(400)
-            .json({ message: "No pending request found to update!" });
-        }
+//       if (status === "true") {
+//         const requestToUpdate = findAccount.requests.find(
+//           (req) => req.reqDetail.status === null
+//         );
+//         if (!requestToUpdate) {
+//           return res
+//             .status(400)
+//             .json({ message: "No pending request found to update!" });
+//         }
 
-        const previousOwnerEmail = findAccount.owner.email;
-        const newOwnerId = requestToUpdate.reqDetail.employee;
+//         const previousOwnerEmail = findAccount.owner.email;
+//         const newOwnerId = requestToUpdate.reqDetail.employee;
 
-        // Fetch new owner's email
-        const newOwner = await Employees.findById(newOwnerId);
-        if (!newOwner) {
-          return res.status(404).json({ message: "New owner not found!" });
-        }
-        const newOwnerEmail = newOwner.email;
+//         // Fetch new owner's email
+//         const newOwner = await Employees.findById(newOwnerId);
+//         if (!newOwner) {
+//           return res.status(404).json({ message: "New owner not found!" });
+//         }
+//         const newOwnerEmail = newOwner.email;
 
-        // Update request status to true
-        requestToUpdate.reqDetail.status = true;
+//         // Update request status to true
+//         requestToUpdate.reqDetail.status = true;
 
-        // Update owner of the AccountHandling
-        findAccount.owner = newOwnerId;
+//         // Update owner of the AccountHandling
+//         findAccount.owner = newOwnerId;
 
-        // Save the updated AccountHandling document
-        await findAccount.save();
+//         // Save the updated AccountHandling document
+//         await findAccount.save();
 
-        // Send email to the previous owner
-        const previousOwnerMailOptions = {
-          from: "harshkr2709@gmail.com",
-          to: previousOwnerEmail,
-          subject: "Account Handling Ownership Update",
-          text: `The AccountHandling with ID: ${id} has been removed from your list.`,
-        };
+//         // Send email to the previous owner
+//         const previousOwnerMailOptions = {
+//           from: "harshkr2709@gmail.com",
+//           to: previousOwnerEmail,
+//           subject: "Account Handling Ownership Update",
+//           text: `The AccountHandling with ID: ${id} has been removed from your list.`,
+//         };
 
-        transporter.sendMail(previousOwnerMailOptions, (error, info) => {
-          if (error) {
-            console.error("Error sending email to previous owner:", error);
-          } else {
-            console.log("Email sent to previous owner:", info.response);
-          }
-        });
+//         transporter.sendMail(previousOwnerMailOptions, (error, info) => {
+//           if (error) {
+//             console.error("Error sending email to previous owner:", error);
+//           } else {
+//             console.log("Email sent to previous owner:", info.response);
+//           }
+//         });
 
-        // Send email to the new owner
-        const newOwnerMailOptions = {
-          from: "harshkr2709@gmail.com",
-          to: newOwnerEmail,
-          subject: "New Account Handling Ownership",
-          text: `You have been assigned the AccountHandling with ID: ${id}.`,
-        };
+//         // Send email to the new owner
+//         const newOwnerMailOptions = {
+//           from: "harshkr2709@gmail.com",
+//           to: newOwnerEmail,
+//           subject: "New Account Handling Ownership",
+//           text: `You have been assigned the AccountHandling with ID: ${id}.`,
+//         };
 
-        transporter.sendMail(newOwnerMailOptions, (error, info) => {
-          if (error) {
-            console.error("Error sending email to new owner:", error);
-          } else {
-            console.log("Email sent to new owner:", info.response);
-          }
-        });
+//         transporter.sendMail(newOwnerMailOptions, (error, info) => {
+//           if (error) {
+//             console.error("Error sending email to new owner:", error);
+//           } else {
+//             console.log("Email sent to new owner:", info.response);
+//           }
+//         });
 
-        return res
-          .status(200)
-          .json({
-            message: "AccountHandling updated successfully and emails sent.",
-          });
-      }
+//         return res
+//           .status(200)
+//           .json({
+//             message: "AccountHandling updated successfully and emails sent.",
+//           });
+//       }
 
-      if (status === "false") {
-        const previousOwnerEmail = findAccount.owner.email;
+//       if (status === "false") {
+//         const previousOwnerEmail = findAccount.owner.email;
 
-        // Send email to the previous owner
-        const previousOwnerMailOptions = {
-          from: "harshkr2709@gmail.com",
-          to: previousOwnerEmail,
-          subject: "Account Handling Ownership Update",
-          text: `The AccountHandling with ID: ${id} access has been denied by the Admin.`,
-        };
+//         // Send email to the previous owner
+//         const previousOwnerMailOptions = {
+//           from: "harshkr2709@gmail.com",
+//           to: previousOwnerEmail,
+//           subject: "Account Handling Ownership Update",
+//           text: `The AccountHandling with ID: ${id} access has been denied by the Admin.`,
+//         };
 
-        transporter.sendMail(previousOwnerMailOptions, (error, info) => {
-          if (error) {
-            console.error("Error sending email to previous owner:", error);
-          } else {
-            console.log("Email sent to previous owner:", info.response);
-          }
-        });
-      }
+//         transporter.sendMail(previousOwnerMailOptions, (error, info) => {
+//           if (error) {
+//             console.error("Error sending email to previous owner:", error);
+//           } else {
+//             console.log("Email sent to previous owner:", info.response);
+//           }
+//         });
+//       }
 
-      res.status(400).json({ message: "Invalid status value provided." });
-    } catch (error) {
-      console.error(error.message);
-      res.status(500).json({ message: error.message });
+//       res.status(400).json({ message: "Invalid status value provided." });
+//     } catch (error) {
+//       console.error(error.message);
+//       res.status(500).json({ message: error.message });
+//     }
+//   }
+// );
+
+router.put("/account-handling/:id", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const findAccount = await AccountHandling.findById(id).populate('owner');
+    if (!findAccount) {
+      return res.status(404).json({ message: "No account found with this id!!!" });
     }
+
+    const requestToUpdate = findAccount.requests.find(req => req.reqDetail.status === null);
+    if (!requestToUpdate) {
+      return res.status(400).json({ message: "No pending request found to update!" });
+    }
+
+    if (status === "true") {
+      const previousOwnerEmail = findAccount.owner.email;
+      const newOwnerId = requestToUpdate.reqDetail.employee;
+      const accountPhone = requestToUpdate.reqDetail.accountPhone;
+
+      // Move the account detail from the previous owner to the new owner
+      const accountDetail = findAccount.accountDetails.find(acc => acc.detail.phone === accountPhone);
+      if (!accountDetail) {
+        return res.status(404).json({ message: "Account detail not found in previous owner's accountDetails!" });
+      }
+
+      let newOwnerAccountHandling = await AccountHandling.findOneAndUpdate(
+        { owner: newOwnerId },
+        { $push: { accountDetails: accountDetail } },
+        { new: true, upsert: true }
+      );
+
+      findAccount.accountDetails = findAccount.accountDetails.filter(acc => acc.detail.phone !== accountPhone);
+      requestToUpdate.reqDetail.status = true;
+
+      await findAccount.save();
+
+      // Send email to the previous owner
+      transporter.sendMail({
+        from: 'harshkr2709@gmail.com',
+        to: previousOwnerEmail,
+        subject: 'Account Handling Ownership Update',
+        text: `The AccountHandling with phone: ${accountPhone} has been removed from your list.`,
+      }, (error, info) => {
+        if (error) {
+          console.error('Error sending email to previous owner:', error);
+        } else {
+          console.log('Email sent to previous owner:', info.response);
+        }
+      });
+
+      // Fetch new owner's email
+      const newOwner = await Employees.findById(newOwnerId);
+      if (!newOwner) {
+        return res.status(404).json({ message: "New owner not found!" });
+      }
+
+      // Send email to the new owner
+      transporter.sendMail({
+        from: 'harshkr2709@gmail.com',
+        to: newOwner.email,
+        subject: 'New Account Handling Ownership',
+        text: `You have been assigned the AccountHandling with phone: ${accountPhone}.`,
+      }, (error, info) => {
+        if (error) {
+          console.error('Error sending email to new owner:', error);
+        } else {
+          console.log('Email sent to new owner:', info.response);
+        }
+      });
+
+      return res.status(200).json({ message: "AccountHandling updated successfully and emails sent." });
+    }
+
+    if (status === "false") {
+      const previousOwnerEmail = findAccount.owner.email;
+      transporter.sendMail({
+        from: 'harshkr2709@gmail.com',
+        to: previousOwnerEmail,
+        subject: 'Account Handling Ownership Update',
+        text: `The AccountHandling with ID: ${id} access has been denied by the Admin.`,
+      }, (error, info) => {
+        if (error) {
+          console.error('Error sending email to previous owner:', error);
+        } else {
+          console.log('Email sent to previous owner:', info.response);
+        }
+      });
+
+      return res.status(200).json({ message: "AccountHandling access denied and email sent." });
+    }
+
+    res.status(400).json({ message: "Invalid status value provided." });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
   }
-);
+});
+
+
+// x 
 
 export default router;
