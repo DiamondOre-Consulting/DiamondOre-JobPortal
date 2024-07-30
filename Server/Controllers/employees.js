@@ -229,6 +229,7 @@ router.put(
         duplicatePhone.requests.push({
           reqDetail: {
             employee: userId,
+            accountPhone: phone,
             status: null, // This will default to null as per your schema
           },
         });
