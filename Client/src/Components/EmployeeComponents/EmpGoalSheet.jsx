@@ -70,7 +70,7 @@ const EmpGoalSheet = () => {
                             ))
                         }
                     </select>
-                    <div class="container mx-auto overflow-x-auto h-96 relative">
+                    <div class="container mx-auto overflow-x-auto h-96 md:w-full w-72 relative">
                         <table id="example" class="table-auto w-full ">
                             <thead className='sticky top-0 bg-blue-900 text-gray-100 text-xs shadow'>
                                 <tr className=''>

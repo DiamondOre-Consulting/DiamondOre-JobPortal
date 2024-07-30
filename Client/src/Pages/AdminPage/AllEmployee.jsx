@@ -53,7 +53,7 @@ const AllEmployee = () => {
             {/* <AdminNav /> */}
             <div className='px-4'>
                 <div className='mx-auto text-center mb-10 '>
-                    <h1 className='text-4xl font-bold'>All Employee</h1>
+                    <h1 className='text-4xl font-bold'>All Employees</h1> 
                     <div className='w-20 h-1 bg-blue-900 mx-auto mt-2'></div>
                 </div>
 

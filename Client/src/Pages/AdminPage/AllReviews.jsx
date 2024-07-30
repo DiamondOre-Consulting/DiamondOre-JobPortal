@@ -67,13 +67,13 @@ const AllReviews = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-4 md:px-10 px-4 ">
                         {allreviews.map((review) => (
                             <div key={review._id} className="max-w-md">
-                                <div className="bg-white shadow-xl rounded-md overflow-hidden h-full flex flex-col">
+                                <div className="bg-white shadow-xl rounded-md overflow-hidden h-full flex flex-col relative mb-4">
                                     <div className="relative h-6 bg-blue-900"></div>
                                     <div className="flex-1 p-6">
                                         <p className="text-lg font-bold text-gray-800">{review.reviewFor}'s Employee</p>
                                         <p className="mt-2 text-sm text-gray-600">{review.review}</p>
-                                        <div className='flex justify-between items-center'>
-                                            <div className="flex items-center mt-4 ">
+                                        <div className='absolute bottom-0 left-0 w-full flex items-center justify-between p-4'>
+                                            <div className="flex items-center">
                                                 {Array.from({ length: review.diamonds }).map((_, index) => (
                                                     <img key={index} src={bluediamond} className="w-6 h-6 mr-1" alt="diamond" />
                                                 ))}
@@ -112,9 +112,9 @@ const AllReviews = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white p-4 rounded-md">
                         <div className="p-6 pt-0 text-center">
-                            <svg class="w-20 h-20 text-red-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            <svg className="w-20 h-20 text-red-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                 xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                                     d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                             <h3 className="text-xl font-normal text-gray-500 mt-5 mb-6">

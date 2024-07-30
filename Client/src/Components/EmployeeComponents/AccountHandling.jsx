@@ -48,6 +48,7 @@ const AccountHandling = ({ userData }) => {
         e.preventDefault();
         const token = localStorage.getItem("token");
         setShowSubmitLoader(true);
+        setError('')
         try {
             const response = await axios.put('http://localhost:5000/api/employee/set-account-handling', form, {
                 headers: {
@@ -55,7 +56,12 @@ const AccountHandling = ({ userData }) => {
                 }
             });
             if (response.status === 200) {
-                console.log("data", response.data);
+                console.log("data", response.data); 
+                setShowSubmitLoader(false);
+                setSnackbarOpen(true);
+                setPopUpForm(false);
+                window.location.reload();
+                setRefresh(!refresh);
                 setRows([...rows, response.data]);
                 setForm({
                     hrName: '',
@@ -64,11 +70,7 @@ const AccountHandling = ({ userData }) => {
                     clientName: '',
                     phone: '',
                 });
-                setShowSubmitLoader(false);
-                setSnackbarOpen(true);
-                setPopUpForm(false);
-                window.location.reload();
-                setRefresh(!refresh);
+               
 
             }
         } catch (error) {

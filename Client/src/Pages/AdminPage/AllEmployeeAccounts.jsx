@@ -1,7 +1,7 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import AllEmployee from './AllEmployee';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const AllEmployeeAccounts = () => {
     const [allAccountsData, setAllAccountsData] = useState([]);
@@ -88,7 +88,46 @@ const AllEmployeeAccounts = () => {
         setAccountId(id)
         setDeletePopup(true)
     }
-    // Edit Employee
+
+
+
+    // Get all request phone no  to get length to show notification
+    const [length, setLength] = useState('')
+
+    useEffect(() => {
+        const fetchDuplicatePhoneRequest = async () => {
+            try {
+                const token = localStorage.getItem("token");
+
+                if (!token) {
+                    console.error("No token found");
+                    // navigate("/admin-login");
+                    return;
+                }
+
+                const response = await axios.get(
+                    "http://localhost:5000/api/admin-confi/duplicate-phone-requests",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
+
+                if (response.status === 200) {
+
+                    console.log(response.data.length)
+                    setLength(response.data.length)
+
+                }
+            } catch (error) {
+                console.error("Error fetching duplicate phone requests:", error);
+            }
+        };
+
+        fetchDuplicatePhoneRequest();
+    }, []);
+
 
     return (
         <>
@@ -96,12 +135,29 @@ const AllEmployeeAccounts = () => {
                 <h1 className='text-3xl text-center'>All Accounts</h1>
                 <div className='w-40 h-1 bg-blue-900 mx-auto'></div>
 
-                <svg class="h-8 w-8 text-gray-600 float-right -mt-8 mr-4 hover:text-gray-900  cursor-pointer"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />  <path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg>
+                <Link to={'/admin-dashboard/all-duplicate-phone/request'} className="relative group">
+                    <div className='flex justify-end'>
+                        <svg className="h-8 w-8 text-gray-600 md:-top-5 -top-8 float-right -mr-6 md:mr-4 hover:text-gray-900 cursor-pointer relative" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                        </svg>
+                        <div className='w-6 h-6 items-center text-center rounded-full text-gray-100 relative -top-5 md:-top-4 md:right-7 -right-3 bg-red-500'>{length}</div>
+                    </div>
+                    <div className="absolute z-10  right-0 hidden group-hover:inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-100 tooltip dark:bg-gray-700">
+                        Duplicate Account Phone Request
+                        <div className="tooltip-arrow"></div>
+                    </div>
+                </Link>
+
+
+
 
                 {Object.keys(groupedData).map(ownerName => (
                     <div key={ownerName}>
                         <h2 className='text-2xl text-center mt-8 font-bold'> Account Holder : {ownerName}</h2>
-                        <table id="example" className="table-auto w-full mt-4">
+                      
+                      <div className='md:w-full w-80 overflow-x-auto'>
+                        <table id="example" className="table-auto w-full  mt-4">
                             <thead className='sticky top-0 bg-blue-900 text-gray-100 text-xs shadow'>
                                 <tr>
                                     <th className="px-4 py-2">HR Name</th>
@@ -125,6 +181,7 @@ const AllEmployeeAccounts = () => {
                                 )}
                             </tbody>
                         </table>
+                      </div>
                     </div>
                 ))}
 
@@ -191,7 +248,7 @@ const AllEmployeeAccounts = () => {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                                     d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
-                            <h3 className="text-xl font-normal text-gray-500 mt-5 mb-6">Are you sure you want to delete this Course?</h3>
+                            <h3 className="text-xl font-normal text-gray-500 mt-5 mb-6">Are you sure you want to delete this Account?</h3>
                             <a href="#"
                                 className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-base inline-flex items-center px-3 py-2.5 text-center mr-2">
                                 Yes, I'm sure

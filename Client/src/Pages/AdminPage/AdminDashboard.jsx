@@ -37,7 +37,7 @@ const AdminDashboard = () => {
   return (
     <div className='bg-white'>
         {/* <AdminNav /> */}
-        <h2 className='text-5xl px-10 font-bold text-gray-800'>Welcome aboard, <span className='text-blue-900'>{userName}</span></h2>
+        <h2 className='text-2xl md:text-5xl px-2 md:px-10 font-bold text-gray-800'>Welcome aboard, <span className='text-blue-900'>{userName}</span></h2>
         <JobsWithMostApplicants />
         <NewlyAddedCandidates />
        

@@ -59,6 +59,7 @@ import erpicon from '../../assets/erpicon.png'
 import AllEmployeeAccounts from '../../Pages/AdminPage/AllEmployeeAccounts';
 import EachEmployeeAccounts from '../../Pages/AdminPage/EachEmployeeAccounts';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import AllDuplicatePhoneRequest from '../../Pages/AdminPage/AllDuplicatePhoneRequest';
 
 
 const drawerWidth = 240;
@@ -304,6 +305,7 @@ const AdminDrawerSidebar = () => {
                     <Route path='/make-admin' element={<AdminSignup />} />
                     <Route path='/edit-profile' element={<AdminEditprofile />} />
                     <Route path='/all-accounts' element={<AllEmployeeAccounts/>}/>
+                    <Route path='/all-duplicate-phone/request' element={<AllDuplicatePhoneRequest/>}/>
                 </Routes>
                 <AdminFooter />
             </Box>
