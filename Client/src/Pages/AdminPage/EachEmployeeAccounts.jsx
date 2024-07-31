@@ -14,7 +14,7 @@ const EachEmployeeAccounts = () => {
         const fetchData = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const response = await axios.get(`http://localhost:5000/api/employee/accounts/${id}`);
+                const response = await axios.get(`https://api.diamondore.in/api/employee/accounts/${id}`);
 
                 if (response.status === 200) {
                     console.log("Account handling data", response.data);

@@ -12,7 +12,7 @@ const EmployeeBranchesPage = () => {
         const getEmployeeData = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const response = await axios.get(`http://localhost:5000/api/admin-confi/all-employees/${id}`, {
+                const response = await axios.get(`https://api.diamondore.in/api/admin-confi/all-employees/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

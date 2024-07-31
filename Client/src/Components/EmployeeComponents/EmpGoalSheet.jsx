@@ -12,7 +12,7 @@ const EmpGoalSheet = () => {
 
             try {
                 const token = localStorage.getItem("token");
-                const response = await axios.get(`http://localhost:5000/api/employee/my-goalsheet`,
+                const response = await axios.get(`https://api.diamondore.in/api/employee/my-goalsheet`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`

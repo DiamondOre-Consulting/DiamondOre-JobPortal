@@ -22,7 +22,7 @@ const AllDuplicatePhoneRequest = () => {
                 }
 
                 const response = await axios.get(
-                    "http://localhost:5000/api/admin-confi/duplicate-phone-requests",
+                    "https://api.diamondore.in/api/admin-confi/duplicate-phone-requests",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`
@@ -39,7 +39,7 @@ const AllDuplicatePhoneRequest = () => {
 
                     // Fetch employee names
                     const employeeDetails = await Promise.all(employeeIds.map(id =>
-                        axios.get(`http://localhost:5000/api/admin-confi/all-employees/${id}`, {
+                        axios.get(`https://api.diamondore.in/api/admin-confi/all-employees/${id}`, {
                             headers: {
                                 Authorization: `Bearer ${token}`
                             }
@@ -48,7 +48,7 @@ const AllDuplicatePhoneRequest = () => {
 
                     // Fetch owner names
                     const ownerDetails = await Promise.all(ownerIds.map(id =>
-                        axios.get(`http://localhost:5000/api/admin-confi/all-employees/${id}`, {
+                        axios.get(`https://api.diamondore.in/api/admin-confi/all-employees/${id}`, {
                             headers: {
                                 Authorization: `Bearer ${token}`
                             }
@@ -112,7 +112,7 @@ const AllDuplicatePhoneRequest = () => {
         try {
             const token = localStorage.getItem("token");
 
-            const response = await axios.put(`http://localhost:5000/api/admin-confi/account-handling/${id}`,
+            const response = await axios.put(`https://api.diamondore.in/api/admin-confi/account-handling/${id}`,
                 { status },
                 {
                     headers: {

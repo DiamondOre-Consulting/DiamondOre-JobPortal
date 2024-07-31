@@ -36,7 +36,7 @@ const EachEmployeeGoalSheet = () => {
         try {
             const token = localStorage.getItem("token");
             const response = await axios.put(
-                'http://localhost:5000/api/admin-confi/set-goalsheet',
+                'https://api.diamondore.in/api/admin-confi/set-goalsheet',
                 {
                     empId: id,
                     year,
@@ -101,7 +101,7 @@ const EachEmployeeGoalSheet = () => {
 
             try {
                 const token = localStorage.getItem("token");
-                const response = await axios.get(`http://localhost:5000/api/admin-confi/goalsheet/${id}`,
+                const response = await axios.get(`https://api.diamondore.in/api/admin-confi/goalsheet/${id}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`

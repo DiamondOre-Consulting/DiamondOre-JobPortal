@@ -11,7 +11,7 @@ const AllEmployeeAccounts = () => {
     useEffect(() => {
         const fetchAllAccount = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/employee/accounts');
+                const response = await axios.get('https://api.diamondore.in/api/employee/accounts');
                 if (response.status === 200) {
                     setAllAccountsData(response.data);
                     console.log(response.data)
@@ -106,7 +106,7 @@ const AllEmployeeAccounts = () => {
                 }
 
                 const response = await axios.get(
-                    "http://localhost:5000/api/admin-confi/duplicate-phone-requests",
+                    "https://api.diamondore.in/api/admin-confi/duplicate-phone-requests",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`

@@ -7,7 +7,7 @@ const AllAccounts = () => {
     useEffect(() => {
         const fetchAllAccount = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/employee/accounts');
+                const response = await axios.get('https://api.diamondore.in/api/employee/accounts');
                 if (response.status === 200) {
                     setAllAccountsData(response.data);
                 }

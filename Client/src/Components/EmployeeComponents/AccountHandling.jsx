@@ -25,7 +25,7 @@ const AccountHandling = ({ userData }) => {
         const fetchData = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const response = await axios.get(`http://localhost:5000/api/employee/accounts/${userData?.id}`);
+                const response = await axios.get(`https://api.diamondore.in/api/employee/accounts/${userData?.id}`);
 
                 if (response.status === 200) {
                     setRows(response.data);
@@ -50,7 +50,7 @@ const AccountHandling = ({ userData }) => {
         setShowSubmitLoader(true);
         setError('')
         try {
-            const response = await axios.put('http://localhost:5000/api/employee/set-account-handling', form, {
+            const response = await axios.put('https://api.diamondore.in/api/employee/set-account-handling', form, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
