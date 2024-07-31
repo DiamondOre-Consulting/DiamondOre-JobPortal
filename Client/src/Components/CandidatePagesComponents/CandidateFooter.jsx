@@ -31,7 +31,7 @@ const CandidateFooter = () => {
                   </div>
 
                   <div>
-                  <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Be Our Client</a>
+                  <Link to={'/be-our-client'} className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Be Our Client</Link>
                   </div>
 
               </nav>
@@ -49,13 +49,13 @@ const CandidateFooter = () => {
                   <a href="#" className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Team</a>
                   </div>
 
-                  <div>
+                  {/* <div>
                   <Link to={'/admin-login'} className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Admin login</Link>
-                  </div>
+                  </div> */}
 
-                  <div>
+                  {/* <div>
                   <Link to={'/employee-login'} className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Employee login</Link>
-                  </div>
+                  </div> */}
               </nav>
               </div>
               

@@ -41,7 +41,7 @@ const AllAccounts = () => {
                         <h2 className='text-2xl text-center mt-8 font-bold'> Account Holder : {ownerName}</h2>
                      
                      <div className='md:w-full w-72 overflow-x-auto'>
-                        <table id="example" className="table-auto mt-4 ">
+                        <table id="example" className="table-auto w-full mt-4 ">
                             <thead className='sticky top-0 bg-blue-900 text-gray-100 text-xs shadow'>
                                 <tr>
                                     <th className="px-4 py-2">HR Name</th>

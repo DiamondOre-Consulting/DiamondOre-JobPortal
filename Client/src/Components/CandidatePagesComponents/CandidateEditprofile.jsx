@@ -153,7 +153,7 @@ const CandidateEditprofile = () => {
     <>
      <CandidateNav/>
 
-      <div className='py-6 bg-gray-50 px-4'>
+      <div className='py-6  px-4'>
         <h2 className='text-center text-2xl font-bold '>Edit Profile image</h2>
         <div className='w-28 h-1 bg-blue-950 mx-auto'></div>
         <form className="max-w-md mx-auto  p-8 shadow-lg shadow-gray-500 my-2 bg-white border border-md">

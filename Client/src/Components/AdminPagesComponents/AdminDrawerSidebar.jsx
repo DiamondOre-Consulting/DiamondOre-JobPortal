@@ -21,7 +21,7 @@ import TaskOutlinedIcon from '@mui/icons-material/TaskOutlined';
 import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { useNavigate, Route, Routes } from 'react-router-dom';
+import { useNavigate, Route, Routes, Link } from 'react-router-dom';
 import logo from '..//../assets/logo2.png';
 import { useJwt } from 'react-jwt';
 import axios from 'axios';
@@ -223,7 +223,7 @@ const AdminDrawerSidebar = () => {
                         <img src={logo} alt='logo' className='w-40 cursor-pointer' />
                     </Typography>
                     <Box sx={{ flexGrow: 1 }} />
-                    <img src={userData?.profilePic} alt="" className='w-10 h-10 object-cover mr-2 rounded-full' />
+                    <Link to={'/admin-dashboard/edit-profile'}><img src={userData?.profilePic} alt="" className='w-10 h-10 object-cover mr-2 rounded-full cursor-pointer '/></Link>
                     <IconButton
                         style={{ color: 'white' }}
                         aria-label='logout'

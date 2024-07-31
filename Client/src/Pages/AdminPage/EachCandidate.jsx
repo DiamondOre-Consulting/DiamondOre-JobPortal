@@ -150,7 +150,7 @@ const EachCandidate = () => {
                 <div className="float-left"> 
                   <div
                     href="#"
-                    className="flex flex-col  items-start h-auto overflow-hidden rounded-lg bg-white  shadow-lg hover:shadow-2xl"
+                    className="flex flex-col  items-start h-40 overflow-hidden rounded-lg bg-white  shadow-lg hover:shadow-2xl"
                   >
                     <h3 className="text-sm text-white font-bold bg-blue-950 px-4 py-2 text-center w-full">
                       {job?.JobTitle}

@@ -152,7 +152,7 @@ const EditPrefrenceform = () => {
         <div className=''>
             <CandidateNav/>
             <h1 className='text-3xl font-bold  mx-auto text-center'>Edit Your Prefrence</h1>
-            <div className='w-44 h-1 bg-blue-900 mx-auto'></div>
+            <div className='w-44 h-1 bg-blue-900 mx-auto mb-4'></div>
             <div className="max-w-screen-md mx-auto mt-2 px-8  mt-2 shadow-lg shadow-gray-500 pb-8 pt-4">
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
@@ -201,7 +201,7 @@ const EditPrefrenceform = () => {
                     </div>
 
                     <div className="mb-4">
-                        <label htmlFor="email" className="block text-gray-700 font-bold mb-2">Expected CTC<span className='text-red-500'>*</span></label>
+                        <label htmlFor="email" className="block text-gray-700 font-bold mb-2 ">Expected CTC<span className='text-red-500'>*</span></label>
                         <select
                             className='w-full py-2 px-3'
                             name="expectedCTC"
@@ -228,11 +228,11 @@ const EditPrefrenceform = () => {
 
 
                     <button type="submit" className="bg-blue-950 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Submit</button>
-                    <div className="mt-4 mb-6">
+                    {/* <div className="mt-4 mb-6">
                         <div className="bg-gray-200 h-2 rounded-full">
-                            {/* <div className="bg-blue-950 h-2 rounded-full" style={{ width: `${calculateProgress()}%` }}></div> */}
+                            <div className="bg-blue-950 h-2 rounded-full" style={{ width: `${calculateProgress()}%` }}></div> 
                         </div>
-                    </div>
+                    </div> */}
                 </form>
             </div>
             <Footer/>

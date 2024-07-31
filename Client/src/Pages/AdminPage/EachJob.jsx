@@ -159,19 +159,19 @@ const AdminEachJob = () => {
             <div>
               <div
                 href="#"
-                 className="flex flex-col justify-between h-72 overflow-hidden rounded-lg bg-gray-100 p-4 shadow-lg"
+                 className="flex flex-col justify-between overflow-x-auto overflow-hidden rounded-lg bg-gray-100 p-4 shadow-lg"
               >
-                <h3 className="text-xl text-blue-950 font-bold text-wrap">
+                <h3 className="text-sm text-blue-950 font-bold mb-1 text-wrap">
                   Name -{" "}  
                   <span className="text-blue-950">{jobs?.name}</span>
                 </h3>
-                <p className="text-xl text-gray-600 font-semibold flex flex-wrap">
+                <p className="text-sm text-gray-600 font-semibold mb-1 flex flex-wrap">
                   Email -{" "}
                   <span className="text-blue-950">
                     {jobs?.email}
                   </span>
                 </p>
-                <p className="text-xl text-gray-600 font-semibold">
+                <p className="text-sm text-gray-600 mb-2 font-semibold">
                   Phone Number -{" "}
                   <span className="text-blue-950">
                     {jobs?.phone}
@@ -179,7 +179,7 @@ const AdminEachJob = () => {
                 </p>
                 <a
                   href={jobs?.resume}
-                   className="cursor-pointer w-full flex-col rounded-lg bg-white p-4 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200"
+                   className="cursor-pointer w-full mb-2 flex-col rounded-lg bg-white p-2 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200"
                 >
                   <span  className="text-md font-bold lg:text-md">Download Resume</span>
                 </a>

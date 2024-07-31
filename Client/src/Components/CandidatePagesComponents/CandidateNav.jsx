@@ -148,13 +148,13 @@ const CandidateNav = () => {
                 >
                   Applied Jobs
                 </Link>
-                <Link
+                {/* <Link
                   to={'/portfolio'}
                   className="text-md font-semibold text-gray-600 transition duration-100 hover:text-blue-950 active:text-blue-900"
                 >
                   Create Portfolio
-                </Link>
-                <a href="https://referbiz.in/" target="_blank">
+                </Link> */}
+                <a href="https://referbiz.in/" target="_blank" className=" text-md font-semibold text-gray-6000 transition duration-100 hover:text-blue-950 active:text-blue-900">
                   Refer & Earn
                 </a>
 
@@ -257,14 +257,14 @@ const CandidateNav = () => {
               </li>
             </Link>
 
-            <Link to={"/portfolio"}>
+            {/* <Link to={"/portfolio"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
                   } px-24 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Create Portfolio
               </li>
-            </Link>
+            </Link> */}
 
             <a href="https://referbiz.in/" target="_blank">
               <li
@@ -323,29 +323,39 @@ const CandidateNav = () => {
 
       {showPopup ? (
         <div
-          className={`fixed inset-0 flex items-center justify-center ${showPopup ? "visible" : "hidden"
+          className={`fixed inset-0 flex items-center z-10 justify-center ${showPopup ? "visible" : "hidden"
             }`}
         >
           <section className="rounded-3xl shadow-xl bg-white">
+
+            
             <div className="p-4 text-center sm:p-12">
-              <h2 className="mt-6 text-sm lg:text-xl md:xl sm:text-sm font-bold">
-                Do You Want To Delete this Account??
+            <svg class="w-20 h-20 text-red-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+              <h2 className="mt-6 text-gray-700 text-xs te lg:text-xl md:xl sm:text-sm font-bold">
+              Are you sure you want to delete this Account?
               </h2>
               <div className="flex justify-center align-center ">
 
-                <button
-                  className="mt-8 inline-block w-full rounded-full bg-green-500 py-4 text-sm font-bold text-white shadow-xl hover:bg-green-700 "
-                  onClick={handleClose}
+
+              <button
+                  className="mt-8 inline-block w-1/2 rounded-md bg-red-600 py-4 text-sm font-bold text-white shadow-md hover:bg-red-700"
+                  onClick={deleteAccount}
                 >
-                  No
+                  Yes, I'm Sure
                 </button>
 
                 <button
-                  className="ml-2 mt-8 inline-block w-full rounded-full bg-red-400 py-4 text-sm font-bold text-white shadow-xl hover:bg-red-700"
-                  onClick={deleteAccount}
+                  className="ml-4  mt-8 inline-block w-1/2 rounded-md border-1 bg-gray-100 py-4 text-sm font-bold text-gray-600 shadow-md  "
+                  onClick={handleClose}
                 >
-                  Yes! I'm Sure
+                  No , cancel
                 </button>
+
+              
 
               </div>
 
