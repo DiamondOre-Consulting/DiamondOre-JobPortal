@@ -756,10 +756,10 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
             subject: `A new applicant applied for ${job.JobTitle}`,
             html: `
             <ul>
-            <li><strong>Name:</strong>${CandidateUser?.name}</li>
-            <li><strong>Email:</strong> ${CandidateUser?.email}</li>
-            <li><strong>Phone Number:</strong> ${CandidateUser?.phone}</li>
-           <li><strong>Resume/CV:</strong>${CandidateUser?.resume}</li>
+            <li><strong>Name:</strong>${CandidateUser.name}</li>
+            <li><strong>Email:</strong> ${CandidateUser.email}</li>
+            <li><strong>Phone Number:</strong> ${CandidateUser.phone}</li>
+           <li><strong>Resume/CV:</strong>${CandidateUser.resume}</li>
            </ul> `,
           };
 
@@ -773,7 +773,7 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
         }
       }
       await jobAppliedSucessfully(email, job)
-      await CandidateAppliedJob(CandidateUser,job)
+      await CandidateAppliedJob(job,CandidateUser)
 
       res
         .status(201)
