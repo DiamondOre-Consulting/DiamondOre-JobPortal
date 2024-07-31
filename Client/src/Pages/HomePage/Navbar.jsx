@@ -63,7 +63,7 @@ const Navbar = () => {
 
                 className="text-md font-semibold text-white transition duration-100  active:text-blue-900"
               >
-                Search Job
+                Search By Phone No.
               </Link>
 
               <Link to={'/post-review'}
@@ -154,7 +154,7 @@ const Navbar = () => {
                 className={`${menuOpen ? "block" : "hidden"
                   } px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
-                Search Job
+                Search By Phone No.
               </li>
             </Link>
 

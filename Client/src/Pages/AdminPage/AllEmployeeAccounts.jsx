@@ -2,11 +2,13 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import AllEmployee from './AllEmployee';
 import { Link, useNavigate } from 'react-router-dom';
+import PropagateLoader from "react-spinners/PropagateLoader";
 
 const AllEmployeeAccounts = () => {
     const [allAccountsData, setAllAccountsData] = useState([]);
     const [showpopup, setShowPopup] = useState(false);
     const [deletepopup, setDeletePopup] = useState(false);
+    let [loading, setLoading] = useState(true);;
     const navigate = useNavigate();
     useEffect(() => {
         const fetchAllAccount = async () => {
@@ -15,6 +17,7 @@ const AllEmployeeAccounts = () => {
                 if (response.status === 200) {
                     setAllAccountsData(response.data);
                     console.log(response.data)
+                    setLoading(false)
                 }
             } catch (error) {
                 console.log(error);
@@ -129,6 +132,15 @@ const AllEmployeeAccounts = () => {
     }, []);
 
 
+
+    const override = {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+
+    };
+
+
     return (
         <>
             <div>
@@ -143,7 +155,7 @@ const AllEmployeeAccounts = () => {
                         </svg>
                         <div className='w-6 h-6 items-center text-center rounded-full text-gray-100 relative -top-5 md:-top-4 md:right-7 -right-3 bg-red-500'>{length}</div>
                     </div>
-                    <div className="absolute z-10  right-0 hidden group-hover:inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-100 tooltip dark:bg-gray-700">
+                    <div className="absolute z-10  right-0 hidden group-hover:inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-100 tooltip ">
                         Duplicate Account Phone Request
                         <div className="tooltip-arrow"></div>
                     </div>
@@ -152,44 +164,59 @@ const AllEmployeeAccounts = () => {
 
 
 
-                {Object.keys(groupedData).map(ownerName => (
-                    <div key={ownerName}>
-                        <h2 className='text-2xl text-center mt-8 font-bold'> Account Holder : {ownerName}</h2>
-                      
-                      <div className='md:w-full w-80 overflow-x-auto'>
-                        <table id="example" className="table-auto w-full  mt-4">
-                            <thead className='sticky top-0 bg-blue-900 text-gray-100 text-xs shadow'>
-                                <tr>
-                                    <th className="px-4 py-2">HR Name</th>
-                                    <th className="px-4 py-2">Client Name</th>
-                                    <th className="px-4 py-2">Phone</th>
-                                    <th className="px-4 py-2">Zone</th>
-                                    <th className='px-4 py-2'> Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {groupedData[ownerName].flatMap(account =>
-                                    account.accountDetails.map((detail, index) => (
-                                        <tr key={`${account._id}-${index}`} className='text-center'>
-                                            <td className="border px-4 py-2">{detail.detail.hrName}</td>
-                                            <td className="border px-4 py-2">{detail.detail.clientName}</td>
-                                            <td className="border px-4 py-2">{detail.detail.phone}</td>
-                                            <td className="border px-4 py-2">{detail.detail.zone}</td>
-                                            <td className='borrder px-4 py-2 text-xs cursor-pointer'> <span className='text-red-400 hover:underline' onClick={() => handleClick(detail._id)}>Edit </span> / <span onClick={() => handledeleteclick(detail._id)} className='text-red-600 hover:underline'>Delete</span></td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                      </div>
-                    </div>
-                ))}
+                {
+                    loading ?
+                        <div style={override}>
+                            <PropagateLoader
+                                color={'#023E8A'}
+                                loading={loading}
+                                size={20}
+                                aria-label="Loading Spinner"
+                                data-testid="loader"
+                            />
+                        </div> :
+                        <div>
+                            {Object.keys(groupedData).map(ownerName => (
+                                <div key={ownerName}>
+                                    <h2 className='text-2xl text-center mt-8 font-bold'> Account Holder : {ownerName}</h2>
 
-                {allAccountsData.length === 0 && (
-                    <div className="text-center mt-10">
-                        No data available .
-                    </div>
-                )}
+                                    <div className='md:w-full w-80 overflow-x-auto'>
+                                        <table id="example" className="table-auto w-full  mt-4">
+                                            <thead className='sticky top-0 bg-blue-900 text-gray-100 text-xs shadow'>
+                                                <tr>
+                                                    <th className="px-4 py-2">HR Name</th>
+                                                    <th className="px-4 py-2">Client Name</th>
+                                                    <th className="px-4 py-2">Phone</th>
+                                                    <th className="px-4 py-2">Zone</th>
+                                                    <th className='px-4 py-2'> Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {groupedData[ownerName].flatMap(account =>
+                                                    account.accountDetails.map((detail, index) => (
+                                                        <tr key={`${account._id}-${index}`} className='text-center'>
+                                                            <td className="border px-4 py-2">{detail.detail.hrName}</td>
+                                                            <td className="border px-4 py-2">{detail.detail.clientName}</td>
+                                                            <td className="border px-4 py-2">{detail.detail.phone}</td>
+                                                            <td className="border px-4 py-2">{detail.detail.zone}</td>
+                                                            <td className='borrder px-4 py-2 text-xs cursor-pointer'> <span className='text-red-400 hover:underline' onClick={() => handleClick(detail._id)}>Edit </span> / <span onClick={() => handledeleteclick(detail._id)} className='text-red-600 hover:underline'>Delete</span></td>
+                                                        </tr>
+                                                    ))
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            ))}
+
+                            {allAccountsData.length === 0 && (
+                                <div className="text-center mt-10">
+                                    No data available .
+                                </div>
+                            )}
+
+                        </div>
+                }
             </div>
 
 

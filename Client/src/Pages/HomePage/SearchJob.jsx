@@ -109,13 +109,18 @@ const SearchJob = () => {
     return (
         <>
             <Navbar />
-            <div className='flex flex-col justify-center items-center text-center'>
-                <div>
+            <div className='flex flex-col justify-center items-center text-center  mt-40'>
+                {/* <div>
                     <img src={logo} alt="" className='mt-20' />
 
+                </div> */}
+
+                <div>
+                    <h1 className='text-4xl font-bold'>Search Jobs By Your Phone No.</h1>
+                    <div className='mx-auto bg-blue-900 w-40 h-1 mt-1'></div>
                 </div>
 
-                <div className="relative pt-2">
+                <div className="relative pt-2 mt-6">
                     <div className="relative w-11/12 md:max-w-xl mx-auto bg-white rounded-full mt-4 mb-10">
                         <input
                             placeholder="Search by Phone"
@@ -147,9 +152,9 @@ const SearchJob = () => {
                         <div className="px-4 md:px-40 py-4">
                             <h2 className="text-2xl font-bold mb-4 text-center">Recommended Jobs For {profile?.candidateName}</h2>
 
-                            <div className="relative overflow-x-auto">
-                                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <div className="relative overflow-x-auto rounded-md">
+                                <table className="w-full text-sm text-left text-gray-500  rounded-md border">
+                                    <thead className="text-xs text-gray-700 uppercase bg-gray-100  ">
                                         <tr>
                                             <th scope="col" className="px-6 py-3">Company</th>
                                             <th scope="col" className="px-6 py-3">Job Title</th>
@@ -162,8 +167,8 @@ const SearchJob = () => {
                                     </thead>
                                     <tbody className=''>
                                         {profile.suitableJobs.map((job, index) => (
-                                            <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 ">
-                                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{job.Company}</td>
+                                            <tr key={index} className="bg-white border-b   ">
+                                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">{job.Company}</td>
                                                 <td className="px-6 py-4">{job.JobTitle}</td>
                                                 <td className="px-6 py-4">{job.Industry}</td>
                                                 <td className="px-6 py-4">{job.Channel}</td>

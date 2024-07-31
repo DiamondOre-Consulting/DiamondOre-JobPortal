@@ -215,8 +215,8 @@ const Prompt = () => {
                         <h2 className="text-2xl font-bold mb-4 text-center">Recommended Jobs For {profile?.candidateName}</h2>
                         
                         <div className="relative overflow-x-auto">
-                            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <table className="w-full text-sm text-left text-gray-500 ">
+                                <thead className="text-xs text-gray-700 uppercase bg-gray-50  ">
                                     <tr>
                                         <th scope="col" className="px-6 py-3">Company</th>
                                         <th scope="col" className="px-6 py-3">Job Title</th>
@@ -229,8 +229,8 @@ const Prompt = () => {
                                 </thead>
                                 <tbody className=''>
                                     {profile.suitableJobs.map((job, index) => (
-                                        <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 ">
-                                            <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{job.Company}</td>
+                                        <tr key={index} className="bg-white border-b   ">
+                                            <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">{job.Company}</td>
                                             <td className="px-6 py-4">{job.JobTitle}</td>
                                             <td className="px-6 py-4">{job.Industry}</td>
                                             <td className="px-6 py-4">{job.Channel}</td>

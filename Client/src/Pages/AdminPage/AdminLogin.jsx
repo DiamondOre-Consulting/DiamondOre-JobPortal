@@ -180,7 +180,7 @@ const AdminLogin = () => {
             </div>
           )}
         </div>
-        <div className="flex items-center justify-center  rounded-lg  ">
+        <div className="flex items-center justify-center rounded-lg  ">
           <div className="hidden md:block">
             <img src={simg} />
           </div>

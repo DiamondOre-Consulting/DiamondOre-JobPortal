@@ -3,12 +3,15 @@ import axios from 'axios';
 import AdminNav from '../../Components/AdminPagesComponents/AdminNav';
 import Footer from '../HomePage/Footer';
 import bluediamond from '..//..//assets/bluediamond.png'; // Replace with the correct path to your image
+import PropagateLoader from "react-spinners/PropagateLoader";
+import ReactPaginate from "react-paginate";
 
 const AllReviews = () => {
     const [allreviews, setAllReviews] = useState([]);
     const [popup, setPopUp] = useState(false); // State to control the popup
     const [reviewToDelete, setReviewToDelete] = useState(null); // State to store review ID for deletion
     const token = localStorage.getItem("token");
+    let [loading, setLoading] = useState(true);
     useEffect(() => {
         fetchAllReviews();
     }, []);
@@ -18,6 +21,7 @@ const AllReviews = () => {
             const response = await axios.get('https://api.diamondore.in/api/candidates/all-reviews');
             if (response.status === 201) {
                 setAllReviews(response.data);
+                setLoading(false)
             } else {
                 console.error('Failed to fetch reviews:', response.statusText);
             }
@@ -58,53 +62,74 @@ const AllReviews = () => {
         setPopUp(false);
     };
 
+
+    const override = {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+    
+      };
+    
+
     return (
         <>
             {/* <AdminNav /> */}
             <div>
                 <h1 className='text-center font-bold text-3xl'>All Reviews</h1>
                 <div className="main mt-10 mb-10">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-4 md:px-10 px-4 ">
-                        {allreviews.map((review) => (
-                            <div key={review._id} className="max-w-md">
-                                <div className="bg-white shadow-xl rounded-md overflow-hidden h-full flex flex-col relative mb-4">
-                                    <div className="relative h-6 bg-blue-900"></div>
-                                    <div className="flex-1 p-6">
-                                        <p className="text-lg font-bold text-gray-800">{review.reviewFor}'s Employee</p>
-                                        <p className="mt-2 text-sm text-gray-600">{review.review}</p>
-                                        <div className='absolute bottom-0 left-0 w-full flex items-center justify-between p-4'>
-                                            <div className="flex items-center">
-                                                {Array.from({ length: review.diamonds }).map((_, index) => (
-                                                    <img key={index} src={bluediamond} className="w-6 h-6 mr-1" alt="diamond" />
-                                                ))}
+                    {
+                        loading ?
+                            <div style={override}>
+                                <PropagateLoader
+                                    color={'#023E8A'}
+                                    loading={loading}
+                                    size={20}
+                                    aria-label="Loading Spinner"
+                                    data-testid="loader"
+                                />
+                            </div> :
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-4 md:px-10 px-4 ">
+                                {allreviews.map((review) => (
+                                    <div key={review._id} className="max-w-md">
+                                        <div className="bg-white shadow-xl rounded-md overflow-hidden h-full flex flex-col relative mb-4">
+                                            <div className="relative h-6 bg-blue-900"></div>
+                                            <div className="flex-1 p-6">
+                                                <p className="text-lg font-bold text-gray-800">{review.reviewFor}'s Employee</p>
+                                                <p className="mt-2 text-sm text-gray-600">{review.review}</p>
+                                                <div className='absolute bottom-0 left-0 w-full flex items-center justify-between p-4'>
+                                                    <div className="flex items-center">
+                                                        {Array.from({ length: review.diamonds }).map((_, index) => (
+                                                            <img key={index} src={bluediamond} className="w-6 h-6 mr-1" alt="diamond" />
+                                                        ))}
+                                                    </div>
+                                                    <svg
+                                                        className="h-6 w-6 text-red-500 cursor-pointer"
+                                                        width="24"
+                                                        height="24"
+                                                        viewBox="0 0 24 24"
+                                                        onClick={() => openPopup(review._id)} // Pass review._id to openPopup
+                                                        strokeWidth="2"
+                                                        stroke="currentColor"
+                                                        fill="none"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                    >
+                                                        <path stroke="none" d="M0 0h24v24H0z" />
+                                                        <line x1="4" y1="7" x2="20" y2="7" />
+                                                        <line x1="10" y1="11" x2="10" y2="17" />
+                                                        <line x1="14" y1="11" x2="14" y2="17" />
+                                                        <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                                                        <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                                                    </svg>
+                                                </div>
                                             </div>
-                                            <svg
-                                                className="h-6 w-6 text-red-500 cursor-pointer"
-                                                width="24"
-                                                height="24"
-                                                viewBox="0 0 24 24"
-                                                onClick={() => openPopup(review._id)} // Pass review._id to openPopup
-                                                strokeWidth="2"
-                                                stroke="currentColor"
-                                                fill="none"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                            >
-                                                <path stroke="none" d="M0 0h24v24H0z" />
-                                                <line x1="4" y1="7" x2="20" y2="7" />
-                                                <line x1="10" y1="11" x2="10" y2="17" />
-                                                <line x1="14" y1="11" x2="14" y2="17" />
-                                                <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
-                                                <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-                                            </svg>
+                                            <div className="absolute top-0 left-4 h-4 w-1 bg-blue-900 rounded-full"></div>
+                                            <div className="absolute top-0 right-4 h-4 w-1 bg-blue-900 rounded-full"></div>
                                         </div>
                                     </div>
-                                    <div className="absolute top-0 left-4 h-4 w-1 bg-blue-900 rounded-full"></div>
-                                    <div className="absolute top-0 right-4 h-4 w-1 bg-blue-900 rounded-full"></div>
-                                </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
+                    }
                 </div>
             </div>
 

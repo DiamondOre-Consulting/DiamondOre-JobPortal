@@ -246,7 +246,7 @@ const AdminDrawerSidebar = () => {
                         { text: 'All Jobs', icon: <WorkIcon />, path: '/all-Jobs' },
                         { text: 'All Candidate', icon: <GroupIcon />, path: '/all-candidates' },
                         { text: 'ERP', icon: <img src={erpicon} className='w-6 h-6' />, path: '/erp-dashboard' },
-                        { text: 'Add Jobs', icon: <DomainAddIcon />, path: '/add-jobs' },
+                        { text: 'Add & Delete Jobs', icon: <DomainAddIcon />, path: '/add-jobs' },
                         { text: 'All Reviews', icon: <ReviewsIcon />, path: '/all-reviews' },
                         { text: 'All Employees', icon: <BadgeIcon />, path: '/all-employees' },
                         { text: 'Add Recruiter', icon: <AddCircleOutlineIcon />, path: '/add-recruiter' },

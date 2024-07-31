@@ -118,6 +118,14 @@ const Chatboot = () => {
         setInputValue(e.target.value);
     };
 
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleSendMessage();
+        }
+    };
+
+
     const handleSendMessage = () => {
         if (inputValue.trim() !== '') {
             const key = Object.keys(userDetails)[currentQuestionIndex];
@@ -215,6 +223,7 @@ const Chatboot = () => {
                                 type="text"
                                 value={inputValue}
                                 onChange={handleInputChange}
+                                onKeyDown={handleKeyDown} 
                                 className="flex-grow border border-gray-300 rounded-l-lg px-2 py-2 focus:outline-none  w-1/2"
                                 placeholder="Type your message..."
                             />

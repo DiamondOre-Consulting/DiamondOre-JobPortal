@@ -109,16 +109,16 @@ const AccountHandling = ({ userData }) => {
             <h1 className='text-3xl md:text-4xl font-bold'>Account Handling</h1>
             <div className='w-20 h-0.5 bg-blue-900'></div>
 
-            <div className="relative w-full max-w-xl my-8 md:my-10 flex flex-col items-start space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 px-4 py-4 border-2 border-dotted border-gray-400 dark:border-gray-400 shadow-lg rounded-lg justify-between">
+            <div className="relative w-full max-w-xl my-8 md:my-10 flex flex-col items-start space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 px-4 py-4 border-2 border-dotted border-gray-400  shadow-lg rounded-lg justify-between">
                 <div className='flex'>
-                    <span className="absolute text-xs font-medium top-0 left-0 rounded-br-lg rounded-tl-lg px-2 py-1 bg-blue-900 text-gray-100 dark:bg-gray-900 dark:text-gray-300 border-gray-400 dark:border-gray-400 border-b-2 border-r-2 border-dotted ">
+                    <span className="absolute text-xs font-medium top-0 left-0 rounded-br-lg rounded-tl-lg px-2 py-1 bg-blue-900 text-gray-100   border-gray-400  border-b-2 border-r-2 border-dotted ">
                         Account Handler
                     </span>
                     <div className="w-full flex justify-center sm:justify-start sm:w-auto">
                         <img className="object-cover w-20 h-20 mt-3 mr-3 rounded-full" src="https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=" alt="User" />
                     </div>
                     <div className="w-full sm:w-auto flex flex-col items-center sm:items-start">
-                        <p className="font-display mb-2 text-2xl font-semibold dark:text-gray-200" itemProp="author">
+                        <p className="font-display mb-2 text-2xl font-semibold " itemProp="author">
                             {userData?.name}
                         </p>
                         <div className="mb-4 md:text-lg text-gray-600">
@@ -135,30 +135,30 @@ const AccountHandling = ({ userData }) => {
                 <div className="-m-1.5 overflow-x-auto">
                     <div className="p-1.5 min-w-full inline-block align-middle">
                         <div className="overflow-hidden border">
-                            <table className="md:w-full divide-y divide-gray-200 dark:divide-neutral-700 ">
+                            <table className="md:w-full divide-y divide-gray-200  ">
                                 <thead className='border text-center'>
                                     <tr className='border text-center bg-gray-100'>
-                                        <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">S.No</th>
-                                        <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">HR Name</th>
-                                        <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">Zone</th>
-                                        <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">Channel</th>
-                                        <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">Client Name</th>
-                                        <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">phone</th>
-                                        <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">Action</th>
+                                        <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">S.No</th>
+                                        <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">HR Name</th>
+                                        <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">Zone</th>
+                                        <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">Channel</th>
+                                        <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">Client Name</th>
+                                        <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">phone</th>
+                                        <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">Action</th>
                                     </tr>
                                 </thead>
 
-                                <tbody className="divide-y divide-gray-200 dark:divide-neutral-700 text-center">
+                                <tbody className="divide-y divide-gray-200  text-center">
                                     {accountdetails?.findAccount?.accountDetails?.map((row, index) => (
                                         <tr key={index}>
-                                            <td className="px-6 py-4 whitespace-nowrap border text-sm font-medium text-gray-800 dark:text-neutral-200">{index + 1}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 dark:text-neutral-200">{row.detail.hrName}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 dark:text-neutral-200">{row.detail.zone}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 dark:text-neutral-200">{row.detail.channel}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 dark:text-neutral-200">{row.detail.clientName}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 dark:text-neutral-200">{row.detail.phone}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border text-sm font-medium text-gray-800 ">{index + 1}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 ">{row.detail.hrName}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 ">{row.detail.zone}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 ">{row.detail.channel}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 ">{row.detail.clientName}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 ">{row.detail.phone}</td>
                                             <td className="px-6 py-4 whitespace-nowrap border text-center text-sm font-medium">
-                                                <button type="button" className="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400">Delete</button>
+                                                <button type="button" className="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none  ">Delete</button>
                                             </td>
                                         </tr>
                                     ))}

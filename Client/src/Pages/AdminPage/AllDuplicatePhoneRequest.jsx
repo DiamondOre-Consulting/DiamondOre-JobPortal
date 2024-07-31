@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import PropagateLoader from "react-spinners/PropagateLoader";
 
 const AllDuplicatePhoneRequest = () => {
     const [phonerequest, setAllPhoneRequest] = useState([]);
     const [popup, setShowPopup] = useState(false);
     const [status, setStatus] = useState('');
     const [snackbarOpen, setSnackbarOpen] = useState(false);
+    let [loading, setLoading] = useState(true);;
     const [id, setId] = useState('');
 
     useEffect(() => {
@@ -81,6 +83,7 @@ const AllDuplicatePhoneRequest = () => {
 
                     setAllPhoneRequest(requestsWithNames);
                     console.log("All duplicate phone requests with employee and owner names", requestsWithNames);
+                    setLoading(false)
                 }
             } catch (error) {
                 console.error("Error fetching duplicate phone requests:", error);
@@ -132,23 +135,44 @@ const AllDuplicatePhoneRequest = () => {
         }
     }
 
+
+    const override = {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+
+    };
+
     return (
         <>
-            <h1 className='text-center font-bold text-xl md:text-3xl'>All Duplicate Account Phone Requests</h1>
-            <div className="w-full pt-10 lg:w-full relative isolate grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {phonerequest.map(account => (
-                    account.requests.map(request => (
-                        <div key={request._id} className="grid grid-rows-1 p-5 bg-white rounded-xl gap-y-2 w-full border border-slate-500/50 hover:shadow-[5px_5px_0_rgba(0,0,0,0.5)] transition-shadow duration-150 ease-linear cursor-pointer" onClick={() => handleClick(account._id)}>
-                            <div className="flex flex-col gap-y-2.5">
-                                <p className="text-xl font-semibold">Current Owner: {account.ownerName}</p>
-                                <h3 className="text-lg font-semibold">Requested Owner: {request.reqDetail.employeeName}</h3>
-                                <p className="text-xl font-semibold">Requested Phone: {request.reqDetail.accountPhone}</p>
-                            </div>
-                            <p className='flex'> Request Status:<span className={`text-base ml-2 ${request.reqDetail.status ? 'text-green-500' : 'text-red-500'}`}>{request.reqDetail.status ? 'Active' : 'Inactive'}</span></p>
-                        </div>
-                    ))
-                ))}
-            </div>
+            <h1 className='text-center font-bold text-xl md:text-3xl mb-6'>All Duplicate Account Phone Requests</h1>
+
+            {
+                loading ?
+                    <div style={override}>
+                        <PropagateLoader
+                            color={'#023E8A'}
+                            loading={loading}
+                            size={20}
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                        />
+                    </div> :
+                    <div className="w-full pt-10 lg:w-full relative isolate grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                        {phonerequest.map(account => (
+                            account.requests.map(request => (
+                                <div key={request._id} className="grid grid-rows-1 p-5 bg-white rounded-xl gap-y-2 w-full border border-slate-500/50 hover:shadow-[5px_5px_0_rgba(0,0,0,0.5)] transition-shadow duration-150 ease-linear cursor-pointer" onClick={() => handleClick(account._id)}>
+                                    <div className="flex flex-col gap-y-2.5">
+                                        <p className="text-xl font-semibold">Current Owner: {account.ownerName}</p>
+                                        <h3 className="text-lg font-semibold">Requested Owner: {request.reqDetail.employeeName}</h3>
+                                        <p className="text-xl font-semibold">Requested Phone: {request.reqDetail.accountPhone}</p>
+                                    </div>
+                                    <p className='flex'> Request Status:<span className={`text-base ml-2 ${request.reqDetail.status ? 'text-green-500' : 'text-red-500'}`}>{request.reqDetail.status ? 'Active' : 'Inactive'}</span></p>
+                                </div>
+                            ))
+                        ))}
+                    </div>
+            }
 
             {popup && (
                 <div className="fixed inset-0 flex items-center bg-gray-900 bg-opacity-60 justify-center z-50">
