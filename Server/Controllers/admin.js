@@ -2351,7 +2351,6 @@ router.put(
 // SET KPI SCORE
 router.post("/set-kpi-score", async (req, res) => {
   try {
-    // TAKE INPUT AS OBJECT HAVING TARGET AND REVENUE FOR KPI PARAMETERS
     const {
       owner,
       month,
@@ -2362,7 +2361,7 @@ router.post("/set-kpi-score", async (req, res) => {
       mentorship,
       processAdherence,
       leakage,
-      noOfJoining,
+      noOfJoining
     } = req.body;
 
     // Find the KPI document for the owner
@@ -2373,6 +2372,32 @@ router.post("/set-kpi-score", async (req, res) => {
       kpi = new KPI({ owner: owner, kpis: [] });
     }
 
+    // Helper function to calculate weight and kpiScore
+    const calculateScore = (target, actual, weightPercentage) => {
+      const weight = actual / target;
+      const kpiScore = (weightPercentage / 100) * weight;
+      return { weight, kpiScore };
+    };
+
+    const costVsRevenueScore = calculateScore(costVsRevenue.target, costVsRevenue.actual, 20);
+    const successfulDrivesScore = calculateScore(successfulDrives.target, successfulDrives.actual, 10);
+    const accountsScore = calculateScore(accounts.target, accounts.actual, 15);
+    const mentorshipScore = calculateScore(mentorship.target, mentorship.actual, 15);
+    const processAdherenceScore = calculateScore(processAdherence.target, processAdherence.actual, 15);
+    const leakageScore = calculateScore(leakage.target, leakage.actual, 15);
+    const noOfJoiningScore = calculateScore(noOfJoining.target, noOfJoining.actual, 10);
+
+    // Calculate total KPI score
+    const totalKPIScore = (
+      costVsRevenueScore.kpiScore +
+      successfulDrivesScore.kpiScore +
+      accountsScore.kpiScore +
+      mentorshipScore.kpiScore +
+      processAdherenceScore.kpiScore +
+      leakageScore.kpiScore +
+      noOfJoiningScore.kpiScore
+    ) * 100;
+
     // Construct the new KPI month information
     const newKpiMonth = {
       kpiMonth: {
@@ -2381,55 +2406,47 @@ router.post("/set-kpi-score", async (req, res) => {
         costVsRevenue: {
           target: costVsRevenue.target,
           actual: costVsRevenue.actual,
-          weight: actual / target,
-          kpiScore: (20 / 100) * weight,
+          weight: costVsRevenueScore.weight,
+          kpiScore: costVsRevenueScore.kpiScore
         },
         successfulDrives: {
           target: successfulDrives.target,
           actual: successfulDrives.actual,
-          weight: actual / target,
-          kpiScore: (10 / 100) * weight,
+          weight: successfulDrivesScore.weight,
+          kpiScore: successfulDrivesScore.kpiScore
         },
         accounts: {
           target: accounts.target,
           actual: accounts.actual,
-          weight: actual / target,
-          kpiScore: (15 / 100) * weight,
+          weight: accountsScore.weight,
+          kpiScore: accountsScore.kpiScore
         },
         mentorship: {
           target: mentorship.target,
           actual: mentorship.actual,
-          weight: actual / target,
-          kpiScore: (15 / 100) * weight,
+          weight: mentorshipScore.weight,
+          kpiScore: mentorshipScore.kpiScore
         },
         processAdherence: {
           target: processAdherence.target,
           actual: processAdherence.actual,
-          weight: actual / target,
-          kpiScore: (15 / 100) * weight,
+          weight: processAdherenceScore.weight,
+          kpiScore: processAdherenceScore.kpiScore
         },
         leakage: {
           target: leakage.target,
           actual: leakage.actual,
-          weight: actual / target,
-          kpiScore: (15 / 100) * weight,
+          weight: leakageScore.weight,
+          kpiScore: leakageScore.kpiScore
         },
         noOfJoining: {
           target: noOfJoining.target,
           actual: noOfJoining.actual,
-          weight: actual / target,
-          kpiScore: (10 / 100) * weight,
+          weight: noOfJoiningScore.weight,
+          kpiScore: noOfJoiningScore.kpiScore
         },
-        totalKPIScore:
-          ((costVsRevenue.kpiScore +
-            successfulDrives.kpiScore +
-            accounts.kpiScore +
-            mentorship.kpiScore +
-            processAdherence.kpiScore +
-            leakage.kpiScore +
-            noOfJoining.kpiScore) *
-          100),
-      },
+        totalKPIScore: totalKPIScore
+      }
     };
 
     // Push the new KPI month information to the kpis array
