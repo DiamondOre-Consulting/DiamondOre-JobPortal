@@ -35,6 +35,7 @@ import RecruitersAndKAMs from "../Models/RecruitersAndKAMs.js";
 import ClientReviews from "../Models/ClientReviews.js";
 import GoalSheet from "../Models/GoalSheet.js";
 import AccountHandling from "../Models/AccountHandling.js";
+import KPI from "../Models/KPI.js";
 
 dotenv.config();
 
@@ -1589,11 +1590,9 @@ router.post("/register-recruiter-kam", async (req, res) => {
 
     const findEmp = await RecruitersAndKAMs.exists({ email });
     if (findEmp) {
-      return res
-        .status(401)
-        .json({
-          message: "This Recruiter or KAM already has been registered!!!",
-        });
+      return res.status(401).json({
+        message: "This Recruiter or KAM already has been registered!!!",
+      });
     }
 
     const newEmp = new RecruitersAndKAMs({
@@ -2011,6 +2010,23 @@ router.put("/set-goalsheet", AdminAuthenticateToken, async (req, res) => {
     }
 
     const totalIncentive = noOfJoiningIncentive + mtdIncentive;
+
+    // Calculate variableIncentive based on achYTD and achMTD
+    let variableIncentive = 0;
+    if (achYTD >= 3) {
+      goalSheet.goalSheetDetails.forEach((detail) => {
+        const { achMTD: detailAchMTD, revenue: detailRevenue } =
+          detail.goalSheet;
+        if (detailAchMTD >= 3 && detailAchMTD <= 3.4) {
+          variableIncentive += detailRevenue * 0.02;
+        } else if (detailAchMTD >= 3.5 && detailAchMTD <= 3.9) {
+          variableIncentive += detailRevenue * 0.04;
+        } else if (detailAchMTD >= 4) {
+          variableIncentive += detailRevenue * 0.06;
+        }
+      });
+    }
+
     // Push new details to goalSheetDetails array
     goalSheet.goalSheetDetails.push({
       goalSheet: {
@@ -2024,6 +2040,7 @@ router.put("/set-goalsheet", AdminAuthenticateToken, async (req, res) => {
         achYTD: achYTD,
         achMTD: achMTD,
         incentive: totalIncentive,
+        variableIncentive: variableIncentive,
       },
     });
 
@@ -2065,11 +2082,9 @@ router.get(
         "requests.0": { $exists: true },
       });
       if (!duplicatePhoneRequests) {
-        return res
-          .status(402)
-          .json({
-            message: "No Accounts available with duplicate requests!!!",
-          });
+        return res.status(402).json({
+          message: "No Accounts available with duplicate requests!!!",
+        });
       }
 
       res.status(200).json(duplicatePhoneRequests);
@@ -2200,106 +2215,234 @@ const transporter = nodemailer.createTransport({
 //   }
 // );
 
-router.put("/account-handling/:id", AdminAuthenticateToken, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { status } = req.body;
+router.put(
+  "/account-handling/:id",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
 
-    const findAccount = await AccountHandling.findById(id).populate('owner');
-    if (!findAccount) {
-      return res.status(404).json({ message: "No account found with this id!!!" });
-    }
-
-    const requestToUpdate = findAccount.requests.find(req => req.reqDetail.status === null);
-    if (!requestToUpdate) {
-      return res.status(400).json({ message: "No pending request found to update!" });
-    }
-
-    if (status === "true") {
-      const previousOwnerEmail = findAccount.owner.email;
-      const newOwnerId = requestToUpdate.reqDetail.employee;
-      const accountPhone = requestToUpdate.reqDetail.accountPhone;
-
-      // Move the account detail from the previous owner to the new owner
-      const accountDetail = findAccount.accountDetails.find(acc => acc.detail.phone === accountPhone);
-      if (!accountDetail) {
-        return res.status(404).json({ message: "Account detail not found in previous owner's accountDetails!" });
+      const findAccount = await AccountHandling.findById(id).populate("owner");
+      if (!findAccount) {
+        return res
+          .status(404)
+          .json({ message: "No account found with this id!!!" });
       }
 
-      let newOwnerAccountHandling = await AccountHandling.findOneAndUpdate(
-        { owner: newOwnerId },
-        { $push: { accountDetails: accountDetail } },
-        { new: true, upsert: true }
+      const requestToUpdate = findAccount.requests.find(
+        (req) => req.reqDetail.status === null
       );
-
-      findAccount.accountDetails = findAccount.accountDetails.filter(acc => acc.detail.phone !== accountPhone);
-      requestToUpdate.reqDetail.status = true;
-
-      await findAccount.save();
-
-      // Send email to the previous owner
-      transporter.sendMail({
-        from: 'harshkr2709@gmail.com',
-        to: previousOwnerEmail,
-        subject: 'Account Handling Ownership Update',
-        text: `The AccountHandling with phone: ${accountPhone} has been removed from your list.`,
-      }, (error, info) => {
-        if (error) {
-          console.error('Error sending email to previous owner:', error);
-        } else {
-          console.log('Email sent to previous owner:', info.response);
-        }
-      });
-
-      // Fetch new owner's email
-      const newOwner = await Employees.findById(newOwnerId);
-      if (!newOwner) {
-        return res.status(404).json({ message: "New owner not found!" });
+      if (!requestToUpdate) {
+        return res
+          .status(400)
+          .json({ message: "No pending request found to update!" });
       }
 
-      // Send email to the new owner
-      transporter.sendMail({
-        from: 'harshkr2709@gmail.com',
-        to: newOwner.email,
-        subject: 'New Account Handling Ownership',
-        text: `You have been assigned the AccountHandling with phone: ${accountPhone}.`,
-      }, (error, info) => {
-        if (error) {
-          console.error('Error sending email to new owner:', error);
-        } else {
-          console.log('Email sent to new owner:', info.response);
-        }
-      });
+      if (status === "true") {
+        const previousOwnerEmail = findAccount.owner.email;
+        const newOwnerId = requestToUpdate.reqDetail.employee;
+        const accountPhone = requestToUpdate.reqDetail.accountPhone;
 
-      return res.status(200).json({ message: "AccountHandling updated successfully and emails sent." });
+        // Move the account detail from the previous owner to the new owner
+        const accountDetail = findAccount.accountDetails.find(
+          (acc) => acc.detail.phone === accountPhone
+        );
+        if (!accountDetail) {
+          return res
+            .status(404)
+            .json({
+              message:
+                "Account detail not found in previous owner's accountDetails!",
+            });
+        }
+
+        let newOwnerAccountHandling = await AccountHandling.findOneAndUpdate(
+          { owner: newOwnerId },
+          { $push: { accountDetails: accountDetail } },
+          { new: true, upsert: true }
+        );
+
+        findAccount.accountDetails = findAccount.accountDetails.filter(
+          (acc) => acc.detail.phone !== accountPhone
+        );
+        requestToUpdate.reqDetail.status = true;
+
+        await findAccount.save();
+
+        // Send email to the previous owner
+        transporter.sendMail(
+          {
+            from: "harshkr2709@gmail.com",
+            to: previousOwnerEmail,
+            subject: "Account Handling Ownership Update",
+            text: `The AccountHandling with phone: ${accountPhone} has been removed from your list.`,
+          },
+          (error, info) => {
+            if (error) {
+              console.error("Error sending email to previous owner:", error);
+            } else {
+              console.log("Email sent to previous owner:", info.response);
+            }
+          }
+        );
+
+        // Fetch new owner's email
+        const newOwner = await Employees.findById(newOwnerId);
+        if (!newOwner) {
+          return res.status(404).json({ message: "New owner not found!" });
+        }
+
+        // Send email to the new owner
+        transporter.sendMail(
+          {
+            from: "harshkr2709@gmail.com",
+            to: newOwner.email,
+            subject: "New Account Handling Ownership",
+            text: `You have been assigned the AccountHandling with phone: ${accountPhone}.`,
+          },
+          (error, info) => {
+            if (error) {
+              console.error("Error sending email to new owner:", error);
+            } else {
+              console.log("Email sent to new owner:", info.response);
+            }
+          }
+        );
+
+        return res
+          .status(200)
+          .json({
+            message: "AccountHandling updated successfully and emails sent.",
+          });
+      }
+
+      if (status === "false") {
+        const previousOwnerEmail = findAccount.owner.email;
+        transporter.sendMail(
+          {
+            from: "harshkr2709@gmail.com",
+            to: previousOwnerEmail,
+            subject: "Account Handling Ownership Update",
+            text: `The AccountHandling with ID: ${id} access has been denied by the Admin.`,
+          },
+          (error, info) => {
+            if (error) {
+              console.error("Error sending email to previous owner:", error);
+            } else {
+              console.log("Email sent to previous owner:", info.response);
+            }
+          }
+        );
+
+        return res
+          .status(200)
+          .json({ message: "AccountHandling access denied and email sent." });
+      }
+
+      res.status(400).json({ message: "Invalid status value provided." });
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).json({ message: error.message });
+    }
+  }
+);
+
+// SET KPI SCORE
+router.post("/set-kpi-score", async (req, res) => {
+  try {
+    // TAKE INPUT AS OBJECT HAVING TARGET AND REVENUE FOR KPI PARAMETERS
+    const {
+      owner,
+      month,
+      year,
+      costVsRevenue,
+      successfulDrives,
+      accounts,
+      mentorship,
+      processAdherence,
+      leakage,
+      noOfJoining,
+    } = req.body;
+
+    // Find the KPI document for the owner
+    let kpi = await KPI.findOne({ owner: owner });
+
+    if (!kpi) {
+      // If no KPI document exists, create a new one
+      kpi = new KPI({ owner: owner, kpis: [] });
     }
 
-    if (status === "false") {
-      const previousOwnerEmail = findAccount.owner.email;
-      transporter.sendMail({
-        from: 'harshkr2709@gmail.com',
-        to: previousOwnerEmail,
-        subject: 'Account Handling Ownership Update',
-        text: `The AccountHandling with ID: ${id} access has been denied by the Admin.`,
-      }, (error, info) => {
-        if (error) {
-          console.error('Error sending email to previous owner:', error);
-        } else {
-          console.log('Email sent to previous owner:', info.response);
-        }
-      });
+    // Construct the new KPI month information
+    const newKpiMonth = {
+      kpiMonth: {
+        month: month,
+        year: year,
+        costVsRevenue: {
+          target: costVsRevenue.target,
+          actual: costVsRevenue.actual,
+          weight: actual / target,
+          kpiScore: (20 / 100) * weight,
+        },
+        successfulDrives: {
+          target: successfulDrives.target,
+          actual: successfulDrives.actual,
+          weight: actual / target,
+          kpiScore: (10 / 100) * weight,
+        },
+        accounts: {
+          target: accounts.target,
+          actual: accounts.actual,
+          weight: actual / target,
+          kpiScore: (15 / 100) * weight,
+        },
+        mentorship: {
+          target: mentorship.target,
+          actual: mentorship.actual,
+          weight: actual / target,
+          kpiScore: (15 / 100) * weight,
+        },
+        processAdherence: {
+          target: processAdherence.target,
+          actual: processAdherence.actual,
+          weight: actual / target,
+          kpiScore: (15 / 100) * weight,
+        },
+        leakage: {
+          target: leakage.target,
+          actual: leakage.actual,
+          weight: actual / target,
+          kpiScore: (15 / 100) * weight,
+        },
+        noOfJoining: {
+          target: noOfJoining.target,
+          actual: noOfJoining.actual,
+          weight: actual / target,
+          kpiScore: (10 / 100) * weight,
+        },
+        totalKPIScore:
+          ((costVsRevenue.kpiScore +
+            successfulDrives.kpiScore +
+            accounts.kpiScore +
+            mentorship.kpiScore +
+            processAdherence.kpiScore +
+            leakage.kpiScore +
+            noOfJoining.kpiScore) *
+          100),
+      },
+    };
 
-      return res.status(200).json({ message: "AccountHandling access denied and email sent." });
-    }
+    // Push the new KPI month information to the kpis array
+    kpi.kpis.push(newKpiMonth);
 
-    res.status(400).json({ message: "Invalid status value provided." });
+    // Save the KPI document
+    await kpi.save();
+
+    res.status(200).json({ message: "KPI score set successfully" });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
   }
 });
-
-
-// x 
 
 export default router;

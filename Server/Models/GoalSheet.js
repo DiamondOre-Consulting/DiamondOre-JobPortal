@@ -52,6 +52,10 @@ const goalSheetSchema = new mongoose.Schema({
           incentive: {
             type: Number
           },
+          // UM INCENTIVE
+          variableIncentive: { 
+            type: Number
+          }
         },
       },
     ],
