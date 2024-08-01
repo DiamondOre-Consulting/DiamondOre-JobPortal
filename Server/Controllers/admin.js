@@ -2462,4 +2462,21 @@ router.post("/set-kpi-score", async (req, res) => {
   }
 });
 
+// EMPLOYEE'S KPI SCORE
+router.get("/employee-kpi-score/:id", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const {id} = req.params;
+
+    const myKPI = await KPI.findOne({owner: id});
+    if(!myKPI) {
+      return res.status(402).json({message: "No KPI found!!!"});
+    }
+
+    res.status(200).json(myKPI);
+  } catch(error) {
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
+  }
+})
+
 export default router;

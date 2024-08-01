@@ -12,6 +12,7 @@ import LeaveReport from "../Models/LeaveReport.js";
 import PerformanceReport from "../Models/PerformanceReport.js";
 import AccountHandling from "../Models/AccountHandling.js";
 import GoalSheet from "../Models/GoalSheet.js";
+import KPI from "../Models/KPI.js";
 
 dotenv.config();
 
@@ -349,5 +350,22 @@ router.get("/my-goalsheet", EmployeeAuthenticateToken, async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+// MY KPI SCORE
+router.get("/my-kpi", EmployeeAuthenticateToken, async (req, res) => {
+  try {
+    const {userId} = req.user;
+
+    const myKPI = await KPI.findOne({owner: userId});
+    if(!myKPI) {
+      return res.status(402).json({message: "No KPI found!!!"});
+    }
+
+    res.status(200).json(myKPI);
+  } catch(error) {
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
+  }
+})
 
 export default router;
