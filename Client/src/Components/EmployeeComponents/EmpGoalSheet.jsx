@@ -84,6 +84,7 @@ const EmpGoalSheet = () => {
                                     <th class="px-4 py-2">achYTD</th>
                                     <th class="px-4 py-2">achMTD</th>
                                     <th class="px-4 py-2">Incentive</th>
+                                    <th class='px-4 py-2'>Variable Incentive</th>
 
                                 </tr>
                             </thead>
@@ -105,6 +106,7 @@ const EmpGoalSheet = () => {
                                                     <td className="border px-4 py-2">{detail.goalSheet.achYTD}</td>
                                                     <td className="border px-4 py-2">{detail.goalSheet.achMTD}</td>
                                                     <td className="border px-4 py-2">{detail.goalSheet.incentive}</td>
+                                                    <td className='border px-4 py-2 '>{detail.goalSheet.variableIncentive}</td>
                                                 </tr>
                                             ))}
                                         </React.Fragment>

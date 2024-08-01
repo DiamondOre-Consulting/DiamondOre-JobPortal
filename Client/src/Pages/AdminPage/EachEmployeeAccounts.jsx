@@ -85,8 +85,8 @@ const EachEmployeeAccounts = () => {
 
             <div>
 
-
-                <table className="md:w-full divide-y divide-gray-200  mt-4 ">
+                <div className='md:w-full w-80 overflow-x-auto'>
+                <table className="w-full divide-y divide-gray-200  mt-4 ">
                     <thead className='border text-center'>
                         <tr className='border text-center bg-gray-100'>
                             <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">S.No</th>
@@ -119,6 +119,8 @@ const EachEmployeeAccounts = () => {
                         )}
                     </tbody>
                 </table>
+
+                </div>
             </div>
 
 

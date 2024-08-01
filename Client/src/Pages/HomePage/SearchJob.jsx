@@ -41,8 +41,8 @@ const SearchJob = () => {
             if (error.response) {
                 const status = error.response.status;
                 if (status === 404) {
-                    setError('Suitable job not found !!');
-                    console.log("Suitable job not found !!");
+                    setError('This phone number does not exist in our records.');
+                    console.log("This phone number does not exist in our records.");
                 }
             }
         } finally {
@@ -152,7 +152,7 @@ const SearchJob = () => {
                         <div className="px-4 md:px-40 py-4">
                             <h2 className="text-2xl font-bold mb-4 text-center">Recommended Jobs For {profile?.candidateName}</h2>
 
-                            <div className="relative overflow-x-auto rounded-md">
+                            <div className="relative md:w-full w-80 overflow-x-auto rounded-md">
                                 <table className="w-full text-sm text-left text-gray-500  rounded-md border">
                                     <thead className="text-xs text-gray-700 uppercase bg-gray-100  ">
                                         <tr>
@@ -206,7 +206,7 @@ const SearchJob = () => {
                         <button className="absolute top-2 right-4 text-gray-500 hover:text-gray-700 text-3xl hover:bg-gray-100 px-2" onClick={closePopup}>
                             &times;
                         </button>
-                        <h2 className="text-2xl mb-4">Request a Call Back from Our Team</h2>
+                        <h2 className="text-2xl mb-4">Get A Call Back From Our Team</h2>
                         <form onSubmit={submitCallReq}>
                             <div className="mb-4">
                                 <label htmlFor="name" className="block text-gray-700">Name:</label>

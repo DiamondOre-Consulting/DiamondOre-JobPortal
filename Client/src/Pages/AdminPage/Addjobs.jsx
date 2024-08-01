@@ -13,11 +13,12 @@ const AddJobs = () => {
   const navigate = useNavigate();
   const [allchannels, setAllChannels] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [ispositionopen, setIsPositionOpen] = useState(false);
+  const [allpostions, setAllPositions] = useState([])
   const [searchquery, setSearchQuery] = useState('');
+  const [searchpositionquery, setSearchPositionQuery] = useState('')
 
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
+
 
   useEffect(() => {
     if (!token) {
@@ -93,6 +94,7 @@ const AddJobs = () => {
       }
     } catch (error) {
       console.error('Error:', error.message);
+      alert(error.message)
     }
   };
 
@@ -109,7 +111,11 @@ const AddJobs = () => {
         if (response.status === 200) {
           console.log('All jobs:', response.data);
           const uniqueChannels = [...new Set(response.data.map((job) => job.Channel))];
+          const uniquePosition = [...new Set(response.data.map((position) => position.JobTitle))]
+          console.log("unique Position",uniquePosition)
           setAllChannels(uniqueChannels);
+          setAllPositions(uniquePosition);
+          // console.log("allposition",allpostions)
         }
       } catch (error) {
         console.error('Error fetching jobs:', error);
@@ -122,10 +128,29 @@ const AddJobs = () => {
   const filteredChannels = allchannels.filter((channel) =>
     channel.toLowerCase().startsWith(searchquery.toLowerCase())
   );
+  console.log("filteredChannels", filteredChannels)
+
+  const filterPosition = allpostions.filter((position) => {
+    position.toLowerCase().startsWith(searchpositionquery.toLowerCase());
+  })
+
+  console.log("filter Position",filterPosition)
 
   const handleSearchInputChange = (e) => {
     setSearchQuery(e.target.value);
   };
+
+  const handleSearchPositionQueryChange = ()=>{
+    setSearchPositionQuery(e.target.value)
+  }
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const toogglePositionDropdown = () => {
+    setIsPositionOpen(!ispositionopen)
+  }
 
   return (
     <div>
@@ -196,13 +221,30 @@ const AddJobs = () => {
       </button>
 
       {uploadSuccess && <p className="text-green-600 text-center mt-2">File uploaded successfully!</p>}
-      <button
-        type="submit"
-        className="bg-blue-950 text-white p-2 px-12 flex items-center justify-center mx-auto mt-4 rounded-md"
-        onClick={handlesubmit}
-      >
-        Upload Jobs
-      </button>
+      {
+        uploadSuccess ? (
+          <button
+            type="submit"
+            className="bg-green-700 text-white p-2 px-12 flex items-center justify-center mx-auto mt-4 rounded-md "
+            onClick={handlesubmit}
+          >
+            Upload Jobs
+          </button>
+
+        ) : (
+
+          <button
+            type="submit"
+            className="bg-gray-500 text-white p-2 px-12 flex items-center justify-center mx-auto mt-4 rounded-md cursor-not-allowed "
+          >
+            Upload Jobs
+          </button>
+
+
+        )
+
+
+      }
 
 
 
@@ -210,51 +252,127 @@ const AddJobs = () => {
         <h1 className='text-center text-4xl font-bold'> Delete Jobs</h1>
         <div className='w-40 h-1 bg-blue-900 mx-auto'></div>
 
-        <div className='flex px-10 mt-8 '>
+        <div className='flex px-10 mb-60 mt-10 '>
 
 
-
-          <div className="relative mx-auto ">
+          {/* select Channel */}
+          <div className="relative ">
             <div className='flex items-center'>
               <button
                 type="button"
-                className="w-full py-4 px-8 flex items-center bg-blue-950 text-white rounded-md"
+                className="w-full py-4 px-6 flex items-center bg-blue-900 border border-1 border-black text-white rounded-md"
                 onClick={toggleDropdown}
               >
                 Select Channel
                 <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
-              </svg>
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+                </svg>
               </button>
-             
+
             </div>
-            {isOpen && (
-              <div className="absolute z-10 mt-2 w-full bg-white rounded-md shadow-lg">
-                <input
-                  type="text"
-                  placeholder="Search channel"
-                  value={searchquery}
-                  onChange={handleSearchInputChange}
-                  className="w-full py-2 px-4 border-b border-gray-300"
-                />
-                <ul className="max-h-48 overflow-y-auto">
-                  {filteredChannels.map((channel, index) => (
-                    <li
-                      key={index}
-                      className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                      onClick={() => {
-                        setSearchQuery(channel);
-                        setIsOpen(false);
-                      }}
-                    >
-                      {channel}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+
+            {
+              isOpen && (
+
+                <div id="dropdownSearch" class="z-10 absolute bg-white rounded-lg shadow w-60 dark:bg-gray-700">
+                  <div class="p-3">
+                    <label for="input-group-search" class="sr-only">Search</label>
+                    <div class="relative">
+                      <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                        </svg>
+                      </div>
+                      <input type="text" id="input-group-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search user"
+                        value={searchquery}
+                        onChange={handleSearchInputChange} />
+                    </div>
+                  </div>
+                  <ul class="h-48 px-3 pb-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownSearchButton">
+                    {
+                      filteredChannels.map((channel, index) => (
+                        <li key={index}>
+                          <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                            <input id="checkbox-item-11" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                            <label for="checkbox-item-11" class="w-full ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300" onClick={() => {
+                              setSearchQuery(channel);
+                              setIsOpen(false);
+                            }}>   {channel}</label>
+                          </div>
+                        </li>
+
+                      ))
+                    }
+
+                  </ul>
+                  <a href="#" class="flex items-center p-3 text-sm font-medium text-red-600 border-t border-gray-200 rounded-b-lg bg-gray-50 dark:border-gray-600 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-red-500 hover:underline">
+
+                  </a>
+                </div>
+              )
+            }
+
           </div>
 
+          {/* select Postition  */}
+
+          <div className="relative ">
+            <div className='flex items-center'>
+              <button
+                type="button"
+                className="w-full py-4 px-6 flex items-center bg-blue-900 border border-1 border-black text-white rounded-md"
+                onClick={toogglePositionDropdown}
+              >
+                Select Position
+                <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+                </svg>
+              </button>
+
+            </div>
+
+            {
+              ispositionopen && (
+
+                <div id="dropdownSearch" class="z-10 absolute bg-white rounded-lg shadow w-60 dark:bg-gray-700">
+                  <div class="p-3">
+                    <label for="input-group-search" class="sr-only">Search</label>
+                    <div class="relative">
+                      <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                        </svg>
+                      </div>
+                      <input type="text" id="input-group-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search user"
+                        value={searchquery}
+                        onChange={handleSearchInputChange} />
+                    </div>
+                  </div>
+                  <ul class="h-48 px-3 pb-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownSearchButton">
+                    {
+                      filterPosition.map((position, index) => (
+                        <li key={index}>
+                          <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                            <input id="checkbox-item-11" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                            <label for="checkbox-item-11" class="w-full ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300" onClick={() => {
+                              setSearchQuery(position);
+                              setIsPositionOpen(false);
+                            }}>   {position}</label>
+                          </div>
+                        </li>
+
+                      ))
+                    }
+
+                  </ul>
+                  <a href="#" class="flex items-center p-3 text-sm font-medium text-red-600 border-t border-gray-200 rounded-b-lg bg-gray-50 dark:border-gray-600 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-red-500 hover:underline">
+
+                  </a>
+                </div>
+              )
+            }
+
+          </div>
 
 
         </div>

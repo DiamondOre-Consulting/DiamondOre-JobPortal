@@ -60,6 +60,7 @@ import AllEmployeeAccounts from '../../Pages/AdminPage/AllEmployeeAccounts';
 import EachEmployeeAccounts from '../../Pages/AdminPage/EachEmployeeAccounts';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import AllDuplicatePhoneRequest from '../../Pages/AdminPage/AllDuplicatePhoneRequest';
+import EachEmployeeKPIScore from '../../Pages/AdminPage/EachEmployeeKPIScore';
 
 
 const drawerWidth = 240;
@@ -299,6 +300,7 @@ const AdminDrawerSidebar = () => {
                     <Route path='/employee/:id' element={<EmployeeBranchesPage/>}/>
                     <Route path='/goal-sheet/:id' element={<EachEmployeeGoalSheet />} />
                     <Route path='/each-account/:id' element={<EachEmployeeAccounts/>}/>
+                    <Route path='/kpi/:id' element={<EachEmployeeKPIScore/>}/>
                     <Route path='/add-recruiter' element={<AddRecruiter />} />
                     <Route path='/add-employee' element={<Employeesignup />} />
                     <Route path='/prompt' element={<Prompt />} />

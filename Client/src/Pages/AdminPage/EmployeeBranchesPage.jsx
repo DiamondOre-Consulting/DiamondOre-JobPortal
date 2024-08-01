@@ -50,7 +50,7 @@ const EmployeeBranchesPage = () => {
                     </Link>
 
                     <Link className='rounded-md relative flex h-60 items-center justify-center overflow-hidden bg-blue-900 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-blue-950 before:duration-500 before:ease-out hover:shadow-blue-950 hover:before:h-96 hover:before:w-96'>
-                        <Link className='relative z-10 text-xl'>KPI Score</Link>
+                        <Link to={`/admin-dashboard/kpi/${id}`} className='relative z-10 text-xl'>KPI Score</Link>
                     </Link>
 
                      <Link to={`/admin-dashboard/goal-sheet/${id}`}  className='rounded-md relative flex h-60 items-center justify-center overflow-hidden bg-blue-900 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-blue-950 before:duration-500 before:ease-out hover:shadow-blue-950 hover:before:h-96 hover:before:w-96'>

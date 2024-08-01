@@ -125,7 +125,7 @@ const Prompt = () => {
             if (error.response) {
                 const status = error.response.status;
                 if (status === 404) {
-                    alert('No Candidata Found')
+                    alert('No Candidate Found')
                     console.log("No Candidate Found");
                 }
             }
@@ -138,13 +138,13 @@ const Prompt = () => {
     return (
         <>
             {/* <AdminNav /> */}
-            <button className= " bg-blue-900 px-6 py-2 text-gray-100 float-right mr-10 rounded-md" onClick={handlesendbulkjobs}>Send Bulk Jobs</button>
+            <button className= " bg-blue-900 px-6 py-2 text-gray-100 float-right mr-0 md:mr-10 rounded-md" onClick={handlesendbulkjobs}>Send Bulk Jobs</button>
             <div className='flex flex-col mt-20 md:mt-10'>
             <h1 className="text-4xl ml-0 font-bold text-center">Prompt</h1>
             <div className="w-40 bg-blue-950 h-0.5 text-center mx-auto"></div>
             </div>
 
-            <div className="flex justify-center align-center items-center mt-10 px-4">
+            <div className="md:flex justify-center align-center  items-center mt-10 px-4">
                 <input
                     type="file"
                     id="myFile"
@@ -156,7 +156,7 @@ const Prompt = () => {
                 />
                 <button
                     type="button"
-                    className={`bg-blue-950 ml-2 text-white p-2 px-12 flex items-center justify-center rounded-md ${sheeturl ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`bg-blue-950 ml-2 text-white p-2 px-12 flex items-center mt-2 md:mt-0 justify-center rounded-md ${sheeturl ? 'opacity-50 cursor-not-allowed' : ''}`}
                     onClick={handleUploadsheet}
                     disabled={!!sheeturl}
                 >
@@ -214,7 +214,7 @@ const Prompt = () => {
                     <div className="px-4 md:px-40 py-4">
                         <h2 className="text-2xl font-bold mb-4 text-center">Recommended Jobs For {profile?.candidateName}</h2>
                         
-                        <div className="relative overflow-x-auto">
+                        <div className="relative md:w-full w-80 overflow-x-auto">
                             <table className="w-full text-sm text-left text-gray-500 ">
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50  ">
                                     <tr>

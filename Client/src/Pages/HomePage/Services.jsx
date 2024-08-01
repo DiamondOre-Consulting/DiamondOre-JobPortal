@@ -182,7 +182,7 @@ const Services = () => {
               <button className="absolute top-2 right-4 text-gray-500 hover:text-gray-700 text-3xl hover:bg-gray-100 px-2" onClick={closePopup}>
                 &times;
               </button>
-              <h2 className="text-2xl mb-4">Request a Call Back from Our Team</h2>
+              <h2 className="text-2xl mb-4">Get A Call Back From Our Team</h2>
               <form onSubmit={submitCallReq}>
                 <div className="mb-4">
                   <label htmlFor="name" className="block text-gray-700">Name:</label>
