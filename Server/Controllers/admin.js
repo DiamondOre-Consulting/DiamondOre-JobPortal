@@ -1381,7 +1381,7 @@ router.get("/findJobs/:phone", async (req, res) => {
     }
     const suitableJobs = await Jobs.find({
       City: candidate.currentLocation,
-      Channel: candidate.currentChannel,
+      // Channel: candidate.currentChannel,
       MaxSalary: {
         $gt: candidate.currentCTC,
         $lte: candidate.currentCTC * 1.5, // Not more than 50% of current CTC
