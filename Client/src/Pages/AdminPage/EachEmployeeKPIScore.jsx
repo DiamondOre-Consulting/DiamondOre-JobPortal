@@ -46,7 +46,7 @@ const EachEmployeeKPIScore = () => {
         e.preventDefault();
         setShowSubmitLoader(true)
         try {
-            const response = await axios.post('http://localhost:5000/api/admin-confi/set-kpi-score', formData);
+            const response = await axios.post('https://api.diamondore.in/api/admin-confi/set-kpi-score', formData);
             ;
             setShowSubmitLoader(false);
             setPopUpForm(false)
@@ -98,7 +98,7 @@ const EachEmployeeKPIScore = () => {
         const getkpidata = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const response = await axios.get(`http://localhost:5000/api/admin-confi/employee-kpi-score/${id}`, {
+                const response = await axios.get(`https://api.diamondore.in/api/admin-confi/employee-kpi-score/${id}`, {
 
                     headers: {
                         Authorization: `Bearer ${token}`
