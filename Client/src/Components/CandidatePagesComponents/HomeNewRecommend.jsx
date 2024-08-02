@@ -52,14 +52,14 @@ const HomeNewRecommend = () => {
               console.log("emplty")
           }
           else{
-          console.log("recomended jobs", response.data);
+          
           const all = response.data;
           const filteredJobs = all.filter(job => job.JobStatus === true);
           const latest = filteredJobs.slice(-7);
-          // console.log(latestJobs);
+          // ;
           setLatestJobs(latest.reverse());
           setLoading(false)
-          console.log("myprefrencejobs", latest);
+          
 
           }
           

@@ -21,7 +21,7 @@ const EmployeeBranchesPage = () => {
                 if (response.status === 201) {
 
                     setEmployee(response.data)
-                    console.log(response.data);
+                    ;
 
                 }
 

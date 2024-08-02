@@ -17,7 +17,7 @@ const UpdateStatus = () => {
   const [joinedStatus, setJoinedStatus] = useState(null);
 
   const { id1, id2 } = useParams();
-  console.log(id1, " ", id2);
+  
 
   const { decodedToken } = useJwt(localStorage.getItem("token"));
   const token = localStorage.getItem("token");
@@ -52,7 +52,7 @@ const UpdateStatus = () => {
         );
 
         if (response.status === 200) {
-          console.log(response.data);
+          ;
           setStatusData(response.data);
         }
       } catch (error) {
@@ -77,7 +77,7 @@ const UpdateStatus = () => {
 
         if (response.status === 201) {
           setAdminDetails(response.data);
-          console.log(adminDetails);
+          
         } else {
           setAdminDetails("Error finding candidate with id: ", id1);
         }
@@ -108,7 +108,7 @@ const UpdateStatus = () => {
 
       if (response.status === 201) {
         setCvStatus(true);
-        console.log("CV is shortlisted!!!");
+        
       }
     } catch (error) {
       setCvStatus(false);
@@ -136,7 +136,7 @@ const UpdateStatus = () => {
       if (response.status === 201) {
         // setCvStatus(true)
         setScreenStatus(true);
-        console.log("Screening!!!");
+        
       }
     } catch (error) {
       // setCvStatus(false);
@@ -165,7 +165,7 @@ const UpdateStatus = () => {
       if (response.status === 201) {
         // setCvStatus(true)
         setIntSchStatus(true);
-        console.log("Interviewed Scheduled!!!");
+        
       }
     } catch (error) {
       // setCvStatus(false);
@@ -194,7 +194,7 @@ const UpdateStatus = () => {
       if (response.status === 201) {
         // setCvStatus(true)
         setInterStatus(true);
-        console.log("Interviewed!!!");
+        
       }
     } catch (error) {
       // setCvStatus(false);
@@ -223,7 +223,7 @@ const UpdateStatus = () => {
       if (response.status === 201) {
         // setCvStatus(true)
         setShortlistedStatus(true);
-        console.log("Shortlisted!!!");
+        
       }
     } catch (error) {
       // setCvStatus(false);
@@ -252,7 +252,7 @@ const UpdateStatus = () => {
       if (response.status === 201) {
         // setCvStatus(true)
         setJoinedStatus(true);
-        console.log("Joined!!!");
+        
       }
     } catch (error) {
       // setCvStatus(false);

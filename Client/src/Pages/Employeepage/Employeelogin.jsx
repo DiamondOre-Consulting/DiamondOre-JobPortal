@@ -20,17 +20,17 @@ const Employeelogin = () => {
         setError(null);
         // Perform login logic here
         try {
-            console.log(email, password)
+            
             const response = await axios.post("https://api.diamondore.in/api/employee/login",
                 {
                     email,
                     password
                 });
-            // console.log("complete response ",response.data)
+            // 
 
             if (response.status === 200) {
                 const token = response.data.token;
-                console.log(token)
+                
                 // Store the token in local storage
                 localStorage.setItem("token", token);
                 console.log("Logged in successfully as Employee");

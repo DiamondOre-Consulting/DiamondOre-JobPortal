@@ -38,13 +38,13 @@ const Adminforgotpassword = () => {
     };
 
     const updatePassword = async (e) => {
-        console.log("Clicked")
+        
         e.preventDefault();
         if(!password || !otp || !email){
             alert("Filling all the feild are compulsory")
             return;
         }
-        console.log(email,otp,password)
+        
         try {
 
             const response = await axios.put("https://api.diamondore.in/api/admin-confi/update-password",

@@ -24,7 +24,7 @@ const AboutUs = () => {
     const submitCallReq = async (e) => {
         e.preventDefault();
         setShowSubmitLoader(true);
-        console.log("details of the person ", name, phone);
+        
         // const payload = { name, phone };
 
         try {

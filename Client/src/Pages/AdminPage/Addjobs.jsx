@@ -54,7 +54,7 @@ const AddJobs = () => {
       );
 
       if (response.status === 200) {
-        console.log(response.data);
+        ;
         setsheeturl(response.data.url); // Assuming response.data contains the URL of the uploaded file
         setUploadSuccess(true);
       } else {
@@ -87,7 +87,7 @@ const AddJobs = () => {
       );
 
       if (response.status === 200) {
-        console.log('Successfully!!!');
+        
         alert('Jobs added Successfully');
       } else {
         console.log('Failed');
@@ -109,13 +109,13 @@ const AddJobs = () => {
 
         const response = await axios.get('https://api.diamondore.in/api/admin-confi/all-jobs');
         if (response.status === 200) {
-          console.log('All jobs:', response.data);
+          
           const uniqueChannels = [...new Set(response.data.map((job) => job.Channel))];
           const uniquePosition = [...new Set(response.data.map((position) => position.JobTitle))]
-          console.log("unique Position",uniquePosition)
+          
           setAllChannels(uniqueChannels);
           setAllPositions(uniquePosition);
-          // console.log("allposition",allpostions)
+          // 
         }
       } catch (error) {
         console.error('Error fetching jobs:', error);
@@ -128,13 +128,13 @@ const AddJobs = () => {
   const filteredChannels = allchannels.filter((channel) =>
     channel.toLowerCase().startsWith(searchquery.toLowerCase())
   );
-  console.log("filteredChannels", filteredChannels)
+  
 
   const filterPosition = allpostions.filter((position) => {
     position.toLowerCase().startsWith(searchpositionquery.toLowerCase());
   })
 
-  console.log("filter Position",filterPosition)
+  
 
   const handleSearchInputChange = (e) => {
     setSearchQuery(e.target.value);
@@ -154,7 +154,7 @@ const AddJobs = () => {
 
   return (
     <div>
-      <h1 className="text-3xl text-blue-950 text-center">Upload your Excel Sheet</h1>
+      <h1 className="text-3xl text-blue-950 text-center">Upload Job Sheet</h1>
       <div className="w-48 bg-blue-950 h-0.5 text-center mx-auto my-3"></div>
 
       <div className="flex items-center justify-center w-full px-12 py-4">
@@ -188,7 +188,7 @@ const AddJobs = () => {
             id="dropzone-file"
             name="myFile"
             onChange={(e) => setSheet(e.target.files[0])}
-            className="hidden"
+            className=""
           />
         </label>
       </div>

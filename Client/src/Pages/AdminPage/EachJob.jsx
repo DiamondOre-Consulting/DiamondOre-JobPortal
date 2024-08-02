@@ -11,7 +11,7 @@ const AdminEachJob = () => {
   const [jobsApplied, setJobsApplied] = useState(null);
 
   const { id } = useParams();
-  console.log(id);
+  
 
   const { decodedToken } = useJwt(localStorage.getItem("token"));
   const token = localStorage.getItem("token");
@@ -58,7 +58,7 @@ const AdminEachJob = () => {
           }
         );
         if (response.status === 201) {
-          console.log(response.data);
+          ;
           setJobDetails(response.data);
         }
       } catch (error) {
@@ -82,7 +82,7 @@ const AdminEachJob = () => {
         );
 
         if (response.status === 200) {
-          console.log(response.data.reverse());
+          ;
           const applieds = response.data.reverse();
           setJobsApplied(applieds);
         }

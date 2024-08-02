@@ -56,8 +56,14 @@ const addedJobsMailToAllTheCandidates = async (candidateEmail, candidateName) =>
       <p>We are thrilled to announce that a new job opportunity has just been added to our platform at Diamond Ore Pvt Ltd! We believe that these jobs could be a perfect fit for with your skills and experience.</p>
       <p>Best regards</p>
       <a href="https://www.diamondore.in/" style="color:blue;">Diamond Ore pvt.Ltd</p>
-    `,
-    };
+      <p style="text-align: left;"><img src="cid:logo" alt="Company Logo" style="width:200px;height:auto;"/></p>
+            `,
+            attachments: [{
+              filename: 'logo.png',
+              path: 'C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png',
+              cid: 'logo'
+            }]
+          };
 
     const info = await transporter.sendMail(mailOptions);
     console.log("Email sent: " + info.response);

@@ -36,10 +36,10 @@ const EmployeeNavbar = () => {
           }
         );
         if (response.status == 200) {
-          console.log(response.data);
+          ;
           setUserData(response.data);
         } else {
-          console.log(response.data);
+          ;
           setUserData("Did not get any response!!!");
         }
       } catch (error) {
@@ -74,13 +74,13 @@ const EmployeeNavbar = () => {
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
-    console.log(menuOpen);
+    
   };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     window.location.href = "/employee-login";
-    console.log("Logging out");
+    
   };
   return (
     <div>

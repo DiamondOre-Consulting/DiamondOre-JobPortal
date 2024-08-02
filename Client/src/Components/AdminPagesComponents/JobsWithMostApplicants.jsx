@@ -37,15 +37,15 @@ const JobsWithMostApplicants = () => {
         const response = await axios.get(
           "https://api.diamondore.in/api/admin-confi/jobs-high"
         );
-        console.log(response.data);
+        ;
         const all = response.data;
         const filteredJobs = all.filter(job => job.JobStatus === true);
         const latest = filteredJobs;
-        // console.log(latestJobs);
+        // ;
         setLatestJobs(latest);
         setLoading(false)
-        console.log("all", all)
-        console.log("filtered Jobs", filteredJobs);
+        
+        
       } catch (error) {
         console.error("Error fetching jobs:", error);
         // Handle error and show appropriate message

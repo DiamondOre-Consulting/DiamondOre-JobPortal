@@ -16,7 +16,7 @@ const AllEmployeeAccounts = () => {
                 const response = await axios.get('https://api.diamondore.in/api/employee/accounts');
                 if (response.status === 200) {
                     setAllAccountsData(response.data);
-                    console.log(response.data)
+                    
                     setLoading(false)
                 }
             } catch (error) {
@@ -78,7 +78,7 @@ const AllEmployeeAccounts = () => {
 
 
     const handleClick = (id) => {
-        console.log(id)
+        
         setAccountId(id);
         setShowPopup(true)
 
@@ -87,7 +87,7 @@ const AllEmployeeAccounts = () => {
 
 
     const handledeleteclick = (id) => {
-        console.log(id);
+        
         setAccountId(id)
         setDeletePopup(true)
     }
@@ -119,7 +119,7 @@ const AllEmployeeAccounts = () => {
 
                 if (response.status === 200) {
 
-                    console.log(response.data.length)
+                    
                     setLength(response.data.length)
 
                 }

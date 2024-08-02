@@ -46,8 +46,8 @@ const AdminEmployeeAttendence = () => {
                     }
                 );
                 if (response.status == 200) {
-                    console.log(response.data);
-                    console.log(response.data.name);
+                    ;
+                    ;
                     setEmployees(response.data)
                 }
             } catch (error) {
@@ -81,7 +81,7 @@ const AdminEmployeeAttendence = () => {
                     );
 
                     if (response.status === 201) {
-                        console.log('single emp', response.data);
+                        
                         setEmployeeDetails(response.data);
                     }
                 } else {
@@ -127,7 +127,7 @@ const AdminEmployeeAttendence = () => {
                     );
 
                     if (response.status === 200) {
-                        console.log(response.data)
+                        
                         setRecord(response.data);
                     }
                 } else {
@@ -172,7 +172,7 @@ const AdminEmployeeAttendence = () => {
                     );
 
                     if (response.status === 200) {
-                        console.log("Performence Record", response.data)
+                        
                         setPerformenceRecord(response.data);
                     }
                 } else {

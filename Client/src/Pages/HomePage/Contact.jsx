@@ -31,10 +31,10 @@ const Contact = () => {
                 }
             );
 
-            console.log("API Response:", response.data);
+            
 
             if (response.status === 201) {
-                console.log("Data sent successfully");
+                
                 setsucess("Data Sent Sucessfully");
                 setName('');
                 setEmail('');
@@ -68,7 +68,7 @@ const Contact = () => {
     const submitCallReq = async (e) => {
         e.preventDefault();
         setShowSubmitLoader(true);
-        console.log("details of the person ", name, phone);
+        
         // const payload = { name, phone };
 
         try {

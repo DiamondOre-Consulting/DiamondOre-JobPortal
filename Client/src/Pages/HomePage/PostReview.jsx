@@ -46,8 +46,8 @@ const PostReview = () => {
                 });
 
             if (response.status === 200) {
-                console.log(response.data)
-                console.log("Review posted sucessfully!!!")
+                
+                
                 setPopUp(false);
                 setLoader(false);
                 setRefresh(!refresh);
@@ -81,7 +81,7 @@ const PostReview = () => {
             try {
                 const response = await axios.get('https://api.diamondore.in/api/candidates/all-reviews');
                 if (response.status === 201) {
-                    console.log(response.data);
+                    ;
                     setAllReviews(response.data)
                 } else {
                     console.error('Failed to fetch reviews:', response.statusText);
@@ -107,7 +107,7 @@ const PostReview = () => {
     const submitCallReq = async (e) => {
         e.preventDefault();
         setShowSubmitLoader(true);
-        console.log("details of the person ", name, phone);
+        
         // const payload = { name, phone };
 
         try {

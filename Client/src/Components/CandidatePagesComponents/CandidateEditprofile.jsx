@@ -70,7 +70,7 @@ const CandidateEditprofile = () => {
       );
 
       if (response.status === 200) {
-        console.log(response.data);
+        ;
         setProfilePicUrl(response.data);
       }
     } catch (error) {
@@ -95,9 +95,9 @@ const CandidateEditprofile = () => {
       );
 
       if (response.status === 200) {
-        // console.log(response.data);
+        // ;
         setResumeUrl(response.data);
-        console.log(response.data);
+        ;
       }
     } catch (error) {
       console.log(error);
@@ -126,8 +126,8 @@ const CandidateEditprofile = () => {
         },
       });
       if(response.status === 201){
-        console.log("data after submitting",response.data)
-        console.log("updated")
+        
+        
         alert('Profile updated successfully!');
         navigate('/dashboard');
       }   

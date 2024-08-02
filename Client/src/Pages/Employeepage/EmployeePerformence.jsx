@@ -12,9 +12,9 @@ const EmployeePerformence = () => {
     const { id } = useParams();
   
    const { decodedToken } = useJwt(localStorage.getItem("token"));
-   console.log("token",decodedToken)
+   
     const userId = decodedToken?.userId; // Accessing the ID from decoded token
-    console.log(userId)
+    
    
 
     useEffect(() => {
@@ -39,7 +39,7 @@ const EmployeePerformence = () => {
                     }
                 );
                 if (Response.status === 200) {
-                    console.log(Response.data)
+                    
                     setRecord(Response.data);
 
                 }

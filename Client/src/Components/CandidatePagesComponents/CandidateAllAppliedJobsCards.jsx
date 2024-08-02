@@ -45,12 +45,12 @@ const CandidateAllAppliedJobsCards = () => {
             setLoading(false);
             return;
           }
-          console.log(response.data);
+          ;
           const all = response.data;
           const filteredJobs = all.filter(job => job.JobStatus === true);
           setAppliedJobs(filteredJobs.reverse());
           setLoading(false)
-          console.log("filtered jobs", filteredJobs)
+          
 
         }
       } catch (error) {

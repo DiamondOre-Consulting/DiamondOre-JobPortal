@@ -553,11 +553,18 @@ router.put(
             to: `Recipient <${CandidateUser.email}>`,
             subject: "Congratulation! Your CV has been shorlisted",
             html: `
-            <p style="color:green; text-align:center;">Congratulations!</p>
+            <p style="color:black; text-align:left; font-size: 20px; font-style: bold;">Congratulations🎊🎉✨!</p>
             <p>Your CV has been successfully shortlisted for ${cvShortlistedJob.JobTitle}.</p>
             <p>We will contact you soon with further details.</p>
-            <p style="color:green; text-align:center;">Thank you!</p>
+            <p style="color:black; text-align:left;">Thank you!</p>
+            <p style="text-align: left;  ">Regards,</p>
+            <p style="text-align: left;"><img src="cid:logo" alt="Company Logo" style="width:200px;height:auto;"/></p>
             `,
+            attachments: [{
+              filename: 'logo.png',
+              path: 'C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png',
+              cid: 'logo'
+            }]
           };
 
           const info = await transporter.sendMail(mailOptions);
@@ -635,13 +642,21 @@ router.put(
             to: `Recipient <${CandidateUser.email}>`,
             subject: "Congratulation! Your CV passed the screening process",
             html: `
-            <p style="color:green; text-align:center;">Congratulations!</p>
+          <p style="color:black; text-align:left; font-size: 20px; font-style: bold;">Congratulations🎊🎉✨!</p>
             <p>Your CV has successfully passed the screening process.</p>
             <p>We are pleased to inform you that you have passed the screening process for ${screeningJob.JobTitle}.</p>
             <p>We will contact you soon with further details.</p>
-            <p style="color:green; text-align:center;">Thank you!</p>
+            <p style="color:black; text-align:left;">Thank you!</p>
+              <p style="text-align: left;  ">Regards,</p>
+            <p style="text-align: left;"><img src="cid:logo" alt="Company Logo" style="width:200px;height:auto;"/></p>
             `,
+            attachments: [{
+              filename: 'logo.png',
+              path: 'C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png',
+              cid: 'logo'
+            }]
           };
+
 
           const info = await transporter.sendMail(mailOptions);
           console.log("Email sent: " + info.response);
@@ -722,10 +737,18 @@ router.put(
             to: `Recipient <${CandidateUser.email}>`,
             subject: "Congratulation! Your Interview has been Scheduled",
             html: `
-            <p style="color:green; text-align:center;">Congratulations!</p>
-            <p>We are pleased to inform you that your Interview has been  Scheduled you will get the further information through our HR ${interviewScheduledJob.JobTitle}.</p>
-            <p style="color:green; text-align:center;">Thank you!</p>
+             <p style="color:black; text-align:left; font-size: 20px; font-style: bold;">Congratulations🎊🎉✨!</p>
+            <p>We are pleased to inform you that your Interview has been  Scheduled for  ${interviewScheduledJob.JobTitle}.</p>
+            <p>We will contact you soon with further details.</p>
+            <p style="color:black; text-align:left;">Thank you!</p>
+            <p style="text-align: left;  ">Regards,</p>
+            <p style="text-align: left;"><img src="cid:logo" alt="Company Logo" style="width:200px;height:auto;"/></p>
             `,
+            attachments: [{
+              filename: 'logo.png',
+              path: 'C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png',
+              cid: 'logo'
+            }]
           };
 
           const info = await transporter.sendMail(mailOptions);
@@ -857,14 +880,20 @@ router.put(
             to: `Recipient <${CandidateUser.email}>`,
             subject: "Congratulation! You are Shortlisted!",
             html: `
-            <p style="color:green; text-align:center;">Congratulations!</p>
+            <p style="color:black; text-align:left; font-size: 20px; font-style: bold;">Congratulations🎊🎉✨!</p>
             <p>You have been shortlisted for the position of ${shortlistedJob.JobTitle}.</p>
             <p>This is a significant achievement, and we are excited to consider you for this role.</p>
             <p>We will be in touch shortly with the next steps in the hiring process.</p>
-            <p style="color:green; text-align:center;">Thank you!</p>
+            <p style="color:black; text-align:left;">Thank you!</p>
+            <p style="text-align: left;  ">Regards,</p>
+            <p style="text-align: left;"><img src="cid:logo" alt="Company Logo" style="width:200px;height:auto;"/></p>
             `,
+            attachments: [{
+              filename: 'logo.png',
+              path: 'C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png',
+              cid: 'logo'
+            }]
           };
-
           const info = await transporter.sendMail(mailOptions);
           console.log("Email sent: " + info.response);
 
@@ -946,16 +975,21 @@ router.put(
             subject:
               "Congratulations on Successfully Joining Your New Company!",
             html: `
-             <p style="color:green; text-align:center;">Congratulations!</p>
+           <p style="color:black; text-align:left; font-size: 20px; font-style: bold;">Congratulations🎊🎉✨!</p>
              <p>Dear ${CandidateUser?.name},</p>
             <p>We are thrilled to inform you that you have successfully joined  ${JoinedJob?.Company} through Diamond Ore pvt.Ltd!</p>
             <p>This marks the beginning of an exciting journey in your career, and we couldn't be happier to have played a part in your success.</p>
             <p>We wish you all the best as you embark on this new chapter. May it bring you growth, fulfillment, and endless opportunities.</p>
             <p>If you have any questions or need assistance during your transition, please don't hesitate to reach out to us. We're here to support you every step of the way.</p>
             <p>Once again, congratulations on your new role at ${JoinedJob?.Company}!</p>
-            <p style="color:green; text-align:center;">Best regards,</p>
-            <p>Diamond Ore Pvt.Ltd</p>
+            <p style="text-align: left;  ">Regards,</p>
+            <p style="text-align: left;"><img src="cid:logo" alt="Company Logo" style="width:200px;height:auto;"/></p>
             `,
+            attachments: [{
+              filename: 'logo.png',
+              path: 'C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png',
+              cid: 'logo'
+            }]
           };
 
           const info = await transporter.sendMail(mailOptions);
@@ -1088,6 +1122,7 @@ router.post("/send-chatbot", async (req, res) => {
     const mailOptions = {
       from: "DOC_Labz <helpdesk2.rasonline@gmail.com>",
       to: "helpdesk2.rasonline@gmail.com",
+      cc:['zoyas3423@gmail.com' , 'zoya.rasonline@gmail.com'],
       subject: `ROBO_RECRUITER: New Message Received from ${userName}`,
       text: `A new message has been submitted by ${userName}.`,
       html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${userName}</h4> </br>
@@ -1140,6 +1175,7 @@ router.post("/client-form", async (req, res) => {
     const mailOptions = {
       from: "DOC_Labz <helpdesk2.rasonline@gmail.com>",
       to: "hr@diamondore.in",
+      cc:['zoyas3423@gmail.com' , 'zoya.rasonline@gmail.com'],
       subject: `DOC_LABZ - New Client: New Message Received from ${userName}`,
       text: `A new message has been submitted by ${userName}.`,
       html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${userName}</h4> </br>
@@ -2465,15 +2501,15 @@ router.post("/set-kpi-score", async (req, res) => {
 // EMPLOYEE'S KPI SCORE
 router.get("/employee-kpi-score/:id", AdminAuthenticateToken, async (req, res) => {
   try {
-    const {id} = req.params;
+    const { id } = req.params;
 
-    const myKPI = await KPI.findOne({owner: id});
-    if(!myKPI) {
-      return res.status(402).json({message: "No KPI found!!!"});
+    const myKPI = await KPI.findOne({ owner: id });
+    if (!myKPI) {
+      return res.status(402).json({ message: "No KPI found!!!" });
     }
 
     res.status(200).json(myKPI);
-  } catch(error) {
+  } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
   }

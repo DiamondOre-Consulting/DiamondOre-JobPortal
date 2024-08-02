@@ -10,6 +10,7 @@ const AdminAllCandidatesCards = () => {
   const [latestCandidates, setLatestCandidates] = useState([]);
   let [loading, setLoading] = useState(true);
   const { decodedToken } = useJwt(localStorage.getItem("token"));
+  const [searchQuery, setSearchQuery] = useState('');
 
   const override = {
     display: "flex",
@@ -40,9 +41,9 @@ const AdminAllCandidatesCards = () => {
           }
         );
         if (response.status == 200) {
-          console.log(response.data);
+          ;
           const all = response.data;
-          // console.log(latestCandidates);
+          // 
           setLatestCandidates(all.reverse());
           setLoading(false)
         }
@@ -55,12 +56,43 @@ const AdminAllCandidatesCards = () => {
     fetchAllJobs();
   }, []);
 
+  
+  // filter 
+  const filteredCandidates = latestCandidates.filter((candidate) =>
+    candidate.name.toLowerCase().startsWith(searchQuery.toLowerCase()) ||
+    candidate.phone.startsWith(searchQuery)
+  );
+
+
+  // Handle search input change
+  const handleSearchInputChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+
   return (
     <div className="bg-white py-4 sm:py-8 lg:py-10">
       <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
-        <h2 className="mb-8 text-center text-2xl font-bold text-gray-800 md:mb-12 lg:text-3xl">
+        <h2 className="mb-8 text-center text-2xl font-bold text-gray-800 md:mb-8 lg:text-3xl">
           All Candidates
         </h2>
+
+        
+      {/* Search bar */}
+      <div className="flex justify-end items-end mb-10">
+      <div class="relative p-3 border border-gray-200 rounded-lg w-full max-w-lg">
+        <input type="text" class="rounded-md p-3 w-full" placeholder="Search By Name | Phone" value={searchQuery} onChange={handleSearchInputChange}/>
+
+        <button type="submit" class="absolute right-6 top-6">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                </svg>
+        </button>
+
+    </div>
+    </div>
         {
           loading ?
             <div style={override}>
@@ -73,8 +105,8 @@ const AdminAllCandidatesCards = () => {
               />
             </div> :
             <div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-3">
-              {latestCandidates.map((latestCandidate) => (
-                <div>
+              {filteredCandidates.map((latestCandidate) => (
+                <div key={latestCandidate._id}>
                   <div
                     href="#"
                      className="flex flex-col justify-between h-48 overflow-hidden rounded-lg bg-white shadow-lg shadow-2xl-gray-200 p-4 shadow-lg hover:shadow-2xl"

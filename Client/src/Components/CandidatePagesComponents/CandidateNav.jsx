@@ -33,11 +33,11 @@ const CandidateNav = () => {
           }
         );
         if (response.status == 200) {
-          console.log("fetching user data ", response.data);
+          
           setUserData(response.data);
 
         } else {
-          console.log(response.data);
+          ;
           setUserData("Did not get any response!!!")
         }
       } catch (error) {
@@ -48,10 +48,10 @@ const CandidateNav = () => {
             if (status === 404) {
              alert("User Not Found")
             } else {
-              console.log("user Not Found")
+              
             }
           } else {
-            console.log("User not Found");
+            
           }
       }
     }
@@ -75,7 +75,7 @@ const CandidateNav = () => {
         }
       )
       if (response.status === 200) {
-        console.log("account has been deleted");
+        
         setShowPopup(true);
         window.alert("Your account has been deleted")
         navigate("/login");
@@ -113,13 +113,13 @@ const CandidateNav = () => {
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
-    console.log(menuOpen);
+    
   };
 
   const handleLogout = () => {
     localStorage.removeItem("token");;
     window.location.href = "/login";
-    console.log("Logging out");
+    
   };
 
   const profilePicUrl = userData?.profilePic ? `${userData.profilePic}?${userData.profilePic}` : 'https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=';

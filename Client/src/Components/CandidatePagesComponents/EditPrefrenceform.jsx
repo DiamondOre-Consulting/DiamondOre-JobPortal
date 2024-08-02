@@ -31,7 +31,7 @@ const EditPrefrenceform = () => {
     };
 
     useEffect(() => {
-        console.log("User inputs:", userInputs);
+        
     }, [userInputs]);
 
     const handleSubmit = async (e) => {
@@ -48,10 +48,10 @@ const EditPrefrenceform = () => {
 
             );
             if (response.status === 201) {
-                console.log('pref data', response.data)
+                
                 const all = response.data;
                 setUserInputs(all);
-                console.log("user input is ", userInputs);
+                
                 setFormData({
                     preferredCity: '',
                     preferredChannel: '',
@@ -94,13 +94,13 @@ const EditPrefrenceform = () => {
 
                 const uniquicities = [...new Set(response.data.map(job => job.City))];
                 const uniquiChannels = [...new Set(response.data.map(job => job.Channel))];
-                console.log("Unique cities:", uniquicities);
-                console.log("channels", uniquiChannels);
+                
+                
                 setCities(uniquicities);
                 setChannels(uniquiChannels);
-                console.log(uniquicities)
+                
                 if (response.status === 200) {
-                    console.log(response.data);
+                    ;
                     const all = response.data;
                 }
             } catch (error) {
@@ -129,7 +129,7 @@ const EditPrefrenceform = () => {
 
                 )
                 if(response.status === 200){
-                    console.log("our prefrence data",response.data);
+                    
                     const prefdata= response.data
                     setPrefCity(prefdata?.preferredCity);
                     setPrefChannel(prefdata?.preferredChannel);

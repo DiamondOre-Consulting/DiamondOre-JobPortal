@@ -11,7 +11,7 @@ const EachCandidate = () => {
   const [candidateApplied, setCandidateApplied] = useState(null);
 
   const { id } = useParams();
-  console.log(id);
+  
 
   const { decodedToken } = useJwt(localStorage.getItem("token"));
   const token = localStorage.getItem("token");
@@ -58,7 +58,7 @@ const EachCandidate = () => {
           }
         );
         if (response.status == 201) {
-          console.log(response.data);
+          ;
           setCandidateDetails(response.data);
         }
       } catch (error) {
@@ -79,7 +79,7 @@ const EachCandidate = () => {
         });
 
         if (response.status === 200) {
-          console.log(response.data.reverse());
+          ;
           const applieds = response.data.reverse();
           setCandidateApplied(applieds)
         }
@@ -147,7 +147,7 @@ const EachCandidate = () => {
           <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
             <div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-4 xl:grid-cols-4">
               {candidateApplied?.map((job) => (
-                <div className="float-left"> 
+                <Link className="float-left" to={`/admin-dashboard/each-job/${job?._id}`} > 
                   <div
                     href="#"
                     className="flex flex-col  items-start h-40 overflow-hidden rounded-lg bg-white  shadow-lg hover:shadow-2xl"
@@ -164,7 +164,7 @@ const EachCandidate = () => {
                       <p className="text-sm text-gray-600 font-semibold float-left px-4 pb-4">Min. Experience - <span className="text-blue-950">{job?.MinExperience} Year(s)</span> </p>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>

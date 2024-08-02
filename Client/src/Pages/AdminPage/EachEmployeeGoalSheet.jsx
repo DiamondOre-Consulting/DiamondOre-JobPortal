@@ -111,7 +111,7 @@ const EachEmployeeGoalSheet = () => {
                 )
 
                 if (response.status === 200) {
-                    console.log("responsedata", response.data)
+                    
                     setAllGoalSheetData(response.data);
 
                 }

@@ -15,9 +15,9 @@ const EmployeeLeaves = () => {
   const { id } = useParams();
 
   const { decodedToken } = useJwt(localStorage.getItem("token"));
-  console.log("token", decodedToken)
+  
   const userId = decodedToken?.userId; // Accessing the ID from decoded token
-  console.log(userId)
+  
 
 
 
@@ -43,15 +43,15 @@ const EmployeeLeaves = () => {
           }
         );
         if (leaveReportResponse.status === 200) {
-          console.log("leave report response", leaveReportResponse.data);
-          console.log(leaveReportResponse.data);
+          
+          
           const all = leaveReportResponse.data;
           const latest = all.slice(-1);
-          console.log(latest);
+          ;
           setTotalLeavesis(latest[0]);
 
           console.log("latest", totalLeavesis.totalLeaves);
-          console.log(leaveReportResponse.data)
+          
           setRecord(leaveReportResponse.data);
 
         }

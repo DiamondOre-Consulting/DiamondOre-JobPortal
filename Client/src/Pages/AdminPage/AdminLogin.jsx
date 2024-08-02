@@ -30,7 +30,7 @@ const AdminLogin = () => {
         const token = response.data.token;
         // Store the token in local storage
         localStorage.setItem("token", token);
-        console.log("Logged in successfully as Affiliate");
+        
         // Redirect to dashboard page
         setTimeout(() => {
           navigate("/admin-dashboard");

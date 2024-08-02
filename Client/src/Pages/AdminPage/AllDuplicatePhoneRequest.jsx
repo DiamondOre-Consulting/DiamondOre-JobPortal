@@ -82,7 +82,7 @@ const AllDuplicatePhoneRequest = () => {
                     }));
 
                     setAllPhoneRequest(requestsWithNames);
-                    console.log("All duplicate phone requests with employee and owner names", requestsWithNames);
+                    
                     setLoading(false)
                 }
             } catch (error) {
@@ -103,7 +103,7 @@ const AllDuplicatePhoneRequest = () => {
 
     // Open the popup by id
     const handleClick = (id) => {
-        console.log(id)
+        
         setId(id);
         setShowPopup(true)
     }
@@ -125,7 +125,7 @@ const AllDuplicatePhoneRequest = () => {
             )
 
             if (response.status === 200) {
-                console.log("account updated");
+                
                 setSnackbarOpen(true);
                 setShowPopup(false);
                 window.location.reload();

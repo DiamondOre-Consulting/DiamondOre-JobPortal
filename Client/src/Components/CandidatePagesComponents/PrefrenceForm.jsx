@@ -29,7 +29,7 @@ const PrefrenceForm = () => {
     };
 
     useEffect(() => {
-        console.log("User inputs:", userInputs);
+        
     }, [userInputs]);
 
     const handleSubmit = async (e) => {
@@ -51,9 +51,9 @@ const PrefrenceForm = () => {
 
             );
             if (response.status === 200) {
-                console.log('posted data', response.data)
+                
                 setUserInputs(response.data);
-                console.log("user input is ", userInputs);
+                
                 setFormData({
                     preferredCity: '',
                     preferredChannel: '',
@@ -94,13 +94,13 @@ const PrefrenceForm = () => {
 
                 const uniquicities = [...new Set(response.data.map(job => job.City))];
                 const uniquiChannels = [...new Set(response.data.map(job => job.Channel))];
-                console.log("Unique cities:", uniquicities);
-                console.log("channels", uniquiChannels);
+                
+                
                 setCities(uniquicities);
                 setChannels(uniquiChannels);
-                console.log(uniquicities)
+                
                 if (response.status == 200) {
-                    console.log(response.data);
+                    ;
                     const all = response.data;
                 }
             } catch (error) {

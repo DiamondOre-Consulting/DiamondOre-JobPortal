@@ -51,10 +51,10 @@ const AdminAllJobsCards = () => {
           "https://api.diamondore.in/api/admin-confi/all-jobs"
         );
         if (response.status == 200) {
-          console.log(response.data);
+          ;
           const all = response.data;
           const filteredJobs = all.filter(job => job.JobStatus === true);
-          // console.log(latestJobs);
+          // ;
           setLatestJobs(filteredJobs.reverse());
           setLoading(false)
         }

@@ -90,7 +90,7 @@ const Chatboot = () => {
                     ...prevMessages,
                     { sender: 'chatbot', text: endingMessage },
                 ]);
-                console.log('Response sent:', response.data);
+                
             }
         } catch (error) {
             console.error('Error sending response:', error);
@@ -103,7 +103,7 @@ const Chatboot = () => {
                 ...prevUserDetails,
                 [key]: value
             };
-            console.log("Updated user details:", updatedDetails);
+            
             return updatedDetails;
         });
     };

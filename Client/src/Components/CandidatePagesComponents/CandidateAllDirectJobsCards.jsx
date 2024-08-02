@@ -49,12 +49,12 @@ const CandidateAllDirectJobsCards = () => {
           }
         );
         if (response.status == 200) {
-          console.log(response.data);
+          ;
           const all = response.data;
           const filteredJobs = all.filter(job => job.JobStatus === true);
           setDirectJobs(filteredJobs.reverse());
           setLoading(false)
-          console.log(filteredJobs.reverse());
+          
         }
       } catch (error) {
         console.error("Error fetching jobs:", error);

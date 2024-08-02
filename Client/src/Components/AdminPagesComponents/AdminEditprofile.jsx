@@ -64,8 +64,8 @@ const AdminEditprofile = () => {
       );
 
       if (response.status === 200) {
-        console.log(response.data);
-        console.log("profile image hase been updated")
+        ;
+        
         setProfilePicUrl(response.data);
       }
     } catch (error) {
@@ -82,7 +82,7 @@ const AdminEditprofile = () => {
       formData.append("email", adminData.email);
       formData.append("profilePic", profilePicUrl);
 
-      //  console.log(userData.profilePic); 
+      //   
       const token = localStorage.getItem("token");
       await axios.put('https://api.diamondore.in/api/admin-confi/edit-profile', formData, {
         headers: {

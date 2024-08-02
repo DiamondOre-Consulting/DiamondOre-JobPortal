@@ -141,7 +141,7 @@ export default function EmpDrawerSidebar() {
         if (response.status === 200) {
           const lastData = response.data.allData;
           const empdata = response.data.findEmp;
-          console.log(response.data);
+          ;
           setEmployee(empdata);
           setlatestnews(lastData.BreakingNews || []);
           sethrname(lastData.Top5HRs || []);
@@ -186,10 +186,10 @@ export default function EmpDrawerSidebar() {
           }
         );
         if (response.status == 200) {
-          console.log(response.data);
+          ;
           setUserData(response.data);
         } else {
-          console.log(response.data);
+          ;
           setUserData("Did not get any response!!!");
         }
       } catch (error) {
@@ -205,7 +205,7 @@ export default function EmpDrawerSidebar() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     window.location.href = "/employee-login";
-    console.log("Logging out");
+    
   };
 
 

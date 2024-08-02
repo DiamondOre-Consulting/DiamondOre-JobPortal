@@ -40,7 +40,7 @@ const Signup = ({ toggleForm }) => {
       );
 
       if (response.status === 200) {
-        console.log(response.data);
+        ;
         setProfilePicUrl(response.data);  
         setShowLoader(false);
       }
@@ -77,9 +77,9 @@ const Signup = ({ toggleForm }) => {
       );
 
       if (response.status === 200) {
-        // console.log(response.data);
+        // ;
         setResumeUrl(response.data);
-        console.log(response.data);
+        ;
         setShowLoaderResume(false);
       }
       else if (response.status === 500) {
@@ -140,7 +140,7 @@ const Signup = ({ toggleForm }) => {
       );
 
       if (response.status === 201) {
-        console.log("User Registered Successfully!!!");
+        
         navigate('/dashboard')
       }
 

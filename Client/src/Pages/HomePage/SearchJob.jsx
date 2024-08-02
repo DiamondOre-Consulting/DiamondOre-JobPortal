@@ -26,7 +26,7 @@ const SearchJob = () => {
             const response = await axios.get(
                 `https://api.diamondore.in/api/admin-confi/findJobs/${phone}`
             );
-            console.log('API Response:', response); // Log the response for debugging
+             // Log the response for debugging
             if (response.status === 201) {
                 setProfile(response.data);
                 setError('');
@@ -42,7 +42,7 @@ const SearchJob = () => {
                 const status = error.response.status;
                 if (status === 404) {
                     setError('This phone number does not exist in our records.');
-                    console.log("This phone number does not exist in our records.");
+                    
                 }
             }
         } finally {
@@ -61,7 +61,7 @@ const SearchJob = () => {
     const submitCallReq = async (e) => {
         e.preventDefault();
         setShowSubmitLoader(true);
-        console.log("details of the person ", name, phone);
+        
         // const payload = { name, phone };
 
         try {

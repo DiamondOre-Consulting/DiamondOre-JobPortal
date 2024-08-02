@@ -21,7 +21,7 @@ const AdminEditPerfomence = () => {
     });
 
     const { decodedToken } = useJwt(localStorage.getItem("token"));
-    // console.log('Decoded token:', decodedToken);
+    // 
 
 
     useEffect(() => {
@@ -43,7 +43,7 @@ const AdminEditPerfomence = () => {
                 );
 
                 if (response.status === 201) {
-                    console.log('single emp', response.data);
+                    
                     setEmployeeDetails(response.data);
                 }
             } catch (error) {
@@ -77,16 +77,16 @@ const AdminEditPerfomence = () => {
                     }
                 );
                 if (leaveReportResponse.status === 200) {
-                    console.log(leaveReportResponse.data)
+                    
                     setRecord(leaveReportResponse.data);
                     // const rec = leaveReportResponse.data;
                     // if (rec.length > 0) {
                     //     const lastRecord = rec[rec.length - 1];
                     //     const leaves = lastRecord.totalLeaves;
                     //     setTotalLeaves(leaves);
-                    //     console.log("this is total leaves ", leaves);
+                    //     
                     // } else {
-                    //     console.log("No records found");
+                    //     
                     // }
                 }
             }
@@ -128,7 +128,7 @@ const AdminEditPerfomence = () => {
             );
 
 
-            console.log('Response:', response.data);
+            
 
 
             // Update record state with new data

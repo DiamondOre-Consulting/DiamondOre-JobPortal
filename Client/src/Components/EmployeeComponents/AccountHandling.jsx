@@ -19,7 +19,7 @@ const AccountHandling = ({ userData }) => {
         phone: '',
     });
 
-    console.log("userdata", userData);
+    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -29,7 +29,7 @@ const AccountHandling = ({ userData }) => {
 
                 if (response.status === 200) {
                     setRows(response.data);
-                    console.log("Account handling data", response.data);
+                    
                     setAccountDetails(response.data);
                 }
             } catch (error) {
@@ -56,7 +56,7 @@ const AccountHandling = ({ userData }) => {
                 }
             });
             if (response.status === 200) {
-                console.log("data", response.data); 
+                 
                 setShowSubmitLoader(false);
                 setSnackbarOpen(true);
                 setPopUpForm(false);

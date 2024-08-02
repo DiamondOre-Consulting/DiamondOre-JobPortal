@@ -35,12 +35,12 @@ const NewlyAddedCandidates = () => {
             }
           }
         );
-        console.log(response.data);
+        ;
         const all = response.data;
         const latest = all.slice(-7);
-        // console.log(latestCandidates);
+        // 
         setlatestCandidates(latest.reverse());
-        console.log(latest);
+        ;
       } catch (error) {
         console.error("Error fetching jobs:", error);
         // Handle error and show appropriate message

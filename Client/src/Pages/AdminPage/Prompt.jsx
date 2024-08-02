@@ -44,7 +44,7 @@ const Prompt = () => {
 
             if (response.status === 200) {
                 setsheeturl(response.data); // Assuming the response contains a URL
-                console.log(response.data)
+                
             } else {
                 console.error('Failed to upload file:', response.data);
             }
@@ -84,7 +84,7 @@ const Prompt = () => {
             const response = await axios.get(
                 `https://api.diamondore.in/api/admin-confi/findJobs/${phone}`
             );
-            console.log('API Response:', response); // Log the response for debugging
+             // Log the response for debugging
             if (response.status === 201) {
                 setProfile(response.data);
                 setError('');
@@ -100,7 +100,7 @@ const Prompt = () => {
                 const status = error.response.status;
                 if (status === 404) {
                     setError('Suitable job not found !!');
-                    console.log("Suitable job not found !!");
+                    
                 }
             }
         } finally {
@@ -126,7 +126,7 @@ const Prompt = () => {
                 const status = error.response.status;
                 if (status === 404) {
                     alert('No Candidate Found')
-                    console.log("No Candidate Found");
+                    
                 }
             }
 

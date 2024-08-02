@@ -105,12 +105,12 @@ const Cvform = () => {
         e.preventDefault();
         setError(null)
         if (!formData.full_name || !formData.email || !formData.phone || !formData.address || !formData.linkedinUrl || !formData.summary || !formData.tech_skills || !formData.soft_skills || !formData.experience || !formData.graduation || !formData.twelfth || !formData.tenth) {
-            console.log("please fill all the feilds")
+            
             setError("Filling all the feild are compulsory.")
             return;
         }
         setUrl(null)
-        console.log(formData)
+        
         setIsLoading(false)
         try {
             const response = await axios.post("https://api.diamondore.in/api/candidates/free-resume"
@@ -118,12 +118,12 @@ const Cvform = () => {
             )
 
             if (response.status === 200) {
-                console.log(response.data)
+                
                 setIsLoading(true)
                 const myurl = response.data
                 setUrl(myurl)
                 alert("form has been submitted click on dawnload button to dawunload your CV")
-                console.log('Form submitted:', formData);
+                
             }
 
         }

@@ -40,12 +40,12 @@ const CandidateAllOtherJobsCards = () => {
           }
         );
         if (response.status == 200) {
-          console.log(response.data);
+          ;
           const all = response.data;
           const filteredJobs = all.filter(job => job.JobStatus === true);
           setOtherJobs(filteredJobs.reverse());
           setLoading(false)
-          console.log(latest.reverse());
+          
         }
       } catch (error) {
         console.error("Error fetching associates:", error);

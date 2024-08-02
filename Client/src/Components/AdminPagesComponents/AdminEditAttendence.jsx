@@ -44,7 +44,7 @@ const AdminEditAttendence = () => {
                 );
 
                 if (response.status === 201) {
-                    console.log('single emp', response.data);
+                    
                     setEmployeeDetails(response.data);
                 }
 
@@ -82,14 +82,14 @@ const AdminEditAttendence = () => {
                     }
                 );
                 if (leaveReportResponse.status === 200) {
-                    console.log("leave report response", leaveReportResponse.data);
-                    console.log(leaveReportResponse.data);
+                    
+                    
                     const all = leaveReportResponse.data;
                     const latest = all.slice(-1);
-                    console.log(latest);
+                    ;
                     setTotalLeavesis(latest[0]);
 
-                    console.log("latest",totalLeavesis.totalLeaves);
+                    
                     setRecord(leaveReportResponse.data);
 
                 }
@@ -130,7 +130,7 @@ const AdminEditAttendence = () => {
             );
 
 
-            console.log('Response:', response.data);
+            
 
 
             // Update record state with new data

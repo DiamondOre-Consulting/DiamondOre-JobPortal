@@ -84,10 +84,10 @@ const AddERPForm = () => {
           },
         }
       );
-      console.log(response.data);
+      ;
       // Handle success, e.g., show a success message or redirect to another page
       if (response.status === 201) {
-        console.log("New ERP data added successfully!!!");
+        
         navigate('/admin-dashboard/erp-dashboard')
       }
 
@@ -122,7 +122,7 @@ const AddERPForm = () => {
 
         if (response.status === 200) {
           setEmployees(response.data);
-          console.log(response.data);
+          ;
 
         }
       } catch (error) {

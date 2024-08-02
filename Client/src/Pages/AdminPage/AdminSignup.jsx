@@ -34,7 +34,7 @@ const AdminSignup = ({ toggleForm }) => {
         );
   
         if (response.status === 200) {
-          console.log(response.data);
+          ;
           setProfilePicUrl(response.data);
         }
       } catch (error) {
@@ -83,9 +83,9 @@ const AdminSignup = ({ toggleForm }) => {
       );
 
       if (response.status === 201) {
-        console.log("User Registered Successfully!!!");
+        
       } else {
-        console.log("Signup failed");
+        
         setError("Some details are wrong!!");
         // Handle signup error
       }

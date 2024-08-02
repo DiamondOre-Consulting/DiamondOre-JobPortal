@@ -4,7 +4,7 @@ import React from 'react'
 
 const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruiter, Joinings , userData }) => {
 
-    console.log( "employee", employee)
+    
 
 
     return (

@@ -20,7 +20,7 @@ const Beourclient = () => {
         if (!name || !email || !phone || !company || !designation) {
             setError("Filling all the feild are compulsory.")
         }
-        console.log("Sending data:", { name, email, phone, company, designation });
+        
         // const formData = { Name, Email, Message };
         try {
             const response = await axios.post(
@@ -34,10 +34,10 @@ const Beourclient = () => {
                 }
             );
 
-            console.log("API Response:", response.data);
+            
 
             if (response.status === 201) {
-                console.log("Data sent successfully");
+                
                 setsucess("Data Sent Sucessfully");
                 setName('');
                 setEmail('');
