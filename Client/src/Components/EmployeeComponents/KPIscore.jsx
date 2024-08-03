@@ -31,6 +31,7 @@ const KPIscore = () => {
                     
                     setTableData(response.data);
                     setLoading(false)
+                    console.log(response.data)
                 }
 
 
@@ -72,37 +73,41 @@ const KPIscore = () => {
                             <table className="w-full bg-white border border-gray-300">
                                 <thead className="bg-gray-200">
                                     <tr>
-                                        <th rowSpan="2" className="border border-gray-300 px-4 py-2">Month</th>
-                                        <th rowSpan="2" className="border border-gray-300 px-4 py-2">Year</th>
-                                        <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-300">Cost Vs Revenue</th>
-                                        <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-300">Successful Drives</th>
-                                        <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-300">Accounts</th>
-                                        <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-300">Mentorship</th>
-                                        <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-300">Process Adherence</th>
-                                        <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-300">Leakage</th>
-                                        <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-300">No. Of Joinings</th>
+                                        <th rowSpan="2" className="border border-gray-500 px-4 py-2">Month</th>
+                                        <th rowSpan="2" className="border border-gray-500 px-4 py-2">Year</th>
+                                        <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-200">Cost Vs Revenue</th>
+                                        <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-200">Successful Drives</th>
+                                        <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-200">Accounts</th>
+                                        <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-200">Mentorship</th>
+                                        <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-200">Process Adherence</th>
+                                        <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-200">Leakage</th>
+                                        <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-200">No. Of Joinings</th>
+                                        <th rowSpan="2" className="border border-gray-900 px-4 py-2 bg-gray-300">Total KPI Score</th>
+
+                                   
+                                        
                                     </tr>
                                     <tr>
                                         {headers.map((header, idx) => (
-                                            <th key={`cost-${idx}`} className="border border-gray-300 bg-blue-200 px-4 py-2">{header}</th>
+                                            <th key={`cost-${idx}`} className="border border-gray-500 bg-blue-100 px-4 py-2">{header}</th>
                                         ))}
                                         {headers.map((header, idx) => (
-                                            <th key={`drive-${idx}`} className="border border-gray-300 bg-blue-200 px-4 py-2">{header}</th>
+                                            <th key={`drive-${idx}`} className="border border-gray-500 bg-blue-100 px-4 py-2">{header}</th>
                                         ))}
                                         {headers.map((header, idx) => (
-                                            <th key={`accounts-${idx}`} className="border border-gray-300 bg-blue-200 px-4 py-2">{header}</th>
+                                            <th key={`accounts-${idx}`} className="border border-gray-500 bg-blue-100 px-4 py-2">{header}</th>
                                         ))}
                                         {headers.map((header, idx) => (
-                                            <th key={`mentorship-${idx}`} className="border border-gray-300 bg-blue-200 px-4 py-2">{header}</th>
+                                            <th key={`mentorship-${idx}`} className="border border-gray-500 bg-blue-100 px-4 py-2">{header}</th>
                                         ))}
                                         {headers.map((header, idx) => (
-                                            <th key={`process-${idx}`} className="border border-gray-300 bg-blue-200 px-4 py-2">{header}</th>
+                                            <th key={`process-${idx}`} className="border border-gray-500 bg-blue-100 px-4 py-2">{header}</th>
                                         ))}
                                         {headers.map((header, idx) => (
-                                            <th key={`leakage-${idx}`} className="border border-gray-300 bg-blue-200 px-4 py-2">{header}</th>
+                                            <th key={`leakage-${idx}`} className="border border-gray-500 bg-blue-100 px-4 py-2">{header}</th>
                                         ))}
                                         {headers.map((header, idx) => (
-                                            <th key={`joinings-${idx}`} className="border border-gray-300 bg-blue-200 px-4 py-2">{header}</th>
+                                            <th key={`joinings-${idx}`} className="border border-gray-500 bg-blue-100 px-4 py-2">{header}</th>
                                         ))}
                                     </tr>
                                 </thead>
@@ -110,53 +115,55 @@ const KPIscore = () => {
                                     {tableData?.kpis?.length > 0 ? (
                                         tableData?.kpis?.map((row, idx) => (
                                             <tr key={idx} className="border-t border-gray-300">
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.month}</td>
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.year}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.month}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.year}</td>
 
                                                 {/* Cost Vs Revenue */}
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.costVsRevenue?.target}</td>
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.costVsRevenue?.actual}</td>
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.costVsRevenue?.weight}</td>
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.costVsRevenue?.kpiScore}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.costVsRevenue?.target}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.costVsRevenue?.actual}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.costVsRevenue?.weight}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.costVsRevenue?.kpiScore}</td>
 
                                                 {/* Successful Drives */}
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.successfulDrives?.target}</td>
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.successfulDrives?.actual}</td>
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.successfulDrives?.weight}</td>
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.successfulDrives?.kpiScore}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.successfulDrives?.target}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.successfulDrives?.actual}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.successfulDrives?.weight}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.successfulDrives?.kpiScore}</td>
 
                                                 {/* Accounts */}
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.accounts?.target}</td>
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.accounts?.actual}</td>
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.accounts?.weight}</td>
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.accounts?.kpiScore}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.accounts?.target}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.accounts?.actual}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.accounts?.weight}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.accounts?.kpiScore}</td>
 
                                                 {/* Mentorship */}
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.mentorship?.target}</td>
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.mentorship?.actual}</td>
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.mentorship?.weight}</td>
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.mentorship?.kpiScore}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.mentorship?.target}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.mentorship?.actual}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.mentorship?.weight}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.mentorship?.kpiScore}</td>
 
                                                 {/* Process Adherence */}
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.processAdherence?.target}</td>
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.processAdherence?.actual}</td>
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.processAdherence?.weight}</td>
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.processAdherence?.kpiScore}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.processAdherence?.target}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.processAdherence?.actual}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.processAdherence?.weight}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.processAdherence?.kpiScore}</td>
 
                                                 {/* Leakage */}
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.leakage?.target}</td>
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.leakage?.actual}</td>
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.leakage?.weight}</td>
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.leakage?.kpiScore}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.leakage?.target}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.leakage?.actual}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.leakage?.weight}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.leakage?.kpiScore}</td>
 
 
                                                 {/* joinings */}
 
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.noOfJoining?.target}</td>
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.noOfJoining?.actual}</td>
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.noOfJoining?.weight}</td>
-                                                <td className="border border-gray-300 px-4 py-2">{row?.kpiMonth?.noOfJoining?.kpiScore}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.noOfJoining?.target}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.noOfJoining?.actual}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.noOfJoining?.weight}</td>
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.noOfJoining?.kpiScore}</td>
 
+                                               
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.totalKPIScore }</td>
                                             </tr>
                                         ))
                                     ) : (

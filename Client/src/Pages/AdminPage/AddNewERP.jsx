@@ -87,7 +87,7 @@ const AddERPForm = () => {
       ;
       // Handle success, e.g., show a success message or redirect to another page
       if (response.status === 201) {
-        
+
         navigate('/admin-dashboard/erp-dashboard')
       }
 
@@ -437,33 +437,68 @@ const AddERPForm = () => {
             Jonings for the Week*
           </label>
           {formData.JoningsForWeek.map((joining, index) => (
-            <div key={index} className="flex items-center">
+            <div key={index} className="flex flex-col md:flex-row items-center space-y-2 my-2">
               <input
                 type="text"
-                placeholder="Names"
-                className="my-1 w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
+                placeholder="Name"
+                className="w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none mt-2 ring-indigo-300 transition duration-100"
                 value={joining.names}
                 onChange={(e) =>
-                  handleItemInputChange(
-                    "JoningsForWeek",
-                    index,
-                    "names",
-                    e.target.value
-                  )
+                  handleItemInputChange("JoningsForWeek", index, "names", e.target.value)
+                }
+              />
+              <input
+                type="text"
+                placeholder="Client"
+                className="w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
+                value={joining.client}
+                onChange={(e) =>
+                  handleItemInputChange("JoningsForWeek", index, "client", e.target.value)
+                }
+              />
+              <input
+                type="text"
+                placeholder="Location"
+                className="w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
+                value={joining.location}
+                onChange={(e) =>
+                  handleItemInputChange("JoningsForWeek", index, "location", e.target.value)
+                }
+              />
+              <input
+                type="number"
+                placeholder="CTC"
+                className="w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
+                value={joining.ctc}
+                onChange={(e) =>
+                  handleItemInputChange("JoningsForWeek", index, "ctc", e.target.value)
+                }
+              />
+              <input
+                type="text"
+                placeholder="Recruiter Name"
+                className="w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
+                value={joining.recruiterName}
+                onChange={(e) =>
+                  handleItemInputChange("JoningsForWeek", index, "recruiterName", e.target.value)
+                }
+              />
+              <input
+                type="text"
+                placeholder="Team Leader Name"
+                className="w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
+                value={joining.teamLeaderName}
+                onChange={(e) =>
+                  handleItemInputChange("JoningsForWeek", index, "teamLeaderName", e.target.value)
                 }
               />
               <input
                 type="number"
                 placeholder="Number of Joinings"
-                className="my-1 w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
+                className="w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
                 value={joining.noOfJoinings}
                 onChange={(e) =>
-                  handleItemInputChange(
-                    "JoningsForWeek",
-                    index,
-                    "noOfJoinings",
-                    e.target.value
-                  )
+                  handleItemInputChange("JoningsForWeek", index, "noOfJoinings", e.target.value)
                 }
               />
               <button

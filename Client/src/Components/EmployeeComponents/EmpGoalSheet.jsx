@@ -81,8 +81,8 @@ const EmpGoalSheet = () => {
                                     <th class="px-4 py-2">Target</th>
                                     <th class="px-4 py-2">Cumulative Cost</th>
                                     <th class="px-4 py-2">Cumulative Revenue</th>
-                                    <th class="px-4 py-2">achYTD</th>
-                                    <th class="px-4 py-2">achMTD</th>
+                                    <th class="px-4 py-2">YTD</th>
+                                    <th class="px-4 py-2">MTD</th>
                                     <th class="px-4 py-2">Incentive</th>
                                     <th class='px-4 py-2'>Variable Incentive</th>
 
@@ -113,7 +113,7 @@ const EmpGoalSheet = () => {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="10" className="text-center">No data available for the selected year.</td>
+                                        <td colSpan="10" className="text-center">Select Year</td>
                                     </tr>
                                 )}
                             </tbody>

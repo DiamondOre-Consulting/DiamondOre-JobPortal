@@ -123,7 +123,7 @@ const AccountHandling = ({ userData }) => {
                         </p>
                         <div className="mb-4 md:text-lg text-gray-600">
                             <p>Email: {userData?.email}</p>
-                            <p>Team Leader: Amaan</p>
+                            {/* <p>Team Leader: Amaan</p> */}
                         </div>
                     </div>
                 </div>
@@ -137,29 +137,29 @@ const AccountHandling = ({ userData }) => {
                         <div className="overflow-hidden border">
                             <table className="md:w-full divide-y divide-gray-200  ">
                                 <thead className='border text-center'>
-                                    <tr className='border text-center bg-gray-100'>
-                                        <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">S.No</th>
-                                        <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">HR Name</th>
-                                        <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">Zone</th>
-                                        <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">Channel</th>
-                                        <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">Client Name</th>
-                                        <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">phone</th>
-                                        <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">Action</th>
+                                    <tr className='border text-center bg-gray-200'>
+                                        <th scope="col" className="px-6 py-3 border border-gray-500 text-center text-xs font-medium text-gray-500 uppercase ">S.No</th>
+                                        <th scope="col" className="px-6 py-3 border border-gray-500 text-center text-xs font-medium text-gray-500 uppercase ">HR Name</th>
+                                        <th scope="col" className="px-6 py-3 border border-gray-500 text-center text-xs font-medium text-gray-500 uppercase ">Zone</th>
+                                        <th scope="col" className="px-6 py-3 border border-gray-500 text-center text-xs font-medium text-gray-500 uppercase ">Channel</th>
+                                        <th scope="col" className="px-6 py-3 border border-gray-500 text-center text-xs font-medium text-gray-500 uppercase ">Client Name</th>
+                                        <th scope="col" className="px-6 py-3 border border-gray-500 text-center text-xs font-medium text-gray-500 uppercase ">phone</th>
+                                        {/* <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">Action</th> */}
                                     </tr>
                                 </thead>
 
                                 <tbody className="divide-y divide-gray-200  text-center">
                                     {accountdetails?.findAccount?.accountDetails?.map((row, index) => (
                                         <tr key={index}>
-                                            <td className="px-6 py-4 whitespace-nowrap border text-sm font-medium text-gray-800 ">{index + 1}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 ">{row.detail.hrName}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 ">{row.detail.zone}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 ">{row.detail.channel}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 ">{row.detail.clientName}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 ">{row.detail.phone}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap border text-center text-sm font-medium">
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm font-medium text-gray-800 ">{index + 1}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row.detail.hrName}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row.detail.zone}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row.detail.channel}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row.detail.clientName}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row.detail.phone}</td>
+                                            {/* <td className="px-6 py-4 whitespace-nowrap border text-center text-sm font-medium">
                                                 <button type="button" className="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none  ">Delete</button>
-                                            </td>
+                                            </td> */}
                                         </tr>
                                     ))}
                                 </tbody>

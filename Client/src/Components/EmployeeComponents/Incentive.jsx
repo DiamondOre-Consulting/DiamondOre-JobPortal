@@ -114,7 +114,7 @@ const Incentive = () => {
                       <span className='group-hover:opacity-100 transition-opacity bg-gray-800 px-2 text-sm text-gray-100 rounded-t-lg rounded-bl-lg absolute left-1/2 -translate-x-50 -translate-y-full opacity-0 mt-2 mx-auto'>
                         <div className='w-full text-xs py-2' style={{ width: "90px" }}>
                           <p>{apple.param1} : Monthly</p>
-                          <p>{apple.param2} : YTD</p>
+                          <p>{apple.param2} : Variable</p>
                           <p>{apple.param3} : KAM</p>
                         </div>
                       </span>

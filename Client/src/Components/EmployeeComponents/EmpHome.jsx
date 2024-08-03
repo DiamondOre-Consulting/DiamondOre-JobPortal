@@ -1,17 +1,26 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import Confetti from 'react-confetti';
 
 
+const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruiter, Joinings, userData }) => {
 
-const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruiter, Joinings , userData }) => {
+    const [showConfetti, setShowConfetti] = useState(true);
+    useEffect(() => {
+        // Automatically stop the confetti after 5 seconds
+        const timer = setTimeout(() => {
+            setShowConfetti(false);
+        }, 10000);
 
-    
+        return () => clearTimeout(timer);
+    }, []);
 
+    console.log(Joinings)
 
     return (
         <>
-
-        <span className='text-4xl font-bold text-gray-700'>Welcome,</span>
-        <span className='font-bold text-4xl ml-2 text-gray-700'>{userData?.name}</span>
+            {showConfetti && <Confetti />}
+            <span className='text-4xl font-bold text-gray-700'>Welcome,</span>
+            <span className='font-bold text-4xl ml-2 text-gray-700'>{userData?.name}</span>
 
             {latestnews?.map((newNews) => (
                 <div id="alert-additional-content-3" class="p-4 mb-4 text-green-800 border border-green-300 rounded-lg bg-green-50    mt-8" role="alert">
@@ -134,7 +143,7 @@ const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruite
             <div className='mt-20 px-2'>
                 <div className='grid grid-cols-1 md:grid-cols-2 md:gap-10'>
                     <div className='md:overflow-auto overflow-scroll'>
-                        <h1 className='uppercase text-2xl font-semibold  text-gray-900 px-10 py-2 text-center'>R & R LeaderBoard</h1>
+                        <h1 className='uppercase text-2xl font-semibold  text-gray-900 px-10 py-2 text-center'>R & R LeaderBoard Interns</h1>
                         <table className="w-full text-sm text-left rtl:text-right text-gray-500 border border-1 ">
                             <thead className="text-xs text-gray-700 uppercase   text-center">
                                 <tr className='bg-blue-900 text-white'>
@@ -222,7 +231,19 @@ const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruite
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 text-center border">
                         <tr className="bg-blue-950 text-white">
                             <th scope="col" className="px-6 py-3">
-                                position
+                                Name
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                Client
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                Location
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                               Recruiter Name
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                Tema Leader
                             </th>
                             <th scope="col" className="px-6 py-3">
                                 No. of joinings
@@ -232,14 +253,44 @@ const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruite
                     <tbody>
                         {Joinings?.map((join) => (
                             <tr className="bg-white border-b  hover:bg-gray-50 ">
-                                <th
-                                    scope="row"
-                                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
-                                >
-                                    {join.names}
-                                </th>
-                                <td className="px-6 py-4">{join.noOfJoinings}</td>
-                            </tr>
+                            <th
+                              scope="row"
+                              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
+                            >
+                              {join.names}
+                            </th>
+            
+                            <th
+                              scope="row"
+                              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
+                            >
+                              {join.client}
+                            </th>
+                            <th
+                              scope="row"
+                              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
+                            >
+                              {join.location}
+                            </th>
+            
+                            <th
+                              scope="row"
+                              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
+                            >
+                              {join.recruiterName}
+                            </th>
+            
+                            <th
+                              scope="row"
+                              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
+                            >
+                              {join.teamLeaderName}
+                            </th>
+            
+                            
+            
+                            <td className="px-6 py-4">{join.noOfJoinings}</td>
+                          </tr>
 
                         ))}
 
