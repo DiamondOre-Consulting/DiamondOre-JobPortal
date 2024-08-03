@@ -69,6 +69,21 @@ const erpSchema = new mongoose.Schema({
       names: {
         type: String,
       },
+      client: {
+        type: String
+      },
+      location: {
+        type: String
+      },
+      ctc: {
+        type: Number
+      },
+      recruiterName: {
+        type: String
+      },
+      teamLeaderName: {
+        type: String
+      },
       noOfJoinings: {
         type: Number,
       }
