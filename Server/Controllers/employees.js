@@ -205,13 +205,99 @@ const transporter = nodemailer.createTransport({
     pass: "frtohlwnukisvrzh",
   },
 });
+// router.put(
+//   "/set-account-handling",
+//   EmployeeAuthenticateToken,
+//   async (req, res) => {
+//     try {
+//       const { userId } = req.user;
+//       const { hrName, clientName, phone, channel, zone } = req.body;
+
+//       // Find the employee by userId
+//       const employee = await Employees.findById(userId);
+//       if (!employee) {
+//         return res.status(404).json({ message: "Employee not found" });
+//       }
+
+//       // Check if any accountHandling has the same phone but different owner
+//       const duplicatePhone = await AccountHandling.findOne({
+//         "accountDetails.detail.phone": phone,
+//         owner: { $ne: userId },
+//       });
+
+//       if (duplicatePhone) {
+//         // Update the requests field of the duplicatePhone document
+//         duplicatePhone.requests.push({
+//           reqDetail: {
+//             employee: userId,
+//             accountPhone: phone,
+//             status: null, // This will default to null as per your schema
+//           },
+//         });
+
+//         await duplicatePhone.save();
+
+//         // Send email notification to admin
+//         const mailOptions = {
+//           from: "harshkr2709@gmail.com",
+//           to: "hr@diamondore.in",
+//           subject: "Duplicate Phone Number Request",
+//           text: `An employee: ${employee} has requested to use a duplicate phone number: ${phone}.`,
+//         };
+
+//         transporter.sendMail(mailOptions, (error, info) => {
+//           if (error) {
+//             console.error("Error sending email:", error);
+//           } else {
+//             console.log("Email sent:", info.response);
+//           }
+//         });
+//         return res
+//           .status(400)
+//           .json({ message: "Phone number already in use by another account, the request to use this phone number has been sent to Admin" });
+//       }
+
+//       // Find the account details for the specified userId
+//       let accountHandling = await AccountHandling.findOne({ owner: userId });
+//       if (!accountHandling) {
+//         accountHandling = new AccountHandling({
+//           owner: userId,
+//           accountHandlingStatus: true,
+//           accountDetails: [],
+//         });
+//       }
+
+//       // Push new details to accountHandling array
+//       accountHandling.accountDetails.push({
+//         detail: {
+//           hrName: hrName,
+//           clientName: clientName,
+//           phone: phone,
+//           channel: channel,
+//           zone: zone,
+//         },
+//       });
+
+//       // Save the updated goal sheet
+//       await accountHandling.save();
+
+//       res.status(200).json({ message: "Account details updated successfully" });
+//     } catch (error) {
+//       console.error(error.message);
+//       res.status(500).json({ message: error.message });
+//     }
+//   }
+// );
+
+// FETCH ALL ACCOUNT HANDLING
+
 router.put(
   "/set-account-handling",
   EmployeeAuthenticateToken,
   async (req, res) => {
     try {
       const { userId } = req.user;
-      const { hrName, clientName, phone, channel, zone } = req.body;
+      const { hrName, hrPhone, hrEmail, channelName, zoneName } = req.body;
 
       // Find the employee by userId
       const employee = await Employees.findById(userId);
@@ -219,20 +305,17 @@ router.put(
         return res.status(404).json({ message: "Employee not found" });
       }
 
-      // Check if any accountHandling has the same phone but different owner
+      // Check if any accountHandling has the same hrPhone but different owner
       const duplicatePhone = await AccountHandling.findOne({
-        "accountDetails.detail.phone": phone,
+        "accountDetails.channels.hrDetails.hrPhone": hrPhone,
         owner: { $ne: userId },
       });
 
       if (duplicatePhone) {
         // Update the requests field of the duplicatePhone document
         duplicatePhone.requests.push({
-          reqDetail: {
-            employee: userId,
-            accountPhone: phone,
-            status: null, // This will default to null as per your schema
-          },
+          employee: userId,
+          accountPhone: hrPhone,
         });
 
         await duplicatePhone.save();
@@ -242,7 +325,7 @@ router.put(
           from: "harshkr2709@gmail.com",
           to: "hr@diamondore.in",
           subject: "Duplicate Phone Number Request",
-          text: `An employee: ${employee} has requested to use a duplicate phone number: ${phone}.`,
+          text: `An employee (${employee.name}) has requested to use a duplicate phone number: ${hrPhone}.`,
         };
 
         transporter.sendMail(mailOptions, (error, info) => {
@@ -267,18 +350,24 @@ router.put(
         });
       }
 
-      // Push new details to accountHandling array
-      accountHandling.accountDetails.push({
-        detail: {
-          hrName: hrName,
-          clientName: clientName,
-          phone: phone,
-          channel: channel,
-          zone: zone,
-        },
-      });
+      // Find or create the zone
+      let zone = accountHandling.accountDetails.find(z => z.zoneName === zoneName);
+      if (!zone) {
+        zone = { zoneName, channels: [] };
+        accountHandling.accountDetails.push(zone);
+      }
 
-      // Save the updated goal sheet
+      // Find or create the channel within the zone
+      let channel = zone.channels.find(c => c.channelName === channelName);
+      if (!channel) {
+        channel = { channelName, hrDetails: [] };
+        zone.channels.push(channel);
+      }
+
+      // Add HR details to the channel
+      channel.hrDetails.push({ hrName, hrPhone, hrEmail });
+
+      // Save the updated account handling details
       await accountHandling.save();
 
       res.status(200).json({ message: "Account details updated successfully" });
@@ -289,7 +378,7 @@ router.put(
   }
 );
 
-// FETCH ALL ACCOUNT HANDLING
+
 router.get("/accounts", async (req, res) => {
   try {
     const allAccounts = await AccountHandling.find();
