@@ -311,7 +311,6 @@ const AdminDrawerSidebar = () => {
                 </Routes>
                 <AdminFooter />
             </Box>
-            
         </Box>
     );
 }

@@ -9,7 +9,7 @@ const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruite
         // Automatically stop the confetti after 5 seconds
         const timer = setTimeout(() => {
             setShowConfetti(false);
-        }, 10000);
+        }, 20000);
 
         return () => clearTimeout(timer);
     }, []);
