@@ -2116,9 +2116,10 @@ router.get(
       // Find all AccountHandling documents with non-empty requests
       const duplicatePhoneRequests = await AccountHandling.find({
         "requests.0": { $exists: true },
-      });
-      if (!duplicatePhoneRequests) {
-        return res.status(402).json({
+      }).populate("requests.employee", "name email");
+
+      if (duplicatePhoneRequests.length === 0) {
+        return res.status(404).json({
           message: "No Accounts available with duplicate requests!!!",
         });
       }
@@ -2259,52 +2260,76 @@ router.put(
       const { id } = req.params;
       const { status } = req.body;
 
-      const findAccount = await AccountHandling.findById(id).populate("owner");
-      if (!findAccount) {
-        return res
-          .status(404)
-          .json({ message: "No account found with this id!!!" });
+      const accountHandling = await AccountHandling.findById(id).populate("owner");
+      if (!accountHandling) {
+        return res.status(404).json({ message: "No account found with this id!!!" });
       }
 
-      const requestToUpdate = findAccount.requests.find(
-        (req) => req.reqDetail.status === null
+      const requestToUpdate = accountHandling.requests.find(
+        (req) => req.status === "pending"
       );
       if (!requestToUpdate) {
-        return res
-          .status(400)
-          .json({ message: "No pending request found to update!" });
+        return res.status(400).json({ message: "No pending request found to update!" });
       }
 
-      if (status === "true") {
-        const previousOwnerEmail = findAccount.owner.email;
-        const newOwnerId = requestToUpdate.reqDetail.employee;
-        const accountPhone = requestToUpdate.reqDetail.accountPhone;
+      if (status === "approved") {
+        const previousOwnerEmail = accountHandling.owner.email;
+        const newOwnerId = requestToUpdate.employee;
+        const accountPhone = requestToUpdate.accountPhone;
 
         // Move the account detail from the previous owner to the new owner
-        const accountDetail = findAccount.accountDetails.find(
-          (acc) => acc.detail.phone === accountPhone
-        );
-        if (!accountDetail) {
-          return res
-            .status(404)
-            .json({
-              message:
-                "Account detail not found in previous owner's accountDetails!",
-            });
+        let accountDetail = null;
+        for (const zone of accountHandling.accountDetails) {
+          for (const channel of zone.channels) {
+            const hrIndex = channel.hrDetails.findIndex(
+              (hr) => hr.hrPhone === accountPhone
+            );
+            if (hrIndex !== -1) {
+              accountDetail = channel.hrDetails[hrIndex];
+              channel.hrDetails.splice(hrIndex, 1);
+              break;
+            }
+          }
+          if (accountDetail) break;
         }
 
-        let newOwnerAccountHandling = await AccountHandling.findOneAndUpdate(
-          { owner: newOwnerId },
-          { $push: { accountDetails: accountDetail } },
-          { new: true, upsert: true }
-        );
+        if (!accountDetail) {
+          return res.status(404).json({
+            message: "Account detail not found in previous owner's accountDetails!",
+          });
+        }
 
-        findAccount.accountDetails = findAccount.accountDetails.filter(
-          (acc) => acc.detail.phone !== accountPhone
-        );
-        requestToUpdate.reqDetail.status = true;
+        let newOwnerAccountHandling = await AccountHandling.findOne({ owner: newOwnerId });
+        if (!newOwnerAccountHandling) {
+          newOwnerAccountHandling = new AccountHandling({
+            owner: newOwnerId,
+            accountHandlingStatus: true,
+            accountDetails: [],
+          });
+        }
 
-        await findAccount.save();
+        // Check if the zone already exists
+        let zone = newOwnerAccountHandling.accountDetails.find(
+          (z) => z.zoneName === accountHandling.zoneName
+        );
+        if (!zone) {
+          zone = { zoneName: accountHandling.zoneName, channels: [] };
+          newOwnerAccountHandling.accountDetails.push(zone);
+        }
+
+        // Check if the channel already exists within the zone
+        let channel = zone.channels.find((c) => c.channelName === accountHandling.channelName);
+        if (!channel) {
+          channel = { channelName: accountHandling.channelName, hrDetails: [] };
+          zone.channels.push(channel);
+        }
+
+        // Add HR details to the channel
+        channel.hrDetails.push(accountDetail);
+
+        requestToUpdate.status = "approved";
+        await accountHandling.save();
+        await newOwnerAccountHandling.save();
 
         // Send email to the previous owner
         transporter.sendMail(
@@ -2353,14 +2378,18 @@ router.put(
           });
       }
 
-      if (status === "false") {
-        const previousOwnerEmail = findAccount.owner.email;
+      if (status === "rejected") {
+        const previousOwnerEmail = accountHandling.owner.email;
+        requestToUpdate.status = "rejected";
+
+        await accountHandling.save();
+
         transporter.sendMail(
           {
             from: "harshkr2709@gmail.com",
             to: previousOwnerEmail,
             subject: "Account Handling Ownership Update",
-            text: `The AccountHandling with ID: ${id} access has been denied by the Admin.`,
+            text: `The AccountHandling request for phone: ${accountPhone} has been denied by the Admin.`,
           },
           (error, info) => {
             if (error) {
