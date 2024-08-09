@@ -49,6 +49,27 @@ router.post("/add-emp", AdminAuthenticateToken, async (req, res) => {
 
     await newEmp.save();
 
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "harshkr2709@gmail.com",
+        pass: "frtohlwnukisvrzh",
+      },
+    });
+
+    const mailOptions = {
+      from: "Diamondore.in <harshkr2709@gmail.com>",
+      to: `Recipient <${email}>`,
+      subject: "Congratulations!!! You are added to DOC-ERP",
+      text: `Welcome to the team, ${name}`,
+      html: `<h1 style="color: blue; text-align: center; font-size: 2rem">Diamond Consulting Pvt. Ltd.</h1> </br> <h3 style="color: black; font-size: 1.3rem; text-align: center;">Dear ${name}, Welcome to the DOC-ERP system as ${empType}. Stay Connected.</h3>`,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log(info);
+    
+
     res
       .status(201)
       .json({ message: "New Employee registered successfully!!! ", newEmp });

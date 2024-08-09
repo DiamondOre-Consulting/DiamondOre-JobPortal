@@ -1947,6 +1947,11 @@ router.put("/set-goalsheet", AdminAuthenticateToken, async (req, res) => {
   try {
     const { empId, year, month, noOfJoinings, revenue, cost } = req.body;
 
+
+    // Convert year and month to numbers
+    const yearMain = parseInt(year);
+    const monthMain = parseInt(month);
+
     // Find the employee by empId
     const employee = await Employees.findById(empId);
     if (!employee) {
@@ -1954,11 +1959,11 @@ router.put("/set-goalsheet", AdminAuthenticateToken, async (req, res) => {
     }
 
     // Find the goal sheet for the specified empId and year
-    let goalSheet = await GoalSheet.findOne({ owner: empId, year: year });
+    let goalSheet = await GoalSheet.findOne({ owner: empId, year: yearMain });
     if (!goalSheet) {
       goalSheet = new GoalSheet({
         owner: empId,
-        year: year,
+        year: yearMain,
         goalSheetDetails: [],
       });
     }
@@ -1968,18 +1973,21 @@ router.put("/set-goalsheet", AdminAuthenticateToken, async (req, res) => {
 
     // Calculate cumulativeCost
     let cumulativeCost = cost;
-    const [joinDay, joinMonth, joinYear] = employee.doj.split("/").map(Number);
-    if (joinMonth !== month || joinYear !== year) {
-      if (month === 1) {
+    const [joinDay, joinMonth, joinYear] = employee.doj.split("/").map(String);
+    console.log(joinMonth);
+    if (joinMonth !== monthMain || joinYear !== yearMain) {
+      if (monthMain === 1) {
+        console.log(joinYear, yearMain);
+
         // January
         const lastYearGoalSheet = await GoalSheet.findOne({
           owner: empId,
-          year: year - 1,
+          year: yearMain - 1,
         });
         if (lastYearGoalSheet) {
           const lastYearDecemberDetails =
             lastYearGoalSheet.goalSheetDetails.find(
-              (detail) => detail.goalSheet.month === 12
+              (detail) => detail.goalSheet.monthMain === 12
             );
           if (lastYearDecemberDetails) {
             cumulativeCost += lastYearDecemberDetails.goalSheet.cumulativeCost;
@@ -1987,7 +1995,7 @@ router.put("/set-goalsheet", AdminAuthenticateToken, async (req, res) => {
         }
       } else {
         const previousMonthDetails = goalSheet.goalSheetDetails.find(
-          (detail) => detail.goalSheet.month === month - 1
+          (detail) => detail.goalSheet.month === monthMain - 1
         );
         if (previousMonthDetails) {
           cumulativeCost += previousMonthDetails.goalSheet.cumulativeCost;
@@ -1997,12 +2005,12 @@ router.put("/set-goalsheet", AdminAuthenticateToken, async (req, res) => {
 
     // Calculate cumulativeRevenue
     let cumulativeRevenue = revenue;
-    if (joinMonth !== month || joinYear !== year) {
-      if (month === 1) {
+    if (joinMonth !== monthMain || joinYear !== yearMain) {
+      if (monthMain === 1) {
         // January
         const lastYearGoalSheet = await GoalSheet.findOne({
           owner: empId,
-          year: year - 1,
+          year: yearMain - 1,
         });
         if (lastYearGoalSheet) {
           const lastYearDecemberDetails =
@@ -2016,7 +2024,7 @@ router.put("/set-goalsheet", AdminAuthenticateToken, async (req, res) => {
         }
       } else {
         const previousMonthDetails = goalSheet.goalSheetDetails.find(
-          (detail) => detail.goalSheet.month === month - 1
+          (detail) => detail.goalSheet.month === monthMain - 1
         );
         if (previousMonthDetails) {
           cumulativeRevenue += previousMonthDetails.goalSheet.cumulativeRevenue;
@@ -2066,7 +2074,7 @@ router.put("/set-goalsheet", AdminAuthenticateToken, async (req, res) => {
     // Push new details to goalSheetDetails array
     goalSheet.goalSheetDetails.push({
       goalSheet: {
-        month: month,
+        month: monthMain,
         noOfJoining: noOfJoinings,
         cost: cost,
         revenue: revenue,
