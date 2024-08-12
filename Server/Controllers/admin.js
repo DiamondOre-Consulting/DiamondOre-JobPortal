@@ -1973,7 +1973,7 @@ router.put("/set-goalsheet", AdminAuthenticateToken, async (req, res) => {
 
     // Calculate cumulativeCost
     let cumulativeCost = cost;
-    const [joinDay, joinMonth, joinYear] = employee.doj.split("/").map(String);
+    const [joinDay, joinMonth, joinYear] = employee.doj.split("/").map(Number);
     console.log(joinMonth);
     if (joinMonth !== monthMain || joinYear !== yearMain) {
       if (monthMain === 1) {
