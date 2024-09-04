@@ -9,6 +9,7 @@ import canara from '../../assets/canara.png'
 import edelweiss from '../../assets/edelweiss.png'
 import { motion } from 'framer-motion';
 import Marquee from 'react-marquee-slider';
+import  maxlogo from '../../assets/maxlogo.png'
 
 const StatsPartners = () => {
   const [companies, setCompanies] = useState(0);
@@ -140,6 +141,7 @@ const StatsPartners = () => {
               <img src="https://www.careinsurance.com/images/care_health_insurance_logo.svg" alt="helthcare" className="w-18 sm:w-14 md:w-20 lg:w-44 object-cover mb-4 mr-16 inline-block" />
               <img src="https://www.motilaloswal.com/img/mologo.png?1210" alt="motilal oswal" className="w-14 sm:w-10 md:w-10 lg:w-44 object-cover mb-4 mr-16 inline-block" />
               <img src={edelweiss} alt="motilal oswal" className="w-14 sm:w-10 md:w-10 lg:w-44 object-cover mb-4 mr-16 inline-block" />
+               <img src={maxlogo} alt="motilal oswal" className="w-14 sm:w-10 md:w-10 lg:w-44 object-cover mb-4 mr-16 inline-block" />
             </Marquee>
           </div>
 
