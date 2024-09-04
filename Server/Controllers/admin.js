@@ -1096,8 +1096,8 @@ router.post("/send-chatbot", async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "helpdesk2.rasonline@gmail.com",
-        pass: "fnhwhrbfgjctngwg",
+        user: "harshkr2709@gmail.com",
+        pass: "frtohlwnukisvrzh",
       },
     });
     const userName = req.body.name;
@@ -1120,9 +1120,9 @@ router.post("/send-chatbot", async (req, res) => {
 
     // Compose the email
     const mailOptions = {
-      from: "DOC_Labz <helpdesk2.rasonline@gmail.com>",
-      to: "helpdesk2.rasonline@gmail.com",
-      cc:['zoyas3423@gmail.com' , 'zoya.rasonline@gmail.com'],
+      from: "DOC_Labz <harshkr2709@gmail.com>",
+      to: "rahul@rasonline.in",
+      cc: 'tech@diamondore.in',
       subject: `ROBO_RECRUITER: New Message Received from ${userName}`,
       text: `A new message has been submitted by ${userName}.`,
       html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${userName}</h4> </br>
@@ -1151,8 +1151,8 @@ router.post("/client-form", async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "helpdesk2.rasonline@gmail.com",
-        pass: "fnhwhrbfgjctngwg",
+        user: "harshkr2709@gmail.com",
+        pass: "frtohlwnukisvrzh",
       },
     });
     const userName = req.body.name;
@@ -1173,7 +1173,7 @@ router.post("/client-form", async (req, res) => {
 
     // Compose the email
     const mailOptions = {
-      from: "DOC_Labz <helpdesk2.rasonline@gmail.com>",
+      from: "DOC_Labz <harshkr2709@gmail.com>",
       to: "hr@diamondore.in",
       cc:['zoyas3423@gmail.com' , 'zoya.rasonline@gmail.com'],
       subject: `DOC_LABZ - New Client: New Message Received from ${userName}`,
@@ -1943,160 +1943,165 @@ router.post(
 );
 
 // SET GOAL SHEET OF AN EMPLOYEE
-router.put("/set-goalsheet", AdminAuthenticateToken, async (req, res) => {
-  try {
-    const { empId, year, month, noOfJoinings, revenue, cost } = req.body;
+// router.put("/set-goalsheet", async (req, res) => {
+//   try {
+//     const { empId, year, month, noOfJoinings, revenue, cost } = req.body;
 
 
-    // Convert year and month to numbers
-    const yearMain = parseInt(year);
-    const monthMain = parseInt(month);
+//     // Convert year and month to numbers
+//     // const yearMain = parseInt(year);
+//     const yearMain = year;
+//     const monthMain = parseInt(month);
+//     console.log(yearMain, monthMain);
+    
 
-    // Find the employee by empId
-    const employee = await Employees.findById(empId);
-    if (!employee) {
-      return res.status(404).json({ message: "Employee not found" });
-    }
+//     // Find the employee by empId
+//     const employee = await Employees.findById(empId);
+//     if (!employee) {
+//       return res.status(404).json({ message: "Employee not found" });
+//     }
 
-    // Find the goal sheet for the specified empId and year
-    let goalSheet = await GoalSheet.findOne({ owner: empId, year: yearMain });
-    if (!goalSheet) {
-      goalSheet = new GoalSheet({
-        owner: empId,
-        year: yearMain,
-        goalSheetDetails: [],
-      });
-    }
+//     // Find the goal sheet for the specified empId and year
+//     let goalSheet = await GoalSheet.findOne({ owner: empId, year: yearMain });
+//     if (!goalSheet) {
+//       goalSheet = new GoalSheet({
+//         owner: empId,
+//         year: yearMain,
+//         goalSheetDetails: [],
+//       });
+//     }
 
-    // Calculate target
-    const target = cost * 4;
+//     // Calculate target
+//     const target = cost * 4;
 
-    // Calculate cumulativeCost
-    let cumulativeCost = cost;
-    const [joinDay, joinMonth, joinYear] = employee.doj.split("/").map(Number);
-    console.log(joinMonth);
-    if (joinMonth !== monthMain || joinYear !== yearMain) {
-      if (monthMain === 1) {
-        console.log(joinYear, yearMain);
+//     // Calculate cumulativeCost
+//     let cumulativeCost = cost;
+//     const [joinDay, joinMonth, joinYear] = employee.doj.split("/").map(Number);
+//     // const [joinYear, joinMonth, joinDay] = employee.doj.split("/").map(Number);
+//     console.log(joinYear, joinMonth, joinDay);
+//     if (joinMonth !== monthMain || joinYear !== yearMain) {
+//       if (monthMain === 1) {
+//         console.log(joinYear, yearMain);
 
-        // January
-        const lastYearGoalSheet = await GoalSheet.findOne({
-          owner: empId,
-          year: yearMain - 1,
-        });
-        if (lastYearGoalSheet) {
-          const lastYearDecemberDetails =
-            lastYearGoalSheet.goalSheetDetails.find(
-              (detail) => detail.goalSheet.monthMain === 12
-            );
-          if (lastYearDecemberDetails) {
-            cumulativeCost += lastYearDecemberDetails.goalSheet.cumulativeCost;
-          }
-        }
-      } else {
-        const previousMonthDetails = goalSheet.goalSheetDetails.find(
-          (detail) => detail.goalSheet.month === monthMain - 1
-        );
-        if (previousMonthDetails) {
-          cumulativeCost += previousMonthDetails.goalSheet.cumulativeCost;
-        }
-      }
-    }
+//         // January
+//         const lastYearGoalSheet = await GoalSheet.findOne({
+//           owner: empId,
+//           year: yearMain - 1,
+//         });
+//         if (lastYearGoalSheet) {
+//           const lastYearDecemberDetails =
+//             lastYearGoalSheet.goalSheetDetails.find(
+//               (detail) => detail.goalSheet.monthMain === 12
+//             );
+//           if (lastYearDecemberDetails) {
+//             cumulativeCost += lastYearDecemberDetails.goalSheet.cumulativeCost;
+//           }
+//         }
+//       } else {
+//         const previousMonthDetails = goalSheet.goalSheetDetails.find(
+//           (detail) => detail.goalSheet.month === monthMain - 1
+//         );
+//         if (previousMonthDetails) {
+//           cumulativeCost += previousMonthDetails.goalSheet.cumulativeCost;
+//         }
+//       }
+//     }
 
-    // Calculate cumulativeRevenue
-    let cumulativeRevenue = revenue;
-    if (joinMonth !== monthMain || joinYear !== yearMain) {
-      if (monthMain === 1) {
-        // January
-        const lastYearGoalSheet = await GoalSheet.findOne({
-          owner: empId,
-          year: yearMain - 1,
-        });
-        if (lastYearGoalSheet) {
-          const lastYearDecemberDetails =
-            lastYearGoalSheet.goalSheetDetails.find(
-              (detail) => detail.goalSheet.month === 12
-            );
-          if (lastYearDecemberDetails) {
-            cumulativeRevenue +=
-              lastYearDecemberDetails.goalSheet.cumulativeRevenue;
-          }
-        }
-      } else {
-        const previousMonthDetails = goalSheet.goalSheetDetails.find(
-          (detail) => detail.goalSheet.month === monthMain - 1
-        );
-        if (previousMonthDetails) {
-          cumulativeRevenue += previousMonthDetails.goalSheet.cumulativeRevenue;
-        }
-      }
-    }
+//     // Calculate cumulativeRevenue
+//     let cumulativeRevenue = revenue;
+//     if (joinMonth !== monthMain || joinYear !== yearMain) {
+//       if (monthMain === 1) {
+//         // January
+//         const lastYearGoalSheet = await GoalSheet.findOne({
+//           owner: empId,
+//           year: yearMain - 1,
+//         });
+//         if (lastYearGoalSheet) {
+//           const lastYearDecemberDetails =
+//             lastYearGoalSheet.goalSheetDetails.find(
+//               (detail) => detail.goalSheet.month === 12
+//             );
+//           if (lastYearDecemberDetails) {
+//             cumulativeRevenue +=
+//               lastYearDecemberDetails.goalSheet.cumulativeRevenue;
+//           }
+//         }
+//       } else {
+//         const previousMonthDetails = goalSheet.goalSheetDetails.find(
+//           (detail) => detail.goalSheet.month === monthMain - 1
+//         );
+//         if (previousMonthDetails) {
+//           cumulativeRevenue += previousMonthDetails.goalSheet.cumulativeRevenue;
+//         }
+//       }
+//     }
 
-    // Calculate achYTD and achMTD
-    const achYTD = cumulativeRevenue / cumulativeCost;
-    const achMTD = revenue / cost;
+//     // Calculate achYTD and achMTD
+//     const achYTD = cumulativeRevenue / cumulativeCost;
+//     const achMTD = revenue / cost;
 
-    // Incentive plans
-    let noOfJoiningIncentive = 0;
-    let mtdIncentive = 0;
-    if (noOfJoinings === 3) {
-      noOfJoiningIncentive = 1000;
-    } else if (noOfJoinings === 4) {
-      noOfJoiningIncentive = 1500;
-    } else if (noOfJoinings >= 5) {
-      noOfJoiningIncentive = 2000;
-    }
+//     // Incentive plans
+//     let noOfJoiningIncentive = 0;
+//     let mtdIncentive = 0;
+//     if (noOfJoinings === 3) {
+//       noOfJoiningIncentive = 1000;
+//     } else if (noOfJoinings === 4) {
+//       noOfJoiningIncentive = 1500;
+//     } else if (noOfJoinings >= 5) {
+//       noOfJoiningIncentive = 2000;
+//     }
 
-    if (achMTD === 4) {
-      mtdIncentive = 1000;
-    } else if (achMTD >= 5) {
-      mtdIncentive = 2000;
-    }
+//     if (achMTD === 4) {
+//       mtdIncentive = 1000;
+//     } else if (achMTD >= 5) {
+//       mtdIncentive = 2000;
+//     }
 
-    const totalIncentive = noOfJoiningIncentive + mtdIncentive;
+//     const totalIncentive = noOfJoiningIncentive + mtdIncentive;
 
-    // Calculate variableIncentive based on achYTD and achMTD
-    let variableIncentive = 0;
-    if (achYTD >= 3) {
-      goalSheet.goalSheetDetails.forEach((detail) => {
-        const { achMTD: detailAchMTD, revenue: detailRevenue } =
-          detail.goalSheet;
-        if (detailAchMTD >= 3 && detailAchMTD <= 3.4) {
-          variableIncentive += detailRevenue * 0.02;
-        } else if (detailAchMTD >= 3.5 && detailAchMTD <= 3.9) {
-          variableIncentive += detailRevenue * 0.04;
-        } else if (detailAchMTD >= 4) {
-          variableIncentive += detailRevenue * 0.06;
-        }
-      });
-    }
+//     // Calculate variableIncentive based on achYTD and achMTD
+//     let variableIncentive = 0;
+//     if (achYTD >= 3) {
+//       goalSheet.goalSheetDetails.forEach((detail) => {
+//         const { achMTD: detailAchMTD, revenue: detailRevenue } =
+//           detail.goalSheet;
+//         if (detailAchMTD >= 3 && detailAchMTD <= 3.4) {
+//           variableIncentive += detailRevenue * 0.02;
+//         } else if (detailAchMTD >= 3.5 && detailAchMTD <= 3.9) {
+//           variableIncentive += detailRevenue * 0.04;
+//         } else if (detailAchMTD >= 4) {
+//           variableIncentive += detailRevenue * 0.06;
+//         }
+//       });
+//     }
 
-    // Push new details to goalSheetDetails array
-    goalSheet.goalSheetDetails.push({
-      goalSheet: {
-        month: monthMain,
-        noOfJoining: noOfJoinings,
-        cost: cost,
-        revenue: revenue,
-        target: target,
-        cumulativeCost: cumulativeCost,
-        cumulativeRevenue: cumulativeRevenue,
-        achYTD: achYTD,
-        achMTD: achMTD,
-        incentive: totalIncentive,
-        variableIncentive: variableIncentive,
-      },
-    });
+//     // Push new details to goalSheetDetails array
+//     goalSheet.goalSheetDetails.push({
+//       goalSheet: {
+//         month: monthMain,
+//         noOfJoining: noOfJoinings,
+//         cost: cost,
+//         revenue: revenue,
+//         target: target,
+//         cumulativeCost: cumulativeCost,
+//         cumulativeRevenue: cumulativeRevenue,
+//         achYTD: achYTD,
+//         achMTD: achMTD,
+//         incentive: totalIncentive,
+//         variableIncentive: variableIncentive,
+//       },
+//     });
 
-    // Save the updated goal sheet
-    await goalSheet.save();
+//     // Save the updated goal sheet
+//     await goalSheet.save();
 
-    res.status(200).json({ message: "Goal sheet updated successfully" });
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ message: error.message });
-  }
-});
+//     res.status(200).json({ message: "Goal sheet updated successfully" });
+//   } catch (error) {
+//     console.error(error.message);
+//     res.status(500).json({ message: error.message });
+//   }
+// });
+router.put("/")
 
 // GET AN EMPLOYEE's GOAL SHEETS
 router.get("/goalsheet/:id", AdminAuthenticateToken, async (req, res) => {

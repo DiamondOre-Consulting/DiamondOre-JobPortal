@@ -1315,21 +1315,20 @@ router.post("/request-call", async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "helpdesk2.rasonline@gmail.com",
-        pass: "PreetiRemoved",
+        user: "harshkr2709@gmail.com",
+        pass: "frtohlwnukisvrzh",
       },
     });
 
     // Compose the email
     const mailOptions = {
-      from: "Diamond Ore <helpdesk2.rasonline@gmail.com>",
+      from: "Diamond Ore <harshkr2709@gmail.com>",
       to: "helpdesk2.rasonline@gmail.com",
-      cc: ['zoya.rasonline@gmail.com'],
       subject: `CALL REQUEST FROM DOC: New Message Received from ${name}`,
       text: `A new message has been submitted by ${name}.`,
       html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${name}</h4> </br>
                     <h4 style="font-size:1rem; display:flex; justify-content: center;">Phone No: ${phone}</h4> </br>`,
-      cc: 'rahul@rasonline.in'
+      cc: ['rahul@rasonline.in', 'tech@diamondore.in']
     };
 
     const info = await transporter.sendMail(mailOptions);
