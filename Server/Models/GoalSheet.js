@@ -14,7 +14,7 @@ const goalSheetSchema = new mongoose.Schema({
       {
         goalSheet: {
           month: {
-            type: String,
+            type: Number,
             // required: true,
           },
           noOfJoining: {
