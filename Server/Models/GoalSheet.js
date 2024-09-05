@@ -5,14 +5,12 @@ const goalSheetSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Employees",
   },
-  year: {
-    type: Number,
-    required: true,
-  },
   goalSheetDetails: {
     type: [
       {
-        goalSheet: {
+          year: {
+            type: Number
+          },
           month: {
             type: Number,
             // required: true,
@@ -56,7 +54,6 @@ const goalSheetSchema = new mongoose.Schema({
           variableIncentive: { 
             type: Number
           }
-        },
       },
     ],
   },

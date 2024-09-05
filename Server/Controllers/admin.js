@@ -2101,7 +2101,78 @@ router.post(
 //     res.status(500).json({ message: error.message });
 //   }
 // });
-router.put("/")
+router.post('/set-goalSheet', async (req, res) => {
+  const { empId, year, month, noOfJoining, cost, revenue } = req.body;
+
+  try {
+      // Find the employee by empId
+      const employee = await Employees.findOne({ _id: empId });
+      if (!employee) {
+          return res.status(404).json({ error: 'Employee not found' });
+      }
+
+      let goalSheet = await GoalSheet.findOne({ owner: employee._id });
+
+      if (!goalSheet) {
+          // If the GoalSheet does not exist, create one
+          goalSheet = new GoalSheet({
+              owner: employee._id,
+              goalSheetDetails: []
+          });
+      }
+
+      // Check if the month and year combination already exists
+      const existingDetail = goalSheet.goalSheetDetails.find(
+          detail => detail.year === year && detail.month === month
+      );
+
+      if (existingDetail) {
+          return res.status(400).json({ error: 'GoalSheet for this month and year already exists' });
+      }
+
+        // Get the last entry in goalSheetDetails for cumulative calculations
+        const lastDetail = goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length - 1] || {};
+        const previousCumulativeCost = lastDetail.cumulativeCost || 0;
+        const previousCumulativeRevenue = lastDetail.cumulativeRevenue || 0;
+
+        // Calculate necessary fields
+        const cumulativeCost = previousCumulativeCost + cost;
+        const cumulativeRevenue = previousCumulativeRevenue + revenue;
+        const achYTD = (cumulativeRevenue / cumulativeCost).toFixed(2);
+        const achMTD = (revenue / cost).toFixed(2);
+        const target = cost * 4;
+
+      // Push the new goalSheetDetails
+      goalSheet.goalSheetDetails.push({
+          year,
+          month,
+          noOfJoining,
+          cost,
+          revenue,
+          target,
+          cumulativeCost,
+          cumulativeRevenue,
+          achYTD,
+          achMTD,
+          incentive: null, // Leave incentive blank for now
+          variableIncentive: null // Leave variable incentive blank for now
+      });
+
+      // Save the GoalSheet
+      await goalSheet.save();
+
+      // Add the GoalSheet reference to the employee if it is newly created
+      // if (!employee.myGoalSheet.includes(goalSheet._id)) {
+      //     employee.myGoalSheet.push(goalSheet._id);
+      //     await employee.save();
+      // }
+
+      res.status(201).json({ message: 'GoalSheet updated successfully', goalSheet });
+
+  } catch (error) {
+      res.status(500).json({ error: 'An error occurred', details: error.message });
+  }
+});
 
 // GET AN EMPLOYEE's GOAL SHEETS
 router.get("/goalsheet/:id", AdminAuthenticateToken, async (req, res) => {
