@@ -2102,7 +2102,7 @@ router.post(
 //   }
 // });
 router.post('/set-goalSheet', async (req, res) => {
-  const { empId, year, month, noOfJoining, cost, revenue } = req.body;
+  const { empId, year, month, noOfJoinings, cost, revenue } = req.body;
 
   try {
       // Find the employee by empId
@@ -2180,7 +2180,7 @@ router.get("/goalsheet/:id", AdminAuthenticateToken, async (req, res) => {
     const { id } = req.params;
 
     const findGoalSheets = await GoalSheet.find({ owner: id });
-    if (findGoalSheets.length === 0) {
+    if (!findGoalSheets) {
       return res.status(402).json({ message: "No goalsheet found!!!" });
     }
 
