@@ -2171,6 +2171,7 @@ router.post('/set-goalSheet', async (req, res) => {
 
   } catch (error) {
       res.status(500).json({ error: 'An error occurred', details: error.message });
+      console.log(error)
   }
 });
 

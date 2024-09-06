@@ -14,13 +14,13 @@ const EachEmployeeGoalSheet = () => {
   const [goalsheetform, setGoalSheetForm] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState({});
   const [goalSheetData, setGoalSheetData] = useState([]);
-  const [year, setYear] = useState("");
-  const [month, setMonth] = useState("");
-  const [noOfJoinings, setNoOfJoinings] = useState("");
-  const [revenue, setRevenue] = useState("");
-  const [cost, setCost] = useState("");
+  const [year, setYear] = useState(null);
+  const [month, setMonth] = useState(null);
+  const [noOfJoinings, setNoOfJoinings] = useState(0);
+  const [revenue, setRevenue] = useState(null);
+  const [cost, setCost] = useState(null);
   const [showSubmitLoader, setShowSubmitLoader] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const navigate = useNavigate();
   const [selectedYear, setSelectedYear] = useState("");
   const [allGoalSheetData, setAllGoalSheetData] = useState([]);
@@ -30,18 +30,31 @@ const EachEmployeeGoalSheet = () => {
   const handleSetGoalSheet = async (e) => {
     e.preventDefault();
     setShowSubmitLoader(true);
-
+  
     try {
       const token = localStorage.getItem("token");
+  
+      // Convert values to numbers
+      const noOfJoiningsNumber = Number(noOfJoinings);
+      const revenueNumber = Number(revenue);
+      const costNumber = Number(cost);
+  
+      // Validate conversion
+      if (isNaN(noOfJoiningsNumber) || isNaN(revenueNumber) || isNaN(costNumber)) {
+        console.error("One or more fields are not valid numbers");
+        setShowSubmitLoader(false);
+        return;
+      }
+  
       const response = await axios.post(
         "https://api.diamondore.in/api/admin-confi/set-goalsheet",
         {
           empId: id,
           year,
           month,
-          noOfJoinings,
-          revenue,
-          cost,
+          noOfJoinings: noOfJoiningsNumber,
+          revenue: revenueNumber,
+          cost: costNumber
         },
         {
           headers: {
@@ -49,10 +62,9 @@ const EachEmployeeGoalSheet = () => {
           },
         }
       );
-
-      setShowSubmitLoader(false);
-
-      if (response.status === 200) {
+  
+      if (response.status === 201) {
+        console.log(response.data);
         setSnackbarOpen(true); // Open Snackbar on successful submission
         setCost("");
         setRevenue("");
@@ -70,7 +82,7 @@ const EachEmployeeGoalSheet = () => {
     } catch (error) {
       console.error("Error setting goal sheet:", error);
       setShowSubmitLoader(false);
-
+  
       if (error.response && error.response.status === 404) {
         console.log("Employee not found");
         setGoalSheetForm(false);
@@ -79,7 +91,7 @@ const EachEmployeeGoalSheet = () => {
       }
     }
   };
-
+  
   // Close the Snackbar
   const handleCloseSnackbar = (event, reason) => {
     if (reason === "clickaway") {
@@ -105,6 +117,7 @@ const EachEmployeeGoalSheet = () => {
 
         if (response.status === 200) {
           setAllGoalSheetData(response.data);
+          console.log(response.data);
         }
       } catch (error) {
         console.log(error);
@@ -114,16 +127,16 @@ const EachEmployeeGoalSheet = () => {
     handleGoalSheet();
   }, []);
 
-  useEffect(() => {
-    if (selectedYear) {
-      const filteredData = allGoalSheetData.filter(
-        (item) => item.year === parseInt(selectedYear)
-      );
-      setFilteredGoalSheetData(filteredData);
-    } else {
-      setFilteredGoalSheetData([]);
-    }
-  }, [selectedYear, allGoalSheetData]);
+  // useEffect(() => {
+  //   if (selectedYear) {
+  //     const filteredData = allGoalSheetData.filter(
+  //       (item) => item.year === parseInt(selectedYear)
+  //     );
+  //     setFilteredGoalSheetData(filteredData);
+  //   } else {
+  //     setFilteredGoalSheetData([]);
+  //   }
+  // }, [selectedYear, allGoalSheetData]);
 
   const handleYearChange = (e) => {
     setSelectedYear(e.target.value);
@@ -185,18 +198,6 @@ const EachEmployeeGoalSheet = () => {
               </div>
               <div className="mb-2">
                 <div className="flex flex-col">
-                  <div>
-                    <label htmlFor="joining" className="block text-gray-700">
-                      No. Of Joinings:
-                    </label>
-                    <input
-                      type="number"
-                      id="noOfJoinings"
-                      className="w-full px-3 py-2 border border-gray-500 rounded-lg"
-                      value={noOfJoinings}
-                      onChange={(e) => setNoOfJoinings(e.target.value)}
-                    />
-                  </div>
                   <div className="">
                     <label htmlFor="revenue" className="block text-gray-700">
                       Revenue:
@@ -209,6 +210,7 @@ const EachEmployeeGoalSheet = () => {
                       onChange={(e) => setRevenue(e.target.value)}
                     />
                   </div>
+
                   <div className="">
                     <label htmlFor="cost" className="block text-gray-700">
                       Cost:
@@ -219,6 +221,19 @@ const EachEmployeeGoalSheet = () => {
                       className="w-full px-3 py-2 border border-gray-500 rounded-lg"
                       value={cost}
                       onChange={(e) => setCost(e.target.value)}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700">
+                      No. Of Joinings:
+                    </label>
+                    <input
+                      type="number"
+                      id="noOfJoinings"
+                      className="w-full px-3 py-2 border border-gray-500 rounded-lg"
+                      value={noOfJoinings}
+                      onChange={(e) => setNoOfJoinings(e.target.value)}
                     />
                   </div>
                 </div>
@@ -269,89 +284,77 @@ const EachEmployeeGoalSheet = () => {
         </div>
 
         <div className="col-span-2">
-          <select
-            className="float-right mb-4 py-2 px-2 rounded-full"
-            value={selectedYear}
-            onChange={handleYearChange}
-          >
-            <option>Select Year</option>
-            {allGoalSheetData.map((y) => (
-              <option value={y.year} key={y.year}>
-                {y.year}
-              </option>
-            ))}
-          </select>
           <div class="container mx-auto overflow-x-auto h-96 relative">
             <table id="example" class="table-auto w-full ">
               <thead className="sticky top-0 bg-blue-900 text-gray-100 text-xs shadow">
                 <tr className="">
                   <th class="px-4  py-2">Month</th>
+                  <th class="px-4  py-2">Year</th>
                   <th class="px-4 py-2 ">No. of Joinings</th>
                   <th class="px-4 py-2">Revenue</th>
                   <th class="px-4 py-2">Cost</th>
                   <th class="px-4 py-2">Target</th>
                   <th class="px-4 py-2">Cumulative Cost</th>
                   <th class="px-4 py-2">Cumulative Revenue</th>
-                  <th class="px-4 py-2">achYTD</th>
-                  <th class="px-4 py-2">achMTD</th>
+                  <th class="px-4 py-2">YTD</th>
+                  <th class="px-4 py-2">MTD</th>
                   <th class="px-4 py-2">Incentive</th>
                   <th class="px-4 y-2">Variable Incentive</th>
                 </tr>
               </thead>
 
               <tbody>
-                {filteredGoalSheetData.length > 0 ? (
-                  filteredGoalSheetData.map((data) => (
+                {allGoalSheetData.length > 0 &&
+                  allGoalSheetData.map((data) => (
                     <React.Fragment key={data._id}>
-                      {data.goalSheetDetails.map((detail, index) => (
-                        <tr
-                          key={`${data._id}-${index}`}
-                          className="text-center"
-                        >
-                          <td className="border px-4 py-2">
-                            {detail.goalSheet.month}
-                          </td>
-                          <td className="border px-4 py-2">
-                            {detail.goalSheet.noOfJoining}
-                          </td>
-                          <td className="border px-4 py-2">
-                            {detail.goalSheet.revenue}
-                          </td>
-                          <td className="border px-4 py-2">
-                            {detail.goalSheet.cost}
-                          </td>
-                          <td className="border px-4 py-2">
-                            {detail.goalSheet.target}
-                          </td>
-                          <td className="border px-4 py-2">
-                            {detail.goalSheet.cumulativeCost}
-                          </td>
-                          <td className="border px-4 py-2">
-                            {detail.goalSheet.cumulativeRevenue}
-                          </td>
-                          <td className="border px-4 py-2">
-                            {detail.goalSheet.achYTD}
-                          </td>
-                          <td className="border px-4 py-2">
-                            {detail.goalSheet.achMTD}
-                          </td>
-                          <td className="border px-4 py-2">
-                            {detail.goalSheet.incentive}
-                          </td>
-                          <td className="border px-4 py-2">
-                            {detail.goalSheet.variableIncentive}
+                      {data.goalSheetDetails.length > 0 ? (
+                        data.goalSheetDetails.map((detail, index) => (
+                          <tr
+                            key={`${data._id}-${index}`}
+                            className="text-center"
+                          >
+                            <td className="border px-4 py-2">{detail.month}</td>
+                            <td className="border px-4 py-2">{detail.year}</td>
+                            <td className="border px-4 py-2">{detail.noOfJoinings}</td>
+                            <td className="border px-4 py-2">
+                              {detail.revenue}
+                            </td>
+                            <td className="border px-4 py-2">{detail.cost}</td>
+                            <td className="border px-4 py-2">
+                              {detail.target}
+                            </td>
+                            <td className="border px-4 py-2">
+                              {detail.cumulativeCost}
+                            </td>
+                            <td className="border px-4 py-2">
+                              {detail.cumulativeRevenue}
+                            </td>
+                            <td className="border px-4 py-2">
+                              {detail.achYTD}
+                            </td>
+                            <td className="border px-4 py-2">
+                              {detail.achMTD}
+                            </td>
+                            <td className="border px-4 py-2">
+                              {detail.incentive ?? "N/A"}
+                            </td>
+                            <td className="border px-4 py-2">
+                              {detail.variableIncentive ?? "N/A"}
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td
+                            colSpan="11"
+                            className="border px-4 py-2 text-center"
+                          >
+                            No details available
                           </td>
                         </tr>
-                      ))}
+                      )}
                     </React.Fragment>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="10" className="text-center">
-                      No data available for the selected year.
-                    </td>
-                  </tr>
-                )}
+                  ))}
               </tbody>
             </table>
           </div>

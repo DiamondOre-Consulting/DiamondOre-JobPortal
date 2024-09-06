@@ -15,7 +15,7 @@ const goalSheetSchema = new mongoose.Schema({
             type: Number,
             // required: true,
           },
-          noOfJoining: {
+          noOfJoinings: {
             type: Number,
             // required: true,
           },
