@@ -33,7 +33,7 @@ const EachEmployeeGoalSheet = () => {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.put(
+      const response = await axios.post(
         "https://api.diamondore.in/api/admin-confi/set-goalsheet",
         {
           empId: id,
