@@ -2146,7 +2146,7 @@ router.post('/set-goalSheet', async (req, res) => {
       goalSheet.goalSheetDetails.push({
           year,
           month,
-          noOfJoining,
+          noOfJoinings,
           cost,
           revenue,
           target,
