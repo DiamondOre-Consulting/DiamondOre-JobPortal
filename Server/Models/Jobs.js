@@ -45,8 +45,11 @@ const jobsSchema = new mongoose.Schema({
     // required: true,
   },
   JobStatus: {
-    type: Boolean,
-    default: true
+    type: String,
+    default: "Active"
+  },
+  DateAdded: {
+    type: String
   },
   appliedApplicants: {
     type: [
