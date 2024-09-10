@@ -195,7 +195,7 @@ const downloadFile = async (url, outputFilePath) => {
 //   }
 // });
 
-router.post("/upload-job-excel", async (req, res) => {
+router.post("/upload-job-excel", AdminAuthenticateToken, async (req, res) => {
   const { url } = req.body;
   const outputFilePath = path.join(__dirname, 'tempFile.xlsx');
   
