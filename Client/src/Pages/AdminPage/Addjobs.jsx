@@ -54,8 +54,12 @@ const AddJobs = () => {
       );
 
       if (response.status === 200) {
-        ;
-        setsheeturl(response.data.url); // Assuming response.data contains the URL of the uploaded file
+       
+        setsheeturl(response.data); // Assuming response.data contains the URL of the uploaded file
+        // console.log("url of sheel",response.data.url);
+        console.log("url" , response.data)
+
+        console.log(sheeturl)
         setUploadSuccess(true);
       } else {
         console.log('Error:', response.statusText);
