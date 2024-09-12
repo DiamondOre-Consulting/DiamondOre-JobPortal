@@ -73,6 +73,7 @@ const AddJobs = () => {
 
   const handlesubmit = async (e) => {
     e.preventDefault();
+    console.log(sheeturl);
     if (!sheeturl) {
       alert('Please upload a file first');
       return;
