@@ -231,6 +231,7 @@ router.post("/upload-job-excel", AdminAuthenticateToken, async (req, res) => {
           // Check if the job already exists in the database
           const existingJob = await Jobs.findOne({
             JobTitle: JobTitle,
+            City: City,
             DateAdded: formattedDateAdded,
           });
 
@@ -254,22 +255,24 @@ router.post("/upload-job-excel", AdminAuthenticateToken, async (req, res) => {
         console.log("Jobs added: ", jobsAdded);
         console.log("Jobs updated: ", jobsUpdated);
 
-        res.status(201).json({
-          message: "Jobs added successfully!",
-          jobsAdded: jobsAdded.length,
-          jobsUpdated: jobsUpdated.length,
-        });
+        // res.status(201).json({
+        //   message: "Jobs added successfully!",
+        //   jobsAdded: jobsAdded.length,
+        //   jobsUpdated: jobsUpdated.length,
+        // });
 
         // Notify all candidates about new jobs
-        if (jobsAdded.length > 0) {
-          const allCandidates = await Candidates.find({}, { password: 0 });
-          for (const candidate of allCandidates) {
-            await addedJobsMailToAllTheCandidates(candidate.email, candidate.name);
-          }
-        }
+        // if (jobsAdded.length > 0) {
+        //   const allCandidates = await Candidates.find({}, { password: 0 });
+        //   for (const candidate of allCandidates) {
+        //     await addedJobsMailToAllTheCandidates(candidate.email, candidate.name);
+        //   }
+        // }
 
         return res.status(200).json({
           message: "Jobs processed successfully & sent emails",
+          jobsAdded: jobsAdded.length,
+          jobsUpdated: jobsUpdated.length,
         });
       }
     );
