@@ -2102,7 +2102,7 @@ router.post(
 //   }
 // });
 router.post('/set-goalSheet', async (req, res) => {
-  const { empId, year, month, noOfJoinings, cost, revenue } = req.body;
+  const { empId, year, month, noOfJoinings, cost, revenue, incentive, variableIncentive } = req.body;
 
   try {
       // Find the employee by empId
@@ -2154,8 +2154,8 @@ router.post('/set-goalSheet', async (req, res) => {
           cumulativeRevenue,
           achYTD,
           achMTD,
-          incentive: null, // Leave incentive blank for now
-          variableIncentive: null // Leave variable incentive blank for now
+          incentive, // Leave incentive blank for now
+          variableIncentive // Leave variable incentive blank for now
       });
 
       // Save the GoalSheet
