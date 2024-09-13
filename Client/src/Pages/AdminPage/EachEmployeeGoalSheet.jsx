@@ -19,6 +19,8 @@ const EachEmployeeGoalSheet = () => {
   const [noOfJoinings, setNoOfJoinings] = useState(0);
   const [revenue, setRevenue] = useState(null);
   const [cost, setCost] = useState(null);
+  const [incentive , setInsentive] = useState(null);
+  const [variableIncentive , setVariableIncentive] = useState(null)
   const [showSubmitLoader, setShowSubmitLoader] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const navigate = useNavigate();
@@ -38,9 +40,11 @@ const EachEmployeeGoalSheet = () => {
       const noOfJoiningsNumber = Number(noOfJoinings);
       const revenueNumber = Number(revenue);
       const costNumber = Number(cost);
+      const incentiveNumber = Number(incentive);
+      const variableIncentiveNumber = Number(variableIncentive);
   
       // Validate conversion
-      if (isNaN(noOfJoiningsNumber) || isNaN(revenueNumber) || isNaN(costNumber)) {
+      if (isNaN(noOfJoiningsNumber) || isNaN(revenueNumber) || isNaN(costNumber) || isNaN(incentiveNumber) || isNaN(variableIncentiveNumber) ) {
         console.error("One or more fields are not valid numbers");
         setShowSubmitLoader(false);
         return;
@@ -54,7 +58,9 @@ const EachEmployeeGoalSheet = () => {
           month,
           noOfJoinings: noOfJoiningsNumber,
           revenue: revenueNumber,
-          cost: costNumber
+          cost: costNumber,
+          incentive: incentiveNumber,
+          variableIncentive : variableIncentiveNumber
         },
         {
           headers: {
@@ -71,12 +77,16 @@ const EachEmployeeGoalSheet = () => {
         setNoOfJoinings("");
         setYear("");
         setMonth("");
+        setInsentive("");
+        setVariableIncentive("")
       } else {
         setSnackbarOpen(false);
         setCost("");
         setRevenue("");
         setNoOfJoinings("");
         setYear("");
+        setInsentive("");
+        setVariableIncentive("")
         setMonth(""); // Close Snackbar if submission fails
       }
     } catch (error) {
@@ -252,6 +262,32 @@ const EachEmployeeGoalSheet = () => {
                       onChange={(e) => setNoOfJoinings(e.target.value)}
                     />
                   </div>
+
+                  <div className="">
+                    <label htmlFor="incentive" className="block text-gray-700">
+                      Incentive:
+                    </label>
+                    <input
+                      type="number"
+                      id="incentive"
+                      className="w-full px-3 py-2 border border-gray-500 rounded-lg"
+                      value={incentive}
+                      onChange={(e) => setInsentive(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="">
+                    <label htmlFor="variableIncentive" className="block text-gray-700">
+                      Variable Incentive:
+                    </label>
+                    <input
+                      type="number"
+                      id="variableIncentive"
+                      className="w-full px-3 py-2 border border-gray-500 rounded-lg"
+                      value={variableIncentive}
+                      onChange={(e) => setVariableIncentive(e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
               <div className="mt-4 flex justify-end">
@@ -304,8 +340,8 @@ const EachEmployeeGoalSheet = () => {
             <table id="example" class="table-auto w-full ">
               <thead className="sticky top-0 bg-blue-900 text-gray-100 text-xs shadow">
                 <tr className="">
+                <th class="px-4  py-2">Year</th>
                   <th class="px-4  py-2">Month</th>
-                  <th class="px-4  py-2">Year</th>
                   <th class="px-4 py-2 ">No. of Joinings</th>
                   <th class="px-4 py-2">Revenue</th>
                   <th class="px-4 py-2">Cost</th>
@@ -328,9 +364,9 @@ const EachEmployeeGoalSheet = () => {
                           <tr
                             key={`${data._id}-${index}`}
                             className="text-center"
-                          >
+                          > <td className="border px-4 py-2">{detail.year}</td>
                             <td className="border px-4 py-2">   {monthNames[detail.month] || 'Unknown'} </td>
-                            <td className="border px-4 py-2">{detail.year}</td>
+                           
                             <td className="border px-4 py-2">{detail.noOfJoinings}</td>
                             <td className="border px-4 py-2">
                               {detail.revenue}
