@@ -1386,7 +1386,7 @@ router.post("/upload-dsr-excel", async (req, res) => {
         if (err) {
           return res
             .status(500)
-            .json({ error: "Error converting Excel to JSON", err });
+            .json({ error: "Error converting Excel to JSON", message: err.message });
         }
         console.log(result);
 
@@ -1396,7 +1396,7 @@ router.post("/upload-dsr-excel", async (req, res) => {
         if (dsrAdd) {
           return res.status(200).json({ message: "DSR Added successfully!!!" });
         } else {
-          return res.status(500).json({ message: "Something went wrong!!" });
+          return res.status(500).json({ message: "Something went wrong!!", err });
         }
       }
     );
