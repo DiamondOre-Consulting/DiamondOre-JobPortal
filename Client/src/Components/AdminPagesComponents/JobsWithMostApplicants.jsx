@@ -39,7 +39,7 @@ const JobsWithMostApplicants = () => {
         );
         ;
         const all = response.data;
-        const filteredJobs = all.filter(job => job.JobStatus === true);
+        const filteredJobs = all.filter(job => job.jobStatus === "true");
         const latest = filteredJobs;
         // ;
         setLatestJobs(latest);

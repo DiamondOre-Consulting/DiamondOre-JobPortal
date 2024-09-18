@@ -53,7 +53,7 @@ const AdminAllJobsCards = () => {
         if (response.status == 200) {
           ;
           const all = response.data;
-          const filteredJobs = all.filter(job => job.JobStatus === true);
+          const filteredJobs = all.filter(job => job.jobStatus === "true");
           // ;
           setLatestJobs(filteredJobs.reverse());
           setLoading(false)

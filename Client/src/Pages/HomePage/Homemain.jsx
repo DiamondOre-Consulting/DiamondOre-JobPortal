@@ -24,7 +24,7 @@ const Homemain = () => {
         // Fetch associates data from the backend
         const response = await axios.get('https://api.diamondore.in/api/candidates/all-jobs');
         const all = response.data;
-        const filteredJobs = all.filter(job => job.JobStatus === true);
+        const filteredJobs = all.filter(job => job?.JobStatus === "true");
         const latest = filteredJobs.slice(-3).reverse();
         setLatestJobs(latest);
       } catch (error) {
