@@ -2192,6 +2192,88 @@ router.get("/goalsheet/:id", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
+// EDIT A GOALSHEET
+router.put('/edit-goalSheet', async (req, res) => {
+  const { empId, year, month, noOfJoinings, cost, revenue, incentive, variableIncentive } = req.body;
+
+  try {
+      // Find the employee by empId
+      const employee = await Employees.findOne({ _id: empId });
+      if (!employee) {
+          return res.status(404).json({ error: 'Employee not found' });
+      }
+
+      // Find the GoalSheet for the employee
+      let goalSheet = await GoalSheet.findOne({ owner: employee._id });
+      if (!goalSheet) {
+          return res.status(404).json({ error: 'GoalSheet not found' });
+      }
+
+      // Find the specific goal sheet detail by month and year
+      const goalDetailIndex = goalSheet.goalSheetDetails.findIndex(
+          detail => detail.year === year && detail.month === month
+      );
+
+      if (goalDetailIndex === -1) {
+          return res.status(404).json({ error: 'GoalSheet for this month and year not found' });
+      }
+
+      // Get the current goalSheetDetail for updates
+      let goalDetail = goalSheet.goalSheetDetails[goalDetailIndex];
+
+      // Get the last entry for cumulative calculations
+      const lastDetail = goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length - 1] || {};
+      const previousCumulativeCost = lastDetail.cumulativeCost || 0;
+      const previousCumulativeRevenue = lastDetail.cumulativeRevenue || 0;
+
+      // Update the fields conditionally
+      if (noOfJoinings !== undefined) {
+          goalDetail.noOfJoinings = noOfJoinings;
+      }
+
+      if (cost !== undefined) {
+          // Calculate cumulativeCost based on the new cost value
+          const updatedCumulativeCost = previousCumulativeCost + cost;
+          goalDetail.cost = cost;
+          goalDetail.cumulativeCost = updatedCumulativeCost;
+
+          // Update target if cost is provided
+          goalDetail.target = cost * 4;
+      }
+
+      if (revenue !== undefined) {
+          // Calculate cumulativeRevenue based on the new revenue value
+          const updatedCumulativeRevenue = previousCumulativeRevenue + revenue;
+          goalDetail.revenue = revenue;
+          goalDetail.cumulativeRevenue = updatedCumulativeRevenue;
+
+          // Update achMTD and achYTD if revenue is provided
+          goalDetail.achMTD = cost ? (revenue / cost).toFixed(2) : goalDetail.achMTD;
+          goalDetail.achYTD = goalDetail.cumulativeCost
+              ? (updatedCumulativeRevenue / goalDetail.cumulativeCost).toFixed(2)
+              : goalDetail.achYTD;
+      }
+
+      if (incentive !== undefined) {
+          goalDetail.incentive = incentive;
+      }
+
+      if (variableIncentive !== undefined) {
+          goalDetail.variableIncentive = variableIncentive;
+      }
+
+      // Save the updated GoalSheet
+      await goalSheet.save();
+
+      res.status(200).json({ message: 'GoalSheet updated successfully', goalSheet });
+
+  } catch (error) {
+      res.status(500).json({ error: 'An error occurred', details: error.message });
+      console.log(error);
+  }
+});
+
+
 // GET ALL THE DUPLICATE PHONE NUMBER REQUESTS
 router.get(
   "/duplicate-phone-requests",
