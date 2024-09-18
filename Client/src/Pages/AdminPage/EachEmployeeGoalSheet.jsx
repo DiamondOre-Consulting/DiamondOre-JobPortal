@@ -403,7 +403,7 @@ const EachEmployeeGoalSheet = () => {
         </div>
 
         <div className="col-span-2">
-          <div class="container mx-auto overflow-x-auto h-96 relative">
+          <div class="container mx-auto overflow-x-auto h-[500px] relative">
             <table id="example" class="table-auto w-full ">
               <thead className="sticky top-0 bg-blue-900 text-gray-100 text-xs shadow">
                 <tr className="">
