@@ -19,8 +19,8 @@ const EachEmployeeGoalSheet = () => {
   const [noOfJoinings, setNoOfJoinings] = useState(0);
   const [revenue, setRevenue] = useState(null);
   const [cost, setCost] = useState(null);
-  const [incentive , setInsentive] = useState(null);
-  const [variableIncentive , setVariableIncentive] = useState(null)
+  const [incentive, setInsentive] = useState(null);
+  const [variableIncentive, setVariableIncentive] = useState(null);
   const [showSubmitLoader, setShowSubmitLoader] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const navigate = useNavigate();
@@ -32,24 +32,30 @@ const EachEmployeeGoalSheet = () => {
   const handleSetGoalSheet = async (e) => {
     e.preventDefault();
     setShowSubmitLoader(true);
-  
+
     try {
       const token = localStorage.getItem("token");
-  
+
       // Convert values to numbers
       const noOfJoiningsNumber = Number(noOfJoinings);
       const revenueNumber = Number(revenue);
       const costNumber = Number(cost);
       const incentiveNumber = Number(incentive);
       const variableIncentiveNumber = Number(variableIncentive);
-  
+
       // Validate conversion
-      if (isNaN(noOfJoiningsNumber) || isNaN(revenueNumber) || isNaN(costNumber) || isNaN(incentiveNumber) || isNaN(variableIncentiveNumber) ) {
+      if (
+        isNaN(noOfJoiningsNumber) ||
+        isNaN(revenueNumber) ||
+        isNaN(costNumber) ||
+        isNaN(incentiveNumber) ||
+        isNaN(variableIncentiveNumber)
+      ) {
         console.error("One or more fields are not valid numbers");
         setShowSubmitLoader(false);
         return;
       }
-  
+
       const response = await axios.post(
         "https://api.diamondore.in/api/admin-confi/set-goalsheet",
         {
@@ -60,7 +66,7 @@ const EachEmployeeGoalSheet = () => {
           revenue: revenueNumber,
           cost: costNumber,
           incentive: incentiveNumber,
-          variableIncentive : variableIncentiveNumber
+          variableIncentive: variableIncentiveNumber,
         },
         {
           headers: {
@@ -68,7 +74,7 @@ const EachEmployeeGoalSheet = () => {
           },
         }
       );
-  
+
       if (response.status === 201) {
         console.log(response.data);
         setSnackbarOpen(true); // Open Snackbar on successful submission
@@ -78,7 +84,7 @@ const EachEmployeeGoalSheet = () => {
         setYear("");
         setMonth("");
         setInsentive("");
-        setVariableIncentive("")
+        setVariableIncentive("");
       } else {
         setSnackbarOpen(false);
         setCost("");
@@ -86,13 +92,13 @@ const EachEmployeeGoalSheet = () => {
         setNoOfJoinings("");
         setYear("");
         setInsentive("");
-        setVariableIncentive("")
+        setVariableIncentive("");
         setMonth(""); // Close Snackbar if submission fails
       }
     } catch (error) {
       console.error("Error setting goal sheet:", error);
       setShowSubmitLoader(false);
-  
+
       if (error.response && error.response.status === 404) {
         console.log("Employee not found");
         setGoalSheetForm(false);
@@ -101,7 +107,7 @@ const EachEmployeeGoalSheet = () => {
       }
     }
   };
-  
+
   // Close the Snackbar
   const handleCloseSnackbar = (event, reason) => {
     if (reason === "clickaway") {
@@ -152,22 +158,80 @@ const EachEmployeeGoalSheet = () => {
     setSelectedYear(e.target.value);
   };
 
-
   const monthNames = {
-    1: 'January',
-    2: 'February',
-    3: 'March',
-    4: 'April',
-    5: 'May',
-    6: 'June',
-    7: 'July',
-    8: 'August',
-    9: 'September',
-    10: 'October',
-    11: 'November',
-    12: 'December',
+    1: "January",
+    2: "February",
+    3: "March",
+    4: "April",
+    5: "May",
+    6: "June",
+    7: "July",
+    8: "August",
+    9: "September",
+    10: "October",
+    11: "November",
+    12: "December",
   };
-  
+
+  // EDIT GOAL SHEET
+
+  const [editYear, setEditYear] = useState("");
+  const [editMonth, setEditMonth] = useState("");
+  const [editNoOfJoinings, setEditNoOfJoinings] = useState(0);
+  const [editCost, setEditCost] = useState(0);
+  const [editRevenue, setEditRevenue] = useState(0);
+  const [editIncentive, setEditIncentive] = useState(0);
+  const [editVariableIncentive, setEditVariableIncentive] = useState(0);
+  const [editMode, setEditMode] = useState(false); // To trigger the popup
+  const [goalSheetToEdit, setGoalSheetToEdit] = useState({});
+
+  const handleEditClick = (detail) => {
+    console.log("editClicked");
+    setEditMode(true); // Open the modal
+    setEditYear(detail.year);
+    setEditMonth(detail.month);
+    setEditNoOfJoinings(detail.noOfJoinings);
+    setEditCost(detail.cost);
+    setEditRevenue(detail.revenue);
+    setEditIncentive(detail.incentive);
+    setEditVariableIncentive(detail.variableIncentive);
+    setGoalSheetToEdit(detail);
+  };
+
+  const handleEditGoalSheet = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.put(
+        "https://api.diamondore.in/api/admin-confi/edit-goalSheet",
+        {
+          empId: id,
+          year: editYear,
+          month: editMonth,
+          noOfJoinings: editNoOfJoinings,
+          cost: editCost,
+          revenue: editRevenue,
+          incentive: editIncentive,
+          variableIncentive: editVariableIncentive,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        // Success, close the modal and refresh data
+        setEditMode(false);
+        // Optionally, fetch updated goal sheet data here
+        console.log("Goal sheet updated successfully");
+      }
+    } catch (error) {
+      console.error("Error updating goal sheet:", error);
+    }
+  };
+
   return (
     <>
       {/* <AdminNav /> */}
@@ -277,7 +341,10 @@ const EachEmployeeGoalSheet = () => {
                   </div>
 
                   <div className="">
-                    <label htmlFor="variableIncentive" className="block text-gray-700">
+                    <label
+                      htmlFor="variableIncentive"
+                      className="block text-gray-700"
+                    >
                       Variable Incentive:
                     </label>
                     <input
@@ -340,7 +407,7 @@ const EachEmployeeGoalSheet = () => {
             <table id="example" class="table-auto w-full ">
               <thead className="sticky top-0 bg-blue-900 text-gray-100 text-xs shadow">
                 <tr className="">
-                <th class="px-4  py-2">Year</th>
+                  <th class="px-4  py-2">Year</th>
                   <th class="px-4  py-2">Month</th>
                   <th class="px-4 py-2 ">No. of Joinings</th>
                   <th class="px-4 py-2">Revenue</th>
@@ -352,6 +419,7 @@ const EachEmployeeGoalSheet = () => {
                   <th class="px-4 py-2">MTD</th>
                   <th class="px-4 py-2">Incentive</th>
                   <th class="px-4 y-2">Variable Incentive</th>
+                  <th class="px-4 y-2">Action</th>
                 </tr>
               </thead>
 
@@ -364,10 +432,16 @@ const EachEmployeeGoalSheet = () => {
                           <tr
                             key={`${data._id}-${index}`}
                             className="text-center"
-                          > <td className="border px-4 py-2">{detail.year}</td>
-                            <td className="border px-4 py-2">   {monthNames[detail.month] || 'Unknown'} </td>
-                           
-                            <td className="border px-4 py-2">{detail.noOfJoinings}</td>
+                          >
+                            {" "}
+                            <td className="border px-4 py-2">{detail.year}</td>
+                            <td className="border px-4 py-2">
+                              {" "}
+                              {monthNames[detail.month] || "Unknown"}{" "}
+                            </td>
+                            <td className="border px-4 py-2">
+                              {detail.noOfJoinings}
+                            </td>
                             <td className="border px-4 py-2">
                               {detail.revenue}
                             </td>
@@ -392,6 +466,12 @@ const EachEmployeeGoalSheet = () => {
                             </td>
                             <td className="border px-4 py-2">
                               {detail.variableIncentive ?? "N/A"}
+                            </td>
+                            <td
+                              className="border px-4 py-2 text-red-600 cursor-pointer"
+                              onClick={() => handleEditClick(detail)}
+                            >
+                              Edit
                             </td>
                           </tr>
                         ))
@@ -458,6 +538,109 @@ const EachEmployeeGoalSheet = () => {
                 )} */}
       </div>
       {/* <Footer /> */}
+
+      {editMode && (
+        <div
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+          onClick={() => setEditMode(false)} // Close modal when clicking outside
+        >
+          <div
+            className="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl"
+            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
+          >
+            <form onSubmit={handleEditGoalSheet} className="space-y-4">
+              <div className="flex justify-between space-x-4 items-center ">
+                <div>
+                  <label className="block text-gray-700">Year</label>
+                  <input
+                    type="number"
+                    value={editYear}
+                    onChange={(e) => setEditYear(e.target.value)}
+                    placeholder="Year"
+                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-gray-700">Month</label>
+                  <input
+                    type="number"
+                    value={editMonth}
+                    onChange={(e) => setEditMonth(e.target.value)}
+                    placeholder="Month"
+                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700">No of Joinings</label>
+                  <input
+                    type="number"
+                    value={editNoOfJoinings}
+                    onChange={(e) => setEditNoOfJoinings(e.target.value)}
+                    placeholder="No of Joinings"
+                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-between space-x-4 items-center ">
+                <div>
+                  <label className="block text-gray-700">Cost</label>
+                  <input
+                    type="number"
+                    value={editCost}
+                    onChange={(e) => setEditCost(e.target.value)}
+                    placeholder="Cost"
+                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-gray-700">Revenue</label>
+                  <input
+                    type="number"
+                    value={editRevenue}
+                    onChange={(e) => setEditRevenue(e.target.value)}
+                    placeholder="Revenue"
+                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-gray-700">Incentive</label>
+                  <input
+                    type="number"
+                    value={editIncentive}
+                    onChange={(e) => setEditIncentive(e.target.value)}
+                    placeholder="Incentive"
+                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-gray-700">
+                  Variable Incentive
+                </label>
+                <input
+                  type="number"
+                  value={editVariableIncentive}
+                  onChange={(e) => setEditVariableIncentive(e.target.value)}
+                  placeholder="Variable Incentive"
+                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              >
+                Save Changes
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </>
   );
 };
