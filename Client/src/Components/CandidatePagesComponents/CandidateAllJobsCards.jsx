@@ -62,7 +62,7 @@ const CandidateAllJobsCards = () => {
         setCtcRanges(["1-5", "6-10", "11-15", "16-20"]);
         if (response.status === 200) {
           const all = response.data;
-          const filteredJobs = all.filter((job) => job.JobStatus === true);
+          const filteredJobs = all.filter((job) => job.JobStatus === "true");
           setAllJobs(filteredJobs);
           setLatestJobs(filteredJobs.reverse());
           setLoading(false);
