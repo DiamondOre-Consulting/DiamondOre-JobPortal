@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Confetti from 'react-confetti';
 
 
-const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruiter, Joinings, userData }) => {
+const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruiter, Joinings, userData  , empOfMonthDesc}) => {
 
     const [showConfetti, setShowConfetti] = useState(true);
     useEffect(() => {
@@ -62,7 +62,7 @@ const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruite
 
                         <div className='mt-4'>
                             <h1 className='font-bold text-xl capitilized'>{employee?.name}</h1>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga quisquam ratione facere quaerat quam. Iste dolorum, quod sed nihil sint, debitis vel illo, voluptas labore odit nulla dolore? Libero exercitationem fuga harum quo! Delectus sequi ut est sunt, a doloremque ipsum impedit culpa maiores possimus suscipit nostrum id quidem, odio nihil aut expedita, perspiciatis repudiandae. Soluta voluptates rerum hic odit?</p>
+                            <p>{empOfMonthDesc}</p>
                         </div>
                     </div>
 

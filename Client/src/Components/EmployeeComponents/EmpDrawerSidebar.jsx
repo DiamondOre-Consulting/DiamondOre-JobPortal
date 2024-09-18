@@ -115,6 +115,7 @@ export default function EmpDrawerSidebar() {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const { decodedToken } = useJwt(token);
+  const [empOfMonthDesc, setEmpOfMonthDesc] = useState("");
 
   useEffect(() => {
     if (!token) {
@@ -149,6 +150,7 @@ export default function EmpDrawerSidebar() {
           setRnRRecruiter(lastData.RnRRecruiters || []);
           setRnRinterns(lastData.RnRInterns || []);
           setjoinings(lastData.JoningsForWeek || []);
+          setEmpOfMonthDesc(lastData.EmpOfMonthDesc || "");
         } else {
           console.log('Error occurred');
         }
@@ -303,8 +305,8 @@ export default function EmpDrawerSidebar() {
       <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
         <Routes>
-          <Route path='/' element={<EmpHome employee={employee} latestnews={latestnews} hrname={hrname} client={client} RnRRecruiter={RnRRecruiter} RnRinterns={RnRinterns} Joinings={Joinings}  userData={userData} />} />
-          <Route path='/home' element={<EmpHome employee={employee} latestnews={latestnews} hrname={hrname} client={client} RnRRecruiter={RnRRecruiter} RnRinterns={RnRinterns} Joinings={Joinings} userData={userData} />} />
+          <Route path='/' element={<EmpHome employee={employee} latestnews={latestnews} hrname={hrname} client={client} RnRRecruiter={RnRRecruiter} RnRinterns={RnRinterns} Joinings={Joinings}  userData={userData} empOfMonthDesc={empOfMonthDesc} />} />
+          <Route path='/home' element={<EmpHome employee={employee} latestnews={latestnews} hrname={hrname} client={client} RnRRecruiter={RnRRecruiter} RnRinterns={RnRinterns} Joinings={Joinings} userData={userData} empOfMonthDesc={empOfMonthDesc} />} />
           <Route path='/goal-sheet' element={<EmpGoalSheet />} />
           <Route path='/kpi-score' element={<KPIscore/>}/>
           <Route path='/acount-handling' element={<AccountHandling userData={userData}/>}/>

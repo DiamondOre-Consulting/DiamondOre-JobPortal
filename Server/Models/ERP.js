@@ -5,6 +5,9 @@ const erpSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Employees",
   },
+  EmpOfMonthDesc: {
+    type: String,
+  },
   Top5HRs: [
     {
       serialNumber: Number,
@@ -15,7 +18,7 @@ const erpSchema = new mongoose.Schema({
   ],
   Top5Clients: [
     {
-        serialNumber: Number,
+      serialNumber: Number,
       name: {
         type: String,
       },
@@ -23,7 +26,7 @@ const erpSchema = new mongoose.Schema({
   ],
   RnRInterns: [
     {
-        serialNumber: Number,
+      serialNumber: Number,
       title: {
         type: String,
       },
@@ -40,7 +43,7 @@ const erpSchema = new mongoose.Schema({
   ],
   RnRRecruiters: [
     {
-        serialNumber: Number,
+      serialNumber: Number,
       title: {
         type: String,
       },
@@ -57,7 +60,7 @@ const erpSchema = new mongoose.Schema({
   ],
   BreakingNews: [
     {
-        serialNumber: Number,
+      serialNumber: Number,
       news: {
         type: String,
       },
@@ -65,28 +68,28 @@ const erpSchema = new mongoose.Schema({
   ],
   JoningsForWeek: [
     {
-        serialNumber: Number,
+      serialNumber: Number,
       names: {
         type: String,
       },
       client: {
-        type: String
+        type: String,
       },
       location: {
-        type: String
+        type: String,
       },
       ctc: {
-        type: Number
+        type: Number,
       },
       recruiterName: {
-        type: String
+        type: String,
       },
       teamLeaderName: {
-        type: String
+        type: String,
       },
       noOfJoinings: {
         type: Number,
-      }
+      },
     },
   ],
   createdAt: {
@@ -95,7 +98,7 @@ const erpSchema = new mongoose.Schema({
   },
 });
 
-erpSchema.pre("save", function(next) {
+erpSchema.pre("save", function (next) {
   const setSerialNumber = (arrayField) => {
     arrayField.forEach((item, index) => {
       if (!item.serialNumber) {

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-const HomeNews = ({ employee, latestnews, hrname }) => {
+const HomeNews = ({ employee, latestnews, empOfMonthDesc}) => {
 
   return (
     <div className="mx-4 md:mx-10 my-16">
@@ -45,7 +45,7 @@ const HomeNews = ({ employee, latestnews, hrname }) => {
 
             <div className='mt-4'>
               <h1 className='font-bold text-xl capitilized'>{employee?.name}</h1>
-              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga quisquam ratione facere quaerat quam. Iste dolorum, quod sed nihil sint, debitis vel illo, voluptas labore odit nulla dolore? Libero exercitationem fuga harum quo! Delectus sequi ut est sunt, a doloremque ipsum impedit culpa maiores possimus suscipit nostrum id quidem, odio nihil aut expedita, perspiciatis repudiandae. Soluta voluptates rerum hic odit?</p>
+              <p>{empOfMonthDesc}</p>
             </div>
           </div>
 

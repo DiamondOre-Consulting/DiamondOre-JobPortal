@@ -17,6 +17,7 @@ router.post("/add-erp-data", AdminAuthenticateToken, async (req, res) => {
 
     const {
         EmpOfMonth,
+        EmpOfMonthDesc,
         Top5HRs,
         Top5Clients,
         RnRInterns,
@@ -25,6 +26,9 @@ router.post("/add-erp-data", AdminAuthenticateToken, async (req, res) => {
         JoningsForWeek,
       } = req.body;
 
+
+      console.log("Received data:", req.body);
+      
     // Find the user in the database
     const user = await Admin.findOne({ email });
     if (!user) {
@@ -33,6 +37,7 @@ router.post("/add-erp-data", AdminAuthenticateToken, async (req, res) => {
 
     const newERPData = new ERP({
         EmpOfMonth,
+        EmpOfMonthDesc,
         Top5HRs,
         Top5Clients,
         RnRInterns,

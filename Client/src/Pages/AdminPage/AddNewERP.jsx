@@ -7,6 +7,7 @@ const AddERPForm = () => {
   const navigate = useNavigate();
   const initialFormData = {
     EmpOfMonth: "",
+    EmpOfMonthDesc: "",
     Top5HRs: [{ name: "" }],
     Top5Clients: [{ name: "" }],
     RnRInterns: [{ title: "", name: "", count: 0, percentage: 0 }],
@@ -84,11 +85,10 @@ const AddERPForm = () => {
           },
         }
       );
-      ;
       // Handle success, e.g., show a success message or redirect to another page
       if (response.status === 201) {
-
-        navigate('/admin-dashboard/erp-dashboard')
+        console.log(response.data);
+        navigate("/admin-dashboard/erp-dashboard");
       }
 
       // Reset the form after successful submission
@@ -122,8 +122,6 @@ const AddERPForm = () => {
 
         if (response.status === 200) {
           setEmployees(response.data);
-          ;
-
         }
       } catch (error) {
         console.error("Error fetching employees:", error);
@@ -134,10 +132,11 @@ const AddERPForm = () => {
     fetchAllEmployee();
   }, [navigate, token]);
 
-
   return (
     <div className="">
-      <h1 className="mx-auto text-center text-3xl my-2">Employee of the month</h1>
+      <h1 className="mx-auto text-center text-3xl my-2">
+        Employee of the month
+      </h1>
       <div className="w-44 h-0.5 bg-blue-900 justify-center mx-auto"></div>
       <form className="mx-auto grid max-w-screen-md gap-4 sm:grid-cols-2 shadow-lg p-5">
         <div>
@@ -162,6 +161,27 @@ const AddERPForm = () => {
           </select>
         </div>
 
+        <br></br>
+        <div className="w-full col-span-2">
+          <label
+            htmlFor="EmpOfMonthDesc"
+            className="mb-2 inline-block text-sm text-gray-800 sm:text-base"
+          >
+            Employee of the Month Description*
+          </label>
+          <br />
+          <textarea
+            id="EmpOfMonthDesc" // Add an id for better accessibility
+            rows="4"
+            type="text"
+            className="w-full py-2 px-2 border rounded-md" // Ensure consistent styling
+            value={formData.EmpOfMonthDesc} // Ensure this is bound to the state
+            onChange={(e) =>
+              handleInputChange("EmpOfMonthDesc", e.target.value)
+            }
+          />
+        </div>
+
         {/* Top5HRs */}
         <div className="sm:col-span-2">
           <label
@@ -177,7 +197,12 @@ const AddERPForm = () => {
                 className="w-full rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 my-1"
                 value={hr.name}
                 onChange={(e) =>
-                  handleItemInputChange("Top5HRs", index, "name", e.target.value)
+                  handleItemInputChange(
+                    "Top5HRs",
+                    index,
+                    "name",
+                    e.target.value
+                  )
                 }
               />
               <button
@@ -255,7 +280,12 @@ const AddERPForm = () => {
                 className="my-1 w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
                 value={intern.title}
                 onChange={(e) =>
-                  handleItemInputChange("RnRInterns", index, "title", e.target.value)
+                  handleItemInputChange(
+                    "RnRInterns",
+                    index,
+                    "title",
+                    e.target.value
+                  )
                 }
               />
               <input
@@ -264,7 +294,12 @@ const AddERPForm = () => {
                 className="my-1 w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
                 value={intern.name}
                 onChange={(e) =>
-                  handleItemInputChange("RnRInterns", index, "name", e.target.value)
+                  handleItemInputChange(
+                    "RnRInterns",
+                    index,
+                    "name",
+                    e.target.value
+                  )
                 }
               />
               <input
@@ -273,7 +308,12 @@ const AddERPForm = () => {
                 className="my-1 w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
                 value={intern.count}
                 onChange={(e) =>
-                  handleItemInputChange("RnRInterns", index, "count", e.target.value)
+                  handleItemInputChange(
+                    "RnRInterns",
+                    index,
+                    "count",
+                    e.target.value
+                  )
                 }
               />
               <input
@@ -407,7 +447,12 @@ const AddERPForm = () => {
                 className="my-1 w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
                 value={newsItem.news}
                 onChange={(e) =>
-                  handleItemInputChange("BreakingNews", index, "news", e.target.value)
+                  handleItemInputChange(
+                    "BreakingNews",
+                    index,
+                    "news",
+                    e.target.value
+                  )
                 }
               />
               <button
@@ -437,14 +482,22 @@ const AddERPForm = () => {
             Jonings for the Week*
           </label>
           {formData.JoningsForWeek.map((joining, index) => (
-            <div key={index} className="flex flex-col md:flex-row items-center space-y-2 my-2">
+            <div
+              key={index}
+              className="flex flex-col md:flex-row items-center space-y-2 my-2"
+            >
               <input
                 type="text"
                 placeholder="Name"
                 className="w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none mt-2 ring-indigo-300 transition duration-100"
                 value={joining.names}
                 onChange={(e) =>
-                  handleItemInputChange("JoningsForWeek", index, "names", e.target.value)
+                  handleItemInputChange(
+                    "JoningsForWeek",
+                    index,
+                    "names",
+                    e.target.value
+                  )
                 }
               />
               <input
@@ -453,7 +506,12 @@ const AddERPForm = () => {
                 className="w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
                 value={joining.client}
                 onChange={(e) =>
-                  handleItemInputChange("JoningsForWeek", index, "client", e.target.value)
+                  handleItemInputChange(
+                    "JoningsForWeek",
+                    index,
+                    "client",
+                    e.target.value
+                  )
                 }
               />
               <input
@@ -462,7 +520,12 @@ const AddERPForm = () => {
                 className="w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
                 value={joining.location}
                 onChange={(e) =>
-                  handleItemInputChange("JoningsForWeek", index, "location", e.target.value)
+                  handleItemInputChange(
+                    "JoningsForWeek",
+                    index,
+                    "location",
+                    e.target.value
+                  )
                 }
               />
               <input
@@ -471,7 +534,12 @@ const AddERPForm = () => {
                 className="w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
                 value={joining.ctc}
                 onChange={(e) =>
-                  handleItemInputChange("JoningsForWeek", index, "ctc", e.target.value)
+                  handleItemInputChange(
+                    "JoningsForWeek",
+                    index,
+                    "ctc",
+                    e.target.value
+                  )
                 }
               />
               <input
@@ -480,7 +548,12 @@ const AddERPForm = () => {
                 className="w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
                 value={joining.recruiterName}
                 onChange={(e) =>
-                  handleItemInputChange("JoningsForWeek", index, "recruiterName", e.target.value)
+                  handleItemInputChange(
+                    "JoningsForWeek",
+                    index,
+                    "recruiterName",
+                    e.target.value
+                  )
                 }
               />
               <input
@@ -489,7 +562,12 @@ const AddERPForm = () => {
                 className="w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
                 value={joining.teamLeaderName}
                 onChange={(e) =>
-                  handleItemInputChange("JoningsForWeek", index, "teamLeaderName", e.target.value)
+                  handleItemInputChange(
+                    "JoningsForWeek",
+                    index,
+                    "teamLeaderName",
+                    e.target.value
+                  )
                 }
               />
               <input
@@ -498,7 +576,12 @@ const AddERPForm = () => {
                 className="w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
                 value={joining.noOfJoinings}
                 onChange={(e) =>
-                  handleItemInputChange("JoningsForWeek", index, "noOfJoinings", e.target.value)
+                  handleItemInputChange(
+                    "JoningsForWeek",
+                    index,
+                    "noOfJoinings",
+                    e.target.value
+                  )
                 }
               />
               <button

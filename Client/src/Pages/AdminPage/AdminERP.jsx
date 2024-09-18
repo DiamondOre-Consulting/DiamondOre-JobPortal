@@ -17,6 +17,7 @@ const AdminERP = () => {
   const [RnRinterns, setRnRInterns] = useState([]);
   const [RnRRecruiter, setRnRRecruiter] = useState([]);
   const [joinings, setJoinings] = useState([]);
+  const [empOfMonthDesc, setEmpOfMonthDesc] = useState(""); // New state for EmpOfMonthDesc
 
   const token = localStorage.getItem("token");
   const { decodedToken } = useJwt(token);
@@ -51,12 +52,14 @@ const AdminERP = () => {
           const lastData = response.data.allData;
           const empdata = response.data.findEmp;
           setEmployee(empdata);
+          console.log("employee data", response.data);
           setLatestNews(lastData.BreakingNews || []);
           setHrName(lastData.Top5HRs || []);
           setClient(lastData.Top5Clients || []);
           setRnRInterns(lastData.RnRInterns || []);
           setRnRRecruiter(lastData.RnRRecruiters || []);
           setJoinings(lastData.JoningsForWeek || []);
+          setEmpOfMonthDesc(lastData.EmpOfMonthDesc || ""); // Set EmpOfMonthDesc
         } else {
           console.log("Error occurred: Non-200 status code");
         }
@@ -78,7 +81,7 @@ const AdminERP = () => {
           Add This Week's Data →
         </Link>
       </div>
-      <HomeNews employee={employee} latestnews={latestnews} />
+      <HomeNews employee={employee} latestnews={latestnews} empOfMonthDesc={empOfMonthDesc} /> {/* Pass EmpOfMonthDesc */}
       <ERPTop5s hrname={hrname} client={client} />
       <RnRLeaderboard RnRinterns={RnRinterns} RnRRecruiter={RnRRecruiter} />
       <JoiningsForWeek Joinings={joinings} />

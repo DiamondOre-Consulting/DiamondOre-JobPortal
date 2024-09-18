@@ -20,7 +20,7 @@ const Employeedashboard = () => {
   const [RnRinterns, setRnRinterns] = useState(null);
   const [RnRRecruiter, setRnRRecruiter] = useState(null);
   const [Joinings, setjoinings] = useState(null);
-
+  const [empOfMonthDesc, setEmpOfMonthDesc] = useState(""); 
   const token = localStorage.getItem("token");
   const { decodedToken } = useJwt(localStorage.getItem("token"));
   const navigate = useNavigate();
@@ -51,10 +51,12 @@ const Employeedashboard = () => {
           }
           
         )
-        if(response.status===200){
+        if(response.status === 200){
+          console.log(response.data)
         const lastData = response.data.reverse()[0];
-
+        const latest= response.data.allData;
         
+        setEmpOfMonthDesc(latest.EmpOfMonthDesc || "");
         
 
          setempofthemonth(lastData.EmpOfMonth);  //emp of the mounth
@@ -132,7 +134,7 @@ const Employeedashboard = () => {
       <h2 className="text-5xl px-10 font-bold text-gray-800">
         Welcome aboard <span className="text-blue-900">{userName} </span>
       </h2>
-      <HomeNews empofthemonth={empofthemonth} latestnews={latestnews} />
+      <HomeNews empofthemonth={empofthemonth} latestnews={latestnews} empOfMonthDesc={empOfMonthDesc} />
       <ERPTop5s hrname={hrname} client={client} />
       <RnRLeaderboard RnRinterns={RnRinterns} RnRRecruiter={RnRRecruiter} />
       <JoiningsForWeek Joinings={Joinings} />
