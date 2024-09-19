@@ -1328,7 +1328,7 @@ router.post("/request-call", async (req, res) => {
       text: `A new message has been submitted by ${name}.`,
       html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${name}</h4> </br>
                     <h4 style="font-size:1rem; display:flex; justify-content: center;">Phone No: ${phone}</h4> </br>`,
-      cc: ['rahul@rasonline.in', 'tech@diamondore.in']
+      cc: ['rahul@rasonline.in']
     };
 
     const info = await transporter.sendMail(mailOptions);
