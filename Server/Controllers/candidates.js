@@ -48,13 +48,13 @@ const sendOTPByEmail = async (email, otp) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "harshkr2709@gmail.com",
-        pass: "frtohlwnukisvrzh",
+        user: "tech@diamondore.in",
+        pass: "zlnbcvnhzdddzrqn",
       },
     });
 
     const mailOptions = {
-      from: "Diamondore.in <harshkr2709@gmail.com>",
+      from: "Diamondore.in <tech@diamondore.in>",
       to: `Recipient <${email}>`,
       subject: "One Time Password",
       text: `Your OTP is: ${otp}`,
@@ -281,13 +281,13 @@ router.post("/signup", async (req, res) => {
           const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-              user: "harshkr2709@gmail.com",
-              pass: "frtohlwnukisvrzh",
+              user: "tech@diamondore.in",
+              pass: "zlnbcvnhzdddzrqn",
             },
           });
 
           const mailOptions = {
-            from: "Diamondore.in <harshkr2709@gmail.com>",
+            from: "Diamondore.in <tech@diamondore.in>",
             to: `Recipient <${email}>`,
             subject: "Welcome to Diamond Ore Pvt.Ltd !",
             text: `Congratulations! We are thrilled to have you as a new member of our community. By joining us, you've taken the first step towards unlocking a world of opportunities.`,
@@ -703,13 +703,13 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
           const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-              user: "harshkr2709@gmail.com",
-              pass: "frtohlwnukisvrzh",
+              user: "tech@diamondore.in",
+              pass: "zlnbcvnhzdddzrqn",
             },
           });
 
           const mailOptions = {
-            from: "Diamondore.in <harshkr2709@gmail.com>",
+            from: "Diamondore.in <tech@diamondore.in>",
             to: `Recipient <${email}>`,
             subject: "Job Applied Successfully!",
             html: `
@@ -748,13 +748,13 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
           const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-              user: "harshkr2709@gmail.com",
-              pass: "frtohlwnukisvrzh",
+              user: "tech@diamondore.in",
+              pass: "zlnbcvnhzdddzrqn",
             },
           });
 
           const mailOptions = {
-            from: "Diamondore.in <harshkr2709@gmail.com>",
+            from: "Diamondore.in <tech@diamondore.in>",
             to: `hr@diamondore.in`,
             cc: ['rahul@rasonline.in', 'rahul@diamondore.in', 'zoya.rasonline@gmail.com'],
             subject: `A new applicant applied for ${job.JobTitle}`,
@@ -1021,13 +1021,13 @@ router.delete(
           const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-              user: "harshkr2709@gmail.com",
-              pass: "frtohlwnukisvrzh",
+              user: "tech@diamondore.in",
+              pass: "zlnbcvnhzdddzrqn",
             },
           });
 
           const mailOptions = {
-            from: "Diamondore.in <harshkr2709@gmail.com>",
+            from: "Diamondore.in <tech@diamondore.in>",
             to: `Recipient <${deletedUser.email}>`,
             subject: `Account Deletion Notification: ${deletedUser?.name}`,
             text: `Dear,
@@ -1070,13 +1070,13 @@ const sendOTPByEmailForgotPassword = async (email, otp) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "harshkr2709@gmail.com",
-        pass: "frtohlwnukisvrzh",
+        user: "tech@diamondore.in",
+        pass: "zlnbcvnhzdddzrqn",
       },
     });
 
     const mailOptions = {
-      from: "Diamondore.in <harshkr2709@gmail.com>",
+      from: "Diamondore.in <tech@diamondore.in>",
       to: `Recipient <${email}>`,
       subject: "Forgot Password - OTP",
       text: `Your OTP is: ${otp}`,
@@ -1315,14 +1315,14 @@ router.post("/request-call", async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "harshkr2709@gmail.com",
-        pass: "frtohlwnukisvrzh",
+        user: "tech@diamondore.in",
+        pass: "zlnbcvnhzdddzrqn",
       },
     });
 
     // Compose the email
     const mailOptions = {
-      from: "Diamond Ore <harshkr2709@gmail.com>",
+      from: "Diamond Ore <tech@diamondore.in>",
       to: "helpdesk2.rasonline@gmail.com",
       subject: `CALL REQUEST FROM DOC: New Message Received from ${name}`,
       text: `A new message has been submitted by ${name}.`,

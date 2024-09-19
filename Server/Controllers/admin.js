@@ -54,13 +54,13 @@ const sendOTPByEmail = async (email, otp) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "harshkr2709@gmail.com",
-        pass: "frtohlwnukisvrzh",
+        user: "tech@diamondore.in",
+        pass: "zlnbcvnhzdddzrqn",
       },
     });
 
     const mailOptions = {
-      from: "Diamondore.in <harshkr2709@gmail.com>",
+      from: "Diamondore.in <tech@diamondore.in>",
       to: `Recipient <${email}>`,
       subject: "One Time Password",
       text: `Your OTP is: ${otp}`,
@@ -543,13 +543,13 @@ router.put(
           const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-              user: "harshkr2709@gmail.com",
-              pass: "frtohlwnukisvrzh",
+              user: "tech@diamondore.in",
+              pass: "zlnbcvnhzdddzrqn",
             },
           });
 
           const mailOptions = {
-            from: "Diamondore.in <harshkr2709@gmail.com>",
+            from: "Diamondore.in <tech@diamondore.in>",
             to: `Recipient <${CandidateUser.email}>`,
             subject: "Congratulation! Your CV has been shorlisted",
             html: `
@@ -632,13 +632,13 @@ router.put(
           const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-              user: "harshkr2709@gmail.com",
-              pass: "frtohlwnukisvrzh",
+              user: "tech@diamondore.in",
+              pass: "zlnbcvnhzdddzrqn",
             },
           });
 
           const mailOptions = {
-            from: "Diamondore.in <harshkr2709@gmail.com>",
+            from: "Diamondore.in <tech@diamondore.in>",
             to: `Recipient <${CandidateUser.email}>`,
             subject: "Congratulation! Your CV passed the screening process",
             html: `
@@ -727,13 +727,13 @@ router.put(
           const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-              user: "harshkr2709@gmail.com",
-              pass: "frtohlwnukisvrzh",
+              user: "tech@diamondore.in",
+              pass: "zlnbcvnhzdddzrqn",
             },
           });
 
           const mailOptions = {
-            from: "Diamondore.in <harshkr2709@gmail.com>",
+            from: "Diamondore.in <tech@diamondore.in>",
             to: `Recipient <${CandidateUser.email}>`,
             subject: "Congratulation! Your Interview has been Scheduled",
             html: `
@@ -870,13 +870,13 @@ router.put(
           const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-              user: "harshkr2709@gmail.com",
-              pass: "frtohlwnukisvrzh",
+              user: "tech@diamondore.in",
+              pass: "zlnbcvnhzdddzrqn",
             },
           });
 
           const mailOptions = {
-            from: "Diamondore.in <harshkr2709@gmail.com>",
+            from: "Diamondore.in <tech@diamondore.in>",
             to: `Recipient <${CandidateUser.email}>`,
             subject: "Congratulation! You are Shortlisted!",
             html: `
@@ -964,13 +964,13 @@ router.put(
           const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-              user: "harshkr2709@gmail.com",
-              pass: "frtohlwnukisvrzh",
+              user: "tech@diamondore.in",
+              pass: "zlnbcvnhzdddzrqn",
             },
           });
 
           const mailOptions = {
-            from: "Diamondore.in <harshkr2709@gmail.com>",
+            from: "Diamondore.in <tech@diamondore.in>",
             to: `Recipient <${CandidateUser.email}>`,
             subject:
               "Congratulations on Successfully Joining Your New Company!",
@@ -1096,8 +1096,8 @@ router.post("/send-chatbot", async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "harshkr2709@gmail.com",
-        pass: "frtohlwnukisvrzh",
+        user: "tech@diamondore.in",
+        pass: "zlnbcvnhzdddzrqn",
       },
     });
     const userName = req.body.name;
@@ -1120,7 +1120,7 @@ router.post("/send-chatbot", async (req, res) => {
 
     // Compose the email
     const mailOptions = {
-      from: "DOC_Labz <harshkr2709@gmail.com>",
+      from: "DOC_Labz <tech@diamondore.in>",
       to: "rahul@rasonline.in",
       cc: 'tech@diamondore.in',
       subject: `ROBO_RECRUITER: New Message Received from ${userName}`,
@@ -1151,8 +1151,8 @@ router.post("/client-form", async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "harshkr2709@gmail.com",
-        pass: "frtohlwnukisvrzh",
+        user: "tech@diamondore.in",
+        pass: "zlnbcvnhzdddzrqn",
       },
     });
     const userName = req.body.name;
@@ -1173,7 +1173,7 @@ router.post("/client-form", async (req, res) => {
 
     // Compose the email
     const mailOptions = {
-      from: "DOC_Labz <harshkr2709@gmail.com>",
+      from: "DOC_Labz <tech@diamondore.in>",
       to: "hr@diamondore.in",
       cc:['zoyas3423@gmail.com' , 'zoya.rasonline@gmail.com'],
       subject: `DOC_LABZ - New Client: New Message Received from ${userName}`,
@@ -1202,13 +1202,13 @@ const sendOTPByEmailForgotPassword = async (email, otp) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "harshkr2709@gmail.com",
-        pass: "frtohlwnukisvrzh",
+        user: "tech@diamondore.in",
+        pass: "zlnbcvnhzdddzrqn",
       },
     });
 
     const mailOptions = {
-      from: "Diamondore.in <harshkr2709@gmail.com>",
+      from: "Diamondore.in <tech@diamondore.in>",
       to: `Recipient <${email}>`,
       subject: "Forgot Password - OTP",
       text: `Your OTP is: ${otp}`,
@@ -1438,8 +1438,8 @@ const sendJobsToRecByEmail = async (eMailIdRec, candidate, suitableJobs) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "harshkr2709@gmail.com",
-        pass: "frtohlwnukisvrzh",
+        user: "tech@diamondore.in",
+        pass: "zlnbcvnhzdddzrqn",
       },
     });
 
@@ -1481,7 +1481,7 @@ const sendJobsToRecByEmail = async (eMailIdRec, candidate, suitableJobs) => {
     `;
 
     const mailOptions = {
-      from: "Diamondore.in <harshkr2709@gmail.com>",
+      from: "Diamondore.in <tech@diamondore.in>",
       to: `Recipient <${eMailIdRec}>`,
       subject: "Recommended Jobs",
       text: `Jobs for candidate: ${candidate.name}`,
@@ -1502,8 +1502,8 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "harshkr2709@gmail.com",
-        pass: "frtohlwnukisvrzh",
+        user: "tech@diamondore.in",
+        pass: "zlnbcvnhzdddzrqn",
       },
     });
 
@@ -1545,7 +1545,7 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
     `;
 
     const mailOptions = {
-      from: "Diamondore.in <harshkr2709@gmail.com>",
+      from: "Diamondore.in <tech@diamondore.in>",
       to: `Recipient <${eMailIdKam}>`,
       subject: "Recommended Jobs",
       text: `Jobs for candidate: ${candidate.candidateName}`,
@@ -2302,8 +2302,8 @@ router.get(
 const transporter = nodemailer.createTransport({
   service: "Gmail",
   auth: {
-    user: "harshkr2709@gmail.com",
-    pass: "frtohlwnukisvrzh",
+    user: "tech@diamondore.in",
+    pass: "zlnbcvnhzdddzrqn",
   },
 });
 
@@ -2354,7 +2354,7 @@ const transporter = nodemailer.createTransport({
 
 //         // Send email to the previous owner
 //         const previousOwnerMailOptions = {
-//           from: "harshkr2709@gmail.com",
+//           from: "tech@diamondore.in",
 //           to: previousOwnerEmail,
 //           subject: "Account Handling Ownership Update",
 //           text: `The AccountHandling with ID: ${id} has been removed from your list.`,
@@ -2370,7 +2370,7 @@ const transporter = nodemailer.createTransport({
 
 //         // Send email to the new owner
 //         const newOwnerMailOptions = {
-//           from: "harshkr2709@gmail.com",
+//           from: "tech@diamondore.in",
 //           to: newOwnerEmail,
 //           subject: "New Account Handling Ownership",
 //           text: `You have been assigned the AccountHandling with ID: ${id}.`,
@@ -2396,7 +2396,7 @@ const transporter = nodemailer.createTransport({
 
 //         // Send email to the previous owner
 //         const previousOwnerMailOptions = {
-//           from: "harshkr2709@gmail.com",
+//           from: "tech@diamondore.in",
 //           to: previousOwnerEmail,
 //           subject: "Account Handling Ownership Update",
 //           text: `The AccountHandling with ID: ${id} access has been denied by the Admin.`,
@@ -2501,7 +2501,7 @@ router.put(
         // Send email to the previous owner
         transporter.sendMail(
           {
-            from: "harshkr2709@gmail.com",
+            from: "tech@diamondore.in",
             to: previousOwnerEmail,
             subject: "Account Handling Ownership Update",
             text: `The AccountHandling with phone: ${accountPhone} has been removed from your list.`,
@@ -2524,7 +2524,7 @@ router.put(
         // Send email to the new owner
         transporter.sendMail(
           {
-            from: "harshkr2709@gmail.com",
+            from: "tech@diamondore.in",
             to: newOwner.email,
             subject: "New Account Handling Ownership",
             text: `You have been assigned the AccountHandling with phone: ${accountPhone}.`,
@@ -2553,7 +2553,7 @@ router.put(
 
         transporter.sendMail(
           {
-            from: "harshkr2709@gmail.com",
+            from: "tech@diamondore.in",
             to: previousOwnerEmail,
             subject: "Account Handling Ownership Update",
             text: `The AccountHandling request for phone: ${accountPhone} has been denied by the Admin.`,
