@@ -1663,7 +1663,7 @@ router.get("/find-bulk-jobs", async (req, res) => {
     const now = new Date();
     const day = String(now.getDate()).padStart(2, "0");
     const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-    const year = String(now.getFullYear()).slice(-2); // Get last two digits of the year
+    const year = String(now.getFullYear()); // Get last two digits of the year
 
     const formattedDate = `${day}/${month}/${year}`;
     console.log(formattedDate);
