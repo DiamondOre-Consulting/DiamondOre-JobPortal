@@ -1369,12 +1369,55 @@ const downloadFile = async (url, outputFilePath) => {
   });
 };
 
+// router.post("/upload-dsr-excel", async (req, res) => {
+//   const { url } = req.body;
+//   const outputFilePath = path.join(__dirname, "dsrFile.xlsx");
+//   try {
+//     console.log(url);
+//     await downloadFile(url, outputFilePath);
+//     node_xj(
+//       {
+//         input: outputFilePath,
+//         output: null,
+//         lowerCaseHeaders: true,
+//         allowEmptyKey: false,
+//       },
+//       async (err, result) => {
+//         if (err) {
+//           return res
+//             .status(500)
+//             .json({ error: "Error converting Excel to JSON", message: err.message });
+//         }
+//         console.log(result);
+
+//         // Assuming the result is an array of job objects
+//         const dsrAdd = await DSR.insertMany(result);
+//         console.log(dsrAdd);
+//         if (dsrAdd) {
+//           return res.status(200).json({ message: "DSR Added successfully!!!" });
+//         } else {
+//           return res.status(500).json({ message: "Something went wrong!!", err });
+//         }
+//       }
+//     );
+//   } catch (err) {
+//     return res.status(400).json({ message: err.message });
+//   } finally {
+//     // Clean up: Delete the temporary file
+//     fs.unlinkSync(outputFilePath);
+//   }
+// });
+
+
 router.post("/upload-dsr-excel", async (req, res) => {
   const { url } = req.body;
   const outputFilePath = path.join(__dirname, "dsrFile.xlsx");
+  let errorArray = []; // To store errors
+
   try {
     console.log(url);
     await downloadFile(url, outputFilePath);
+
     node_xj(
       {
         input: outputFilePath,
@@ -1388,16 +1431,38 @@ router.post("/upload-dsr-excel", async (req, res) => {
             .status(500)
             .json({ error: "Error converting Excel to JSON", message: err.message });
         }
+
         console.log(result);
 
-        // Assuming the result is an array of job objects
-        const dsrAdd = await DSR.insertMany(result);
-        console.log(dsrAdd);
-        if (dsrAdd) {
-          return res.status(200).json({ message: "DSR Added successfully!!!" });
-        } else {
-          return res.status(500).json({ message: "Something went wrong!!", err });
+        // Iterate through each entry and try to insert
+        const insertionPromises = result.map(async (entry, index) => {
+          try {
+            // Attempt to insert the entry
+            const dsrAdd = await DSR.create(entry);
+            return dsrAdd;
+          } catch (insertError) {
+            // Catch any insertion errors, push the error and entry details to errorArray
+            errorArray.push({
+              entry,
+              error: insertError.message,
+              index,
+            });
+            console.error(`Error adding entry at index ${index}: ${insertError.message}`);
+          }
+        });
+
+        // Wait for all insertions to complete
+        await Promise.all(insertionPromises);
+
+        if (errorArray.length > 0) {
+          // Send the error array via email to the admin
+          await sendErrorEmailToAdmin(errorArray);
         }
+
+        return res.status(200).json({
+          message: "DSR upload process completed!",
+          errors: errorArray.length > 0 ? errorArray : null, // Return error details if any
+        });
       }
     );
   } catch (err) {
@@ -1408,7 +1473,38 @@ router.post("/upload-dsr-excel", async (req, res) => {
   }
 });
 
-// SEARCH JOBS
+// Function to send error email to admin
+async function sendErrorEmailToAdmin(errorArray) {
+  // Configure your email service, replace with your email settings
+  const transporter = nodemailer.createTransport({
+    service: 'gmail', // or any other email service you're using
+    auth: {
+      user: "tech@diamondore.in",
+      pass: "zlnbcvnhzdddzrqn",
+    },
+  });
+
+  const errorDetails = errorArray.map(
+    (error, index) =>
+      `Entry #${error.index + 1}: ${JSON.stringify(error.entry)}\nError: ${error.error}\n\n`
+  ).join("\n");
+
+  const mailOptions = {
+    from: 'tech@diamondore.in',
+    to: 'tech@diamondore.in',
+    subject: 'DSR Upload Errors',
+    text: `The following entries had errors during the DSR upload process:\n\n${errorDetails}`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Error email sent to admin.');
+  } catch (emailError) {
+    console.error('Error sending email:', emailError.message);
+  }
+}
+
+
 router.get("/findJobs/:phone", async (req, res) => {
   try {
     const candidate = await DSR.findOne({ phone: req.params.phone });
