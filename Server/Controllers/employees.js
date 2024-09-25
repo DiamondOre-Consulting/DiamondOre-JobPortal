@@ -53,13 +53,13 @@ router.post("/add-emp", AdminAuthenticateToken, async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "harshkr2709@gmail.com",
-        pass: "frtohlwnukisvrzh",
+        user: "tech@diamondore.in",
+        pass: "zlnbcvnhzdddzrqn",
       },
     });
 
     const mailOptions = {
-      from: "Diamondore.in <harshkr2709@gmail.com>",
+      from: "Diamondore.in <tech@diamondore.in>",
       to: `Recipient <${email}>`,
       subject: "Congratulations!!! You are added to DOC-ERP",
       text: `Welcome to the team, ${name}`,
@@ -222,8 +222,8 @@ router.get(
 const transporter = nodemailer.createTransport({
   service: "Gmail",
   auth: {
-    user: "harshkr2709@gmail.com",
-    pass: "frtohlwnukisvrzh",
+    user: "tech@diamondore.in",
+    pass: "zlnbcvnhzdddzrqn",
   },
 });
 // router.put(
@@ -260,7 +260,7 @@ const transporter = nodemailer.createTransport({
 
 //         // Send email notification to admin
 //         const mailOptions = {
-//           from: "harshkr2709@gmail.com",
+//           from: "tech@diamondore.in",
 //           to: "hr@diamondore.in",
 //           subject: "Duplicate Phone Number Request",
 //           text: `An employee: ${employee} has requested to use a duplicate phone number: ${phone}.`,
@@ -343,7 +343,7 @@ router.put(
 
         // Send email notification to admin
         const mailOptions = {
-          from: "harshkr2709@gmail.com",
+          from: "tech@diamondore.in",
           to: "hr@diamondore.in",
           subject: "Duplicate Phone Number Request",
           text: `An employee (${employee.name}) has requested to use a duplicate phone number: ${hrPhone}.`,

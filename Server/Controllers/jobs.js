@@ -41,13 +41,13 @@ const addedJobsMailToAllTheCandidates = async (candidateEmail, candidateName) =>
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "harshkr2709@gmail.com",
-        pass: "frtohlwnukisvrzh",
+        user: "tech@diamondore.in",
+        pass: "zlnbcvnhzdddzrqn",
       },
     });
 
     const mailOptions = {
-      from: "Diamondore.in <harshkr2709@gmail.com>",
+      from: "Diamondore.in <tech@diamondore.in>",
       to: `Recipient <${candidateEmail}>`,
       subject: "Exciting New Job Opportunity at Diamond Ore .Pvt Ltd",
       text: `Congratulations! We are thrilled to have you as a new member of our community. By joining us, you've taken the first step towards unlocking a world of opportunities.`,

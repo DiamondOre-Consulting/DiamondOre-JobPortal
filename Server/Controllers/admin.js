@@ -54,13 +54,13 @@ const sendOTPByEmail = async (email, otp) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "harshkr2709@gmail.com",
-        pass: "frtohlwnukisvrzh",
+        user: "tech@diamondore.in",
+        pass: "zlnbcvnhzdddzrqn",
       },
     });
 
     const mailOptions = {
-      from: "Diamondore.in <harshkr2709@gmail.com>",
+      from: "Diamondore.in <tech@diamondore.in>",
       to: `Recipient <${email}>`,
       subject: "One Time Password",
       text: `Your OTP is: ${otp}`,
@@ -543,13 +543,13 @@ router.put(
           const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-              user: "harshkr2709@gmail.com",
-              pass: "frtohlwnukisvrzh",
+              user: "tech@diamondore.in",
+              pass: "zlnbcvnhzdddzrqn",
             },
           });
 
           const mailOptions = {
-            from: "Diamondore.in <harshkr2709@gmail.com>",
+            from: "Diamondore.in <tech@diamondore.in>",
             to: `Recipient <${CandidateUser.email}>`,
             subject: "Congratulation! Your CV has been shorlisted",
             html: `
@@ -632,13 +632,13 @@ router.put(
           const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-              user: "harshkr2709@gmail.com",
-              pass: "frtohlwnukisvrzh",
+              user: "tech@diamondore.in",
+              pass: "zlnbcvnhzdddzrqn",
             },
           });
 
           const mailOptions = {
-            from: "Diamondore.in <harshkr2709@gmail.com>",
+            from: "Diamondore.in <tech@diamondore.in>",
             to: `Recipient <${CandidateUser.email}>`,
             subject: "Congratulation! Your CV passed the screening process",
             html: `
@@ -727,13 +727,13 @@ router.put(
           const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-              user: "harshkr2709@gmail.com",
-              pass: "frtohlwnukisvrzh",
+              user: "tech@diamondore.in",
+              pass: "zlnbcvnhzdddzrqn",
             },
           });
 
           const mailOptions = {
-            from: "Diamondore.in <harshkr2709@gmail.com>",
+            from: "Diamondore.in <tech@diamondore.in>",
             to: `Recipient <${CandidateUser.email}>`,
             subject: "Congratulation! Your Interview has been Scheduled",
             html: `
@@ -870,13 +870,13 @@ router.put(
           const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-              user: "harshkr2709@gmail.com",
-              pass: "frtohlwnukisvrzh",
+              user: "tech@diamondore.in",
+              pass: "zlnbcvnhzdddzrqn",
             },
           });
 
           const mailOptions = {
-            from: "Diamondore.in <harshkr2709@gmail.com>",
+            from: "Diamondore.in <tech@diamondore.in>",
             to: `Recipient <${CandidateUser.email}>`,
             subject: "Congratulation! You are Shortlisted!",
             html: `
@@ -964,13 +964,13 @@ router.put(
           const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-              user: "harshkr2709@gmail.com",
-              pass: "frtohlwnukisvrzh",
+              user: "tech@diamondore.in",
+              pass: "zlnbcvnhzdddzrqn",
             },
           });
 
           const mailOptions = {
-            from: "Diamondore.in <harshkr2709@gmail.com>",
+            from: "Diamondore.in <tech@diamondore.in>",
             to: `Recipient <${CandidateUser.email}>`,
             subject:
               "Congratulations on Successfully Joining Your New Company!",
@@ -1096,8 +1096,8 @@ router.post("/send-chatbot", async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "harshkr2709@gmail.com",
-        pass: "frtohlwnukisvrzh",
+        user: "tech@diamondore.in",
+        pass: "zlnbcvnhzdddzrqn",
       },
     });
     const userName = req.body.name;
@@ -1120,7 +1120,7 @@ router.post("/send-chatbot", async (req, res) => {
 
     // Compose the email
     const mailOptions = {
-      from: "DOC_Labz <harshkr2709@gmail.com>",
+      from: "DOC_Labz <tech@diamondore.in>",
       to: "rahul@rasonline.in",
       cc: 'tech@diamondore.in',
       subject: `ROBO_RECRUITER: New Message Received from ${userName}`,
@@ -1151,8 +1151,8 @@ router.post("/client-form", async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "harshkr2709@gmail.com",
-        pass: "frtohlwnukisvrzh",
+        user: "tech@diamondore.in",
+        pass: "zlnbcvnhzdddzrqn",
       },
     });
     const userName = req.body.name;
@@ -1173,7 +1173,7 @@ router.post("/client-form", async (req, res) => {
 
     // Compose the email
     const mailOptions = {
-      from: "DOC_Labz <harshkr2709@gmail.com>",
+      from: "DOC_Labz <tech@diamondore.in>",
       to: "hr@diamondore.in",
       cc:['zoyas3423@gmail.com' , 'zoya.rasonline@gmail.com'],
       subject: `DOC_LABZ - New Client: New Message Received from ${userName}`,
@@ -1202,13 +1202,13 @@ const sendOTPByEmailForgotPassword = async (email, otp) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "harshkr2709@gmail.com",
-        pass: "frtohlwnukisvrzh",
+        user: "tech@diamondore.in",
+        pass: "zlnbcvnhzdddzrqn",
       },
     });
 
     const mailOptions = {
-      from: "Diamondore.in <harshkr2709@gmail.com>",
+      from: "Diamondore.in <tech@diamondore.in>",
       to: `Recipient <${email}>`,
       subject: "Forgot Password - OTP",
       text: `Your OTP is: ${otp}`,
@@ -1369,12 +1369,55 @@ const downloadFile = async (url, outputFilePath) => {
   });
 };
 
+// router.post("/upload-dsr-excel", async (req, res) => {
+//   const { url } = req.body;
+//   const outputFilePath = path.join(__dirname, "dsrFile.xlsx");
+//   try {
+//     console.log(url);
+//     await downloadFile(url, outputFilePath);
+//     node_xj(
+//       {
+//         input: outputFilePath,
+//         output: null,
+//         lowerCaseHeaders: true,
+//         allowEmptyKey: false,
+//       },
+//       async (err, result) => {
+//         if (err) {
+//           return res
+//             .status(500)
+//             .json({ error: "Error converting Excel to JSON", message: err.message });
+//         }
+//         console.log(result);
+
+//         // Assuming the result is an array of job objects
+//         const dsrAdd = await DSR.insertMany(result);
+//         console.log(dsrAdd);
+//         if (dsrAdd) {
+//           return res.status(200).json({ message: "DSR Added successfully!!!" });
+//         } else {
+//           return res.status(500).json({ message: "Something went wrong!!", err });
+//         }
+//       }
+//     );
+//   } catch (err) {
+//     return res.status(400).json({ message: err.message });
+//   } finally {
+//     // Clean up: Delete the temporary file
+//     fs.unlinkSync(outputFilePath);
+//   }
+// });
+
+
 router.post("/upload-dsr-excel", async (req, res) => {
   const { url } = req.body;
   const outputFilePath = path.join(__dirname, "dsrFile.xlsx");
+  let errorArray = []; // To store errors
+
   try {
     console.log(url);
     await downloadFile(url, outputFilePath);
+
     node_xj(
       {
         input: outputFilePath,
@@ -1388,16 +1431,38 @@ router.post("/upload-dsr-excel", async (req, res) => {
             .status(500)
             .json({ error: "Error converting Excel to JSON", message: err.message });
         }
+
         console.log(result);
 
-        // Assuming the result is an array of job objects
-        const dsrAdd = await DSR.insertMany(result);
-        console.log(dsrAdd);
-        if (dsrAdd) {
-          return res.status(200).json({ message: "DSR Added successfully!!!" });
-        } else {
-          return res.status(500).json({ message: "Something went wrong!!", err });
+        // Iterate through each entry and try to insert
+        const insertionPromises = result.map(async (entry, index) => {
+          try {
+            // Attempt to insert the entry
+            const dsrAdd = await DSR.create(entry);
+            return dsrAdd;
+          } catch (insertError) {
+            // Catch any insertion errors, push the error and entry details to errorArray
+            errorArray.push({
+              entry,
+              error: insertError.message,
+              index,
+            });
+            console.error(`Error adding entry at index ${index}: ${insertError.message}`);
+          }
+        });
+
+        // Wait for all insertions to complete
+        await Promise.all(insertionPromises);
+
+        if (errorArray.length > 0) {
+          // Send the error array via email to the admin
+          await sendErrorEmailToAdmin(errorArray);
         }
+
+        return res.status(200).json({
+          message: "DSR upload process completed!",
+          errors: errorArray.length > 0 ? errorArray : null, // Return error details if any
+        });
       }
     );
   } catch (err) {
@@ -1408,7 +1473,38 @@ router.post("/upload-dsr-excel", async (req, res) => {
   }
 });
 
-// SEARCH JOBS
+// Function to send error email to admin
+async function sendErrorEmailToAdmin(errorArray) {
+  // Configure your email service, replace with your email settings
+  const transporter = nodemailer.createTransport({
+    service: 'gmail', // or any other email service you're using
+    auth: {
+      user: "tech@diamondore.in",
+      pass: "zlnbcvnhzdddzrqn",
+    },
+  });
+
+  const errorDetails = errorArray.map(
+    (error, index) =>
+      `Entry #${error.index + 1}: ${JSON.stringify(error.entry)}\nError: ${error.error}\n\n`
+  ).join("\n");
+
+  const mailOptions = {
+    from: 'tech@diamondore.in',
+    to: 'tech@diamondore.in',
+    subject: 'DSR Upload Errors',
+    text: `The following entries had errors during the DSR upload process:\n\n${errorDetails}`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Error email sent to admin.');
+  } catch (emailError) {
+    console.error('Error sending email:', emailError.message);
+  }
+}
+
+
 router.get("/findJobs/:phone", async (req, res) => {
   try {
     const candidate = await DSR.findOne({ phone: req.params.phone });
@@ -1438,8 +1534,8 @@ const sendJobsToRecByEmail = async (eMailIdRec, candidate, suitableJobs) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "harshkr2709@gmail.com",
-        pass: "frtohlwnukisvrzh",
+        user: "tech@diamondore.in",
+        pass: "zlnbcvnhzdddzrqn",
       },
     });
 
@@ -1481,7 +1577,7 @@ const sendJobsToRecByEmail = async (eMailIdRec, candidate, suitableJobs) => {
     `;
 
     const mailOptions = {
-      from: "Diamondore.in <harshkr2709@gmail.com>",
+      from: "Diamondore.in <tech@diamondore.in>",
       to: `Recipient <${eMailIdRec}>`,
       subject: "Recommended Jobs",
       text: `Jobs for candidate: ${candidate.name}`,
@@ -1502,8 +1598,8 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "harshkr2709@gmail.com",
-        pass: "frtohlwnukisvrzh",
+        user: "tech@diamondore.in",
+        pass: "zlnbcvnhzdddzrqn",
       },
     });
 
@@ -1545,7 +1641,7 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
     `;
 
     const mailOptions = {
-      from: "Diamondore.in <harshkr2709@gmail.com>",
+      from: "Diamondore.in <tech@diamondore.in>",
       to: `Recipient <${eMailIdKam}>`,
       subject: "Recommended Jobs",
       text: `Jobs for candidate: ${candidate.candidateName}`,
@@ -1567,7 +1663,7 @@ router.get("/find-bulk-jobs", async (req, res) => {
     const now = new Date();
     const day = String(now.getDate()).padStart(2, "0");
     const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-    const year = String(now.getFullYear()).slice(-2); // Get last two digits of the year
+    const year = String(now.getFullYear()); // Get last two digits of the year
 
     const formattedDate = `${day}/${month}/${year}`;
     console.log(formattedDate);
@@ -2302,8 +2398,8 @@ router.get(
 const transporter = nodemailer.createTransport({
   service: "Gmail",
   auth: {
-    user: "harshkr2709@gmail.com",
-    pass: "frtohlwnukisvrzh",
+    user: "tech@diamondore.in",
+    pass: "zlnbcvnhzdddzrqn",
   },
 });
 
@@ -2354,7 +2450,7 @@ const transporter = nodemailer.createTransport({
 
 //         // Send email to the previous owner
 //         const previousOwnerMailOptions = {
-//           from: "harshkr2709@gmail.com",
+//           from: "tech@diamondore.in",
 //           to: previousOwnerEmail,
 //           subject: "Account Handling Ownership Update",
 //           text: `The AccountHandling with ID: ${id} has been removed from your list.`,
@@ -2370,7 +2466,7 @@ const transporter = nodemailer.createTransport({
 
 //         // Send email to the new owner
 //         const newOwnerMailOptions = {
-//           from: "harshkr2709@gmail.com",
+//           from: "tech@diamondore.in",
 //           to: newOwnerEmail,
 //           subject: "New Account Handling Ownership",
 //           text: `You have been assigned the AccountHandling with ID: ${id}.`,
@@ -2396,7 +2492,7 @@ const transporter = nodemailer.createTransport({
 
 //         // Send email to the previous owner
 //         const previousOwnerMailOptions = {
-//           from: "harshkr2709@gmail.com",
+//           from: "tech@diamondore.in",
 //           to: previousOwnerEmail,
 //           subject: "Account Handling Ownership Update",
 //           text: `The AccountHandling with ID: ${id} access has been denied by the Admin.`,
@@ -2501,7 +2597,7 @@ router.put(
         // Send email to the previous owner
         transporter.sendMail(
           {
-            from: "harshkr2709@gmail.com",
+            from: "tech@diamondore.in",
             to: previousOwnerEmail,
             subject: "Account Handling Ownership Update",
             text: `The AccountHandling with phone: ${accountPhone} has been removed from your list.`,
@@ -2524,7 +2620,7 @@ router.put(
         // Send email to the new owner
         transporter.sendMail(
           {
-            from: "harshkr2709@gmail.com",
+            from: "tech@diamondore.in",
             to: newOwner.email,
             subject: "New Account Handling Ownership",
             text: `You have been assigned the AccountHandling with phone: ${accountPhone}.`,
@@ -2553,7 +2649,7 @@ router.put(
 
         transporter.sendMail(
           {
-            from: "harshkr2709@gmail.com",
+            from: "tech@diamondore.in",
             to: previousOwnerEmail,
             subject: "Account Handling Ownership Update",
             text: `The AccountHandling request for phone: ${accountPhone} has been denied by the Admin.`,
