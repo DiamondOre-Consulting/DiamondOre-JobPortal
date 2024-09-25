@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import chatboat from '../../assets/Chatboat.svg';
 import axios from "axios";
 import popupimg from '../../assets/Logo robo recruiter 1.gif';
-import certificate from '../../assets/certificate.jpg';
+import certificate from '../../assets/startup.png';
 
 const Chatboot = () => {
 

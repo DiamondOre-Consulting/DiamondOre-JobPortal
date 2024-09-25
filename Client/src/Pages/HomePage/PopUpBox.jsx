@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import image from '..//../assets/certificate.jpg'
+import image from '..//../assets/startup.png'
 
 const PopUpBox = ({ closeModal, setShowModal }) => {
 
