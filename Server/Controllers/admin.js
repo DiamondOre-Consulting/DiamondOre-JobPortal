@@ -1611,6 +1611,7 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
         <td style="border: 1px solid #ddd; padding: 8px;">${job.JobTitle}</td>
         <td style="border: 1px solid #ddd; padding: 8px;">${job.Industry}</td>
         <td style="border: 1px solid #ddd; padding: 8px;">${job.Channel}</td>
+        <td style="border: 1px solid #ddd; padding: 8px;">${job.MaxSalary}</td>
         <td style="border: 1px solid #ddd; padding: 8px;">${job.Zone}</td>
         <td style="border: 1px solid #ddd; padding: 8px;">${job.City}</td>
         <td style="border: 1px solid #ddd; padding: 8px;">${job.State}</td>
@@ -1622,6 +1623,8 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
     const htmlContent = `
       <h1 style="color: blue; text-align: center; font-size: 2rem">DiamondOre Consulting Pvt. Ltd.</h1>
       <h3 style="color: black; font-size: 1.3rem; text-align: center;">Jobs for candidate: ${candidate.candidateName}</h3>
+      <h3 style="color: black; font-size: 1.1rem; text-align: center;">Phone: ${candidate.phone}</h3> 
+      <h3 style="color: black; font-size: 1.1rem; text-align: center;">Email: ${candidate.email}</h3>
       <table style="border-collapse: collapse; width: 100%;">
         <thead>
           <tr style="background-color: #f2f2f2;">
@@ -1629,6 +1632,7 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
             <th style="border: 1px solid #ddd; padding: 8px;">Job Title</th>
             <th style="border: 1px solid #ddd; padding: 8px;">Industry</th>
             <th style="border: 1px solid #ddd; padding: 8px;">Channel</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">MaxSalary</th>
             <th style="border: 1px solid #ddd; padding: 8px;">Zone</th>
             <th style="border: 1px solid #ddd; padding: 8px;">City</th>
             <th style="border: 1px solid #ddd; padding: 8px;">State</th>
@@ -1660,14 +1664,35 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
 
 router.get("/find-bulk-jobs", async (req, res) => {
   try {
-    const now = new Date();
-    const day = String(now.getDate()).padStart(2, "0");
-    const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-    const year = String(now.getFullYear()); // Get last two digits of the year
+    const { recruiterName, fromDate, toDate } = req.query; // Taking input from query params
 
-    const formattedDate = `${day}/${month}/${year}`;
-    console.log(formattedDate);
-    const candidates = await DSR.find({ currentDate: formattedDate });
+    if (!fromDate || !toDate) {
+      return res.status(400).send("Please provide fromDate and toDate");
+    }
+
+    // Convert fromDate and toDate into Date objects
+    const from = new Date(fromDate);
+    const to = new Date(toDate);
+    // to.setHours(23, 59, 59, 999); 
+
+    // Build the query object based on whether recruiterName is provided
+    const query = {
+      currentDate: {
+        $gte: fromDate,
+        $lte: toDate,
+      },
+    };
+
+    if (recruiterName) {
+      query.recruiterName = recruiterName;
+    }
+
+    // Fetch candidates matching the criteria
+    const candidates = await DSR.find(query);
+
+    console.log(candidates.length);
+    
+
     if (!candidates.length) {
       return res.status(404).send("No candidates found");
     }
@@ -1677,7 +1702,7 @@ router.get("/find-bulk-jobs", async (req, res) => {
     for (const candidate of candidates) {
       const suitableJobs = await Jobs.find({
         City: candidate.currentLocation,
-        // Channel: candidate.currentChannel,
+        Channel: candidate.currentChannel,
         MaxSalary: {
           $gt: candidate.currentCTC,
           $lte: candidate.currentCTC * 1.5, // Not more than 50% of current CTC
@@ -1693,13 +1718,8 @@ router.get("/find-bulk-jobs", async (req, res) => {
         const findRec = await RecruitersAndKAMs.findOne({
           name: candidate.recruiterName,
         });
-        const findKam = await RecruitersAndKAMs.findOne({
-          name: candidate.kamName,
-        });
         const eMailIdRec = findRec.email;
-        // const eMailIdKam = findKam.email;
         await sendJobsToRecByEmail(eMailIdRec, candidate, suitableJobs);
-        // await sendJobsToKamByEmail(eMailIdKam, candidate, suitableJobs)
       }
     }
 
@@ -1708,6 +1728,7 @@ router.get("/find-bulk-jobs", async (req, res) => {
     res.status(500).send(error.message);
   }
 });
+
 
 // REGISTER RECRUITER AND KAM
 router.post("/register-recruiter-kam", async (req, res) => {
