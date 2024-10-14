@@ -1688,7 +1688,7 @@ router.get("/find-bulk-jobs", async (req, res) => {
     }
 
     // Fetch candidates matching the criteria
-    const candidates = await DSR.find(query);
+    const candidates = await DSR.find(query); 
 
     console.log(candidates.length);
     
