@@ -1664,7 +1664,7 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
 
 router.get("/find-bulk-jobs", async (req, res) => {
   try {
-    const { recruiterName, fromDate, toDate } = req.query; // Taking input from query params
+    const { recruiterName, fromDate, toDate, location, ctcStart, ctcEnd, role } = req.query; // Taking input from query params
 
     if (!fromDate || !toDate) {
       return res.status(400).send("Please provide fromDate and toDate");
@@ -1683,8 +1683,23 @@ router.get("/find-bulk-jobs", async (req, res) => {
       },
     };
 
-    if (recruiterName) {
-      query.recruiterName = recruiterName;
+    // if (recruiterName) {
+    //   query.recruiterName = recruiterName;
+    // }
+
+    if (location) {
+      query.location = location;
+    }
+
+    if (role) {
+      query.role = role;
+    }
+
+    if (ctcStart && ctcEnd) {
+      query.currentCTC = {
+        $gte: ctcStart,
+        $lte: ctcEnd
+      }
     }
 
     // Fetch candidates matching the criteria
@@ -1716,7 +1731,7 @@ router.get("/find-bulk-jobs", async (req, res) => {
 
       if (suitableJobs.length > 0) {
         const findRec = await RecruitersAndKAMs.findOne({
-          name: candidate.recruiterName,
+          name: recruiterName,
         });
         const eMailIdRec = findRec.email;
         await sendJobsToRecByEmail(eMailIdRec, candidate, suitableJobs);
