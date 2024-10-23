@@ -1660,14 +1660,50 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
 
 router.get("/find-bulk-jobs", async (req, res) => {
   try {
-    const now = new Date();
-    const day = String(now.getDate()).padStart(2, "0");
-    const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-    const year = String(now.getFullYear()); // Get last two digits of the year
+    const { recruiterName, fromDate, toDate, location, ctcStart, ctcEnd, role } = req.query; // Taking input from query params
 
-    const formattedDate = `${day}/${month}/${year}`;
-    console.log(formattedDate);
-    const candidates = await DSR.find({ currentDate: formattedDate });
+    if (!fromDate || !toDate) {
+      return res.status(400).send("Please provide fromDate and toDate");
+    }
+
+    // Convert fromDate and toDate into Date objects
+    const from = new Date(fromDate);
+    const to = new Date(toDate);
+    // to.setHours(23, 59, 59, 999); 
+
+    // Build the query object based on whether recruiterName is provided
+    const query = {
+      currentDate: {
+        $gte: fromDate,
+        $lte: toDate,
+      },
+    };
+
+    // if (recruiterName) {
+    //   query.recruiterName = recruiterName;
+    // }
+
+    if (location) {
+      query.location = location;
+    }
+
+    if (role) {
+      query.role = role;
+    }
+
+    if (ctcStart && ctcEnd) {
+      query.currentCTC = {
+        $gte: ctcStart,
+        $lte: ctcEnd
+      }
+    }
+
+    // Fetch candidates matching the criteria
+    const candidates = await DSR.find(query); 
+
+    console.log(candidates.length);
+    
+
     if (!candidates.length) {
       return res.status(404).send("No candidates found");
     }
@@ -1677,7 +1713,7 @@ router.get("/find-bulk-jobs", async (req, res) => {
     for (const candidate of candidates) {
       const suitableJobs = await Jobs.find({
         City: candidate.currentLocation,
-        // Channel: candidate.currentChannel,
+        Channel: candidate.currentChannel,
         MaxSalary: {
           $gt: candidate.currentCTC,
           $lte: candidate.currentCTC * 1.5, // Not more than 50% of current CTC
@@ -1691,15 +1727,10 @@ router.get("/find-bulk-jobs", async (req, res) => {
 
       if (suitableJobs.length > 0) {
         const findRec = await RecruitersAndKAMs.findOne({
-          name: candidate.recruiterName,
-        });
-        const findKam = await RecruitersAndKAMs.findOne({
-          name: candidate.kamName,
+          name: recruiterName,
         });
         const eMailIdRec = findRec.email;
-        // const eMailIdKam = findKam.email;
         await sendJobsToRecByEmail(eMailIdRec, candidate, suitableJobs);
-        // await sendJobsToKamByEmail(eMailIdKam, candidate, suitableJobs)
       }
     }
 
