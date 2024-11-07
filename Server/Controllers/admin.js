@@ -1662,6 +1662,93 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
   }
 };
 
+// router.get("/find-bulk-jobs", async (req, res) => {
+//   try {
+//     const { recruiterName, fromDate, toDate, location, ctcStart, ctcEnd, role } = req.query; // Taking input from query params
+
+//     if (!fromDate || !toDate) {
+//       return res.status(400).send("Please provide fromDate and toDate");
+//     }
+
+//     // Convert fromDate and toDate into Date objects
+//     const from = new Date(fromDate);
+//     const to = new Date(toDate);
+//     // to.setHours(23, 59, 59, 999); 
+
+//     // Build the query object based on whether recruiterName is provided
+//     const query = {
+//       currentDate: {
+//         $gte: fromDate,
+//         $lte: toDate,
+//       },
+//     };
+
+//     // if (recruiterName) {
+//     //   query.recruiterName = recruiterName;
+//     // }
+
+//     if (location) {
+//       query.location = location;
+//     }
+
+//     if (role) {
+//       query.role = role;
+//     }
+
+//     if (ctcStart && ctcEnd) {
+//       query.currentCTC = {
+//         $gte: ctcStart,
+//         $lte: ctcEnd
+//       }
+//     }
+
+//     // Fetch candidates matching the criteria
+//     const candidates = await DSR.find(query); 
+
+//     console.log(candidates.length);
+    
+
+//     if (!candidates.length) {
+//       return res.status(404).send("No candidates found");
+//     }
+
+//     const recommendations = [];
+
+//     for (const candidate of candidates) {
+//       const suitableJobs = await Jobs.find({
+//         City: candidate.currentLocation,
+//         Channel: candidate.currentChannel,
+//         MaxSalary: {
+//           $gt: candidate.currentCTC,
+//           $lte: candidate.currentCTC * 1.5, // Not more than 50% of current CTC
+//         },
+//       });
+
+//       recommendations.push({
+//         candidate: candidate,
+//         jobs: suitableJobs,
+//       });
+
+//       if (suitableJobs.length > 0) {
+//         const findRec = await RecruitersAndKAMs.findOne({
+//           name: recruiterName,
+//         });
+//         const eMailIdRec = findRec.email;
+//         await sendJobsToRecByEmail(eMailIdRec, candidate, suitableJobs);
+//       }
+//     }
+
+//     res.status(200).json(recommendations);
+//   } catch (error) {
+//     res.status(500).send(error.message);
+//   }
+// });
+
+
+
+
+// REGISTER RECRUITER AND KAM
+
 router.get("/find-bulk-jobs", async (req, res) => {
   try {
     const { recruiterName, fromDate, toDate, location, ctcStart, ctcEnd, role } = req.query; // Taking input from query params
@@ -1702,6 +1789,9 @@ router.get("/find-bulk-jobs", async (req, res) => {
       }
     }
 
+    console.log(query);
+    
+
     // Fetch candidates matching the criteria
     const candidates = await DSR.find(query); 
 
@@ -1729,6 +1819,9 @@ router.get("/find-bulk-jobs", async (req, res) => {
         jobs: suitableJobs,
       });
 
+      console.log(recommendations);
+      
+
       if (suitableJobs.length > 0) {
         const findRec = await RecruitersAndKAMs.findOne({
           name: recruiterName,
@@ -1744,8 +1837,6 @@ router.get("/find-bulk-jobs", async (req, res) => {
   }
 });
 
-
-// REGISTER RECRUITER AND KAM
 router.post("/register-recruiter-kam", async (req, res) => {
   try {
     const { name, email } = req.body;
