@@ -48,7 +48,7 @@ const AdminAllJobsCards = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "http://localhost:5000/api/admin-confi/all-jobs"
+          "https://api.diamondore.in/api/admin-confi/all-jobs"
         );
         if (response.status == 200) {
           const all = response.data;
