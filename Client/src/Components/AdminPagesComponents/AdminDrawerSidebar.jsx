@@ -166,7 +166,7 @@ const AdminDrawerSidebar = () => {
                 }
 
                 const response = await axios.get(
-                    "https:///api/admin-confi/user-data",
+                    "https://api.diamondore.in/api/admin-confi/user-data",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -186,6 +186,8 @@ const AdminDrawerSidebar = () => {
 
         fetchUserData();
     }, [navigate]);
+
+    
 
     
 
