@@ -23,7 +23,7 @@ const router = express.Router();
 // EMPLOYEE SIGNUP
 router.post("/add-emp", AdminAuthenticateToken, async (req, res) => {
   try {
-    const { empType, name, email, password, dob, doj } = req.body;
+    const { empType, name, email, password, dob, doj,accountHandler } = req.body;
     const { userId } = req.user;
 
     const user = await Admin.findById({ _id: userId });
@@ -45,6 +45,7 @@ router.post("/add-emp", AdminAuthenticateToken, async (req, res) => {
       password: hashedPassword,
       dob,
       doj,
+      accountHandler
     });
 
     await newEmp.save();

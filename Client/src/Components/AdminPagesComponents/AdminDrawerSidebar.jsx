@@ -166,7 +166,7 @@ const AdminDrawerSidebar = () => {
                 }
 
                 const response = await axios.get(
-                    "https://api.diamondore.in/api/admin-confi/user-data",
+                    "https:///api/admin-confi/user-data",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -175,6 +175,7 @@ const AdminDrawerSidebar = () => {
                 );
                 if (response.status === 200) {
                     setUserData(response.data);
+                    console.log(response.data)
                 } else {
                     setUserData("Did not get any response!!!");
                 }
@@ -185,6 +186,8 @@ const AdminDrawerSidebar = () => {
 
         fetchUserData();
     }, [navigate]);
+
+    
 
     const handleLogout = () => {
         localStorage.removeItem("token");
@@ -241,6 +244,8 @@ const AdminDrawerSidebar = () => {
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
+                
+
                 <List>
                     {[
                         { text: 'Home', icon: <HomeIcon />, path: '/home' },
@@ -249,13 +254,13 @@ const AdminDrawerSidebar = () => {
                         { text: 'ERP', icon: <img src={erpicon} className='w-6 h-6' />, path: '/erp-dashboard' },
                         { text: 'Add & Delete Jobs', icon: <DomainAddIcon />, path: '/add-jobs' },
                         { text: 'All Reviews', icon: <ReviewsIcon />, path: '/all-reviews' },
-                        { text: 'All Employees', icon: <BadgeIcon />, path: '/all-employees' },
-                        { text: 'Add Recruiter', icon: <AddCircleOutlineIcon />, path: '/add-recruiter' },
-                        { text: 'Add Employee', icon: <PersonAddIcon />, path: '/add-employee' },
+                        ...(userData?.adminType!=="subAdmin"?[{ text: 'All Employees', icon: <BadgeIcon />, path: '/all-employees' }]:[]),
+                        ...(userData?.adminType!=="subAdmin"?[{ text: 'Add Recruiter', icon: <AddCircleOutlineIcon />, path: '/add-recruiter'}]:[]),
+                        ...(userData?.adminType!=="subAdmin"?[{ text: 'Add Employee', icon: <PersonAddIcon />, path: '/add-employee' }]:[]),
                         { text: 'Prompt', icon: <SaveAsIcon />, path: '/prompt' },
-                        { text: 'Make Admin', icon: <AdminPanelSettingsIcon />, path: '/make-admin' },
+                        ...(userData?.adminType!=="subAdmin"?[{ text: 'Make Admin', icon: <AdminPanelSettingsIcon />, path: '/make-admin'}]:[]),
                         { text: 'Edit Profile', icon: <AccountBoxIcon />, path: '/edit-profile' },
-                        { text: 'All Accounts', icon: <ManageAccountsIcon />, path: '/all-accounts' },
+                        ...(userData?.adminType!=="subAdmin"?[{ text: 'All Accounts', icon: <ManageAccountsIcon />, path: '/all-accounts' }]:[]),
 
                     ].map((item) => (
                         <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
@@ -298,7 +303,7 @@ const AdminDrawerSidebar = () => {
                     <Route path='/all-reviews' element={<AllReviews />} />
                     <Route path='/all-employees' element={<AllEmployee />} />
                     <Route path='/employee/:id' element={<EmployeeBranchesPage/>}/>
-                    <Route path='/goal-sheet/:id' element={<EachEmployeeGoalSheet />} />
+                    <Route path='/goal-sheet/:id/:employeename' element={<EachEmployeeGoalSheet />} />
                     <Route path='/each-account/:id' element={<EachEmployeeAccounts/>}/>
                     <Route path='/kpi/:id' element={<EachEmployeeKPIScore/>}/>
                     <Route path='/add-recruiter' element={<AddRecruiter />} />

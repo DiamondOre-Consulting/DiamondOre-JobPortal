@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useJwt } from "react-jwt";
 import axios from "axios";
+import AccountHandling from "../../../../Server/Models/AccountHandling";
 
 const Employeesignup = () => {
     const navigate = useNavigate();
     const { decodedToken } = useJwt(localStorage.getItem("token"));
     const token = localStorage.getItem("token");
+
 
     useEffect(() => {
         if (!token) {
@@ -30,6 +32,8 @@ const Employeesignup = () => {
     const [error, setError] = useState(null);
     const [showPass, setShowPass] = useState(false);
     const [added, setAdded] = useState(null);
+    const [accoutHandlerValue,setaccoutHandlerValue] = useState(false)
+
 
     const handleSignup = async (e) => {
         e.preventDefault();
@@ -44,7 +48,8 @@ const Employeesignup = () => {
                     password,
                     empType,
                     dob,
-                    doj
+                    doj,
+                    accountHandler:accoutHandlerValue
                 },
                 {
                     headers: {
@@ -69,8 +74,14 @@ const Employeesignup = () => {
         setShowPass(!showPass);
     };
 
+    const handleEditAccountHandler = (e)=>{
+
+        setaccoutHandlerValue(e.target.value==="true")
+
+    }
+
     return (
-        <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-screen-xl  px-4 py-16 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-lg">
                 <form
                     onSubmit={handleSignup}
@@ -120,9 +131,35 @@ const Employeesignup = () => {
                             onChange={(e) => setEmpType(e.target.value)}
                         >
                             <option value="">Select Designation</option>
+                            <option value="">Select Designation</option>
                             <option value="Recruiter">Recruiter</option>
-                            <option value="SeniorRecruiter">Senior Recruiter</option>
+                            <option value="SeniorRecruiter"> Senior Recruiter</option>
                             <option value="TeamLeader">Team Leader</option>
+                            <option value="Recruiter">Trainee 2x</option>
+                            <option value="SeniorRecruiter">Jr Recruiter 3x</option>
+                            <option value="Recruiter&Mentor 5x">Recruiter & Mentor 5x</option>
+                            <option value="Sr.Recruiter&Mentor5x">Sr. Recruiter & Mentor 5x</option>
+                            <option value="TeamLeader6x">Team Leader 6x</option>
+                            <option value="HrConsultant6x">Hr Consultant 6x</option>
+                        </select>
+                    </div>
+
+
+                    <div>
+                        <label htmlFor="empType" className="block text-sm font-medium text-gray-700">
+                            Account Handeling
+                        </label>
+                        <select
+                            className="py-2 w-full px-2 rounded-md mt-1"
+                            value={accoutHandlerValue}
+                            onChange={handleEditAccountHandler}
+                        >
+                            <option value="">Select Account Handeling</option>
+                            <option value="true">Yes </option>
+                            <option value="false">No</option>
+                           
+
+
                         </select>
                     </div>
 

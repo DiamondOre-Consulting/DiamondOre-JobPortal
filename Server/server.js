@@ -59,4 +59,8 @@ app.listen(PORT, () => {
   console.log(`Server is running on port: ${PORT}`);
 });
 
-export default otpStore;
+function storeOtp(email,otp){
+  otpStore[email] = {otp,expires:Date.now()+5*60*1000}
+}
+
+export {otpStore,storeOtp};

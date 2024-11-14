@@ -3,8 +3,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
-import otpStore from "../server.js";
-import forgotOtp from "../server.js";
+import {otpStore,storeOtp} from "../server.js";
+// import forgotOtp from "../server.js";
 import { S3Client } from "@aws-sdk/client-s3";
 import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -90,10 +90,12 @@ router.post("/send-otp", async (req, res) => {
 
     // Generate and store OTP
     const otp = generateOTP();
-    otpStore[email] = otp; // Store OTP for the email
+    console.log("generated otp in sent otp",otp)
+    storeOtp(email,otp) // Store OTP for the email
+    console.log(otp)
 
     console.log(email);
-    console.log("otpStore: ", otpStore[email]);
+    // console.log("otpStore in send otp email: ", otpStore[email]);
 
     // Send OTP via email
     await sendOTPByEmail(email, otp);
@@ -176,22 +178,29 @@ router.post("/upload-profile-pic", async (req, res) => {
 
 // SIGNUP AS ADMIN
 router.post("/signup-admin", async (req, res) => {
-  const { name, email, password, otp, profilePic } = req.body;
+  const { name, email, password, otp, profilePic, adminType } = req.body;
+  console.log(adminType)
+
+console.log(otpStore)
 
   console.log("Signup Email:", email);
   console.log("Entered OTP:", otp);
-  console.log("Stored OTP:", otpStore[email]);
+ 
+  console.log("Stored OTP in signup:", otpStore[email]);
   // const isValidOTP = verifyOTP(otpStore, otp); //TESTING OTP
   // if (isValidOTP) {
   // TESTING OTP
   try {
     // Verify OTP
-    if (otpStore[email] == otp) {
+    console.log(otpStore[email].otp)
+    
+    if (otpStore[email].otp == otp) {
       const userExists = await Admin.exists({ email });
       if (userExists) {
         return res.status(409).json({ message: "User already exists" });
       }
 
+      console.log(1)
       // Hash the password
       const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -202,12 +211,17 @@ router.post("/signup-admin", async (req, res) => {
         otp: null,
         password: hashedPassword,
         profilePic,
+        adminType:adminType
       });
+
+      console.log(2)
 
       // Save the user to the database
       await newUser.save();
 
       delete otpStore[email];
+
+      console.log(newUser)
 
       return res
         .status(201)
@@ -271,13 +285,14 @@ router.get("/user-data", AdminAuthenticateToken, async (req, res) => {
     }
 
     // Extract the required fields from the user object
-    const { id, name, profilePic } = user;
+    const { id, name, profilePic, adminType } = user;
 
     res.status(200).json({
       id,
       name,
       email,
       profilePic,
+      adminType
     });
   } catch (error) {
     console.error("Error fetching user data:", error);
@@ -1175,7 +1190,7 @@ router.post("/client-form", async (req, res) => {
     const mailOptions = {
       from: "DOC_Labz <tech@diamondore.in>",
       to: "hr@diamondore.in",
-      cc:['zoyas3423@gmail.com' , 'zoya.rasonline@gmail.com'],
+      cc: ['zoyas3423@gmail.com', 'zoya.rasonline@gmail.com'],
       subject: `DOC_LABZ - New Client: New Message Received from ${userName}`,
       text: `A new message has been submitted by ${userName}.`,
       html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${userName}</h4> </br>
@@ -1706,7 +1721,7 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
 //     const candidates = await DSR.find(query); 
 
 //     console.log(candidates.length);
-    
+
 
 //     if (!candidates.length) {
 //       return res.status(404).send("No candidates found");
@@ -1790,13 +1805,13 @@ router.get("/find-bulk-jobs", async (req, res) => {
     }
 
     console.log(query);
-    
+
 
     // Fetch candidates matching the criteria
-    const candidates = await DSR.find(query); 
+    const candidates = await DSR.find(query);
 
     console.log(candidates.length);
-    
+
 
     if (!candidates.length) {
       return res.status(404).send("No candidates found");
@@ -1820,7 +1835,7 @@ router.get("/find-bulk-jobs", async (req, res) => {
       });
 
       console.log(recommendations);
-      
+
 
       if (suitableJobs.length > 0) {
         const findRec = await RecruitersAndKAMs.findOne({
@@ -1938,6 +1953,60 @@ router.get("/all-employees/:id", AdminAuthenticateToken, async (req, res) => {
     return res.status(500).json({ message: "Something went wrong!!!" });
   }
 });
+
+
+router.put('/all-employees-edit/:id', AdminAuthenticateToken, async (req, res) => {
+  // console.log("request-accepted")
+  try {
+    const { id } = req.params;
+
+    console.log(req.body)
+    console.log("check")
+    console.log(req.body.accountHandler)
+
+    const updatedFields = {}
+
+    if (req.body.name) {
+      updatedFields.name = req.body.name;
+    }
+    if (req.body.email) {
+      updatedFields.email = req.body.email;
+    }
+    if (req.body.empType) {
+      updatedFields.empType = req.body.empType;
+    }
+    if (req.body.dob) {
+      updatedFields.dob = req.body.dob;
+    }
+    if (req.body.doj) {
+      updatedFields.doj = req.body.doj;
+    }
+    
+      
+      
+    updatedFields.accountHandler = req.body.accountHandler;
+    
+    console.log("test")
+    console.log(updatedFields.accountHandler)
+
+    const updateEmployee= await Employees.updateOne({_id:id}, updatedFields,{new:true})
+     
+    if(!updateEmployee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    return res.status(200).json(updateEmployee);
+
+
+  }
+  catch (error) {
+
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong!!!" });
+
+  }
+
+})
 
 // EMPLOYEE LEAVE REPORT
 // ADD LEAVE REPORT
@@ -2176,7 +2245,7 @@ router.post(
 //     const yearMain = year;
 //     const monthMain = parseInt(month);
 //     console.log(yearMain, monthMain);
-    
+
 
 //     // Find the employee by empId
 //     const employee = await Employees.findById(empId);
@@ -2328,73 +2397,73 @@ router.post('/set-goalSheet', async (req, res) => {
   const { empId, year, month, noOfJoinings, cost, revenue, incentive, variableIncentive } = req.body;
 
   try {
-      // Find the employee by empId
-      const employee = await Employees.findOne({ _id: empId });
-      if (!employee) {
-          return res.status(404).json({ error: 'Employee not found' });
-      }
+    // Find the employee by empId
+    const employee = await Employees.findOne({ _id: empId });
+    if (!employee) {
+      return res.status(404).json({ error: 'Employee not found' });
+    }
 
-      let goalSheet = await GoalSheet.findOne({ owner: employee._id });
+    let goalSheet = await GoalSheet.findOne({ owner: employee._id });
 
-      if (!goalSheet) {
-          // If the GoalSheet does not exist, create one
-          goalSheet = new GoalSheet({
-              owner: employee._id,
-              goalSheetDetails: []
-          });
-      }
-
-      // Check if the month and year combination already exists
-      const existingDetail = goalSheet.goalSheetDetails.find(
-          detail => detail.year === year && detail.month === month
-      );
-
-      if (existingDetail) {
-          return res.status(400).json({ error: 'GoalSheet for this month and year already exists' });
-      }
-
-        // Get the last entry in goalSheetDetails for cumulative calculations
-        const lastDetail = goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length - 1] || {};
-        const previousCumulativeCost = lastDetail.cumulativeCost || 0;
-        const previousCumulativeRevenue = lastDetail.cumulativeRevenue || 0;
-
-        // Calculate necessary fields
-        const cumulativeCost = previousCumulativeCost + cost;
-        const cumulativeRevenue = previousCumulativeRevenue + revenue;
-        const achYTD = (cumulativeRevenue / cumulativeCost).toFixed(2);
-        const achMTD = (revenue / cost).toFixed(2);
-        const target = cost * 4;
-
-      // Push the new goalSheetDetails
-      goalSheet.goalSheetDetails.push({
-          year,
-          month,
-          noOfJoinings,
-          cost,
-          revenue,
-          target,
-          cumulativeCost,
-          cumulativeRevenue,
-          achYTD,
-          achMTD,
-          incentive, // Leave incentive blank for now
-          variableIncentive // Leave variable incentive blank for now
+    if (!goalSheet) {
+      // If the GoalSheet does not exist, create one
+      goalSheet = new GoalSheet({
+        owner: employee._id,
+        goalSheetDetails: []
       });
+    }
 
-      // Save the GoalSheet
-      await goalSheet.save();
+    // Check if the month and year combination already exists
+    const existingDetail = goalSheet.goalSheetDetails.find(
+      detail => detail.year === year && detail.month === month
+    );
 
-      // Add the GoalSheet reference to the employee if it is newly created
-      // if (!employee.myGoalSheet.includes(goalSheet._id)) {
-      //     employee.myGoalSheet.push(goalSheet._id);
-      //     await employee.save();
-      // }
+    if (existingDetail) {
+      return res.status(400).json({ error: 'GoalSheet for this month and year already exists' });
+    }
 
-      res.status(201).json({ message: 'GoalSheet updated successfully', goalSheet });
+    // Get the last entry in goalSheetDetails for cumulative calculations
+    const lastDetail = goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length - 1] || {};
+    const previousCumulativeCost = lastDetail.cumulativeCost || 0;
+    const previousCumulativeRevenue = lastDetail.cumulativeRevenue || 0;
+
+    // Calculate necessary fields
+    const cumulativeCost = previousCumulativeCost + cost;
+    const cumulativeRevenue = previousCumulativeRevenue + revenue;
+    const achYTD = (cumulativeRevenue / cumulativeCost).toFixed(2);
+    const achMTD = (revenue / cost).toFixed(2);
+    const target = cost * 4;
+
+    // Push the new goalSheetDetails
+    goalSheet.goalSheetDetails.push({
+      year,
+      month,
+      noOfJoinings,
+      cost,
+      revenue,
+      target,
+      cumulativeCost,
+      cumulativeRevenue,
+      achYTD,
+      achMTD,
+      incentive, // Leave incentive blank for now
+      variableIncentive // Leave variable incentive blank for now
+    });
+
+    // Save the GoalSheet
+    await goalSheet.save();
+
+    // Add the GoalSheet reference to the employee if it is newly created
+    // if (!employee.myGoalSheet.includes(goalSheet._id)) {
+    //     employee.myGoalSheet.push(goalSheet._id);
+    //     await employee.save();
+    // }
+
+    res.status(201).json({ message: 'GoalSheet updated successfully', goalSheet });
 
   } catch (error) {
-      res.status(500).json({ error: 'An error occurred', details: error.message });
-      console.log(error)
+    res.status(500).json({ error: 'An error occurred', details: error.message });
+    console.log(error)
   }
 });
 
@@ -2420,79 +2489,79 @@ router.put('/edit-goalSheet', async (req, res) => {
   const { empId, year, month, noOfJoinings, cost, revenue, incentive, variableIncentive } = req.body;
 
   try {
-      // Find the employee by empId
-      const employee = await Employees.findOne({ _id: empId });
-      if (!employee) {
-          return res.status(404).json({ error: 'Employee not found' });
-      }
+    // Find the employee by empId
+    const employee = await Employees.findOne({ _id: empId });
+    if (!employee) {
+      return res.status(404).json({ error: 'Employee not found' });
+    }
 
-      // Find the GoalSheet for the employee
-      let goalSheet = await GoalSheet.findOne({ owner: employee._id });
-      if (!goalSheet) {
-          return res.status(404).json({ error: 'GoalSheet not found' });
-      }
+    // Find the GoalSheet for the employee
+    let goalSheet = await GoalSheet.findOne({ owner: employee._id });
+    if (!goalSheet) {
+      return res.status(404).json({ error: 'GoalSheet not found' });
+    }
 
-      // Find the specific goal sheet detail by month and year
-      const goalDetailIndex = goalSheet.goalSheetDetails.findIndex(
-          detail => detail.year === year && detail.month === month
-      );
+    // Find the specific goal sheet detail by month and year
+    const goalDetailIndex = goalSheet.goalSheetDetails.findIndex(
+      detail => detail.year === year && detail.month === month
+    );
 
-      if (goalDetailIndex === -1) {
-          return res.status(404).json({ error: 'GoalSheet for this month and year not found' });
-      }
+    if (goalDetailIndex === -1) {
+      return res.status(404).json({ error: 'GoalSheet for this month and year not found' });
+    }
 
-      // Get the current goalSheetDetail for updates
-      let goalDetail = goalSheet.goalSheetDetails[goalDetailIndex];
+    // Get the current goalSheetDetail for updates
+    let goalDetail = goalSheet.goalSheetDetails[goalDetailIndex];
 
-      // Get the last entry for cumulative calculations
-      const lastDetail = goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length - 1] || {};
-      const previousCumulativeCost = lastDetail.cumulativeCost || 0;
-      const previousCumulativeRevenue = lastDetail.cumulativeRevenue || 0;
+    // Get the last entry for cumulative calculations
+    const lastDetail = goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length - 1] || {};
+    const previousCumulativeCost = lastDetail.cumulativeCost || 0;
+    const previousCumulativeRevenue = lastDetail.cumulativeRevenue || 0;
 
-      // Update the fields conditionally
-      if (noOfJoinings !== undefined) {
-          goalDetail.noOfJoinings = noOfJoinings;
-      }
+    // Update the fields conditionally
+    if (noOfJoinings !== undefined) {
+      goalDetail.noOfJoinings = noOfJoinings;
+    }
 
-      if (cost !== undefined) {
-          // Calculate cumulativeCost based on the new cost value
-          const updatedCumulativeCost = previousCumulativeCost + cost;
-          goalDetail.cost = cost;
-          goalDetail.cumulativeCost = updatedCumulativeCost;
+    if (cost !== undefined) {
+      // Calculate cumulativeCost based on the new cost value
+      const updatedCumulativeCost = previousCumulativeCost + cost;
+      goalDetail.cost = cost;
+      goalDetail.cumulativeCost = updatedCumulativeCost;
 
-          // Update target if cost is provided
-          goalDetail.target = cost * 4;
-      }
+      // Update target if cost is provided
+      goalDetail.target = cost * 4;
+    }
 
-      if (revenue !== undefined) {
-          // Calculate cumulativeRevenue based on the new revenue value
-          const updatedCumulativeRevenue = previousCumulativeRevenue + revenue;
-          goalDetail.revenue = revenue;
-          goalDetail.cumulativeRevenue = updatedCumulativeRevenue;
+    if (revenue !== undefined) {
+      // Calculate cumulativeRevenue based on the new revenue value
+      const updatedCumulativeRevenue = previousCumulativeRevenue + revenue;
+      goalDetail.revenue = revenue;
+      goalDetail.cumulativeRevenue = updatedCumulativeRevenue;
 
-          // Update achMTD and achYTD if revenue is provided
-          goalDetail.achMTD = cost ? (revenue / cost).toFixed(2) : goalDetail.achMTD;
-          goalDetail.achYTD = goalDetail.cumulativeCost
-              ? (updatedCumulativeRevenue / goalDetail.cumulativeCost).toFixed(2)
-              : goalDetail.achYTD;
-      }
+      // Update achMTD and achYTD if revenue is provided
+      goalDetail.achMTD = cost ? (revenue / cost).toFixed(2) : goalDetail.achMTD;
+      goalDetail.achYTD = goalDetail.cumulativeCost
+        ? (updatedCumulativeRevenue / goalDetail.cumulativeCost).toFixed(2)
+        : goalDetail.achYTD;
+    }
 
-      if (incentive !== undefined) {
-          goalDetail.incentive = incentive;
-      }
+    if (incentive !== undefined) {
+      goalDetail.incentive = incentive;
+    }
 
-      if (variableIncentive !== undefined) {
-          goalDetail.variableIncentive = variableIncentive;
-      }
+    if (variableIncentive !== undefined) {
+      goalDetail.variableIncentive = variableIncentive;
+    }
 
-      // Save the updated GoalSheet
-      await goalSheet.save();
+    // Save the updated GoalSheet
+    await goalSheet.save();
 
-      res.status(200).json({ message: 'GoalSheet updated successfully', goalSheet });
+    res.status(200).json({ message: 'GoalSheet updated successfully', goalSheet });
 
   } catch (error) {
-      res.status(500).json({ error: 'An error occurred', details: error.message });
-      console.log(error);
+    res.status(500).json({ error: 'An error occurred', details: error.message });
+    console.log(error);
   }
 });
 

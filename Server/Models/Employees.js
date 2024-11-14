@@ -9,6 +9,10 @@ const employeeSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  accountHandler:{
+    type:Boolean,
+   
+  },
   email: {
     type: String,
     required: true,

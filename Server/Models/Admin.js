@@ -18,6 +18,9 @@ const adminSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  adminType:{
+    type: String,
+  },
   profilePic: {
     type: String,
     default: "https://cdn-icons-png.flaticon.com/512/9131/9131529.png"

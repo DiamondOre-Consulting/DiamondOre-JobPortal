@@ -9,6 +9,8 @@ import Footer from "../HomePage/Footer";
 
 const EachEmployeeGoalSheet = () => {
   const { id } = useParams();
+  const {employeename} = useParams();
+  console.log(employeename)
   const { decodedToken } = useJwt(localStorage.getItem("token"));
   const [employees, setEmployees] = useState([]);
   const [goalsheetform, setGoalSheetForm] = useState(false);
@@ -32,6 +34,8 @@ const EachEmployeeGoalSheet = () => {
   const handleSetGoalSheet = async (e) => {
     e.preventDefault();
     setShowSubmitLoader(true);
+
+    console.log("loaded")
 
     try {
       const token = localStorage.getItem("token");
@@ -237,7 +241,7 @@ const EachEmployeeGoalSheet = () => {
       {/* <AdminNav /> */}
       <div className="flex">
         <h1 className="mx-auto text-2xl md:text-4xl font-bold text-center mb-4">
-          Goal Sheet
+          Goal Sheet {employeename}
         </h1>
       </div>
       <div className=" grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-10 py-6 px-2 md:px-10">
