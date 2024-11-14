@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useJwt } from "react-jwt";
 import axios from "axios";
-import AccountHandling from "../../../../Server/Models/AccountHandling";
 
 const Employeesignup = () => {
     const navigate = useNavigate();
