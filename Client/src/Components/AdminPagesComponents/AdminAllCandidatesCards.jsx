@@ -167,18 +167,31 @@ const AdminAllCandidatesCards = () => {
 
         
       {/* Search bar */}
-            <div className="ml-7 text-lg font-medium"><span>Download Candidate Data</span></div>
-      <div className="flex justify-end items-center  mb-10">
-            
+            <div className=" text-xl font-semibold text-blue-950">Download Candidate Data</div>
+      <div className="flex gap-3 mt-20 md:mt-0  flex-col md:flex-row justify-end items-center md:h-24 h-20  mb-10">
+         
+     
+           <div className="w-full gap-4 flex items-center h-full ">
+           
 
-           <div className="w-full gap-4 flex items-center justify-center h-full ">
-            <input className=" bg-blue-400 text-white rounded-md"  value={startDate} onChange={handleStartDateChange} type="date" min="2023-01-03" />
-            <input className="bg-blue-400 text-white rounded-md"  value={endDate} onChange={handleEndDateChange} type="date" />
-            <button onClick={handleDownloadExcelSheet} className="bg-blue-900 hover:bg-blue-700 p-2 rounded-md ml-4 text-white" >Download</button>
+            <div className="flex flex-col">
+            <label className="" htmlFor="">Start Date</label>  
+            <input className=" bg-blue-400 text-white rounded-md "  value={startDate} onChange={handleStartDateChange} type="date" min="2023-01-03" />
+            
+            </div>
+
+            <div className="flex flex-col">
+            <label className="" htmlFor="">End Date</label>
+            <input className="bg-blue-400 text-white rounded-md"  value={endDate}
+             onChange={handleEndDateChange} type="date" />
+
+            </div>
+            
+            <button onClick={handleDownloadExcelSheet} className="bg-blue-900 hover:bg-blue-700 p-2 rounded-md ml-4 mt-6 text-white" >Download</button>
            </div>
 
-      <div class="relative p-3 border border-gray-200 rounded-lg w-full max-w-lg">
-        <input type="text" class="rounded-md p-3 w-full" placeholder="Search By Name | Phone" value={searchQuery} onChange={handleSearchInputChange}/>
+      <div class="relative p-3 border border-gray-200 rounded-lg w-full  max-w-lg">
+        <input type="text" class="rounded-md p-3 w-full " placeholder="Search By Name | Phone" value={searchQuery} onChange={handleSearchInputChange}/>
 
         <button type="submit" class="absolute right-6 top-6">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
