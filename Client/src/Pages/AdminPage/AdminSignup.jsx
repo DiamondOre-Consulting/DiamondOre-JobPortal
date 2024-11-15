@@ -12,6 +12,7 @@ const AdminSignup = ({ toggleForm }) => {
   const [otp, setOtp] = useState("");
   const [profilePic, setProfilePic] = useState(null);
   const [profilePicUrl, setProfilePicUrl] = useState("");
+  const [loading,setLoading]= useState(false)
 
   const [adminType,setAdminType] = useState("")
 

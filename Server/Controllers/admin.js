@@ -29,6 +29,7 @@ import node_xj from "xls-to-json";
 import { fileURLToPath } from "url";
 import xlsx from "xlsx";
 import readXlsxFile from "read-excel-file/node";
+import Exceljs from 'exceljs'
 import DSR from "../Models/DSR.js";
 import JobsTesting from "../Models/JobsTesting.js";
 import RecruitersAndKAMs from "../Models/RecruitersAndKAMs.js";
@@ -2998,6 +2999,74 @@ router.get("/employee-kpi-score/:id", AdminAuthenticateToken, async (req, res) =
 
     res.status(200).json(myKPI);
   } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
+  }
+})
+
+
+
+router.post('/download-excel',AdminAuthenticateToken,async (req,res)=>{
+
+  try{
+       
+    const {startDate,endDate}= req.body;
+
+
+    if(!startDate||!endDate){
+      return res.status(400).json({"message":"start date and end date are required"})
+    }
+
+    if (new Date(startDate)  > new Date(endDate)) {
+      return res.status(400).json({ message: "Start date cannot be after end date." });
+    }
+
+
+    const candidateData= await Candidates.find({
+      createdAt:{
+        $gte:startDate,
+        $lte:endDate
+      }
+    });
+
+  
+
+    const workbook = new Exceljs.Workbook();
+    const worksheet= workbook.addWorksheet('candidates')
+
+    worksheet.columns = [
+      { header: 'Name', key: 'name' },
+      { header: 'Email', key:'email'},
+      { header: 'Phone no.', key:'phone'},
+      { header: 'Created At', key: 'createdAt' },
+
+    ]
+    console.log(candidateData)
+
+    candidateData.forEach(candidate=>{
+      worksheet.addRow({
+        name: candidate.name,
+        email: candidate.email,
+        phone: candidate.phone,
+        createdAt: candidate.createdAt.toISOString().slice(0,10),
+      })
+    })
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename=candidates.xlsx');
+
+    await workbook.xlsx.write(res);
+    res.end();
+
+
+
+
+
+  
+
+
+  }
+  catch(error){
     console.error(error.message);
     res.status(500).json({ message: error.message });
   }

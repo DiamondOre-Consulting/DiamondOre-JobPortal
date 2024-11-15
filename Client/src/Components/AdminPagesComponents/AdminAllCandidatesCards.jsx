@@ -5,12 +5,18 @@ import axios from "axios";
 import PropagateLoader from "react-spinners/PropagateLoader";
 
 
+
 const AdminAllCandidatesCards = () => {
   const navigate = useNavigate();
   const [latestCandidates, setLatestCandidates] = useState([]);
   let [loading, setLoading] = useState(true);
   const { decodedToken } = useJwt(localStorage.getItem("token"));
   const [searchQuery, setSearchQuery] = useState('');
+  const [startDate,setStartDate]=useState("")
+  const [endDate,setEndDate] = useState("")
+  
+
+
 
   const override = {
     display: "flex",
@@ -18,6 +24,43 @@ const AdminAllCandidatesCards = () => {
     alignItems: "center",
 
   };
+  
+  const minDate = "2024-01-01";
+
+  const handleStartDateChange = (e) => {
+    const selectedDate = e.target.value;
+    if (new Date(selectedDate) < new Date(minDate)) {
+      alert(`Start date cannot be before ${minDate}.`);
+      setStartDate("");
+
+    } 
+    else {
+      setStartDate(selectedDate);
+    }
+  };
+
+  const handleEndDateChange= (e)=>{
+
+    const selectedDate= e.target.value;
+   
+    if(new Date(selectedDate)>new Date(Date.now)){
+      setEndDate(selectedDate)
+    }
+    else{
+      setEndDate(selectedDate)
+
+    }
+
+  }
+
+  console.log("startDate",startDate)
+  console.log("endDate",endDate)
+
+  
+
+
+
+
 
   useEffect(() => {
     const fetchAllJobs = async () => {
@@ -45,6 +88,7 @@ const AdminAllCandidatesCards = () => {
           const all = response.data;
           // 
           setLatestCandidates(all.reverse());
+          console.log("candidates data",response.data)
           setLoading(false)
         }
       } catch (error) {
@@ -69,6 +113,50 @@ const AdminAllCandidatesCards = () => {
     setSearchQuery(e.target.value);
   };
 
+  const handleDownloadExcelSheet = async()=>{
+     
+    try{
+      const token = localStorage.getItem("token");
+      setLoading(true);
+
+       const response = await axios.post('https://api.diamondore.in/api/admin-confi/download-excel',{
+          startDate,
+          endDate
+       },{
+        headers:{
+             Authorization: `Bearer ${token}`
+        },
+          responseType: 'blob',  
+        
+       })
+
+       console.log(response.data)
+
+       if (response.data instanceof Blob) {
+       
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(response.data);  
+        link.download = 'candidates.xlsx';              
+  
+   
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link); 
+      } else {
+        console.error('Expected a Blob, but got', response.data);
+      }
+ 
+    }
+    catch(error){
+         console.log(error)
+    }
+    finally{
+       setLoading(false)
+    }
+
+
+  }
+
 
   return (
     <div className="bg-white py-4 sm:py-8 lg:py-10">
@@ -79,7 +167,16 @@ const AdminAllCandidatesCards = () => {
 
         
       {/* Search bar */}
-      <div className="flex justify-end items-end mb-10">
+            <div className="ml-7 text-lg font-medium"><span>Download Candidate Data</span></div>
+      <div className="flex justify-end items-center  mb-10">
+            
+
+           <div className="w-full gap-4 flex items-center justify-center h-full ">
+            <input className=" bg-blue-400 text-white rounded-md"  value={startDate} onChange={handleStartDateChange} type="date" min="2023-01-03" />
+            <input className="bg-blue-400 text-white rounded-md"  value={endDate} onChange={handleEndDateChange} type="date" />
+            <button onClick={handleDownloadExcelSheet} className="bg-blue-900 hover:bg-blue-700 p-2 rounded-md ml-4 text-white" >Download</button>
+           </div>
+
       <div class="relative p-3 border border-gray-200 rounded-lg w-full max-w-lg">
         <input type="text" class="rounded-md p-3 w-full" placeholder="Search By Name | Phone" value={searchQuery} onChange={handleSearchInputChange}/>
 

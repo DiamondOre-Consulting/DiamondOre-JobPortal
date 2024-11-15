@@ -61,6 +61,7 @@ import EachEmployeeAccounts from '../../Pages/AdminPage/EachEmployeeAccounts';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import AllDuplicatePhoneRequest from '../../Pages/AdminPage/AllDuplicatePhoneRequest';
 import EachEmployeeKPIScore from '../../Pages/AdminPage/EachEmployeeKPIScore';
+import loader from '../../assets/loader.svg';
 
 
 const drawerWidth = 240;
@@ -134,11 +135,13 @@ const AdminDrawerSidebar = () => {
     const navigate = useNavigate();
     const theme = useTheme();
     const [open, setOpen] = useState(false);
+    const [loading,setLoading]= useState(true)
 
     const { decodedToken } = useJwt(localStorage.getItem("token"));
     const token = localStorage.getItem("token");
 
     useEffect(() => {
+        
         if (!token) {
             navigate("/admin-login"); // Redirect to login page if not authenticated
             return;
@@ -151,10 +154,12 @@ const AdminDrawerSidebar = () => {
             localStorage.removeItem("token");
             navigate("/admin-login");
         }
+        
     }, [decodedToken, navigate, token]);
 
     useEffect(() => {
         const fetchUserData = async () => {
+            setLoading(true)
             try {
                 const token = localStorage.getItem("token");
 
@@ -182,6 +187,12 @@ const AdminDrawerSidebar = () => {
             } catch (error) {
                 console.error("Error fetching admin data:", error);
             }
+
+            finally{
+                setTimeout(()=>{
+                    setLoading(false)
+                },1000)
+            }
         };
 
         fetchUserData();
@@ -206,10 +217,21 @@ const AdminDrawerSidebar = () => {
 
     const handleNavigation = (path) => {
         navigate(`/admin-dashboard${path}`);
+
+
     };
 
+
+    if(loading){
+        return (
+            <div className='h-screen w-full flex justify-center items-center'>
+                <img src={loader} alt="loading" />
+            </div>
+        )
+    }
+
     return (
-        <Box sx={{ display: 'flex' }}>
+         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             <AppBar position="fixed" open={open} style={{ background: '#0d47a1' }}>
                 <Toolbar>
