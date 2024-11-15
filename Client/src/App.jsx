@@ -60,6 +60,7 @@ import EmpDrawerSidebar from "./Components/EmployeeComponents/EmpDrawerSidebar";
 import AllEmployee from "./Pages/AdminPage/AllEmployee";
 import EachEmployeeGoalSheet from "./Pages/AdminPage/EachEmployeeGoalSheet";
 import AdminDrawerSidebar from "./Components/AdminPagesComponents/AdminDrawerSidebar";
+import EmployeeRnrBoard from '../src/Pages/Employeepage/EmployeeRnrBoard'
 
 function App() {
   let [loading, setLoading] = useState(true);
@@ -155,6 +156,7 @@ function App() {
             <Route path='/employee-performence'element={<EmployeePerformence/>}/>
             <Route path="/employee-dashboard/*" element={<EmpDrawerSidebar />} />
             <Route path ='*' element ={<ErrorPage/>}/>
+            <Route path='/employee-rnrboard/:passcode' element={<EmployeeRnrBoard />} />
           </Route> 
         </Routes>
       </Router>

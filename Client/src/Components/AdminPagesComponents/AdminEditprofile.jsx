@@ -9,10 +9,12 @@ const AdminEditprofile = () => {
   const [adminData, setAdminData] = useState({
     name: "",
     email: "",
-    profilePic: null
+    profilePic: null,
+    passcode:""
   });
   const navigate = useNavigate();
 
+  console.log("data",adminData)
   useEffect(() => {
     const fetchUserData = async () => {
       const token = localStorage.getItem("token");
@@ -37,13 +39,27 @@ const AdminEditprofile = () => {
     fetchUserData();
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setAdmin(prevState => ({
+  const handleNameChange = (e) => {
+    setAdminData(prevState => ({
       ...prevState,
-      [name]: value,
+      name: e.target.value,
     }));
   };
+
+  const handleEmailChange = (e)=>{
+    setAdminData(prevDetails => ({
+        ...prevDetails,
+        email:e.target.value
+    }))
+   
+  }
+
+  const handlePasscodeChange = (e)=>{
+    setAdminData(prevDetails => ({
+      ...prevDetails,
+      passcode:e.target.value
+  }))
+  }
 
 
 
@@ -81,6 +97,7 @@ const AdminEditprofile = () => {
       formData.append("name", adminData.name);
       formData.append("email", adminData.email);
       formData.append("profilePic", profilePicUrl);
+      formData.append("passcode", adminData.passcode);
 
       //   
       const token = localStorage.getItem("token");
@@ -114,7 +131,7 @@ const AdminEditprofile = () => {
               placeholder=" "
               required
               value={adminData.name}
-              onChange={handleChange}
+              onChange={handleNameChange}
             />
             <label htmlFor="name" className="peer-focus:font-medium absolute text-sm text-gray-500  duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus: peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">First name</label>
           </div>
@@ -128,10 +145,21 @@ const AdminEditprofile = () => {
             placeholder=" "
             required
             value={adminData.email}
-            onChange={handleChange}
+            onChange={handleEmailChange}
           />
           <label htmlFor="email" className="peer-focus:font-medium absolute text-sm text-gray-500  duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus: peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email address</label>
         </div>
+
+        <div className='flex flex-col '>
+
+        <label  htmlFor="">Passcode</label>
+        <input 
+        value={adminData.passcode}
+        onChange={handlePasscodeChange}
+        className='block  px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none    focus:outline-none focus:ring-0 focus:border-blue-600 peer' type="text" />
+        </div>
+
+
         <div className="relative z-0 w-full mb-5 group">
           <span className='font-bold '> Reupload Profile picture:-</span>
           <input
@@ -142,6 +170,7 @@ const AdminEditprofile = () => {
             onChange={(e) => setProfilePic(e.target.files[0])}
             className="p-2"
           />
+          
           <button type='submit' onClick={handleUploadImage} className="text-white bg-blue-950 hover:bg-blue-950 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center   ">upload image</button>
 
         </div>

@@ -4,14 +4,17 @@ import Footer from '../HomePage/Footer'
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import simg from '../../assets/loginimg.svg';
+import Admin from '../../../../Server/Models/Admin';
+
 
 
 const Employeelogin = () => {
-    const [email, setEmail] = useState(null);
-    const [password, setPassword] = useState(null);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [error, setError] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [passcode,setPasscode] = useState("")
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
@@ -52,6 +55,41 @@ const Employeelogin = () => {
         } finally {
         }
     };
+
+    const handleLoginWithPasscode = async()=>{
+        if(!passcode){
+            alert("please enter the passcode")
+            return
+        }
+
+        try{
+
+            const response = await axios.get(`https://api.diamondore.in/api/employee/rnr-Leaderborad/${passcode}`)
+
+             
+            navigate(`/employee-rnrboard/${passcode}`)
+    
+
+        }
+        catch(err){
+           console.log("error while logging in with passcode",err)
+           if(err?.response?.data?.message==="passcode is incorrect"){
+            alert("Please enter a valid password");
+           }
+        }
+       
+        
+
+    }
+    
+    const handlesetPasscode = (e)=>{
+        setPasscode(e.target.value)
+    }
+
+    
+
+    
+
 
     const handleShowPassword = () => {
         return setShowPass(!showPass);
@@ -153,7 +191,7 @@ const Employeelogin = () => {
 
                             <button
                                 type="submit"
-                                className="inline-block rounded-lg bg-blue-950 px-5 py-3 text-sm font-medium text-white shadow-xl w-full "
+                                className="hover:bg-blue-700 inline-block rounded-lg bg-blue-950 px-5 py-3 text-sm font-medium text-white shadow-xl w-full "
 
                             >
                                 Login
@@ -167,11 +205,16 @@ const Employeelogin = () => {
                     )}
                 </div>
 
-                <div className="flex items-center justify-center  rounded-lg  ">
-                    <div className="hidden md:block">
-                        <img src={simg} />
+                <div className="flex mt-8 justify-center rounded-lg">
+                    <div className='w-[80%]'>
+
+                    <div className='text-center mb-3 font-semibold text-3xl'>Enter the passcode</div>
+                    <input onChange={handlesetPasscode} value={passcode} className='w-full rounded-lg  border-1 p-4 pe-12 text-sm' placeholder='Passcode' type="text" />
+
+                    <button onClick={handleLoginWithPasscode} className='hover:bg-blue-700 p-3 bg-blue-950 w-full mt-6 rounded-md text-white'>Login</button>
                     </div>
                 </div>
+
             </div>
             {loading && (
                 <div className="absolute inset-0 bg-gray-800 text-gray-300 text-5xl font-bold opacity-75 flex items-center justify-center">

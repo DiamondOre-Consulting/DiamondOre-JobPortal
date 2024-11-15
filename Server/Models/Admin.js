@@ -19,7 +19,10 @@ const adminSchema = new mongoose.Schema({
     required: true,
   },
   adminType:{
-    type: String,
+    type:String,
+  },
+  passcode:{
+    type:String,
   },
   profilePic: {
     type: String,

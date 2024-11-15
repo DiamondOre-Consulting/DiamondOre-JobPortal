@@ -479,4 +479,64 @@ router.get("/my-kpi", EmployeeAuthenticateToken, async (req, res) => {
   }
 })
 
+
+
+router.get('/rnr-Leaderborad/:passcode' , async(req,res)=>{
+          
+   try{
+    const { passcode } = req.params;
+
+    const employee = await Admin.findOne({passcode})
+
+    if(!employee){
+       return res.status(403).json({"message":"passcode is incorrect"})
+    }
+
+   
+    
+
+    res.status(200).json({ message: "Employee found", employee });
+
+
+   }
+   catch(error){
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
+   }
+
+})
+
+
+router.get('/rnr-leaderboraddetails/:passcode', async(req,res)=>{
+
+  try{
+
+    const { passcode } = req.params;
+
+    const employee = await Admin.findOne({passcode})
+
+    if(!employee){
+       return  res.status(403).json({"message":"passcode is incorrect"})
+    }
+
+
+
+    const allData = await ERP.findOne().sort({ _id: -1 });
+
+    console.log(allData.EmpOfMonth);
+  
+    const findEmp = await Employees.findById({ _id: allData.EmpOfMonth });
+  
+    res.status(200).json({ allData, findEmp });
+  }
+  catch(error){
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
+  }
+
+  
+
+
+})
+
 export default router;

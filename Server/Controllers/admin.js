@@ -286,14 +286,15 @@ router.get("/user-data", AdminAuthenticateToken, async (req, res) => {
     }
 
     // Extract the required fields from the user object
-    const { id, name, profilePic, adminType } = user;
+    const { id, name, profilePic, adminType, passcode } = user;
 
     res.status(200).json({
       id,
       name,
       email,
       profilePic,
-      adminType
+      adminType,
+      passcode
     });
   } catch (error) {
     console.error("Error fetching user data:", error);
@@ -1075,7 +1076,7 @@ router.get("/all-messages/:id", AdminAuthenticateToken, async (req, res) => {
 
 router.put("/edit-profile", AdminAuthenticateToken, async (req, res) => {
   try {
-    const { name, password, profilePic } = req.body;
+    const { name, password, profilePic,passcode } = req.body;
     const { email } = req.user;
 
     const user = await Admin.findOne({ email });
@@ -1096,6 +1097,11 @@ router.put("/edit-profile", AdminAuthenticateToken, async (req, res) => {
     }
     if (profilePic) {
       user.profilePic = profilePic;
+      await user.save();
+    }
+
+    if(passcode){
+      user.passcode = passcode
       await user.save();
     }
 
