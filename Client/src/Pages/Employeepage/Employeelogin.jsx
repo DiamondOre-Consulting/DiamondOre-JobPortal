@@ -4,7 +4,7 @@ import Footer from '../HomePage/Footer'
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import simg from '../../assets/loginimg.svg';
-import Admin from '../../../../Server/Models/Admin';
+
 
 
 
@@ -21,7 +21,7 @@ const Employeelogin = () => {
         e.preventDefault();
         setLoading(true);
         setError(null);
-        // Perform login logic here
+        // Perform login  logic here
         try {
             
             const response = await axios.post("https://api.diamondore.in/api/employee/login",
