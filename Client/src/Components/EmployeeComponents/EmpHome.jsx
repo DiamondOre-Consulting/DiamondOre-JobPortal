@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Confetti from 'react-confetti';
 
 
-const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruiter, Joinings, userData  , empOfMonthDesc}) => {
+const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruiter, Joinings, userData  , empOfMonthDesc , recognitionType}) => {
 
     const [showConfetti, setShowConfetti] = useState(true);
     useEffect(() => {
@@ -58,7 +58,8 @@ const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruite
                     </div>
 
                     <div className='md:col-span-2  mt-20 md:mt-0 flex flex-col '>
-                        <h1 className='uppercase font-bold text-3xl md:text-5xl text-gray-700'>Employee of the month</h1>
+                        {/* <h1 className='uppercase font-bold text-3xl md:text-5xl text-gray-700'>Employee of the month</h1> */}
+                            <h1 className='uppercase font-bold text-3xl md:text-5xl text-gray-700'>{recognitionType}</h1>
 
                         <div className='mt-4'>
                             <h1 className='font-bold text-xl capitilized'>{employee?.name}</h1>

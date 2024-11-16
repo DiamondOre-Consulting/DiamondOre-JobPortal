@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-const HomeNews = ({ employee, latestnews, empOfMonthDesc}) => {
+const HomeNews = ({ employee, latestnews, empOfMonthDesc , recognitionType}) => {
 
   return (
     <div className="mx-4 md:mx-10 my-16">
@@ -41,7 +41,8 @@ const HomeNews = ({ employee, latestnews, empOfMonthDesc}) => {
           </div>
 
           <div className='md:col-span-2  mt-20 md:mt-0 flex flex-col '>
-            <h1 className='uppercase font-bold text-3xl md:text-5xl text-gray-700'>Employee of the month</h1>
+            {/* <h1 className='uppercase font-bold text-3xl md:text-5xl text-gray-700'>Employee of the month</h1> */}
+            <h1 className='uppercase font-bold text-3xl md:text-5xl text-gray-700'>{recognitionType}</h1>
 
             <div className='mt-4'>
               <h1 className='font-bold text-xl capitilized'>{employee?.name}</h1>

@@ -7,6 +7,7 @@ const AddERPForm = () => {
   const navigate = useNavigate();
   const initialFormData = {
     EmpOfMonth: "",
+    recognitionType: "",
     EmpOfMonthDesc: "",
     Top5HRs: [{ name: "" }],
     Top5Clients: [{ name: "" }],
@@ -135,16 +136,21 @@ const AddERPForm = () => {
   return (
     <div className="">
       <h1 className="mx-auto text-center text-3xl my-2">
-        Employee of the month
+        RNR LEADERBOARD
       </h1>
+
+     
+
       <div className="w-44 h-0.5 bg-blue-900 justify-center mx-auto"></div>
       <form className="mx-auto grid max-w-screen-md gap-4 sm:grid-cols-2 shadow-lg p-5">
+
+        
         <div>
           <label
             htmlFor="EmpOfMonth"
             className="mb-2 inline-block text-sm text-gray-800 sm:text-base"
           >
-            Employee of the Month*
+            Select Employee*
           </label>
           <br />
           <select
@@ -161,13 +167,30 @@ const AddERPForm = () => {
           </select>
         </div>
 
-        <br></br>
+        <div className="w-full col-span-2">
+        <label
+          htmlFor="recognitionType"
+          className="mb-2 inline-block text-sm text-gray-800 sm:text-base"
+        >
+          Recognition Type
+        </label>
+        <br />
+        <input
+          id="recognitionType" // Add an id for better accessibility
+          type="text"
+          className="w-full py-2 px-2 border rounded-md"
+          value={formData.recognitionType}
+          onChange={(e) => handleInputChange("recognitionType", e.target.value)}
+        />
+      </div>
+
+     
         <div className="w-full col-span-2">
           <label
             htmlFor="EmpOfMonthDesc"
             className="mb-2 inline-block text-sm text-gray-800 sm:text-base"
           >
-            Employee of the Month Description*
+            Description*
           </label>
           <br />
           <textarea

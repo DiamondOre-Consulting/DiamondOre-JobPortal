@@ -18,6 +18,7 @@ const AdminERP = () => {
   const [RnRRecruiter, setRnRRecruiter] = useState([]);
   const [joinings, setJoinings] = useState([]);
   const [empOfMonthDesc, setEmpOfMonthDesc] = useState(""); // New state for EmpOfMonthDesc
+  const [recognitionType , setRecognitionType] = useState("")
 
   const token = localStorage.getItem("token");
   const { decodedToken } = useJwt(token);
@@ -60,6 +61,7 @@ const AdminERP = () => {
           setRnRRecruiter(lastData.RnRRecruiters || []);
           setJoinings(lastData.JoningsForWeek || []);
           setEmpOfMonthDesc(lastData.EmpOfMonthDesc || ""); // Set EmpOfMonthDesc
+          setRecognitionType(lastData.recognitionType || "");
         } else {
           console.log("Error occurred: Non-200 status code");
         }
@@ -71,6 +73,8 @@ const AdminERP = () => {
     fetchData();
   }, [decodedToken, navigate, token]);
 
+  console.log("allempluyee data " , employee )
+
   return (
     <div>
       <h2 className="text-3xl md:text-5xl px-4 font-bold text-gray-800">
@@ -81,7 +85,7 @@ const AdminERP = () => {
           Add This Week's Data →
         </Link>
       </div>
-      <HomeNews employee={employee} latestnews={latestnews} empOfMonthDesc={empOfMonthDesc} /> {/* Pass EmpOfMonthDesc */}
+      <HomeNews employee={employee} latestnews={latestnews} empOfMonthDesc={empOfMonthDesc} recognitionType={recognitionType} /> {/* Pass EmpOfMonthDesc */}
       <ERPTop5s hrname={hrname} client={client} />
       <RnRLeaderboard RnRinterns={RnRinterns} RnRRecruiter={RnRRecruiter} />
       <JoiningsForWeek Joinings={joinings} />

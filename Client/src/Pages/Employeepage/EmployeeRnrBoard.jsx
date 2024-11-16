@@ -8,6 +8,7 @@ import HomeNews from "../../Components/AdminPagesComponents/ERP/ERPNews";
 import ERPTop5s from "../../Components/AdminPagesComponents/ERP/ERPTop5s";
 import RnRLeaderboard from "../../Components/AdminPagesComponents/ERP/RnRLeaderboard";
 import JoiningsForWeek from "../../Components/AdminPagesComponents/ERP/JoiningsForWeek";
+import Confetti from 'react-confetti';
 
 const EmployeeRnrBoard = () => {
   const [employee, setEmployee] = useState(null);
@@ -18,6 +19,7 @@ const EmployeeRnrBoard = () => {
   const [RnRRecruiter, setRnRRecruiter] = useState([]);
   const [joinings, setJoinings] = useState([]);
   const [empOfMonthDesc, setEmpOfMonthDesc] = useState(""); // New state for EmpOfMonthDesc
+  const [recognitionType , setRecognitionType] = useState("")
 
   const token = localStorage.getItem("token");
   const { decodedToken } = useJwt(token);
@@ -58,6 +60,7 @@ const EmployeeRnrBoard = () => {
           setRnRRecruiter(lastData.RnRRecruiters || []);
           setJoinings(lastData.JoningsForWeek || []);
           setEmpOfMonthDesc(lastData.EmpOfMonthDesc || ""); // Set EmpOfMonthDesc
+          setRecognitionType(lastData.recognitionType || "");
         } else {
           console.log("Error occurred: Non-200 status code");
         }
@@ -69,13 +72,26 @@ const EmployeeRnrBoard = () => {
     fetchData();
   }, [decodedToken, navigate, token]);
 
+
+  const [showConfetti, setShowConfetti] = useState(true);
+  useEffect(() => {
+      // Automatically stop the confetti after 5 seconds
+      const timer = setTimeout(() => {
+          setShowConfetti(false);
+      }, 20000);
+
+      return () => clearTimeout(timer);
+  }, []);
+
+
   return (
-    <div>
-      <h2 className="text-3xl md:text-5xl px-4 font-bold text-gray-800">
+    
+    <div> {showConfetti && <Confetti />}
+      {/* <h2 className="text-3xl md:text-5xl px-4 font-bold text-gray-800 py-4">
         Welcome aboard, <span className="text-blue-900">{decodedToken?.name}</span>
-      </h2>
+      </h2> */}
      
-      <HomeNews employee={employee} latestnews={latestnews} empOfMonthDesc={empOfMonthDesc} /> {/* Pass EmpOfMonthDesc */}
+      <HomeNews employee={employee} latestnews={latestnews} empOfMonthDesc={empOfMonthDesc}  recognitionType={recognitionType}/> {/* Pass EmpOfMonthDesc */}
       <ERPTop5s hrname={hrname} client={client} />
       <RnRLeaderboard RnRinterns={RnRinterns} RnRRecruiter={RnRRecruiter} />
       <JoiningsForWeek Joinings={joinings} />

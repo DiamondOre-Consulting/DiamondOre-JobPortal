@@ -23,6 +23,7 @@ const Employeedashboard = () => {
   const [empOfMonthDesc, setEmpOfMonthDesc] = useState(""); 
   const token = localStorage.getItem("token");
   const { decodedToken } = useJwt(localStorage.getItem("token"));
+  const [recognitionType , setRecognitionType] = useState("")
   const navigate = useNavigate();
 
 
@@ -43,7 +44,7 @@ const Employeedashboard = () => {
     const fetchdata = async () => {
       try{
         const response = await axios.get(
-          "https://api.diamondore.in/api/employee/all-erp-data", 
+          "http://localhost:5000/api/employee/all-erp-data", 
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -55,7 +56,7 @@ const Employeedashboard = () => {
           console.log(response.data)
         const lastData = response.data.reverse()[0];
         const latest= response.data.allData;
-        
+        setRecognitionType(lastData.recognitionType || "");
         setEmpOfMonthDesc(latest.EmpOfMonthDesc || "");
         
 
@@ -134,7 +135,7 @@ const Employeedashboard = () => {
       <h2 className="text-5xl px-10 font-bold text-gray-800">
         Welcome aboard <span className="text-blue-900">{userName} </span>
       </h2>
-      <HomeNews empofthemonth={empofthemonth} latestnews={latestnews} empOfMonthDesc={empOfMonthDesc} />
+      <HomeNews empofthemonth={empofthemonth} latestnews={latestnews} empOfMonthDesc={empOfMonthDesc} recognitionType={recognitionType}/>
       <ERPTop5s hrname={hrname} client={client} />
       <RnRLeaderboard RnRinterns={RnRinterns} RnRRecruiter={RnRRecruiter} />
       <JoiningsForWeek Joinings={Joinings} />

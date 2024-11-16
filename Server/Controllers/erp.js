@@ -17,6 +17,7 @@ router.post("/add-erp-data", AdminAuthenticateToken, async (req, res) => {
 
     const {
         EmpOfMonth,
+        recognitionType,
         EmpOfMonthDesc,
         Top5HRs,
         Top5Clients,
@@ -38,6 +39,7 @@ router.post("/add-erp-data", AdminAuthenticateToken, async (req, res) => {
     const newERPData = new ERP({
         EmpOfMonth,
         EmpOfMonthDesc,
+        recognitionType,
         Top5HRs,
         Top5Clients,
         RnRInterns,
