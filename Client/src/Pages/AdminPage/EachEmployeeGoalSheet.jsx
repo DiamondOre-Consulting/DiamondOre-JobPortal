@@ -12,6 +12,7 @@ const EachEmployeeGoalSheet = () => {
   const {employeename} = useParams();
   console.log(employeename)
   const { decodedToken } = useJwt(localStorage.getItem("token"));
+  const [editMode, setEditMode] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [goalsheetform, setGoalSheetForm] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState({});
@@ -29,6 +30,7 @@ const EachEmployeeGoalSheet = () => {
   const [selectedYear, setSelectedYear] = useState("");
   const [allGoalSheetData, setAllGoalSheetData] = useState([]);
   const [filteredGoalSheetData, setFilteredGoalSheetData] = useState([]);
+  const [trigger,setTrigger] = useState(0)
 
   // Submit the goal sheet form
   const handleSetGoalSheet = async (e) => {
@@ -81,6 +83,7 @@ const EachEmployeeGoalSheet = () => {
 
       if (response.status === 201) {
         console.log(response.data);
+        setTrigger((prev)=>prev+1)
         setSnackbarOpen(true); // Open Snackbar on successful submission
         setCost("");
         setRevenue("");
@@ -103,6 +106,7 @@ const EachEmployeeGoalSheet = () => {
       console.error("Error setting goal sheet:", error);
       setShowSubmitLoader(false);
 
+
       if (error.response && error.response.status === 404) {
         console.log("Employee not found");
         setGoalSheetForm(false);
@@ -122,6 +126,48 @@ const EachEmployeeGoalSheet = () => {
 
   // getGoalSheet
 
+  const handleEditGoalSheet = async (e) => {
+    e.preventDefault();
+  
+    try {
+      const token = localStorage.getItem("token");
+  
+      // Send the updated goal sheet data to the server
+      const response = await axios.put(
+        "https://api.diamondore.in/api/admin-confi/edit-goalSheet",
+        {
+          empId: id,
+          year: editYear,
+          month: editMonth,
+          noOfJoinings: editNoOfJoinings,
+          cost: editCost,
+          revenue: editRevenue,
+          incentive: editIncentive,
+          variableIncentive: editVariableIncentive,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      if (response.status === 200) {
+        // Trigger a re-fetch of the goal sheet data
+         // This will trigger useEffect to fetch updated data
+        setEditMode(false); // Close the edit mode/modal
+  
+        // Optionally, you can display a success message
+        console.log("Goal sheet updated successfully");
+      }
+    } catch (error) {
+      console.error("Error updating goal sheet:", error);
+    }
+  };
+
+  console.log(trigger)
+
+
   useEffect(() => {
     const handleGoalSheet = async () => {
       try {
@@ -134,18 +180,19 @@ const EachEmployeeGoalSheet = () => {
             },
           }
         );
-
+  
         if (response.status === 200) {
-          setAllGoalSheetData(response.data);
-          console.log(response.data);
+          setAllGoalSheetData(response.data); // Update the goal sheet data
+          console.log(response.data); // You can verify the data here
         }
       } catch (error) {
         console.log(error);
       }
     };
-
+  
     handleGoalSheet();
-  }, []);
+  }, [trigger]); 
+  
 
   // useEffect(() => {
   //   if (selectedYear) {
@@ -186,7 +233,7 @@ const EachEmployeeGoalSheet = () => {
   const [editRevenue, setEditRevenue] = useState(0);
   const [editIncentive, setEditIncentive] = useState(0);
   const [editVariableIncentive, setEditVariableIncentive] = useState(0);
-  const [editMode, setEditMode] = useState(false); // To trigger the popup
+
   const [goalSheetToEdit, setGoalSheetToEdit] = useState({});
 
   const handleEditClick = (detail) => {
@@ -202,40 +249,7 @@ const EachEmployeeGoalSheet = () => {
     setGoalSheetToEdit(detail);
   };
 
-  const handleEditGoalSheet = async (e) => {
-    e.preventDefault();
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.put(
-        "https://api.diamondore.in/api/admin-confi/edit-goalSheet",
-        {
-          empId: id,
-          year: editYear,
-          month: editMonth,
-          noOfJoinings: editNoOfJoinings,
-          cost: editCost,
-          revenue: editRevenue,
-          incentive: editIncentive,
-          variableIncentive: editVariableIncentive,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        // Success, close the modal and refresh data
-        setEditMode(false);
-        // Optionally, fetch updated goal sheet data here
-        console.log("Goal sheet updated successfully");
-      }
-    } catch (error) {
-      console.error("Error updating goal sheet:", error);
-    }
-  };
-
+ 
   return (
     <>
       {/* <AdminNav /> */}
