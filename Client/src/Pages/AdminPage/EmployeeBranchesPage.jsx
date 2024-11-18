@@ -8,9 +8,11 @@ const EmployeeBranchesPage = () => {
     const { id } = useParams();
     const [employee, setEmployee] = useState('')
     const [editEmployeeToggle, setEditEmployeeToggle] = useState(false);
+    const [update,setUpdate]= useState(false);
 
     // get Employee Data
-
+     
+   
     useEffect(() => {
         const getEmployeeData = async () => {
             try {
@@ -20,31 +22,33 @@ const EmployeeBranchesPage = () => {
                         Authorization: `Bearer ${token}`
                     }
                 })
-
+                
                 if (response.status === 201) {
-
-                    setEmployee(response.data)
-                        ;
-
+                    
+                    setEmployee(response.data);
+                    console.log(response.data)
+                    
                 }
-
+                
             }
             catch (error) {
                 console.log(error, 'this is the error')
             }
-
+            
         }
-
-
+        
+        
         getEmployeeData();
     }, [])
-
+    
+    
     const handleEditEmloyeeClick = () => {
 
         setEditEmployeeToggle(prev => !prev);
 
 
     }
+   
 
 
     const handleEditEmployeeBack =()=>{
@@ -53,6 +57,7 @@ const EmployeeBranchesPage = () => {
     }
 
     const employeename = employee?.name;
+    // console.log(employee._id)
 
     return (
         <div className='realtive'>
@@ -69,7 +74,7 @@ const EmployeeBranchesPage = () => {
                     {/* Popup Form */}
                     <div className=' mt-20 absolute z-30 inset-0 flex justify-center items-center'>
                         <div className='mt-28  p-6 rounded-lg  max-w-lg w-full'>
-                            <EmployessEditDetails employee={employee} />
+                            <EmployessEditDetails id={employee._id} handleEditEmployeeBack={handleEditEmployeeBack} />
                         </div>
                     </div>
                 </>

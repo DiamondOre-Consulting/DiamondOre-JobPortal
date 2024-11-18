@@ -5,7 +5,7 @@ import { useJwt } from "react-jwt";
 import axios from "axios";
 import loader from '../../assets/loader.svg'
 
-const EmployessEditDetails = ({employee}) => {
+const EmployessEditDetails = ({id,handleEditEmployeeBack}) => {
     const navigate = useNavigate();
     const { decodedToken } = useJwt(localStorage.getItem("token"));
     const token = localStorage.getItem("token");
@@ -25,7 +25,7 @@ const EmployessEditDetails = ({employee}) => {
     // console.log(employee)
 
  
-    const [name, setName] = useState("");
+    
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [empType, setEmpType] = useState('');
@@ -37,10 +37,49 @@ const EmployessEditDetails = ({employee}) => {
     const [accountHandler,setAccountHandler] = useState()
     const [editEmployee,setEditEmployee]= useState();
     const [loading,setLoading]= useState(false)
+   
+
+    const [employee,setEmployeeData]= useState()
+
     useEffect(() => {
         setEditEmployee(employee);
     }, [employee]);
 
+
+
+    useEffect(() => {
+        const getEmployeeData = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                const response = await axios.get(`https://api.diamondore.in/api/admin-confi/all-employees/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+                
+                if (response.status === 201) {
+                    
+                    setEmployeeData(response.data);
+                    
+                }
+                
+            }
+            catch (error) {
+                console.log("err")
+                console.log(error, 'this is the error')
+            }
+            
+        }
+        
+        
+        getEmployeeData();
+    }, [])
+    
+    
+
+
+    
+    
     
     
 
@@ -63,8 +102,11 @@ const EmployessEditDetails = ({employee}) => {
                     }
                 }
             );
-    
-            navigate(`/employee/${editEmployee._id}`)
+            console.log(response.data)
+            
+            
+            // setRerender(prev=>!prev)
+            handleEditEmployeeBack();
             console.log("Response:", response.data);  // Log the response data
             console.log("Employee updated successfully");
     
@@ -79,7 +121,7 @@ const EmployessEditDetails = ({employee}) => {
 
     const hadndleFullName =(e)=>{
      
-        setEditEmployee(prevDetails=>(
+        setEmployeeData(prevDetails=>(
              {
             ...prevDetails,
             name:e.target.value
@@ -88,7 +130,7 @@ const EmployessEditDetails = ({employee}) => {
     }
 
     const handleEditEmployeeEmail=(e)=>{
-        setEditEmployee(prevDetails=>(
+        setEmployeeData(prevDetails=>(
             {
            ...prevDetails,
            email:e.target.value
@@ -97,7 +139,7 @@ const EmployessEditDetails = ({employee}) => {
 
 
     const handleEditEmpType=(e)=>{
-        setEditEmployee(prevDetails=>(
+        setEmployeeData(prevDetails=>(
             {
            ...prevDetails,
            empType:e.target.value
@@ -106,7 +148,7 @@ const EmployessEditDetails = ({employee}) => {
 
 
     const handleEditAccountHandler =(e)=>{
-        setEditEmployee(prevDetails=>(
+        setEmployeeData(prevDetails=>(
             {
            ...prevDetails,
            accountHandler:e.target.value==="true"
@@ -115,7 +157,7 @@ const EmployessEditDetails = ({employee}) => {
 
 
     const handleEditEmployeeDob = (e)=>{
-        setEditEmployee(prevDetails=>(
+        setEmployeeData(prevDetails=>(
             {
            ...prevDetails,
            dob:e.target.value
@@ -123,7 +165,7 @@ const EmployessEditDetails = ({employee}) => {
     }
 
     const handleEditEmployeeDoj =(e)=>{
-        setEditEmployee(prevDetails=>(
+        setEmployeeData(prevDetails=>(
             {
            ...prevDetails,
            doj:e.target.value
@@ -206,9 +248,9 @@ const EmployessEditDetails = ({employee}) => {
                             <option value="Recruiter">Recruiter</option>
                             <option value="SeniorRecruiter"> Senior Recruiter</option>
                             <option value="TeamLeader">Team Leader</option>
-                            <option value="Recruiter">Trainee 2x</option>
-                            <option value="SeniorRecruiter">Jr Recruiter 3x</option>
-                            <option value="Recruiter&Mentor 5x">Recruiter & Mentor 5x</option>
+                            <option value="Trainee2x">Trainee 2x</option>
+                            <option value="JrRecruiter3x">Jr Recruiter 3x</option>
+                            <option value="Recruiter&Mentor5x">Recruiter & Mentor 5x</option>
                             <option value="Sr.Recruiter&Mentor5x">Sr. Recruiter & Mentor 5x</option>
                             <option value="TeamLeader6x">Team Leader 6x</option>
                             <option value="HrConsultant6x">Hr Consultant 6x</option>

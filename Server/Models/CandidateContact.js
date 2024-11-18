@@ -9,7 +9,7 @@ const candidateContactSchema = new mongoose.Schema({
   Email: {
     type: String,
     required: true,
-    // unique: true,
+    // unique : true,
   },
   Message: {
     type: String,

@@ -1996,11 +1996,12 @@ router.put('/all-employees-edit/:id', AdminAuthenticateToken, async (req, res) =
     console.log("test")
     console.log(updatedFields.accountHandler)
 
-    const updateEmployee= await Employees.updateOne({_id:id}, updatedFields,{new:true})
+    const updateEmployee= await Employees.findByIdAndUpdate({_id:id}, updatedFields,{new:true})
      
     if(!updateEmployee) {
       return res.status(404).json({ message: "Employee not found" });
     }
+    console.log(updateEmployee)
 
     return res.status(200).json(updateEmployee);
 
@@ -2439,7 +2440,27 @@ router.post('/set-goalSheet', async (req, res) => {
     const cumulativeRevenue = previousCumulativeRevenue + revenue;
     const achYTD = (cumulativeRevenue / cumulativeCost).toFixed(2);
     const achMTD = (revenue / cost).toFixed(2);
-    const target = cost * 4;
+    const numberIndex= employee.empType.length-2
+    
+    let target;
+
+
+   
+    if(employee.empType==="Recruiter"){
+       target = cost * 4      
+    }
+    else if(employee.empType==="Senior Recruitor"){
+       target = cost * 4
+    }
+    else if(employee.empType==="Team Leader"){
+       target = cost * 4
+    }
+
+    else{
+      // console.log()
+      target = cost * parseInt(employee.empType[numberIndex]);
+    }
+    console.log("target",target);
 
     // Push the new goalSheetDetails
     goalSheet.goalSheetDetails.push({
@@ -2493,6 +2514,7 @@ router.get("/goalsheet/:id", AdminAuthenticateToken, async (req, res) => {
 
 // EDIT A GOALSHEET
 router.put('/edit-goalSheet', async (req, res) => {
+  // console.log("enter")
   const { empId, year, month, noOfJoinings, cost, revenue, incentive, variableIncentive } = req.body;
 
   try {
@@ -2524,7 +2546,7 @@ router.put('/edit-goalSheet', async (req, res) => {
     const lastDetail = goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length - 1] || {};
     const previousCumulativeCost = lastDetail.cumulativeCost || 0;
     const previousCumulativeRevenue = lastDetail.cumulativeRevenue || 0;
-
+  
     // Update the fields conditionally
     if (noOfJoinings !== undefined) {
       goalDetail.noOfJoinings = noOfJoinings;
@@ -2537,7 +2559,27 @@ router.put('/edit-goalSheet', async (req, res) => {
       goalDetail.cumulativeCost = updatedCumulativeCost;
 
       // Update target if cost is provided
-      goalDetail.target = cost * 4;
+      const numberIndex= employee.empType.length-2
+    
+      // let target;
+  
+  
+     
+      if(employee.empType==="Recruiter"){
+         goalDetail.target = cost * 4      
+      }
+      else if(employee.empType==="Senior Recruitor"){
+        goalDetail.target = cost * 4
+      }
+      else if(employee.empType==="Team Leader"){
+        goalDetail.target = cost * 4
+      }
+  
+      else{
+        // console.log()
+        goalDetail.target = cost * parseInt(employee.empType[numberIndex]);
+      }
+      // goalDetail.target = cost * 4;
     }
 
     if (revenue !== undefined) {

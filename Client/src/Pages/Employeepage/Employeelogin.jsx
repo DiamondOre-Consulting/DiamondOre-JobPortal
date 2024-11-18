@@ -21,7 +21,7 @@ const Employeelogin = () => {
         e.preventDefault();
         setLoading(true);
         setError(null);
-        // Perform login  logic here
+        
         try {
             
             const response = await axios.post("https://api.diamondore.in/api/employee/login",

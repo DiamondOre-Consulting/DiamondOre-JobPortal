@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// / goalDetail.target = cost * 4;
 const employeeSchema = new mongoose.Schema({
   empType: {
     type: String,
