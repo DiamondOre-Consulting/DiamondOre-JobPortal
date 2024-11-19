@@ -92,6 +92,7 @@ const EachEmployeeGoalSheet = () => {
         setMonth("");
         setInsentive("");
         setVariableIncentive("");
+        
       } else {
         setSnackbarOpen(false);
         setCost("");
@@ -113,6 +114,9 @@ const EachEmployeeGoalSheet = () => {
       } else {
         
       }
+    }
+    finally{
+      setShowSubmitLoader(false);
     }
   };
 
