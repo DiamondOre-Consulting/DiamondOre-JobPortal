@@ -85,13 +85,13 @@ const AdminEmployeeAttendence = () => {
                         setEmployeeDetails(response.data);
                     }
                 } else {
-                    console.log('No employee selected');
+                    
                 }
 
 
             } catch (error) {
 
-                console.log('Error fetching employee details:', error);
+                
             }
         };
 
@@ -131,13 +131,13 @@ const AdminEmployeeAttendence = () => {
                         setRecord(response.data);
                     }
                 } else {
-                    console.log('No records found');
+                    
                 }
 
 
             } catch (error) {
 
-                console.log('Error fetching employee details:', error);
+                
             }
         };
 
@@ -176,12 +176,12 @@ const AdminEmployeeAttendence = () => {
                         setPerformenceRecord(response.data);
                     }
                 } else {
-                    console.log('No records found');
+                    
                 }
             }
 
             catch (error) {
-                console.log('Error fetching data:', error);
+                
             }
         };
 

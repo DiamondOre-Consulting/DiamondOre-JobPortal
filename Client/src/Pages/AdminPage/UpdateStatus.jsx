@@ -56,7 +56,7 @@ const UpdateStatus = () => {
           setStatusData(response.data);
         }
       } catch (error) {
-        console.log("Something went wrong!!!", error);
+        
       }
     };
 
@@ -82,7 +82,7 @@ const UpdateStatus = () => {
           setAdminDetails("Error finding candidate with id: ", id1);
         }
       } catch (error) {
-        console.log("Something went wrong!!!", error);
+        
       }
     };
 
@@ -112,7 +112,7 @@ const UpdateStatus = () => {
       }
     } catch (error) {
       setCvStatus(false);
-      console.log("Something went wrong!!!", error);
+      
     }
   };
 
@@ -141,7 +141,7 @@ const UpdateStatus = () => {
     } catch (error) {
       // setCvStatus(false);
       setScreenStatus(false);
-      console.log("Something went wrong!!!", error);
+      
     }
   };
 
@@ -170,7 +170,7 @@ const UpdateStatus = () => {
     } catch (error) {
       // setCvStatus(false);
       setIntSchStatus(false);
-      console.log("Something went wrong!!!", error);
+      
     }
   };
 
@@ -199,7 +199,7 @@ const UpdateStatus = () => {
     } catch (error) {
       // setCvStatus(false);
       setInterStatus(false);
-      console.log("Something went wrong!!!", error);
+      
     }
   };
 
@@ -228,7 +228,7 @@ const UpdateStatus = () => {
     } catch (error) {
       // setCvStatus(false);
       setShortlistedStatus(false);
-      console.log("Something went wrong!!!", error);
+      
     }
   };
 
@@ -257,7 +257,7 @@ const UpdateStatus = () => {
     } catch (error) {
       // setCvStatus(false);
       setJoinedStatus(false);
-      console.log("Something went wrong!!!", error);
+      
     }
   };
 

@@ -50,11 +50,11 @@ const Signup = ({ toggleForm }) => {
       }
       else {
 
-        console.log("error occurred in image file uploading")
+        
 
       }
     } catch (error) {
-      console.log(error);
+      
     }
   };
 
@@ -88,12 +88,12 @@ const Signup = ({ toggleForm }) => {
       }
       else {
 
-        console.log("error occurred in resume file uploading")
+        
 
         setShowLoaderResume(false);
       }
     } catch (error) {
-      console.log(error);
+      
     }
   };
 
@@ -112,7 +112,7 @@ const Signup = ({ toggleForm }) => {
       setTimeout(() => {
         if (response.status === 201) {
           setOtpSent(true);
-          console.log("Otp sent");
+          
         }
       }, 1000);
     } catch (error) {

@@ -53,7 +53,7 @@ const Employeedashboard = () => {
           
         )
         if(response.status === 200){
-          console.log(response.data)
+          
         const lastData = response.data.reverse()[0];
         const latest= response.data.allData;
         setRecognitionType(lastData.recognitionType || "");
@@ -117,11 +117,11 @@ const Employeedashboard = () => {
        
         }
         else{
-          console.log("error occured")
+          
         }
       }
       catch(e){
-        console.log("error occured", e)
+        
       }
      
     }

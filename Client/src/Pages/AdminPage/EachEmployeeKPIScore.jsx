@@ -66,7 +66,7 @@ const EachEmployeeKPIScore = () => {
             });
 
         } catch (error) {
-            console.log(error);
+            
         }
     };
 
@@ -116,7 +116,7 @@ const EachEmployeeKPIScore = () => {
             }
             catch (error) {
 
-                console.log(error)
+                
 
             }
 

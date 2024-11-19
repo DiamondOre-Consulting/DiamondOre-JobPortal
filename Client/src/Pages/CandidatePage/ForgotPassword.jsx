@@ -28,7 +28,7 @@ const ForgotPassword = () => {
             setTimeout(() => {
                 if (response.status === 201) {
                     setOtpSent(true);
-                    console.log("Otp sent");
+                    
                 }
             }, 1000);
         } catch (error) {
@@ -57,14 +57,14 @@ const ForgotPassword = () => {
 
             if (response.status === 200) {
                 alert("Password has been Updated Sucessfully...");
-                console.log("password updated sucessfully")
+                
                 setEmail("");
                 setPassword("");
                 setOtp("");
             }
         }
         catch (error) {
-            console.log("error in updating password ", error)
+            
             if (error.response) {
                 const status = error.response.status;
                 if (status === 404) {

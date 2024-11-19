@@ -62,7 +62,7 @@ const EachCandidate = () => {
           setCandidateDetails(response.data);
         }
       } catch (error) {
-        console.log(error);
+        
       }
     };
 
@@ -85,7 +85,7 @@ const EachCandidate = () => {
         }
 
       } catch (error) {
-        console.log("Error in fetching candidate details!!!", error)
+        
       }
     }
 

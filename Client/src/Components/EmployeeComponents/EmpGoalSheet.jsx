@@ -22,7 +22,7 @@ const EmpGoalSheet = () => {
           setFilteredGoalSheetData(alldata); // Initialize with all data
         }
       } catch (error) {
-        console.log(error);
+        
       }
     };
 

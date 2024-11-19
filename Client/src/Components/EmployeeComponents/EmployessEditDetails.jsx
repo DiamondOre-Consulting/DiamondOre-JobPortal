@@ -22,7 +22,7 @@ const EmployessEditDetails = ({id,handleEditEmployeeBack}) => {
             }
         }
     }, [decodedToken, navigate, token]);
-    // console.log(employee)
+    // 
 
  
     
@@ -65,8 +65,8 @@ const EmployessEditDetails = ({id,handleEditEmployeeBack}) => {
                 
             }
             catch (error) {
-                console.log("err")
-                console.log(error, 'this is the error')
+                
+                
             }
             
         }
@@ -87,7 +87,7 @@ const EmployessEditDetails = ({id,handleEditEmployeeBack}) => {
 
    
     const hadnleEditEmplyeeDetails = async () => {
-        console.log("editEmployee:", editEmployee);  // Log the editEmployee to check its structure
+          // Log the editEmployee to check its structure
     
         try {
             setLoading(true);
@@ -102,13 +102,13 @@ const EmployessEditDetails = ({id,handleEditEmployeeBack}) => {
                     }
                 }
             );
-            console.log(response.data)
+            
             
             
             // setRerender(prev=>!prev)
             handleEditEmployeeBack();
-            console.log("Response:", response.data);  // Log the response data
-            console.log("Employee updated successfully");
+              // Log the response data
+            
     
         } catch (error) {
             console.error("Error updating employee:", error);  // Log the error if something goes wrong
@@ -172,7 +172,7 @@ const EmployessEditDetails = ({id,handleEditEmployeeBack}) => {
        }))
     }
 
-    {editEmployee&&console.log(editEmployee)}
+    {editEmployee&&}
    
 
     

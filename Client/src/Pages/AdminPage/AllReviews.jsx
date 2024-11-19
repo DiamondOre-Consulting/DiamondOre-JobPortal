@@ -42,7 +42,7 @@ const AllReviews = () => {
                 });
 
             if (response.status === 200) {
-                console.log('Review deleted successfully');
+                
                 fetchAllReviews(); // Fetch updated list after deletion
                 closePopup(); // Close the popup after successful deletion
             } else {

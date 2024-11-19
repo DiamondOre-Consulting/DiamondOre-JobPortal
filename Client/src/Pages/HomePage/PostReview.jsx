@@ -25,7 +25,7 @@ const PostReview = () => {
 
     const handleCardClick = (reviewId) => {
         // Handle click event, e.g., expand the card
-        console.log(`Clicked card with ID ${reviewId}`);
+        
       };
 
     // post review

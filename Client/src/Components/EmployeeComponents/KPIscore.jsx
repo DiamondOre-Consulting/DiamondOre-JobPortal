@@ -31,14 +31,14 @@ const KPIscore = () => {
                     
                     setTableData(response.data);
                     setLoading(false)
-                    console.log(response.data)
+                    
                 }
 
 
             }
             catch (error) {
 
-                console.log(error)
+                
 
             }
 

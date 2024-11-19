@@ -40,12 +40,12 @@ const Contact = () => {
                 setEmail('');
                 setMsg('');
             } else {
-                console.log("error occured");
+                
 
             }
 
         } catch (error) {
-            console.log('Error:', error);
+            
             if (error.response) {
                 const status = error.response.status;
                 if (status === 500) {

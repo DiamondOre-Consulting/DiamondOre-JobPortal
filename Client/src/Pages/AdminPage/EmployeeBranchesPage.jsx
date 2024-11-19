@@ -26,13 +26,13 @@ const EmployeeBranchesPage = () => {
                 if (response.status === 201) {
                     
                     setEmployee(response.data);
-                    console.log(response.data)
+                    
                     
                 }
                 
             }
             catch (error) {
-                console.log(error, 'this is the error')
+                
             }
             
         }
@@ -57,7 +57,7 @@ const EmployeeBranchesPage = () => {
     }
 
     const employeename = employee?.name;
-    // console.log(employee._id)
+    // 
 
     return (
         <div className='realtive'>

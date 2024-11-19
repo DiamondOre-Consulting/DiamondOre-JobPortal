@@ -36,13 +36,13 @@ const Employeelogin = () => {
                 
                 // Store the token in local storage
                 localStorage.setItem("token", token);
-                console.log("Logged in successfully as Employee");
+                
                 // Redirect to dashboard page
                 setTimeout(() => {
                     navigate("/employee-dashboard");
                 }, 1000);
             } else {
-                console.log("Login failed");
+                
                 setError("Login Details Are Wrong!!");
                 setLoading(false)
                 // Handle login error
@@ -72,7 +72,7 @@ const Employeelogin = () => {
 
         }
         catch(err){
-           console.log("error while logging in with passcode",err)
+           
            if(err?.response?.data?.message==="passcode is incorrect"){
             alert("Please enter a valid password");
            }

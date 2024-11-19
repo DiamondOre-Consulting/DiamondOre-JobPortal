@@ -26,7 +26,7 @@ const EmployeeRnrBoard = () => {
   const navigate = useNavigate();
   const {passcode} = useParams();
 
-  console.log(employee)
+  
 
   useEffect(() => {
 
@@ -46,13 +46,13 @@ const EmployeeRnrBoard = () => {
           
         );
 
-        console.log("Response",response.data)
+        
 
         if (response.status === 200) {
           const lastData = response.data.allData;
           const empdata = response.data.findEmp;
           setEmployee(empdata);
-          console.log("employee data", response.data);
+          
           setLatestNews(lastData.BreakingNews || []);
           setHrName(lastData.Top5HRs || []);
           setClient(lastData.Top5Clients || []);
@@ -62,10 +62,10 @@ const EmployeeRnrBoard = () => {
           setEmpOfMonthDesc(lastData.EmpOfMonthDesc || ""); // Set EmpOfMonthDesc
           setRecognitionType(lastData.recognitionType || "");
         } else {
-          console.log("Error occurred: Non-200 status code");
+          
         }
       } catch (e) {
-        console.log("Error occurred:", e);
+        
       }
     };
 

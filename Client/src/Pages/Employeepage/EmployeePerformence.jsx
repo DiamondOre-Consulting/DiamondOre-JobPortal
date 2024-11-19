@@ -45,7 +45,7 @@ const EmployeePerformence = () => {
                 }
             }
             catch (error) {
-                console.log('Error fetching data:', error);
+                
             }
         };
 

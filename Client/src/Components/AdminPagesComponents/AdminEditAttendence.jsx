@@ -51,7 +51,7 @@ const AdminEditAttendence = () => {
 
             } catch (error) {
 
-                console.log('Error fetching employee details:', error);
+                
             }
         };
 
@@ -95,7 +95,7 @@ const AdminEditAttendence = () => {
                 }
             }
             catch (error) {
-                console.log('Error fetching data:', error);
+                
             }
         };
 

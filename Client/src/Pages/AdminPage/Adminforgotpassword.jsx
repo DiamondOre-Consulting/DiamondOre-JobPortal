@@ -28,7 +28,7 @@ const Adminforgotpassword = () => {
             setTimeout(() => {
                 if (response.status === 201) {
                     setOtpSent(true);
-                    console.log("Otp sent");
+                    
                 }
             }, 1000);
         } catch (error) {
@@ -58,7 +58,7 @@ const Adminforgotpassword = () => {
             if (response.status === 200)
             {
                 alert("Password has been Updated Sucessfully...");
-                console.log("password updated sucessfully");
+                
 
                    setEmail("");
                    setPassword("");
@@ -67,7 +67,7 @@ const Adminforgotpassword = () => {
             }
         }
         catch (error) {
-            console.log("error in updating password ", error)
+            
             if (error.response) {
                 const status = error.response.status;
                 if (status === 404) {

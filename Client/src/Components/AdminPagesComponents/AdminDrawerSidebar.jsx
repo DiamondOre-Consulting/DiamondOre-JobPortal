@@ -180,7 +180,7 @@ const AdminDrawerSidebar = () => {
                 );
                 if (response.status === 200) {
                     setUserData(response.data);
-                    console.log(response.data)
+                    
                 } else {
                     setUserData("Did not get any response!!!");
                 }

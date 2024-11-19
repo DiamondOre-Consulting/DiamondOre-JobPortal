@@ -14,7 +14,7 @@ const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruite
         return () => clearTimeout(timer);
     }, []);
 
-    console.log(Joinings)
+    
 
     return (
         <>

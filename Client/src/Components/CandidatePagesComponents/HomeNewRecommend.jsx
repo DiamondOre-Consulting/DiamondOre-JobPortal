@@ -49,7 +49,7 @@ const HomeNewRecommend = () => {
             setEmpty(`No Job Found According to your prefrence `)
             setLoading(false);
             return;
-              console.log("emplty")
+              
           }
           else{
           
