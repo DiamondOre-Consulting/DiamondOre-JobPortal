@@ -132,7 +132,7 @@ export default function EmpDrawerSidebar() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          'http://localhost:5000/api/employee/all-erp-data',
+          'https://api.diamondore.in/api/employee/all-erp-data',
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -182,7 +182,7 @@ export default function EmpDrawerSidebar() {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "http://localhost:5000/api/employee/user-data",
+          "https://api.diamondore.in/api/employee/user-data",
           {
             headers: {
               Authorization: `Bearer ${token}`,
