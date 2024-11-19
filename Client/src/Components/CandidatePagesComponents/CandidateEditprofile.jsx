@@ -74,7 +74,7 @@ const CandidateEditprofile = () => {
         setProfilePicUrl(response.data);
       }
     } catch (error) {
-      console.log(error);
+      
     }
   };
 
@@ -100,7 +100,7 @@ const CandidateEditprofile = () => {
         ;
       }
     } catch (error) {
-      console.log(error);
+      
     }
   };
 
@@ -139,11 +139,11 @@ const CandidateEditprofile = () => {
          setError("error occured in updating files")
         }
         else{
-          console.log("eror occured")
+          
         }
       }
       else{
-        console.log("error is in edditing profile")
+        
       }
       // alert('Failed to update profile. Please try again.');
     }

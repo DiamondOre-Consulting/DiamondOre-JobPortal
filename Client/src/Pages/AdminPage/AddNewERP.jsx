@@ -88,7 +88,7 @@ const AddERPForm = () => {
       );
       // Handle success, e.g., show a success message or redirect to another page
       if (response.status === 201) {
-        console.log(response.data);
+        
         navigate("/admin-dashboard/erp-dashboard");
       }
 

@@ -37,7 +37,7 @@ const AdminLogin = () => {
           navigate("/admin-dashboard");
         }, 1000);
       } else {
-        console.log("Login failed");
+        
         setError("Login Details Are Wrong!!");
         // Handle login error
       }

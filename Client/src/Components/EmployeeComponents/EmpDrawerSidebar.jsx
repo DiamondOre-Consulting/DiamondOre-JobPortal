@@ -154,10 +154,10 @@ export default function EmpDrawerSidebar() {
           setEmpOfMonthDesc(lastData.EmpOfMonthDesc || "");
           setRecognitionType(lastData.recognitionType || "");
         } else {
-          console.log('Error occurred');
+          
         }
       } catch (e) {
-        console.log('Error occurred', e);
+        
       }
     };
 

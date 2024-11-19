@@ -141,7 +141,7 @@ const EditPrefrenceform = () => {
                
             }
             catch(error){
-                console.log(error,"error fetched ")
+                
             }
 
         }

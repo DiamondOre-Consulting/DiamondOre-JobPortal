@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 const PathSearch = ({ latestJobs }) => {
 
-    console.log("latest jobs are there ",latestJobs)
+    
 
     return (
 

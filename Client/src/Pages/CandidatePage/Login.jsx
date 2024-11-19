@@ -31,7 +31,7 @@ const Login = () => {
         const token = response.data.token;
         // Store the token in local storage
         localStorage.setItem("token", token);
-        console.log("Logged in successfully as Candidate");
+        
         // Redirect to dashboard page
         setTimeout(() => {
           navigate("/dashboard");

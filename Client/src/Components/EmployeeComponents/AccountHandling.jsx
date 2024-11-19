@@ -76,7 +76,7 @@ const AccountHandling = ({ userData }) => {
         } catch (error) {
             if (error.response && error.response.status === 400) {
                 const { message } = error.response.data;
-                console.log(error)
+                
                 setError(message);
                 setForm({
                     hrName: '',

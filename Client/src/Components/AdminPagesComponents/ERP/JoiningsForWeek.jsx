@@ -1,7 +1,7 @@
 import React from "react";
 
 const JoiningsForWeek = ({ Joinings }) => {
-  console.log(Joinings)
+  
   return (
     <div>
       <div className='mt-6 mb-10 md:overflow-auto overflow-scroll'>

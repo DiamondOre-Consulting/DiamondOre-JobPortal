@@ -14,7 +14,7 @@ const AdminEditprofile = () => {
   });
   const navigate = useNavigate();
 
-  console.log("data",adminData)
+  
   useEffect(() => {
     const fetchUserData = async () => {
       const token = localStorage.getItem("token");
@@ -85,7 +85,7 @@ const AdminEditprofile = () => {
         setProfilePicUrl(response.data);
       }
     } catch (error) {
-      console.log(error);
+      
     }
   };
 

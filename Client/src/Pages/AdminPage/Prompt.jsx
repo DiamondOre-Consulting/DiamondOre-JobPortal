@@ -121,7 +121,7 @@ const Prompt = () => {
             }
 
         } catch(error){
-            console.log(error)
+            
             if (error.response) {
                 const status = error.response.status;
                 if (status === 404) {

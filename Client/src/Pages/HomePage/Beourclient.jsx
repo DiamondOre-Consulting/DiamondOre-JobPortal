@@ -45,11 +45,11 @@ const Beourclient = () => {
                 setCompanyName('');
                 setDesignation('');
             } else {
-                console.log("error occured");
+                
             }
 
         } catch (error) {
-            console.log('Error:', error);
+            
         }
     };
 

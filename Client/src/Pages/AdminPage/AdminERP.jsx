@@ -53,7 +53,7 @@ const AdminERP = () => {
           const lastData = response.data.allData;
           const empdata = response.data.findEmp;
           setEmployee(empdata);
-          console.log("employee data", response.data);
+          
           setLatestNews(lastData.BreakingNews || []);
           setHrName(lastData.Top5HRs || []);
           setClient(lastData.Top5Clients || []);
@@ -63,17 +63,17 @@ const AdminERP = () => {
           setEmpOfMonthDesc(lastData.EmpOfMonthDesc || ""); // Set EmpOfMonthDesc
           setRecognitionType(lastData.recognitionType || "");
         } else {
-          console.log("Error occurred: Non-200 status code");
+          
         }
       } catch (e) {
-        console.log("Error occurred:", e);
+        
       }
     };
 
     fetchData();
   }, [decodedToken, navigate, token]);
 
-  console.log("allempluyee data " , employee )
+  
 
   return (
     <div>

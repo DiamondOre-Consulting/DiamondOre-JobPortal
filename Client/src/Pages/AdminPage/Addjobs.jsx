@@ -56,13 +56,13 @@ const AddJobs = () => {
       if (response.status === 200) {
        
         setsheeturl(response.data); // Assuming response.data contains the URL of the uploaded file
-        // console.log("url of sheel",response.data.url);
-        console.log("url" , response.data)
+        // 
+        
 
-        console.log(sheeturl)
+        
         setUploadSuccess(true);
       } else {
-        console.log('Error:', response.statusText);
+        
       }
     } catch (error) {
       console.error('Error:', error);
@@ -73,7 +73,7 @@ const AddJobs = () => {
 
   const handlesubmit = async (e) => {
     e.preventDefault();
-    console.log(sheeturl);
+    
     if (!sheeturl) {
       alert('Please upload a file first');
       return;
@@ -95,7 +95,7 @@ const AddJobs = () => {
         
         alert('Jobs added Successfully');
       } else {
-        console.log('Failed');
+        
       }
     } catch (error) {
       console.error('Error:', error.message);
@@ -133,14 +133,14 @@ const AddJobs = () => {
   const filteredChannels = allchannels.filter((channel) =>
     channel.toLowerCase().startsWith(searchquery.toLowerCase())
   );
-  console.log("channels",filteredChannels)
+  
   
 
   const filterPosition = allpostions.filter((position) => {
     position.toLowerCase().startsWith(searchpositionquery.toLowerCase());
   })
 
-  console.log("position",filterPosition)
+  
   
 
   const handleSearchInputChange = (e) => {

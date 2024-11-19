@@ -10,7 +10,7 @@ import Footer from "../HomePage/Footer";
 const EachEmployeeGoalSheet = () => {
   const { id } = useParams();
   const {employeename} = useParams();
-  console.log(employeename)
+  
   const { decodedToken } = useJwt(localStorage.getItem("token"));
   const [editMode, setEditMode] = useState(false);
   const [employees, setEmployees] = useState([]);
@@ -37,7 +37,7 @@ const EachEmployeeGoalSheet = () => {
     e.preventDefault();
     setShowSubmitLoader(true);
 
-    console.log("loaded")
+    
 
     try {
       const token = localStorage.getItem("token");
@@ -82,7 +82,7 @@ const EachEmployeeGoalSheet = () => {
       );
 
       if (response.status === 201) {
-        console.log(response.data);
+        
         setTrigger((prev)=>prev+1)
         setSnackbarOpen(true); // Open Snackbar on successful submission
         setCost("");
@@ -108,10 +108,10 @@ const EachEmployeeGoalSheet = () => {
 
 
       if (error.response && error.response.status === 404) {
-        console.log("Employee not found");
+        
         setGoalSheetForm(false);
       } else {
-        console.log("An error occurred");
+        
       }
     }
   };
@@ -158,14 +158,14 @@ const EachEmployeeGoalSheet = () => {
         setEditMode(false); // Close the edit mode/modal
   
         // Optionally, you can display a success message
-        console.log("Goal sheet updated successfully");
+        
       }
     } catch (error) {
       console.error("Error updating goal sheet:", error);
     }
   };
 
-  console.log(trigger)
+  
 
 
   useEffect(() => {
@@ -183,10 +183,10 @@ const EachEmployeeGoalSheet = () => {
   
         if (response.status === 200) {
           setAllGoalSheetData(response.data); // Update the goal sheet data
-          console.log(response.data); // You can verify the data here
+           // You can verify the data here
         }
       } catch (error) {
-        console.log(error);
+        
       }
     };
   
@@ -237,7 +237,7 @@ const EachEmployeeGoalSheet = () => {
   const [goalSheetToEdit, setGoalSheetToEdit] = useState({});
 
   const handleEditClick = (detail) => {
-    console.log("editClicked");
+    
     setEditMode(true); // Open the modal
     setEditYear(detail.year);
     setEditMonth(detail.month);

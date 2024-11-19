@@ -21,7 +21,7 @@ const AdminSignup = ({ toggleForm }) => {
   const [showPass, setShowPass] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
 
-  console.log(adminType)
+  
 
   const handleUploadImage = async (e) => {
     try {
@@ -44,7 +44,7 @@ const AdminSignup = ({ toggleForm }) => {
         setProfilePicUrl(response.data);
       }
     } catch (error) {
-      console.log(error);
+      
     }
   };
 
@@ -63,7 +63,7 @@ const AdminSignup = ({ toggleForm }) => {
       setTimeout(() => {
         if (response.status === 201) {
           setOtpSent(true);
-          console.log("Otp sent");
+          
         }
       }, 1000);
     } catch (error) {
@@ -90,7 +90,7 @@ const AdminSignup = ({ toggleForm }) => {
         }
       );
 
-      console.log(adminType)
+      
 
       if (response.status === 201) {
         

@@ -83,7 +83,7 @@ const CandidateNav = () => {
 
     }
     catch (error) {
-      console.log(error)
+      
     }
 
 

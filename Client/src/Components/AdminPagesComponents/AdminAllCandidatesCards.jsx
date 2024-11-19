@@ -53,8 +53,8 @@ const AdminAllCandidatesCards = () => {
 
   }
 
-  console.log("startDate",startDate)
-  console.log("endDate",endDate)
+  
+  
 
   
 
@@ -88,7 +88,7 @@ const AdminAllCandidatesCards = () => {
           const all = response.data;
           // 
           setLatestCandidates(all.reverse());
-          console.log("candidates data",response.data)
+          
           setLoading(false)
         }
       } catch (error) {
@@ -130,7 +130,7 @@ const AdminAllCandidatesCards = () => {
         
        })
 
-       console.log(response.data)
+       
 
        if (response.data instanceof Blob) {
        
@@ -148,7 +148,7 @@ const AdminAllCandidatesCards = () => {
  
     }
     catch(error){
-         console.log(error)
+         
     }
     finally{
        setLoading(false)

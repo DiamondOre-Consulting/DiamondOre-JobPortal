@@ -128,7 +128,7 @@ const Cvform = () => {
 
         }
         catch (error) {
-            console.log("error in building resume", error)
+            
             if (error.response) {
                 const status = error.response.status;
                 if (status === 404) {

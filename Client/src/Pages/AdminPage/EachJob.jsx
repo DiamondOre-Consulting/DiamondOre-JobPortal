@@ -62,7 +62,7 @@ const AdminEachJob = () => {
           setJobDetails(response.data);
         }
       } catch (error) {
-        console.log(error);
+        
       }
     };
 
@@ -87,7 +87,7 @@ const AdminEachJob = () => {
           setJobsApplied(applieds);
         }
       } catch (error) {
-        console.log("Error in fetching job details!!!", error);
+        
       }
     };
 

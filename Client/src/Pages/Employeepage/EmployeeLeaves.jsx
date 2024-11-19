@@ -50,14 +50,14 @@ const EmployeeLeaves = () => {
           ;
           setTotalLeavesis(latest[0]);
 
-          console.log("latest", totalLeavesis.totalLeaves);
+          
           
           setRecord(leaveReportResponse.data);
 
         }
       }
       catch (error) {
-        console.log('Error fetching data:', error);
+        
       }
     };
 

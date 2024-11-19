@@ -10,7 +10,7 @@ const AllEmployeeAccounts = () => {
     const [deletepopup, setDeletePopup] = useState(false);
     let [loading, setLoading] = useState(true);;
     const navigate = useNavigate();
-    console.log(allAccontsData);
+    
     useEffect(() => {
         const fetchAllAccount = async () => {
             try {
@@ -21,7 +21,7 @@ const AllEmployeeAccounts = () => {
                     setLoading(false)
                 }
             } catch (error) {
-                console.log(error);
+                
             }
         }
 

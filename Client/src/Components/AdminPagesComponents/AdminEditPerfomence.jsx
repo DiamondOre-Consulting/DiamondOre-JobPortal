@@ -47,7 +47,7 @@ const AdminEditPerfomence = () => {
                     setEmployeeDetails(response.data);
                 }
             } catch (error) {
-                console.log('Error fetching employee details:', error);
+                
             }
         };
 
@@ -91,7 +91,7 @@ const AdminEditPerfomence = () => {
                 }
             }
             catch (error) {
-                console.log('Error fetching data:', error);
+                
             }
         };
 
