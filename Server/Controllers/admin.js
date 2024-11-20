@@ -181,8 +181,9 @@ router.post("/upload-profile-pic", async (req, res) => {
 router.post("/signup-admin", async (req, res) => {
   const { name, email, password, otp, profilePic, adminType } = req.body;
   console.log(adminType)
+  console.log("check")
 
-console.log(otpStore)
+  console.log(otpStore)
 
   console.log("Signup Email:", email);
   console.log("Entered OTP:", otp);
@@ -212,7 +213,7 @@ console.log(otpStore)
         otp: null,
         password: hashedPassword,
         profilePic,
-        adminType:adminType
+        adminType
       });
 
       console.log(2)
@@ -2530,6 +2531,8 @@ router.put('/edit-goalSheet', async (req, res) => {
       return res.status(404).json({ error: 'GoalSheet not found' });
     }
 
+    
+
     // Find the specific goal sheet detail by month and year
     const goalDetailIndex = goalSheet.goalSheetDetails.findIndex(
       detail => detail.year === year && detail.month === month
@@ -2541,9 +2544,10 @@ router.put('/edit-goalSheet', async (req, res) => {
 
     // Get the current goalSheetDetail for updates
     let goalDetail = goalSheet.goalSheetDetails[goalDetailIndex];
+    
 
-    // Get the last entry for cumulative calculations
-    const lastDetail = goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length - 1] || {};
+    // Get the last entry for cumulative calculations  
+    const lastDetail = goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length - 2] || {};  
     const previousCumulativeCost = lastDetail.cumulativeCost || 0;
     const previousCumulativeRevenue = lastDetail.cumulativeRevenue || 0;
   
@@ -2554,7 +2558,8 @@ router.put('/edit-goalSheet', async (req, res) => {
 
     if (cost !== undefined) {
       // Calculate cumulativeCost based on the new cost value
-      const updatedCumulativeCost = previousCumulativeCost + cost;
+      const updatedCumulativeCost = previousCumulativeCost + parseInt(cost);
+      
       goalDetail.cost = cost;
       goalDetail.cumulativeCost = updatedCumulativeCost;
 

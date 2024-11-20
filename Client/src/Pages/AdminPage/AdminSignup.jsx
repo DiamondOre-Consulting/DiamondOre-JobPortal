@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from 'axios';
 import simg from '../../assets/4.svg';
 import { useEffect } from "react";
+import loader from '../../assets/loader.svg'
 
 const AdminSignup = ({ toggleForm }) => {
   const [name, setName] = useState("");
@@ -14,12 +15,13 @@ const AdminSignup = ({ toggleForm }) => {
   const [profilePicUrl, setProfilePicUrl] = useState("");
   const [loading,setLoading]= useState(false)
 
-  const [adminType,setAdminType] = useState("")
+  const [adminType,setAdminType] = useState("subAdmin")
 
   const [error, setError] = useState(null);
 
   const [showPass, setShowPass] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
+  
 
   
 
@@ -51,6 +53,7 @@ const AdminSignup = ({ toggleForm }) => {
   const handleSendOtp = async (e) => {
     e.preventDefault();
     setError(null);
+    setLoading(true)
 
     // Simulate sending OTP logic here
     try {
@@ -70,14 +73,19 @@ const AdminSignup = ({ toggleForm }) => {
       console.error("Error sending OTP:", error);
       setError("Error sending OTP. Please try again.");
     }
+    finally{
+      setLoading(false)
+    }
   };
 
   const handleAdminSignup = async (e) => {
     e.preventDefault();
     setError(null);
+    setLoading(true);
 
 
     try {
+      console.log(adminType)
       const response = await axios.post(
         "https://api.diamondore.in/api/admin-confi/signup-admin",
         {
@@ -85,7 +93,7 @@ const AdminSignup = ({ toggleForm }) => {
           email,
           password,
           otp,
-          adminType,
+          adminType, 
           profilePic: profilePicUrl,
         }
       );
@@ -105,11 +113,22 @@ const AdminSignup = ({ toggleForm }) => {
       setError("Some details are wrong!!");
       // Handle error
     }
+    finally{
+      setLoading(false)
+    }
   };
 
   const handleShowPassword = () => {
     return setShowPass(!showPass);
   };
+
+  if(loading){
+    return (
+      <div className="flex justify-center items-center w-full h-screen"> 
+        <img src={loader} alt="" />
+      </div>
+    )
+  }
 
   return (
     <div className="flex items-center justify-center  ">
