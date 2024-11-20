@@ -267,16 +267,16 @@ const AdminDrawerSidebar = () => {
                         { text: 'Home', icon: <HomeIcon />, path: '/home' },
                         { text: 'All Jobs', icon: <WorkIcon />, path: '/all-Jobs' },
                         { text: 'All Candidate', icon: <GroupIcon />, path: '/all-candidates' },
-                        { text: 'ERP', icon: <img src={erpicon} className='w-6 h-6' />, path: '/erp-dashboard' },
-                        { text: 'Add & Delete Jobs', icon: <DomainAddIcon />, path: '/add-jobs' },
-                        { text: 'All Reviews', icon: <ReviewsIcon />, path: '/all-reviews' },
                         ...(userData?.adminType!=="subAdmin"?[{ text: 'All Employees', icon: <BadgeIcon />, path: '/all-employees' }]:[]),
+                        { text: 'Add & Delete Jobs', icon: <DomainAddIcon />, path: '/add-jobs' },
                         ...(userData?.adminType!=="subAdmin"?[{ text: 'Add Recruiter', icon: <AddCircleOutlineIcon />, path: '/add-recruiter'}]:[]),
                         ...(userData?.adminType!=="subAdmin"?[{ text: 'Add Employee', icon: <PersonAddIcon />, path: '/add-employee' }]:[]),
+                        ...(userData?.adminType!=="subAdmin"?[{ text: 'All Accounts', icon: <ManageAccountsIcon />, path: '/all-accounts' }]:[]),
+                        { text: 'ERP', icon: <img src={erpicon} className='w-6 h-6' />, path: '/erp-dashboard' },
                         { text: 'Prompt', icon: <SaveAsIcon />, path: '/prompt' },
+                        { text: 'All Reviews', icon: <ReviewsIcon />, path: '/all-reviews' },
                         ...(userData?.adminType!=="subAdmin"?[{ text: 'Make Admin', icon: <AdminPanelSettingsIcon />, path: '/make-admin'}]:[]),
                         { text: 'Edit Profile', icon: <AccountBoxIcon />, path: '/edit-profile' },
-                        ...(userData?.adminType!=="subAdmin"?[{ text: 'All Accounts', icon: <ManageAccountsIcon />, path: '/all-accounts' }]:[]),
 
                     ].map((item) => (
                         <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
