@@ -2445,15 +2445,15 @@ router.post('/set-goalSheet', async (req, res) => {
     
     let target;
 
-
+    console.log(employee.empType)
    
     if(employee.empType==="Recruiter"){
        target = cost * 4      
     }
-    else if(employee.empType==="Senior Recruitor"){
+    else if(employee.empType==="SeniorRecruiter"){
        target = cost * 4
     }
-    else if(employee.empType==="Team Leader"){
+    else if(employee.empType==="TeamLeader"){
        target = cost * 4
     }
 
