@@ -138,7 +138,7 @@ const EachEmployeeGoalSheet = () => {
   
       // Send the updated goal sheet data to the server
       const response = await axios.put(
-        "https://api.diamondore.in/api/admin-confi/edit-goalSheet",
+        "http://localhost:5000/api/admin-confi/edit-goalSheet",
         {
           empId: id,
           year: editYear,

@@ -2560,7 +2560,7 @@ router.put('/edit-goalSheet', async (req, res) => {
       // Calculate cumulativeCost based on the new cost value
       const updatedCumulativeCost = previousCumulativeCost + parseInt(cost);
       
-      goalDetail.cost = cost;
+      goalDetail.cost = parseInt(cost);
       goalDetail.cumulativeCost = updatedCumulativeCost;
 
       // Update target if cost is provided
@@ -2590,7 +2590,8 @@ router.put('/edit-goalSheet', async (req, res) => {
     if (revenue !== undefined) {
       // Calculate cumulativeRevenue based on the new revenue value
       const updatedCumulativeRevenue = previousCumulativeRevenue + parseInt(revenue);
-      goalDetail.revenue = revenue;
+     
+      goalDetail.revenue = parseInt(revenue);
       goalDetail.cumulativeRevenue = updatedCumulativeRevenue;
 
       // Update achMTD and achYTD if revenue is provided
