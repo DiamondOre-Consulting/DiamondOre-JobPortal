@@ -2589,7 +2589,7 @@ router.put('/edit-goalSheet', async (req, res) => {
 
     if (revenue !== undefined) {
       // Calculate cumulativeRevenue based on the new revenue value
-      const updatedCumulativeRevenue = previousCumulativeRevenue + revenue;
+      const updatedCumulativeRevenue = previousCumulativeRevenue + parseInt(revenue);
       goalDetail.revenue = revenue;
       goalDetail.cumulativeRevenue = updatedCumulativeRevenue;
 
