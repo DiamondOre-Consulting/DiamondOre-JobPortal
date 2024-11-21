@@ -250,7 +250,7 @@ const EmployessEditDetails = ({id,handleEditEmployeeBack}) => {
                             <option value="TeamLeader">Team Leader</option>
                             <option value="Trainee2x">Trainee 2x</option>
                             <option value="JrRecruiter3x">Jr Recruiter 3x</option>
-                            <option value="Recruiter&Mentor4x">Recruiter & Mentor 5x</option>
+                            <option value="Recruiter&Mentor4x">Recruiter & Mentor 4x</option>
                             <option value="Sr.Recruiter&Mentor5x">Sr. Recruiter & Mentor 5x</option>
                             <option value="TeamLeader6x">Team Leader 6x</option>
                             <option value="HrConsultant6x">Hr Consultant 6x</option>
