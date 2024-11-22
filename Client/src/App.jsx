@@ -98,8 +98,8 @@ function App() {
          :
       <Router>
         <Routes>
-          <Route path="/">
-            <Route index element={<Homemain/>} />
+          <Route path="/" element={<Homemain/>} />
+           
             <Route path="/about" element={<AboutUs/>}/>
             <Route path='/services' element={<Services/>}/>
             <Route path="/contact" element={<Contact/>}/>
@@ -157,7 +157,7 @@ function App() {
             <Route path="/employee-dashboard/*" element={<EmpDrawerSidebar />} />
             <Route path ='*' element ={<ErrorPage/>}/>
             <Route path='/employee-rnrboard/:passcode' element={<EmployeeRnrBoard />} />
-          </Route> 
+          
         </Routes>
       </Router>
 }
