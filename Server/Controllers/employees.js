@@ -13,6 +13,7 @@ import PerformanceReport from "../Models/PerformanceReport.js";
 import AccountHandling from "../Models/AccountHandling.js";
 import GoalSheet from "../Models/GoalSheet.js";
 import KPI from "../Models/KPI.js";
+import mongoose from 'mongoose';
 
 dotenv.config();
 
@@ -313,14 +314,20 @@ const transporter = nodemailer.createTransport({
 
 // FETCH ALL ACCOUNT HANDLING
 
-router.put(
+
+
+
+
+router.post(
   "/set-account-handling",
   EmployeeAuthenticateToken,
   async (req, res) => {
     try {
       const { userId } = req.user;
-      const { hrName, hrPhone, hrEmail, channelName, zoneName } = req.body;
-
+      const { hrName, hrPhone, clientName, channelName, zoneName } = req.body;
+      console.log(hrName);
+      console.log(req.body)
+      
       // Find the employee by userId
       const employee = await Employees.findById(userId);
       if (!employee) {
@@ -357,9 +364,10 @@ router.put(
             console.log("Email sent:", info.response);
           }
         });
-        return res
-          .status(400)
-          .json({ message: "Phone number already in use by another account, the request to use this phone number has been sent to Admin" });
+
+        return res.status(400).json({
+          message: "Phone number already in use by another account, the request to use this phone number has been sent to Admin",
+        });
       }
 
       // Find the account details for the specified userId
@@ -369,36 +377,94 @@ router.put(
           owner: userId,
           accountHandlingStatus: true,
           accountDetails: [],
+          
         });
       }
 
+      // Add the clientName if not already present
+
+      // let clinetName= accountHandling.accountDetails.find((c)=> c.clientName===clientName)
+      // if (!clientName) {
+      //   clientName = {clientName};
+      //   // accountHandling.accountDetail s.push(zone);
+      // }
+     
+      
+      await accountHandling.save()
+
       // Find or create the zone
-      let zone = accountHandling.accountDetails.find(z => z.zoneName === zoneName);
-      if (!zone) {
-        zone = { zoneName, channels: [] };
-        accountHandling.accountDetails.push(zone);
-      }
+      // let zone = accountHandling.accountDetails.find((z) => z.zoneName === zoneName);
+      let zone = { zoneName, channels: []};
+      // if (!zone) {
+      //   zone = { zoneName, channels: []};
+      //   // accountHandling.accountDetail s.push(zone);
+      // }
+
+      // console.log(zone);
 
       // Find or create the channel within the zone
-      let channel = zone.channels.find(c => c.channelName === channelName);
-      if (!channel) {
-        channel = { channelName, hrDetails: [] };
-        zone.channels.push(channel);
-      }
+      zone.clientName= clientName
+      // let channel = zone.channels.find((c) => c.channelName === channelName);
+      let channel = {channelName, hrDetails: []};
+      // console.log("channel",channel)
+      // if (!channel) {
+        // channel = { hrDetails: []};
+        // zone.channels.push(channel);
+        // accountHandling.accountDetails.push(zone);
+
+      // }
+      // console.log("zone", zone);
 
       // Add HR details to the channel
-      channel.hrDetails.push({ hrName, hrPhone, hrEmail });
+      //  channel.channelName=channelName;
+      channel.hrDetails.push({ hrName, hrPhone });
+
+      // console.log("channel2",channel)
+      
+      zone.channels.push(channel);
+      accountHandling.accountDetails.push(zone);
+      console.log("hrName", zone.channels[0]);
+      await accountHandling.save()
 
       // Save the updated account handling details
-      await accountHandling.save();
+      // await AccountHandling.updateOne(
+      //   { 
+      //     owner: new mongoose.Types.ObjectId(userId), // Ensure userId is cast to ObjectId
+      //     "accountDetails.zoneName": zoneName, 
+      //     "accountDetails.channels.channelName": channelName, 
+      //   },
+      //   { 
+      //     $push: {
+      //       "accountDetails.$.channels.$[channel].hrDetails": { hrName, hrPhone },
+      //     }
+      //   },
+      //   { 
+      //     arrayFilters: [{ "channel.channelName": channelName }]
+      //   }
+      // );
+      
+      
+      
 
-      res.status(200).json({ message: "Account details updated successfully" });
+      // Update the account handling document with the new accountDetails
+     
+
+      // console.log("res",response)
+      
+      console.log(accountHandling);
+
+      res.status(200).json({ message: "Account details updated successfully","accountHandling":accountHandling });
     } catch (error) {
       console.error(error.message);
       res.status(500).json({ message: error.message });
     }
   }
 );
+
+
+
+
+
 
 
 router.get("/accounts", async (req, res) => {

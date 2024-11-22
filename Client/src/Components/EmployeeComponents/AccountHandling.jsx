@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import { formControlClasses } from '@mui/material';
 
 const AccountHandling = ({ userData }) => {
     const [rows, setRows] = useState([]);
@@ -12,12 +13,28 @@ const AccountHandling = ({ userData }) => {
     const [accountdetails, setAccountDetails] = useState([])
     const [error, setError] = useState('');
     const [form, setForm] = useState({
-        hrName: '',
-        zone: '',
-        channel: '',
+        hrName:'',
+        zoneName: '',
+        channelName: '',
         clientName: '',
-        phone: '',
+        hrPhone: '',
     });
+
+
+    const [eastArray,setEastArray]=useState([]);
+    const [westArray,setWestArray]=useState([]);
+    const [northArray,setNorthArray]= useState([])
+    const [southArray,setSouthArray]=useState([])
+
+    console.log(form)
+
+    console.log(accountdetails)
+
+
+    console.log("east",eastArray)
+    console.log("west",westArray)
+    console.log("north",northArray)
+    console.log("south",southArray)
 
     
 
@@ -31,6 +48,17 @@ const AccountHandling = ({ userData }) => {
                     setRows(response.data);
                     
                     setAccountDetails(response.data);
+                    console.log("check")
+                    console.log("res",response.data)
+
+                    setEastArray(response.data.findAccount.accountDetails.filter(item=>item.zoneName==="east"))
+                    setWestArray(response.data.findAccount.accountDetails.filter(item=>item.zoneName==="west"))
+                    setNorthArray(response.data.findAccount.accountDetails.filter(item=>item.zoneName==="north"))
+                    setSouthArray(response.data.findAccount.accountDetails.filter(item=>item.zoneName==="south"))
+
+
+
+
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -41,16 +69,19 @@ const AccountHandling = ({ userData }) => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setForm({ ...form, [name]: value });
+        setForm({ ...form, [name]: value.toLowerCase() });
     };
+
+   
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem("token");
         setShowSubmitLoader(true);
         setError('')
+        console.log(form)
         try {
-            const response = await axios.put('https://api.diamondore.in/api/employee/set-account-handling', form, {
+            const response = await axios.post('https://api.diamondore.in/api/employee/set-account-handling', form, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -65,10 +96,10 @@ const AccountHandling = ({ userData }) => {
                 setRows([...rows, response.data]);
                 setForm({
                     hrName: '',
-                    zone: '',
-                    channel: '',
+                    zoneName: '',
+                    channelName: '',
                     clientName: '',
-                    phone: '',
+                    hrPhone: '',
                 });
                
 
@@ -80,10 +111,10 @@ const AccountHandling = ({ userData }) => {
                 setError(message);
                 setForm({
                     hrName: '',
-                    zone: '',
-                    channel: '',
+                    zoneName: '',
+                    channelName: '',
                     clientName: '',
-                    phone: '',
+                    hrPhone: '',
                 });
                 
             }
@@ -103,9 +134,25 @@ const AccountHandling = ({ userData }) => {
         setSnackbarOpen(false);
     };
 
+    let a=0;
+    
+    console.log(accountdetails?.findAccount?.accountDetails)
+    // const tableData = accountdetails?.accountHandling?.accountDetails.flatMap((zone) => {
+    //     return zone.channels.map((channel) => {
+    //       return channel.hrDetails.map((hrDetail) => ({
+    //         zoneName: zone.zoneName,
+    //         channelName: channel.channelName,
+    //         hrName: hrDetail.hrName,
+    //         hrPhone: hrDetail.hrPhone,
+    //         clientName: zone.clientName || "N/A",  // Default to "N/A" if clientName is not available
+    //       }));
+    //     });
+    //   }).flat(); 
+
 
     return (
         <div>
+            
             <h1 className='text-3xl md:text-4xl font-bold'>Account Handling</h1>
             <div className='w-20 h-0.5 bg-blue-900'></div>
 
@@ -142,26 +189,70 @@ const AccountHandling = ({ userData }) => {
                                         <th scope="col" className="px-6 py-3 border border-gray-500 text-center text-xs font-medium text-gray-500 uppercase ">HR Name</th>
                                         <th scope="col" className="px-6 py-3 border border-gray-500 text-center text-xs font-medium text-gray-500 uppercase ">Zone</th>
                                         <th scope="col" className="px-6 py-3 border border-gray-500 text-center text-xs font-medium text-gray-500 uppercase ">Channel</th>
-                                        <th scope="col" className="px-6 py-3 border border-gray-500 text-center text-xs font-medium text-gray-500 uppercase ">Client Name</th>
                                         <th scope="col" className="px-6 py-3 border border-gray-500 text-center text-xs font-medium text-gray-500 uppercase ">phone</th>
+                                        <th scope="col" className="px-6 py-3 border border-gray-500 text-center text-xs font-medium text-gray-500 uppercase ">Client Name</th>
                                         {/* <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">Action</th> */}
                                     </tr>
                                 </thead>
 
                                 <tbody className="divide-y divide-gray-200  text-center">
-                                    {accountdetails?.findAccount?.accountDetails?.map((row, index) => (
+                                    {westArray?.map((row, index) => (
                                         <tr key={index}>
                                             <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm font-medium text-gray-800 ">{index + 1}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row.detail.hrName}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row.detail.zone}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row.detail.channel}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row.detail.clientName}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row.detail.phone}</td>
-                                            {/* <td className="px-6 py-4 whitespace-nowrap border text-center text-sm font-medium">
-                                                <button type="button" className="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none  ">Delete</button>
-                                            </td> */}
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.channels[0]?.hrDetails[0]?.hrName}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.zoneName}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.channels[0]?.channelName}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.channels[0]?.hrDetails[0]?.hrPhone}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.clientName[0]}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border text-center text-sm font-medium">
+                                            <button type="button" className="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none  ">Delete</button>
+                                            </td> 
                                         </tr>
                                     ))}
+                                     {eastArray?.map((row, index) => (
+                                        <tr key={index}>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm font-medium text-gray-800 ">{westArray.length + index+1}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.channels[0]?.hrDetails[0]?.hrName}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.zoneName}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.channels[0]?.channelName}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.channels[0]?.hrDetails[0]?.hrPhone}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.clientName[0]}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border text-center text-sm font-medium">
+                                            <button type="button" className="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none  ">Delete</button>
+                                            </td> 
+                                        </tr>
+                                    ))}
+                                    {northArray?.map((row, index) => (
+                                        <tr key={index}>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm font-medium text-gray-800 ">{eastArray.length+westArray.length + 1+index}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.channels[0]?.hrDetails[0]?.hrName}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.zoneName}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.channels[0]?.channelName}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.channels[0]?.hrDetails[0]?.hrPhone}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.clientName[0]}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border text-center text-sm font-medium">
+                                            <button type="button" className="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none  ">Delete</button>
+                                            </td> 
+                                        </tr>
+                                    ))}
+
+                                    {southArray?.map((row, index) => (
+                                        <tr key={index}>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm font-medium text-gray-800 ">{northArray.length+eastArray.length+westArray.length + 1 +index}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.channels[0]?.hrDetails[0]?.hrName}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.zoneName}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.channels[0]?.channelName}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.channels[0]?.hrDetails[0]?.hrPhone}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.clientName[0]}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border text-center text-sm font-medium">
+                                            <button type="button" className="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none  ">Delete</button>
+                                            </td> 
+                                        </tr>
+                                    ))}
+
+                                    
+
+                                    
                                 </tbody>
                             </table>
                         </div>
@@ -188,20 +279,17 @@ const AccountHandling = ({ userData }) => {
                                 className="px-4 py-2 border rounded-md"
                                 required
                             />
+                           <select className='p-2 rounded-md' onChange={handleInputChange} name="zoneName" id="">
+                            <option value="north">North</option>
+                            <option value="south">South</option>
+                            <option value="east">East</option>
+                            <option value="west">West</option>
+                           </select>
                             <input
                                 type="text"
-                                name="zone"
-                                placeholder="Zone"
-                                value={form.zone}
-                                onChange={handleInputChange}
-                                className="px-4 py-2 border rounded-md"
-                                required
-                            />
-                            <input
-                                type="text"
-                                name="channel"
+                                name="channelName"
                                 placeholder="Channel"
-                                value={form.channel}
+                                value={form.channelName}
                                 onChange={handleInputChange}
                                 className="px-4 py-2 border rounded-md"
                                 required
@@ -217,9 +305,9 @@ const AccountHandling = ({ userData }) => {
                             />
                             <input
                                 type="text"
-                                name="phone"
+                                name="hrPhone"
                                 placeholder="phone"
-                                value={form.phone}
+                                value={form.hrPhone}
                                 onChange={handleInputChange}
                                 className="px-4 py-2 border rounded-md"
                                 required
