@@ -69,6 +69,7 @@ const AccountHandling = ({ userData }) => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+        console.log("text",name,value)
         setForm({ ...form, [name]: value.toLowerCase() });
     };
 
@@ -279,7 +280,8 @@ const AccountHandling = ({ userData }) => {
                                 className="px-4 py-2 border rounded-md"
                                 required
                             />
-                           <select className='p-2 rounded-md' onChange={handleInputChange} name="zoneName" id="">
+                           <select  className='p-2 rounded-md' onChange={handleInputChange} name="zoneName" id="">
+                            <option value="">Select a zone</option>
                             <option value="north">North</option>
                             <option value="south">South</option>
                             <option value="east">East</option>
