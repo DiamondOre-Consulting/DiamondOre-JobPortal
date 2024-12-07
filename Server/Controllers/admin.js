@@ -263,7 +263,7 @@ router.post("/login-admin", async (req, res) => {
       { userId: user._id, name: user.name, email: user.email, role: "admin" },
       secretKey,
       {
-        expiresIn: "1h",
+        expiresIn: "10h",
       }
     );
 
