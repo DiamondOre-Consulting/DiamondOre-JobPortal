@@ -2562,19 +2562,21 @@ router.put('/edit-goalSheet', async (req, res) => {
     const previousCumulativeCost = lastDetail.cumulativeCost || 0;
     const previousCumulativeRevenue = lastDetail.cumulativeRevenue || 0;
 
+    console.log(1)
+
     // Update the fields conditionally
     if (noOfJoinings) {
       goalDetail.noOfJoinings = noOfJoinings;
     }
-
+    console.log(2)
     if (month) {
       goalDetail.month = month;
     }
-
+    console.log(3)
     if (year) {
       goalDetail.year = year;
     }
-
+    console.log(4)
 
     if (cost !== undefined) {
       // Calculate cumulativeCost based on the new cost value
