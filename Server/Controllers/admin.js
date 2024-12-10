@@ -2558,7 +2558,7 @@ router.put('/edit-goalSheet', async (req, res) => {
 
 
     // Get the last entry for cumulative calculations  
-    const lastDetail = goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length - 2] || {};
+    const lastDetail = goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length - 1] || {};
     const previousCumulativeCost = lastDetail.cumulativeCost || 0;
     const previousCumulativeRevenue = lastDetail.cumulativeRevenue || 0;
 
@@ -2639,6 +2639,8 @@ router.put('/edit-goalSheet', async (req, res) => {
 
 
     await goalSheet.save();
+
+    await goalDetail.save()
     console.log(8)
     res.status(200).json({ message: 'GoalSheet updated successfully', goalSheet });
 
