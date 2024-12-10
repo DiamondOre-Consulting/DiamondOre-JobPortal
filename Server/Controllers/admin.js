@@ -2540,6 +2540,9 @@ router.put('/edit-goalSheet', async (req, res) => {
 
     console.log(1)
     // Find the specific goal sheet detail by month and year
+
+    console.log(goalSheet)
+
     const goalDetailIndex = goalSheet.goalSheetDetails.findIndex(
       detail => {
         console.log(detail.year)
@@ -2559,6 +2562,8 @@ router.put('/edit-goalSheet', async (req, res) => {
 
     // Get the current goalSheetDetail for updates
     let goalDetail = goalSheet.goalSheetDetails[goalDetailIndex];
+
+    console.log(goalDetail)
 
 
     // Get the last entry for cumulative calculations  
