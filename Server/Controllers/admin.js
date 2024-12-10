@@ -2506,6 +2506,13 @@ router.post('/set-goalSheet', async (req, res) => {
       incentive, // Leave incentive blank for now
       variableIncentive // Leave variable incentive blank for now
     });
+    
+    goalSheet.goalSheetDetails.sort((a, b) => {
+      if (a.year !== b.year) {
+        return a.year - b.year;
+      }
+      return a.month - b.month; 
+    });
 
     // Save the GoalSheet
     await goalSheet.save();
