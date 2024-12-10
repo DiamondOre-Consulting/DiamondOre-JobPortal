@@ -2576,9 +2576,8 @@ router.put('/edit-goalSheet', async (req, res) => {
     if (year) {
       goalDetail.year = year;
     }
-    console.log(4)
 
-    if (cost !== undefined) {
+    if (cost) {
       // Calculate cumulativeCost based on the new cost value
       const updatedCumulativeCost = previousCumulativeCost + parseInt(cost);
 
@@ -2608,8 +2607,9 @@ router.put('/edit-goalSheet', async (req, res) => {
       }
       // goalDetail.target = cost * 4;
     }
+    console.log(4)
 
-    if (revenue !== undefined) {
+    if (revenue) {
       // Calculate cumulativeRevenue based on the new revenue value
       const updatedCumulativeRevenue = previousCumulativeRevenue + parseInt(revenue);
 
@@ -2622,15 +2622,15 @@ router.put('/edit-goalSheet', async (req, res) => {
         ? (updatedCumulativeRevenue / goalDetail.cumulativeCost).toFixed(2)
         : goalDetail.achYTD;
     }
-
-    if (incentive !== undefined) {
+    console.log(5)
+    if (incentive) {
       goalDetail.incentive = incentive;
     }
-
-    if (variableIncentive !== undefined) {
+    console.log(6)
+    if (variableIncentive) {
       goalDetail.variableIncentive = variableIncentive;
     }
-
+    console.log(7)
     // Save the updated GoalSheet
     await goalSheet.save();
 
