@@ -163,6 +163,8 @@ const EachEmployeeGoalSheet = () => {
       );
 
       if (response.status === 200) {
+        setTrigger((prev) => prev + 1)
+
         // Trigger a re-fetch of the goal sheet data
         // This will trigger useEffect to fetch updated data
         setEditMode(false); // Close the edit mode/modal

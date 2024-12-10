@@ -2570,7 +2570,7 @@ router.put('/edit-goalSheet', async (req, res) => {
       goalDetail.noOfJoinings = noOfJoinings;
     }
 
-    if (cost !== undefined) {
+    if (cost !== goalDetail?.cost) {
       // Calculate cumulativeCost based on the new cost value
       const updatedCumulativeCost = previousCumulativeCost + parseInt(cost);
 
@@ -2601,7 +2601,7 @@ router.put('/edit-goalSheet', async (req, res) => {
       // goalDetail.target = cost * 4;
     }
 
-    if (revenue !== undefined) {
+    if (revenue !== goalDetail?.revenue) {
       // Calculate cumulativeRevenue based on the new revenue value
       const updatedCumulativeRevenue = previousCumulativeRevenue + parseInt(revenue);
 
