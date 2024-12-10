@@ -2542,8 +2542,8 @@ router.put('/edit-goalSheet', async (req, res) => {
     // Find the specific goal sheet detail by month and year
 
     console.log(goalSheet)
-
-    const goalDetailIndex = goalSheet.goalSheetDetails.find(data => data?._id === sheetId)
+    console.log(sheetId)
+    const goalDetailIndex = goalSheet.goalSheetDetails.filter(data => data?._id === sheetId)
     console.log(2)
     console.log(3)
 
