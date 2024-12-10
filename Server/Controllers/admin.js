@@ -2558,32 +2558,32 @@ router.put('/edit-goalSheet', async (req, res) => {
 
 
     // Get the last entry for cumulative calculations  
-    const lastDetail = goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length - 1] || {};
-    const previousCumulativeCost = lastDetail.cumulativeCost || 0;
-    const previousCumulativeRevenue = lastDetail.cumulativeRevenue || 0;
+    const lastDetail = await goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length - 1] || {};
+    const previousCumulativeCost = await lastDetail.cumulativeCost || 0;
+    const previousCumulativeRevenue = await lastDetail.cumulativeRevenue || 0;
 
     console.log(lastDetail)
     console.log(1)
 
     // Update the fields conditionally
     if (noOfJoinings) {
-      goalDetail.noOfJoinings = noOfJoinings;
+      goalDetail.noOfJoinings = await noOfJoinings;
     }
     console.log(2)
     if (month) {
-      goalDetail.month = month;
+      goalDetail.month = await month;
     }
     console.log(3)
     if (year) {
-      goalDetail.year = year;
+      goalDetail.year = await year;
     }
 
     if (cost) {
       // Calculate cumulativeCost based on the new cost value
       const updatedCumulativeCost = previousCumulativeCost + parseInt(cost);
 
-      goalDetail.cost = parseInt(cost);
-      goalDetail.cumulativeCost = updatedCumulativeCost;
+      goalDetail.cost = await parseInt(cost);
+      goalDetail.cumulativeCost = await updatedCumulativeCost;
 
       // Update target if cost is provided
       const numberIndex = employee.empType.length - 2
@@ -2593,18 +2593,18 @@ router.put('/edit-goalSheet', async (req, res) => {
 
 
       if (employee.empType === "Recruiter") {
-        goalDetail.target = cost * 4
+        goalDetail.target = await cost * 4
       }
       else if (employee.empType === "Senior Recruitor") {
-        goalDetail.target = cost * 4
+        goalDetail.target = await cost * 4
       }
       else if (employee.empType === "Team Leader") {
-        goalDetail.target = cost * 4
+        goalDetail.target = await cost * 4
       }
 
       else {
         // console.log()
-        goalDetail.target = cost * parseInt(employee.empType[numberIndex]);
+        goalDetail.target = await cost * parseInt(employee.empType[numberIndex]);
       }
       // goalDetail.target = cost * 4;
     }
@@ -2625,11 +2625,11 @@ router.put('/edit-goalSheet', async (req, res) => {
     }
     console.log(5)
     if (incentive) {
-      goalDetail.incentive = incentive;
+      goalDetail.incentive = await incentive;
     }
     console.log(6)
     if (variableIncentive) {
-      goalDetail.variableIncentive = variableIncentive;
+      goalDetail.variableIncentive = await variableIncentive;
     }
     console.log(7)
 
