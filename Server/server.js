@@ -12,6 +12,8 @@ app.use(fileUpload());
 
 app.use(express.json());
 app.use(cors());
+
+app.use(morgan('dev'))
 app.use(express.static("ProfileImgUploads"));
 // app.use(bodyParser.urlencoded(extended))
 
@@ -32,6 +34,7 @@ import newJobPost from "./Controllers/jobs.js";
 import adminController from "./Controllers/admin.js";
 import adminERPController from "./Controllers/erp.js";
 import empController from "./Controllers/employees.js";
+import morgan from "morgan";
 // import contactUsController from "./Controllers/contactus.js";
 
 app.use('/api/candidates', candidatesController);
@@ -59,8 +62,8 @@ app.listen(PORT, () => {
   console.log(`Server is running on port: ${PORT}`);
 });
 
-function storeOtp(email,otp){
-  otpStore[email] = {otp,expires:Date.now()+5*60*1000}
+function storeOtp(email, otp) {
+  otpStore[email] = { otp, expires: Date.now() + 5 * 60 * 1000 }
 }
 
-export {otpStore,storeOtp};
+export { otpStore, storeOtp };

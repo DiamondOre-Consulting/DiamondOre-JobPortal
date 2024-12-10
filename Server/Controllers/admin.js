@@ -2553,6 +2553,7 @@ router.put('/edit-goalSheet', async (req, res) => {
     console.log(goalDetailIndex)
 
     if (goalDetailIndex === -1) {
+      console.log(typeof (goalDetailIndex))
       return res.status(404).json({ error: 'GoalSheet for this month and year not found' });
     }
 
