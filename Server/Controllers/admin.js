@@ -1964,12 +1964,15 @@ router.get("/all-employees/:id", AdminAuthenticateToken, async (req, res) => {
 
 router.delete("/delete/employee/:id", AdminAuthenticateToken, async (req, res, next) => {
   try {
-    const { id } = req.params
-    console.log(id)
+    const { id } = req.params;
+    const { email } = req.user;
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "user not Found" });
+    }
 
-    const oneEmployee = await Employees.findById({ _id: id });
-
-    console.log(oneEmployee)
+    const oneEmployee = await Employees.findById({ _id: id }, { password: 0 });
+    console.log(oneEmployee);
 
     // if (!oneEmployee) {
     //   return res.status(400).json({ message: "Employee not found!!!" });
