@@ -1966,11 +1966,11 @@ router.delete("/delete/employee/:id", AdminAuthenticateToken, async (req, res, n
   try {
     const { id } = req.params
 
-    const oneEmployee = await Employees.findByIdAndDelete({ _id: id });
+    const oneEmployee = await Employees.findByIdAndDelete(id);
 
-    if (!oneEmployee) {
-      return res.status(400).json({ message: "Employee not found!!!" });
-    }
+    // if (!oneEmployee) {
+    //   return res.status(400).json({ message: "Employee not found!!!" });
+    // }
 
     await Employees.save()
 
