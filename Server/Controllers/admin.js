@@ -1962,6 +1962,26 @@ router.get("/all-employees/:id", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
+router.delete("/delete/employee/:id", AdminAuthenticateToken, async (req, res, next) => {
+  try {
+    const { id } = req.params
+
+    const oneEmployee = await Employees.findByIdAndDelete({ _id: id });
+
+    if (!oneEmployee) {
+      return res.status(400).json({ message: "Employee not found!!!" });
+    }
+
+    await Employees.save()
+
+    return res.status(201).json({ message: "Employee deleted successfully!" });
+
+  } catch (e) {
+    return res.status(500).json({ message: "Something went wrong!!!" });
+
+  }
+})
+
 
 router.put('/all-employees-edit/:id', AdminAuthenticateToken, async (req, res) => {
   // console.log("request-accepted")
