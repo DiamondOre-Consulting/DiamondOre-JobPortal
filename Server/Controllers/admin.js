@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
-import {otpStore,storeOtp} from "../server.js";
+import { otpStore, storeOtp } from "../server.js";
 // import forgotOtp from "../server.js";
 import { S3Client } from "@aws-sdk/client-s3";
 import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
@@ -91,8 +91,8 @@ router.post("/send-otp", async (req, res) => {
 
     // Generate and store OTP
     const otp = generateOTP();
-    console.log("generated otp in sent otp",otp)
-    storeOtp(email,otp) // Store OTP for the email
+    console.log("generated otp in sent otp", otp)
+    storeOtp(email, otp) // Store OTP for the email
     console.log(otp)
 
     console.log(email);
@@ -187,7 +187,7 @@ router.post("/signup-admin", async (req, res) => {
 
   console.log("Signup Email:", email);
   console.log("Entered OTP:", otp);
- 
+
   console.log("Stored OTP in signup:", otpStore[email]);
   // const isValidOTP = verifyOTP(otpStore, otp); //TESTING OTP
   // if (isValidOTP) {
@@ -195,7 +195,7 @@ router.post("/signup-admin", async (req, res) => {
   try {
     // Verify OTP
     console.log(otpStore[email].otp)
-    
+
     if (otpStore[email].otp == otp) {
       const userExists = await Admin.exists({ email });
       if (userExists) {
@@ -1077,7 +1077,7 @@ router.get("/all-messages/:id", AdminAuthenticateToken, async (req, res) => {
 
 router.put("/edit-profile", AdminAuthenticateToken, async (req, res) => {
   try {
-    const { name, password, profilePic,passcode } = req.body;
+    const { name, password, profilePic, passcode } = req.body;
     const { email } = req.user;
 
     const user = await Admin.findOne({ email });
@@ -1101,7 +1101,7 @@ router.put("/edit-profile", AdminAuthenticateToken, async (req, res) => {
       await user.save();
     }
 
-    if(passcode){
+    if (passcode) {
       user.passcode = passcode
       await user.save();
     }
@@ -1989,17 +1989,17 @@ router.put('/all-employees-edit/:id', AdminAuthenticateToken, async (req, res) =
     if (req.body.doj) {
       updatedFields.doj = req.body.doj;
     }
-    
-      
-      
+
+
+
     updatedFields.accountHandler = req.body.accountHandler;
-    
+
     console.log("test")
     console.log(updatedFields.accountHandler)
 
-    const updateEmployee= await Employees.findByIdAndUpdate({_id:id}, updatedFields,{new:true})
-     
-    if(!updateEmployee) {
+    const updateEmployee = await Employees.findByIdAndUpdate({ _id: id }, updatedFields, { new: true })
+
+    if (!updateEmployee) {
       return res.status(404).json({ message: "Employee not found" });
     }
     console.log(updateEmployee)
@@ -2441,27 +2441,27 @@ router.post('/set-goalSheet', async (req, res) => {
     const cumulativeRevenue = previousCumulativeRevenue + revenue;
     const achYTD = (cumulativeRevenue / cumulativeCost).toFixed(2);
     const achMTD = (revenue / cost).toFixed(2);
-    const numberIndex= employee.empType.length-2
-    
+    const numberIndex = employee.empType.length - 2
+
     let target;
 
     console.log(employee.empType)
-   
-    if(employee.empType==="Recruiter"){
-       target = cost * 4      
+
+    if (employee.empType === "Recruiter") {
+      target = cost * 4
     }
-    else if(employee.empType==="SeniorRecruiter"){
-       target = cost * 4
+    else if (employee.empType === "SeniorRecruiter") {
+      target = cost * 4
     }
-    else if(employee.empType==="TeamLeader"){
-       target = cost * 4
+    else if (employee.empType === "TeamLeader") {
+      target = cost * 4
     }
 
-    else{
+    else {
       // console.log()
       target = cost * parseInt(employee.empType[numberIndex]);
     }
-    console.log("target",target);
+    console.log("target", target);
 
     // Push the new goalSheetDetails
     goalSheet.goalSheetDetails.push({
@@ -2518,6 +2518,10 @@ router.put('/edit-goalSheet', async (req, res) => {
   // console.log("enter")
   const { empId, year, month, noOfJoinings, cost, revenue, incentive, variableIncentive } = req.body;
 
+  console.log(req.body)
+
+  console.log(year, month)
+
   try {
     // Find the employee by empId
     const employee = await Employees.findOne({ _id: empId });
@@ -2531,12 +2535,13 @@ router.put('/edit-goalSheet', async (req, res) => {
       return res.status(404).json({ error: 'GoalSheet not found' });
     }
 
-    
 
+    console.log(1)
     // Find the specific goal sheet detail by month and year
     const goalDetailIndex = goalSheet.goalSheetDetails.findIndex(
       detail => detail.year === year && detail.month === month
     );
+    console.log(2)
 
     if (goalDetailIndex === -1) {
       return res.status(404).json({ error: 'GoalSheet for this month and year not found' });
@@ -2544,13 +2549,13 @@ router.put('/edit-goalSheet', async (req, res) => {
 
     // Get the current goalSheetDetail for updates
     let goalDetail = goalSheet.goalSheetDetails[goalDetailIndex];
-    
+
 
     // Get the last entry for cumulative calculations  
-    const lastDetail = goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length - 2] || {};  
+    const lastDetail = goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length - 2] || {};
     const previousCumulativeCost = lastDetail.cumulativeCost || 0;
     const previousCumulativeRevenue = lastDetail.cumulativeRevenue || 0;
-  
+
     // Update the fields conditionally
     if (noOfJoinings !== undefined) {
       goalDetail.noOfJoinings = noOfJoinings;
@@ -2559,28 +2564,28 @@ router.put('/edit-goalSheet', async (req, res) => {
     if (cost !== undefined) {
       // Calculate cumulativeCost based on the new cost value
       const updatedCumulativeCost = previousCumulativeCost + parseInt(cost);
-      
+
       goalDetail.cost = parseInt(cost);
       goalDetail.cumulativeCost = updatedCumulativeCost;
 
       // Update target if cost is provided
-      const numberIndex= employee.empType.length-2
-    
+      const numberIndex = employee.empType.length - 2
+
       // let target;
-  
-  
-     
-      if(employee.empType==="Recruiter"){
-         goalDetail.target = cost * 4      
-      }
-      else if(employee.empType==="Senior Recruitor"){
+
+
+
+      if (employee.empType === "Recruiter") {
         goalDetail.target = cost * 4
       }
-      else if(employee.empType==="Team Leader"){
+      else if (employee.empType === "Senior Recruitor") {
         goalDetail.target = cost * 4
       }
-  
-      else{
+      else if (employee.empType === "Team Leader") {
+        goalDetail.target = cost * 4
+      }
+
+      else {
         // console.log()
         goalDetail.target = cost * parseInt(employee.empType[numberIndex]);
       }
@@ -2590,7 +2595,7 @@ router.put('/edit-goalSheet', async (req, res) => {
     if (revenue !== undefined) {
       // Calculate cumulativeRevenue based on the new revenue value
       const updatedCumulativeRevenue = previousCumulativeRevenue + parseInt(revenue);
-     
+
       goalDetail.revenue = parseInt(revenue);
       goalDetail.cumulativeRevenue = updatedCumulativeRevenue;
 
@@ -3060,49 +3065,49 @@ router.get("/employee-kpi-score/:id", AdminAuthenticateToken, async (req, res) =
 
 
 
-router.post('/download-excel',AdminAuthenticateToken,async (req,res)=>{
+router.post('/download-excel', AdminAuthenticateToken, async (req, res) => {
 
-  try{
-       
-    const {startDate,endDate}= req.body;
+  try {
+
+    const { startDate, endDate } = req.body;
 
 
-    if(!startDate||!endDate){
-      return res.status(400).json({"message":"start date and end date are required"})
+    if (!startDate || !endDate) {
+      return res.status(400).json({ "message": "start date and end date are required" })
     }
 
-    if (new Date(startDate)  > new Date(endDate)) {
+    if (new Date(startDate) > new Date(endDate)) {
       return res.status(400).json({ message: "Start date cannot be after end date." });
     }
 
 
-    const candidateData= await Candidates.find({
-      createdAt:{
-        $gte:startDate,
-        $lte:endDate
+    const candidateData = await Candidates.find({
+      createdAt: {
+        $gte: startDate,
+        $lte: endDate
       }
     });
 
-  
+
 
     const workbook = new Exceljs.Workbook();
-    const worksheet= workbook.addWorksheet('candidates')
+    const worksheet = workbook.addWorksheet('candidates')
 
     worksheet.columns = [
       { header: 'Name', key: 'name' },
-      { header: 'Email', key:'email'},
-      { header: 'Phone no.', key:'phone'},
+      { header: 'Email', key: 'email' },
+      { header: 'Phone no.', key: 'phone' },
       { header: 'Created At', key: 'createdAt' },
 
     ]
     console.log(candidateData)
 
-    candidateData.forEach(candidate=>{
+    candidateData.forEach(candidate => {
       worksheet.addRow({
         name: candidate.name,
         email: candidate.email,
         phone: candidate.phone,
-        createdAt: candidate.createdAt.toISOString().slice(0,10),
+        createdAt: candidate.createdAt.toISOString().slice(0, 10),
       })
     })
 
@@ -3114,7 +3119,7 @@ router.post('/download-excel',AdminAuthenticateToken,async (req,res)=>{
 
 
   }
-  catch(error){
+  catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
   }
