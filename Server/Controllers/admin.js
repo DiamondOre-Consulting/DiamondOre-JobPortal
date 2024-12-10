@@ -2594,7 +2594,7 @@ router.put('/edit-goalSheet', async (req, res) => {
       if (employee.empType === "Recruiter") {
         goalDetail.target = await cost * 4
       }
-      else if (employee.empType === "Senior Recruitor") {
+      else if (employee.empType === "SeniorRecruiter") {
         goalDetail.target = await cost * 4
       }
       else if (employee.empType === "Team Leader") {
