@@ -1962,7 +1962,7 @@ router.get("/all-employees/:id", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
-router.delete("/delete/employee/:id", AdminAuthenticateToken, async (req, res, next) => {
+router.put("/delete/employee/:id", AdminAuthenticateToken, async (req, res, next) => {
   try {
     const { id } = req.params;
     const { email } = req.user;

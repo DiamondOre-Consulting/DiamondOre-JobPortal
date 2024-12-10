@@ -63,7 +63,7 @@ const AllEmployee = () => {
         setDeleteActive(true)
         const token = localStorage.getItem("token");
 
-        const response = await axios.delete(
+        const response = await axios.put(
             `https://api.diamondore.in/api/admin-confi/delete/employee/${cancelId}`,
             {
                 headers: {
