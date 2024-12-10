@@ -2543,19 +2543,16 @@ router.put('/edit-goalSheet', async (req, res) => {
 
     console.log(goalSheet)
     console.log(sheetId)
-    const goalDetailIndex = goalSheet.goalSheetDetails.find(data => data?._id.toString() === sheetId.toString())
+    const goalDetail = goalSheet.goalSheetDetails.find(data => data?._id.toString() === sheetId.toString())
     console.log(2)
     console.log(3)
 
-    console.log(goalDetailIndex)
 
-    if (goalDetailIndex === -1) {
-      console.log(typeof (goalDetailIndex))
+    if (!goalDetail) {
       return res.status(404).json({ error: 'GoalSheet for this month and year not found' });
     }
 
     // Get the current goalSheetDetail for updates
-    let goalDetail = goalSheet.goalSheetDetails[goalDetailIndex];
 
     console.log(goalDetail)
 
@@ -2566,9 +2563,18 @@ router.put('/edit-goalSheet', async (req, res) => {
     const previousCumulativeRevenue = lastDetail.cumulativeRevenue || 0;
 
     // Update the fields conditionally
-    if (noOfJoinings !== undefined) {
+    if (noOfJoinings) {
       goalDetail.noOfJoinings = noOfJoinings;
     }
+
+    if (month) {
+      goalDetail.month = month;
+    }
+
+    if (year) {
+      goalDetail.year = year;
+    }
+
 
     if (cost !== undefined) {
       // Calculate cumulativeCost based on the new cost value
