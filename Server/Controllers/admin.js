@@ -2520,7 +2520,9 @@ router.put('/edit-goalSheet', async (req, res) => {
 
   console.log(req.body)
 
-  console.log(year, month)
+  console.log(month)
+
+  console.log(typeof (year))
 
   try {
     // Find the employee by empId
@@ -2539,9 +2541,16 @@ router.put('/edit-goalSheet', async (req, res) => {
     console.log(1)
     // Find the specific goal sheet detail by month and year
     const goalDetailIndex = goalSheet.goalSheetDetails.findIndex(
-      detail => detail.year === Number(year) && detail.month === Number(month)
+      detail => {
+        console.log(detail.year)
+        console.log(typeof (detail.year))
+        detail.year === Number(year) && detail.month === Number(month)
+      }
     );
     console.log(2)
+    console.log(3)
+
+    console.log(goalDetailIndex)
 
     if (goalDetailIndex === -1) {
       return res.status(404).json({ error: 'GoalSheet for this month and year not found' });
