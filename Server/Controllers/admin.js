@@ -2546,8 +2546,10 @@ router.put('/edit-goalSheet', async (req, res) => {
     const goalDetailIndex = goalSheet.goalSheetDetails.findIndex(
       detail => {
         console.log(detail.year)
-        console.log(typeof (detail.year))
-        detail.year === Number(year) && detail.month === Number(month)
+        console.log(detail.month === month)
+        console.log(detail.year === year)
+
+        // detail.year === year
       }
     );
     console.log(2)
