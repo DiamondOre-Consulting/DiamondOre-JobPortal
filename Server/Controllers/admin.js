@@ -2558,7 +2558,7 @@ router.put('/edit-goalSheet', async (req, res) => {
 
 
     // Get the last entry for cumulative calculations  
-    const lastDetail = await goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length - 1] || {};
+    const lastDetail = await goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length - 2] || {};
     const previousCumulativeCost = await lastDetail.cumulativeCost || 0;
     const previousCumulativeRevenue = await lastDetail.cumulativeRevenue || 0;
 
@@ -2591,7 +2591,6 @@ router.put('/edit-goalSheet', async (req, res) => {
       // let target;
 
 
-
       if (employee.empType === "Recruiter") {
         goalDetail.target = await cost * 4
       }
@@ -2603,11 +2602,17 @@ router.put('/edit-goalSheet', async (req, res) => {
       }
 
       else {
+        console.log(numberIndex)
+        console.log("Hello")
         // console.log()
         goalDetail.target = await cost * parseInt(employee.empType[numberIndex]);
       }
       // goalDetail.target = cost * 4;
     }
+
+
+
+    console.log(employee)
     console.log(4)
 
     if (revenue) {
