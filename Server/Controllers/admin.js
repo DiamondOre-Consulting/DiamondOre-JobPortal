@@ -2632,7 +2632,12 @@ router.put('/edit-goalSheet', async (req, res) => {
       goalDetail.variableIncentive = variableIncentive;
     }
     console.log(7)
+
+    console.log(goalSheet)
+
     // Save the updated GoalSheet
+
+
     await goalSheet.save();
     console.log(8)
     res.status(200).json({ message: 'GoalSheet updated successfully', goalSheet });
