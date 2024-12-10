@@ -20,6 +20,7 @@ const EachEmployeeGoalSheet = () => {
   const [year, setYear] = useState(null);
   const [month, setMonth] = useState(null);
   const [prevYear, setPrevYear] = useState(null)
+  const [goalListId, setGoalListId] = useState()
   const [prevMonth, setPrevMonth] = useState(null)
   const [noOfJoinings, setNoOfJoinings] = useState(0);
   const [revenue, setRevenue] = useState(null);
@@ -150,6 +151,7 @@ const EachEmployeeGoalSheet = () => {
           noOfJoinings: editNoOfJoinings,
           cost: editCost,
           revenue: editRevenue,
+          sheetId: goalListId,
           incentive: editIncentive,
           variableIncentive: editVariableIncentive,
         },
@@ -245,6 +247,7 @@ const EachEmployeeGoalSheet = () => {
   const [goalSheetToEdit, setGoalSheetToEdit] = useState({});
 
   const handleEditClick = (detail) => {
+    setGoalListId(detail?._id)
     setPrevYear(detail?.year)
     setPrevMonth(detail?.month)
     setEditMode(true); // Open the modal

@@ -2516,7 +2516,7 @@ router.get("/goalsheet/:id", AdminAuthenticateToken, async (req, res) => {
 // EDIT A GOALSHEET
 router.put('/edit-goalSheet', async (req, res) => {
   // console.log("enter")
-  const { empId, year, month, prevYear, prevMonth, noOfJoinings, cost, revenue, incentive, variableIncentive } = req.body;
+  const { empId, year, month, prevYear, prevMonth, sheetId, noOfJoinings, cost, revenue, incentive, variableIncentive } = req.body;
 
   console.log(req.body)
 
@@ -2543,17 +2543,7 @@ router.put('/edit-goalSheet', async (req, res) => {
 
     console.log(goalSheet)
 
-    const goalDetailIndex = goalSheet.goalSheetDetails.findIndex(
-      detail => {
-        console.log(detail.year)
-        console.log("prev year", prevYear)
-        console.log(typeof (prevYear))
-        console.log(detail.month === prevMonth)
-        console.log(detail.year === prevYear)
-        detail.year == prevYear && detail.month == prevMonth
-        // detail.year === year
-      }
-    );
+    const goalDetailIndex = goalSheet.goalSheetDetails.find(data => data?._id === sheetId)
     console.log(2)
     console.log(3)
 
