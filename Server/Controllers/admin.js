@@ -2562,6 +2562,7 @@ router.put('/edit-goalSheet', async (req, res) => {
     const previousCumulativeCost = lastDetail.cumulativeCost || 0;
     const previousCumulativeRevenue = lastDetail.cumulativeRevenue || 0;
 
+    console.log(lastDetail)
     console.log(1)
 
     // Update the fields conditionally
@@ -2633,7 +2634,7 @@ router.put('/edit-goalSheet', async (req, res) => {
     console.log(7)
     // Save the updated GoalSheet
     await goalSheet.save();
-
+    console.log(8)
     res.status(200).json({ message: 'GoalSheet updated successfully', goalSheet });
 
   } catch (error) {
