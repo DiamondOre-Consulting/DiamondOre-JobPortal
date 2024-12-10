@@ -2516,7 +2516,7 @@ router.get("/goalsheet/:id", AdminAuthenticateToken, async (req, res) => {
 // EDIT A GOALSHEET
 router.put('/edit-goalSheet', async (req, res) => {
   // console.log("enter")
-  const { empId, year, month, noOfJoinings, cost, revenue, incentive, variableIncentive } = req.body;
+  const { empId, year, month, prevYear, prevMonth, noOfJoinings, cost, revenue, incentive, variableIncentive } = req.body;
 
   console.log(req.body)
 
@@ -2548,7 +2548,7 @@ router.put('/edit-goalSheet', async (req, res) => {
         console.log(detail.year)
         console.log(detail.month === month)
         console.log(detail.year === year)
-
+        detail.year === prevYear && detail.month === prevMonth
         // detail.year === year
       }
     );

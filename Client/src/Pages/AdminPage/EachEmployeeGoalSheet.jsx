@@ -9,8 +9,8 @@ import Footer from "../HomePage/Footer";
 
 const EachEmployeeGoalSheet = () => {
   const { id } = useParams();
-  const {employeename} = useParams();
-  
+  const { employeename } = useParams();
+
   const { decodedToken } = useJwt(localStorage.getItem("token"));
   const [editMode, setEditMode] = useState(false);
   const [employees, setEmployees] = useState([]);
@@ -19,6 +19,8 @@ const EachEmployeeGoalSheet = () => {
   const [goalSheetData, setGoalSheetData] = useState([]);
   const [year, setYear] = useState(null);
   const [month, setMonth] = useState(null);
+  const [prevYear, setPrevYear] = useState(null)
+  const [prevMonth, setPrevMonth] = useState(null)
   const [noOfJoinings, setNoOfJoinings] = useState(0);
   const [revenue, setRevenue] = useState(null);
   const [cost, setCost] = useState(null);
@@ -30,14 +32,14 @@ const EachEmployeeGoalSheet = () => {
   const [selectedYear, setSelectedYear] = useState("");
   const [allGoalSheetData, setAllGoalSheetData] = useState([]);
   const [filteredGoalSheetData, setFilteredGoalSheetData] = useState([]);
-  const [trigger,setTrigger] = useState(0)
+  const [trigger, setTrigger] = useState(0)
 
   // Submit the goal sheet form
   const handleSetGoalSheet = async (e) => {
     e.preventDefault();
     setShowSubmitLoader(true);
 
-    
+
 
     try {
       const token = localStorage.getItem("token");
@@ -82,8 +84,8 @@ const EachEmployeeGoalSheet = () => {
       );
 
       if (response.status === 201) {
-        
-        setTrigger((prev)=>prev+1)
+
+        setTrigger((prev) => prev + 1)
         setSnackbarOpen(true); // Open Snackbar on successful submission
         setCost("");
         setRevenue("");
@@ -92,7 +94,7 @@ const EachEmployeeGoalSheet = () => {
         setMonth("");
         setInsentive("");
         setVariableIncentive("");
-        
+
       } else {
         setSnackbarOpen(false);
         setCost("");
@@ -109,13 +111,13 @@ const EachEmployeeGoalSheet = () => {
 
 
       if (error.response && error.response.status === 404) {
-        
+
         setGoalSheetForm(false);
       } else {
-        
+
       }
     }
-    finally{
+    finally {
       setShowSubmitLoader(false);
     }
   };
@@ -132,14 +134,16 @@ const EachEmployeeGoalSheet = () => {
 
   const handleEditGoalSheet = async (e) => {
     e.preventDefault();
-  
+
     try {
       const token = localStorage.getItem("token");
-  
+
       // Send the updated goal sheet data to the server
       const response = await axios.put(
         "https://api.diamondore.in/api/admin-confi/edit-goalSheet",
         {
+          prevYear: prevYear,
+          prevMonth: prevMonth,
           empId: id,
           year: editYear,
           month: editMonth,
@@ -155,22 +159,22 @@ const EachEmployeeGoalSheet = () => {
           },
         }
       );
-  
+
       if (response.status === 200) {
         // Trigger a re-fetch of the goal sheet data
-         // This will trigger useEffect to fetch updated data
+        // This will trigger useEffect to fetch updated data
         setEditMode(false); // Close the edit mode/modal
-  
+
         // Optionally, you can display a success message
-        
+
       }
     } catch (error) {
       console.error("Error updating goal sheet:", error);
     }
   };
 
-  
-// 
+
+  // 
 
   useEffect(() => {
     const handleGoalSheet = async () => {
@@ -184,19 +188,19 @@ const EachEmployeeGoalSheet = () => {
             },
           }
         );
-  
+
         if (response.status === 200) {
           setAllGoalSheetData(response.data); // Update the goal sheet data
-           // You can verify the data here
+          // You can verify the data here
         }
       } catch (error) {
-        
+        console.log(error)
       }
     };
-  
+
     handleGoalSheet();
-  }, [trigger]); 
-  
+  }, [trigger]);
+
 
   // useEffect(() => {
   //   if (selectedYear) {
@@ -241,7 +245,8 @@ const EachEmployeeGoalSheet = () => {
   const [goalSheetToEdit, setGoalSheetToEdit] = useState({});
 
   const handleEditClick = (detail) => {
-    
+    setPrevYear(detail?.year)
+    setPrevMonth(detail?.month)
     setEditMode(true); // Open the modal
     setEditYear(detail.year);
     setEditMonth(detail.month);
@@ -253,24 +258,24 @@ const EachEmployeeGoalSheet = () => {
     setGoalSheetToEdit(detail);
   };
 
- 
+
   return (
     <>
       {/* <AdminNav /> */}
       <div className="flex">
-        <h1 className="mx-auto text-2xl md:text-4xl font-bold text-center mb-4">
+        <h1 className="mx-auto mb-4 text-2xl font-bold text-center md:text-4xl">
           Goal Sheet {employeename}
         </h1>
       </div>
-      <div className=" grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-10 py-6 px-2 md:px-10">
+      <div className="grid grid-cols-1 gap-0 px-2 py-6 md:grid-cols-3 md:gap-10 md:px-10">
         <div className=" md:col-1">
-          <div className="bg-white border-blue-900  p-8 rounded-lg shadow-lg relative max-w-md md:w-full mb-10 md:mt-0">
-            <h2 className="text-2xl mb-4">Update Goal Sheet</h2>
+          <div className="relative max-w-md p-8 mb-10 bg-white border-blue-900 rounded-lg shadow-lg md:w-full md:mt-0">
+            <h2 className="mb-4 text-2xl">Update Goal Sheet</h2>
             <form onSubmit={handleSetGoalSheet}>
               <div className="mb-2">
                 <div className="flex justify-between">
                   <select
-                    className="w-full rounded-md py-2 px-2 "
+                    className="w-full px-2 py-2 rounded-md "
                     value={year}
                     onChange={(e) => setYear(e.target.value)}
                   >
@@ -288,7 +293,7 @@ const EachEmployeeGoalSheet = () => {
                     <option value={2030}>2030</option>
                   </select>
                   <select
-                    className="w-full rounded-md py-2 px-2 ml-2"
+                    className="w-full px-2 py-2 ml-2 rounded-md"
                     value={month}
                     onChange={(e) => setMonth(e.target.value)}
                   >
@@ -379,10 +384,10 @@ const EachEmployeeGoalSheet = () => {
                   </div>
                 </div>
               </div>
-              <div className="mt-4 flex justify-end">
+              <div className="flex justify-end mt-4">
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-900 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none w-full"
+                  className="w-full px-4 py-2 text-white bg-blue-900 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none"
                 >
                   {showSubmitLoader ? (
                     <svg
@@ -425,23 +430,23 @@ const EachEmployeeGoalSheet = () => {
         </div>
 
         <div className="col-span-2">
-          <div class="container mx-auto overflow-x-auto h-[500px] relative">
-            <table id="example" class="table-auto w-full ">
-              <thead className="sticky top-0 bg-blue-900 text-gray-100 text-xs shadow">
+          <div className="container mx-auto overflow-x-auto h-[500px] relative">
+            <table id="example" className="w-full table-auto ">
+              <thead className="sticky top-0 text-xs text-gray-100 bg-blue-900 shadow">
                 <tr className="">
-                  <th class="px-4  py-2">Year</th>
-                  <th class="px-4  py-2">Month</th>
-                  <th class="px-4 py-2 ">No. of Joinings</th>
-                  <th class="px-4 py-2">Revenue</th>
-                  <th class="px-4 py-2">Cost</th>
-                  <th class="px-4 py-2">Target</th>
-                  <th class="px-4 py-2">Cumulative Cost</th>
-                  <th class="px-4 py-2">Cumulative Revenue</th>
-                  <th class="px-4 py-2">YTD</th>
-                  <th class="px-4 py-2">MTD</th>
-                  <th class="px-4 py-2">Incentive</th>
-                  <th class="px-4 y-2">Variable Incentive</th>
-                  <th class="px-4 y-2">Action</th>
+                  <th className="px-4 py-2">Year</th>
+                  <th className="px-4 py-2">Month</th>
+                  <th className="px-4 py-2 ">No. of Joinings</th>
+                  <th className="px-4 py-2">Revenue</th>
+                  <th className="px-4 py-2">Cost</th>
+                  <th className="px-4 py-2">Target</th>
+                  <th className="px-4 py-2">Cumulative Cost</th>
+                  <th className="px-4 py-2">Cumulative Revenue</th>
+                  <th className="px-4 py-2">YTD</th>
+                  <th className="px-4 py-2">MTD</th>
+                  <th className="px-4 py-2">Incentive</th>
+                  <th className="px-4 y-2">Variable Incentive</th>
+                  <th className="px-4 y-2">Action</th>
                 </tr>
               </thead>
 
@@ -456,42 +461,45 @@ const EachEmployeeGoalSheet = () => {
                             className="text-center"
                           >
                             {" "}
-                            <td className="border px-4 py-2">{detail.year}</td>
-                            <td className="border px-4 py-2">
+                            <td className="px-4 py-2 border">{detail.year}</td>
+                            <td className="px-4 py-2 border">
                               {" "}
                               {monthNames[detail.month] || "Unknown"}{" "}
                             </td>
-                            <td className="border px-4 py-2">
+                            <td className="px-4 py-2 border">
                               {detail.noOfJoinings}
                             </td>
-                            <td className="border px-4 py-2">
+                            <td className="px-4 py-2 border">
                               {detail.revenue}
                             </td>
-                            <td className="border px-4 py-2">{detail.cost}</td>
-                            <td className="border px-4 py-2">
+                            <td className="px-4 py-2 border">{detail.cost}</td>
+                            <td className="px-4 py-2 border">
                               {detail.target}
                             </td>
-                            <td className="border px-4 py-2">
+                            <td className="px-4 py-2 border">
                               {detail.cumulativeCost}
                             </td>
-                            <td className="border px-4 py-2">
+                            <td className="px-4 py-2 border">
                               {detail.cumulativeRevenue}
                             </td>
-                            <td className="border px-4 py-2">
+                            <td className="px-4 py-2 border">
                               {detail.achYTD}
                             </td>
-                            <td className="border px-4 py-2">
+                            <td className="px-4 py-2 border">
                               {detail.achMTD}
                             </td>
-                            <td className="border px-4 py-2">
+                            <td className="px-4 py-2 border">
                               {detail.incentive ?? "N/A"}
                             </td>
-                            <td className="border px-4 py-2">
+                            <td className="px-4 py-2 border">
                               {detail.variableIncentive ?? "N/A"}
                             </td>
                             <td
-                              className="border px-4 py-2 text-red-600 cursor-pointer"
-                              onClick={() => handleEditClick(detail)}
+                              className="px-4 py-2 text-red-600 border cursor-pointer"
+                              onClick={() => {
+
+                                handleEditClick(detail)
+                              }}
                             >
                               Edit
                             </td>
@@ -501,7 +509,7 @@ const EachEmployeeGoalSheet = () => {
                         <tr>
                           <td
                             colSpan="11"
-                            className="border px-4 py-2 text-center"
+                            className="px-4 py-2 text-center border"
                           >
                             No details available
                           </td>
@@ -524,7 +532,7 @@ const EachEmployeeGoalSheet = () => {
                         id="year"
                         value={selectedYear}
                         onChange={handleYearChange}
-                        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                        className="block w-full py-2 pl-3 pr-10 mt-1 text-base border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     >
                         <option value="">-- Select Year --</option>
                         <option value="2021">2021</option>
@@ -536,11 +544,11 @@ const EachEmployeeGoalSheet = () => {
         {/* {filteredGoalSheetData.length > 0 ? (
                     <div>
                         {filteredGoalSheetData.map((data) => (
-                            <div key={data._id} className="mb-6 p-4 border border-gray-300 rounded-md shadow-md">
-                                <h3 className="text-lg font-semibold mb-2">Year: {data.year}</h3>
+                            <div key={data._id} className="p-4 mb-6 border border-gray-300 rounded-md shadow-md">
+                                <h3 className="mb-2 text-lg font-semibold">Year: {data.year}</h3>
                                 {data.goalSheetDetails.map((detail) => (
-                                    <div key={detail._id} className="mb-4 p-2 border-b border-gray-200">
-                                        <h4 className="text-md font-medium">Month: {detail.goalSheet.month}</h4>
+                                    <div key={detail._id} className="p-2 mb-4 border-b border-gray-200">
+                                        <h4 className="font-medium text-md">Month: {detail.goalSheet.month}</h4>
                                         <p>No of Joining: {detail.goalSheet.noOfJoining}</p>
                                         <p>Cost: {detail.goalSheet.cost}</p>
                                         <p>Revenue: {detail.goalSheet.revenue}</p>
@@ -563,15 +571,15 @@ const EachEmployeeGoalSheet = () => {
 
       {editMode && (
         <div
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
           onClick={() => setEditMode(false)} // Close modal when clicking outside
         >
           <div
-            className="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl"
+            className="w-full max-w-xl p-6 bg-white rounded-lg shadow-lg"
             onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
           >
             <form onSubmit={handleEditGoalSheet} className="space-y-4">
-              <div className="flex justify-between space-x-4 items-center ">
+              <div className="flex items-center justify-between space-x-4 ">
                 <div>
                   <label className="block text-gray-700">Year</label>
                   <input
@@ -605,7 +613,7 @@ const EachEmployeeGoalSheet = () => {
                 </div>
               </div>
 
-              <div className="flex justify-between space-x-4 items-center ">
+              <div className="flex items-center justify-between space-x-4 ">
                 <div>
                   <label className="block text-gray-700">Cost</label>
                   <input
@@ -655,7 +663,7 @@ const EachEmployeeGoalSheet = () => {
 
               <button
                 type="submit"
-                className="w-full p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                className="w-full p-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
               >
                 Save Changes
               </button>
