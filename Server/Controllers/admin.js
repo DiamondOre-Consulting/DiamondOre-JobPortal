@@ -2543,7 +2543,7 @@ router.put('/edit-goalSheet', async (req, res) => {
 
     console.log(goalSheet)
     console.log(sheetId)
-    const goalDetailIndex = goalSheet.goalSheetDetails.filter(data => data?._id.toString() === sheetId.toString())
+    const goalDetailIndex = goalSheet.goalSheetDetails.find(data => data?._id.toString() === sheetId.toString())
     console.log(2)
     console.log(3)
 
