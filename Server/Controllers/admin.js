@@ -1962,17 +1962,14 @@ router.get("/all-employees/:id", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
-router.put("/delete/employee/:id", AdminAuthenticateToken, async (req, res, next) => {
+router.delete("/delete/employee/:id", AdminAuthenticateToken, async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const { email } = req.user;
-    const user = await Admin.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "user not Found" });
-    }
+    const { id } = req.params
+    console.log(id)
 
-    const oneEmployee = await Employees.findById({ _id: id }, { password: 0 });
-    console.log(oneEmployee);
+    const oneEmployee = await Employees.findById({ _id: id });
+
+    console.log(oneEmployee)
 
     // if (!oneEmployee) {
     //   return res.status(400).json({ message: "Employee not found!!!" });
@@ -1985,7 +1982,7 @@ router.put("/delete/employee/:id", AdminAuthenticateToken, async (req, res, next
     return res.status(201).json({ message: "Employee deleted successfully!" });
 
   } catch (e) {
-    return res.status(500).json({ message: "Something went wrong!!!" });
+    return res.status(500).json({ message: "Something went wrong!!!", err: e.message });
 
   }
 })
@@ -2505,13 +2502,6 @@ router.post('/set-goalSheet', async (req, res) => {
       achMTD,
       incentive, // Leave incentive blank for now
       variableIncentive // Leave variable incentive blank for now
-    });
-    
-    goalSheet.goalSheetDetails.sort((a, b) => {
-      if (a.year !== b.year) {
-        return a.year - b.year;
-      }
-      return a.month - b.month; 
     });
 
     // Save the GoalSheet
