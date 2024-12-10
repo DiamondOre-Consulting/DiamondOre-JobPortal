@@ -2543,47 +2543,39 @@ router.put('/edit-goalSheet', async (req, res) => {
 
     console.log(goalSheet)
     console.log(sheetId)
-    const goalDetail = goalSheet.goalSheetDetails.findIndex(data => data?._id.toString() === sheetId.toString())
+    const goalDetailIndex = goalSheet.goalSheetDetails.findIndex(data => data?._id.toString() === sheetId.toString())
     console.log(2)
     console.log(3)
-    console.log(goalDetail)
 
-    if (!goalDetail) {
+    console.log(goalDetailIndex)
+
+    if (goalDetailIndex === -1) {
+      console.log(typeof (goalDetailIndex))
       return res.status(404).json({ error: 'GoalSheet for this month and year not found' });
     }
 
     // Get the current goalSheetDetail for updates
+    let goalDetail = goalSheet.goalSheetDetails[goalDetailIndex];
 
     console.log(goalDetail)
 
 
     // Get the last entry for cumulative calculations  
-    const lastDetail = await goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length - 2] || {};
-    const previousCumulativeCost = await lastDetail.cumulativeCost || 0;
-    const previousCumulativeRevenue = await lastDetail.cumulativeRevenue || 0;
-
-    console.log(lastDetail)
-    console.log(1)
+    const lastDetail = goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length - 2] || {};
+    const previousCumulativeCost = lastDetail.cumulativeCost || 0;
+    const previousCumulativeRevenue = lastDetail.cumulativeRevenue || 0;
 
     // Update the fields conditionally
-    if (noOfJoinings) {
-      goalDetail.noOfJoinings = await noOfJoinings;
-    }
-    console.log(2)
-    if (month) {
-      goalDetail.month = await month;
-    }
-    console.log(3)
-    if (year) {
-      goalDetail.year = await year;
+    if (noOfJoinings !== undefined) {
+      goalDetail.noOfJoinings = noOfJoinings;
     }
 
-    if (cost) {
+    if (cost !== undefined) {
       // Calculate cumulativeCost based on the new cost value
       const updatedCumulativeCost = previousCumulativeCost + parseInt(cost);
 
-      goalDetail.cost = await parseInt(cost);
-      goalDetail.cumulativeCost = await updatedCumulativeCost;
+      goalDetail.cost = parseInt(cost);
+      goalDetail.cumulativeCost = updatedCumulativeCost;
 
       // Update target if cost is provided
       const numberIndex = employee.empType.length - 2
@@ -2591,31 +2583,25 @@ router.put('/edit-goalSheet', async (req, res) => {
       // let target;
 
 
+
       if (employee.empType === "Recruiter") {
-        goalDetail.target = await cost * 4
+        goalDetail.target = cost * 4
       }
       else if (employee.empType === "SeniorRecruiter") {
-        goalDetail.target = await cost * 4
+        goalDetail.target = cost * 4
       }
       else if (employee.empType === "Team Leader") {
-        goalDetail.target = await cost * 4
+        goalDetail.target = cost * 4
       }
 
       else {
-        console.log(numberIndex)
-        console.log("Hello")
         // console.log()
-        goalDetail.target = await cost * parseInt(employee.empType[numberIndex]);
+        goalDetail.target = cost * parseInt(employee.empType[numberIndex]);
       }
       // goalDetail.target = cost * 4;
     }
 
-
-
-    console.log(employee)
-    console.log(4)
-
-    if (revenue) {
+    if (revenue !== undefined) {
       // Calculate cumulativeRevenue based on the new revenue value
       const updatedCumulativeRevenue = previousCumulativeRevenue + parseInt(revenue);
 
@@ -2628,25 +2614,26 @@ router.put('/edit-goalSheet', async (req, res) => {
         ? (updatedCumulativeRevenue / goalDetail.cumulativeCost).toFixed(2)
         : goalDetail.achYTD;
     }
-    console.log(5)
-    if (incentive) {
-      goalDetail.incentive = await incentive;
-    }
-    console.log(6)
-    if (variableIncentive) {
-      goalDetail.variableIncentive = await variableIncentive;
-    }
-    console.log(7)
 
-    console.log(goalSheet)
+    if (month) {
+      goalDetail.month = month;
+    }
+
+    if (year) {
+      goalDetail.year = year;
+    }
+
+    if (incentive !== undefined) {
+      goalDetail.incentive = incentive;
+    }
+
+    if (variableIncentive !== undefined) {
+      goalDetail.variableIncentive = variableIncentive;
+    }
 
     // Save the updated GoalSheet
-
-
     await goalSheet.save();
 
-    // await goalDetail.save()
-    console.log(8)
     res.status(200).json({ message: 'GoalSheet updated successfully', goalSheet });
 
   } catch (error) {
