@@ -2456,17 +2456,36 @@ router.post('/set-goalSheet', async (req, res) => {
       return res.status(400).json({ error: 'GoalSheet for this month and year already exists' });
     }
 
-    // Get the last entry in goalSheetDetails for cumulative calculations
-    const lastDetail = goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length - 1] || {};
+    goalSheet.goalSheetDetails.sort((a, b) => {
+      if (a.year !== b.year) {
+        return a.year - b.year;
+      }
+      return a.month - b.month;
+    });
+
+
+
+    const lastDetail = goalSheet.goalSheetDetails
+      .filter(detail => detail.year < year || (detail.year == parseInt(year) && detail.month < parseInt(month)))
+      .slice(-1)[0] || {};
+
     const previousCumulativeCost = lastDetail.cumulativeCost || 0;
     const previousCumulativeRevenue = lastDetail.cumulativeRevenue || 0;
-
-    // Calculate necessary fields
     const cumulativeCost = previousCumulativeCost + cost;
     const cumulativeRevenue = previousCumulativeRevenue + revenue;
     const achYTD = (cumulativeRevenue / cumulativeCost).toFixed(2);
     const achMTD = (revenue / cost).toFixed(2);
     const numberIndex = employee.empType.length - 2
+
+
+    console.log(goalSheet.goalSheetDetails.findIndex(
+      detail => detail.year < year || (detail.year == parseInt(year) && detail.month < parseInt(month))
+    ))
+
+    console.log(lastDetail)
+
+
+    // Calculate necessary fields
 
     let target;
 
@@ -2503,6 +2522,36 @@ router.post('/set-goalSheet', async (req, res) => {
       incentive, // Leave incentive blank for now
       variableIncentive // Leave variable incentive blank for now
     });
+
+    goalSheet.goalSheetDetails.sort((a, b) => {
+      if (a.year !== b.year) {
+        return a.year - b.year;
+      }
+      return a.month - b.month;
+    });
+
+    let index = 1
+    let goalSheetIndex = goalSheet.goalSheetDetails.findIndex(
+      detail => (detail.year == parseInt(lastDetail.year) && detail.month == parseInt(lastDetail.month))
+    )
+
+    if (goalSheetIndex == -1) {
+      index = 1
+    } else {
+      index = goalSheetIndex + 1
+
+    }
+
+    if (goalSheet.goalSheetDetails.length > 1) {
+      for (let i = index; i < goalSheet.goalSheetDetails.length; i++) {
+        const detail = goalSheet.goalSheetDetails[i];
+        detail.cumulativeCost = goalSheet.goalSheetDetails[i - 1].cumulativeCost + detail.cost;
+        detail.cumulativeRevenue = goalSheet.goalSheetDetails[i - 1].cumulativeRevenue + detail.revenue;
+        detail.achYTD = (detail.cumulativeRevenue / detail.cumulativeCost).toFixed(2);
+        detail.achMTD = (detail.revenue / detail.cost).toFixed(2);
+
+      }
+    }
 
     goalSheet.goalSheetDetails.sort((a, b) => {
       if (a.year !== b.year) {
@@ -2563,13 +2612,25 @@ router.put('/edit-goalSheet', async (req, res) => {
       return res.status(404).json({ error: 'Employee not found' });
     }
 
+
+
+
     // Find the GoalSheet for the employee
-    let goalSheet = await GoalSheet.findOne({ owner: employee._id });
-    if (!goalSheet) {
+    let goalSheetBeforeSort = await GoalSheet.findOne({ owner: employee._id });
+    if (!goalSheetBeforeSort) {
       return res.status(404).json({ error: 'GoalSheet not found' });
     }
 
-    const goalDetailIndex = goalSheet.goalSheetDetails.findIndex(data => data?._id.toString() === sheetId.toString())
+    const goalSheet = await goalSheetBeforeSort.goalSheetDetails.sort((a, b) => {
+      if (a.year !== b.year) {
+        return a.year - b.year;
+      }
+      return a.month - b.month;
+    });
+
+    console.log(goalSheet)
+
+    const goalDetailIndex = goalSheet.findIndex(data => data?._id.toString() === sheetId.toString())
 
     if (goalDetailIndex === -1) {
       console.log(typeof (goalDetailIndex))
@@ -2577,10 +2638,10 @@ router.put('/edit-goalSheet', async (req, res) => {
     }
 
     // Get the current goalSheetDetail for updates
-    let goalDetail = goalSheet.goalSheetDetails[goalDetailIndex];
+    let goalDetail = goalSheet[goalDetailIndex];
 
     // Get the last entry for cumulative calculations  
-    const lastDetail = goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length - 2] || {};
+    const lastDetail = goalSheet[goalDetailIndex - 1] || {};
     const previousCumulativeCost = lastDetail.cumulativeCost || 0;
     const previousCumulativeRevenue = lastDetail.cumulativeRevenue || 0;
 
@@ -2601,21 +2662,21 @@ router.put('/edit-goalSheet', async (req, res) => {
 
       // let target;
 
-
+      console.log(employee.empType)
 
       if (employee.empType === "Recruiter") {
-        goalDetail.target = cost * 4
+        goalDetail.target = parseInt(cost) * 4
       }
       else if (employee.empType === "SeniorRecruiter") {
-        goalDetail.target = cost * 4
+        goalDetail.target = parseInt(cost) * 4
       }
-      else if (employee.empType === "Team Leader") {
-        goalDetail.target = cost * 4
+      else if (employee.empType === "TeamLeader") {
+        goalDetail.target = parseInt(cost) * 4
       }
 
       else {
         // console.log()
-        goalDetail.target = cost * parseInt(employee.empType[numberIndex]);
+        goalDetail.target = parseInt(cost) * parseInt(employee.empType[numberIndex]);
       }
       // goalDetail.target = cost * 4;
     }
@@ -2650,8 +2711,20 @@ router.put('/edit-goalSheet', async (req, res) => {
       goalDetail.variableIncentive = variableIncentive;
     }
 
+
+    if (goalSheet.length > 1) {
+      for (let i = goalDetailIndex + 1; i < goalSheet.length; i++) {
+        const detail = goalSheet[i];
+        detail.cumulativeCost = goalSheet[i - 1].cumulativeCost + detail.cost;
+        detail.cumulativeRevenue = goalSheet[i - 1].cumulativeRevenue + detail.revenue;
+        detail.achYTD = (detail.cumulativeRevenue / detail.cumulativeCost).toFixed(2);
+        detail.achMTD = (detail.revenue / detail.cost).toFixed(2);
+
+      }
+    }
+
     // Save the updated GoalSheet
-    await goalSheet.save();
+    await goalSheetBeforeSort.save();
 
     res.status(200).json({ message: 'GoalSheet updated successfully', goalSheet });
 

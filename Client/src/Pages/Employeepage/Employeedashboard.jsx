@@ -130,9 +130,9 @@ const Employeedashboard = () => {
   }, [decodedToken]);
 
   return (
-    <div className=" ">
+    <div className="">
       <EmployeeNavbar />
-      <h2 className="text-5xl px-10 font-bold text-gray-800">
+      <h2 className="px-10 text-5xl font-bold text-gray-800">
         Welcome aboard <span className="text-blue-900">{userName} </span>
       </h2>
       <HomeNews empofthemonth={empofthemonth} latestnews={latestnews} empOfMonthDesc={empOfMonthDesc} recognitionType={recognitionType} />

@@ -22,7 +22,7 @@ const EmpGoalSheet = () => {
           setFilteredGoalSheetData(alldata); // Initialize with all data
         }
       } catch (error) {
-
+        console.log(error)
       }
     };
 
@@ -61,15 +61,15 @@ const EmpGoalSheet = () => {
   return (
     <>
       <div>
-        <h1 className='text-3xl md:text-4xl font-bold'>Goal Sheet</h1>
+        <h1 className='text-3xl font-bold md:text-4xl'>Goal Sheet</h1>
         <div className='w-20 h-0.5 bg-blue-900'></div>
 
         <div className='col-span-2 mt-10'>
 
 
-          <div className='container mx-auto overflow-x-auto h-96 md:w-full w-72 relative'>
-            <table className='table-auto w-full'>
-              <thead className='sticky top-0 bg-blue-900 text-gray-100 text-xs shadow'>
+          <div className='container relative mx-auto overflow-x-auto h-96 md:w-full w-72'>
+            <table className='w-full table-auto'>
+              <thead className='sticky top-0 text-xs text-gray-100 bg-blue-900 shadow'>
                 <tr>
                   <th className='px-4 py-2'>Year</th>
                   <th className='px-4 py-2'>Month</th>
@@ -90,18 +90,18 @@ const EmpGoalSheet = () => {
                 {filteredGoalSheetData.length > 0 ? (
                   filteredGoalSheetData.map((data, index) => (
                     <tr key={data._id} className='text-center'>
-                      <td className='border px-4 py-2'>{data.year}</td>
-                      <td className='border px-4 py-2'> {monthNames[data.month] || 'Unknown'}</td>
-                      <td className='border px-4 py-2'>{data.noOfJoinings}</td>
-                      <td className='border px-4 py-2'>{data.revenue}</td>
-                      <td className='border px-4 py-2'>{data.cost}</td>
-                      <td className='border px-4 py-2'>{data.target}</td>
-                      <td className='border px-4 py-2'>{data.cumulativeCost}</td>
-                      <td className='border px-4 py-2'>{data.cumulativeRevenue}</td>
-                      <td className='border px-4 py-2'>{data.achYTD}</td>
-                      <td className='border px-4 py-2'>{data.achMTD}</td>
-                      <td className='border px-4 py-2'>{data.incentive}</td>
-                      <td className='border px-4 py-2'>{data.variableIncentive}</td>
+                      <td className='px-4 py-2 border'>{data.year}</td>
+                      <td className='px-4 py-2 border'> {monthNames[data.month] || 'Unknown'}</td>
+                      <td className='px-4 py-2 border'>{data.noOfJoinings}</td>
+                      <td className='px-4 py-2 border'>{data.revenue}</td>
+                      <td className='px-4 py-2 border'>{data.cost}</td>
+                      <td className='px-4 py-2 border'>{data.target}</td>
+                      <td className='px-4 py-2 border'>{data.cumulativeCost}</td>
+                      <td className='px-4 py-2 border'>{data.cumulativeRevenue}</td>
+                      <td className='px-4 py-2 border'>{data.achYTD}</td>
+                      <td className='px-4 py-2 border'>{data.achMTD}</td>
+                      <td className='px-4 py-2 border'>{data.incentive}</td>
+                      <td className='px-4 py-2 border'>{data.variableIncentive}</td>
                     </tr>
                   ))
                 ) : (
