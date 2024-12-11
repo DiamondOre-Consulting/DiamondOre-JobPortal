@@ -31,7 +31,7 @@ const Employeesignup = () => {
     const [error, setError] = useState(null);
     const [showPass, setShowPass] = useState(false);
     const [added, setAdded] = useState(null);
-    const [accoutHandlerValue,setaccoutHandlerValue] = useState(false)
+    const [accoutHandlerValue, setaccoutHandlerValue] = useState(false)
 
 
     const handleSignup = async (e) => {
@@ -48,7 +48,7 @@ const Employeesignup = () => {
                     empType,
                     dob,
                     doj,
-                    accountHandler:accoutHandlerValue
+                    accountHandler: accoutHandlerValue
                 },
                 {
                     headers: {
@@ -73,9 +73,9 @@ const Employeesignup = () => {
         setShowPass(!showPass);
     };
 
-    const handleEditAccountHandler = (e)=>{
+    const handleEditAccountHandler = (e) => {
 
-        setaccoutHandlerValue(e.target.value==="true")
+        setaccoutHandlerValue(e.target.value === "true")
 
     }
 
@@ -156,7 +156,7 @@ const Employeesignup = () => {
                             <option value="">Select Account Handeling</option>
                             <option value="true">Yes </option>
                             <option value="false">No</option>
-                           
+
 
 
                         </select>

@@ -28,17 +28,17 @@ const KPIscore = () => {
                 })
 
                 if (response.status === 200) {
-                    
+
                     setTableData(response.data);
                     setLoading(false)
-                    
+
                 }
 
 
             }
             catch (error) {
 
-                
+
 
             }
 
@@ -84,8 +84,8 @@ const KPIscore = () => {
                                         <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-200">No. Of Joinings</th>
                                         <th rowSpan="2" className="border border-gray-900 px-4 py-2 bg-gray-300">Total KPI Score</th>
 
-                                   
-                                        
+
+
                                     </tr>
                                     <tr>
                                         {headers.map((header, idx) => (
@@ -162,8 +162,8 @@ const KPIscore = () => {
                                                 <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.noOfJoining?.weight}</td>
                                                 <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.noOfJoining?.kpiScore}</td>
 
-                                               
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.totalKPIScore }</td>
+
+                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.totalKPIScore}</td>
                                             </tr>
                                         ))
                                     ) : (

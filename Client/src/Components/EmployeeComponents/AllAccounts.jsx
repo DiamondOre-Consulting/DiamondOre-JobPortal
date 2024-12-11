@@ -15,7 +15,7 @@ const AllAccounts = () => {
                     setLoading(false)
                 }
             } catch (error) {
-                
+
             }
         }
 

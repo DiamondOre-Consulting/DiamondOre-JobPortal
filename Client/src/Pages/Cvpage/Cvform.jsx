@@ -105,12 +105,12 @@ const Cvform = () => {
         e.preventDefault();
         setError(null)
         if (!formData.full_name || !formData.email || !formData.phone || !formData.address || !formData.linkedinUrl || !formData.summary || !formData.tech_skills || !formData.soft_skills || !formData.experience || !formData.graduation || !formData.twelfth || !formData.tenth) {
-            
+
             setError("Filling all the feild are compulsory.")
             return;
         }
         setUrl(null)
-        
+
         setIsLoading(false)
         try {
             const response = await axios.post("https://api.diamondore.in/api/candidates/free-resume"
@@ -118,28 +118,28 @@ const Cvform = () => {
             )
 
             if (response.status === 200) {
-                
+
                 setIsLoading(true)
                 const myurl = response.data
                 setUrl(myurl)
                 alert("form has been submitted click on dawnload button to dawunload your CV")
-                
+
             }
 
         }
         catch (error) {
-            
+
             if (error.response) {
                 const status = error.response.status;
                 if (status === 404) {
-                  setError("Error occured in file submitting");
+                    setError("Error occured in file submitting");
                 } else {
-                  setError("Error occured in file submitting");
+                    setError("Error occured in file submitting");
                 }
-              } else {
+            } else {
                 setError("Error occured in file submitting");
-              }
             }
+        }
         // Handle form submission, e.g., submit data to backend
 
     };

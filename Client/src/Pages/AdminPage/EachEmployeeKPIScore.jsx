@@ -66,7 +66,7 @@ const EachEmployeeKPIScore = () => {
             });
 
         } catch (error) {
-            
+
         }
     };
 
@@ -107,7 +107,7 @@ const EachEmployeeKPIScore = () => {
                 })
 
                 if (response.status === 200) {
-                    
+
                     setTableData(response.data);
                     setLoading(false)
                 }
@@ -116,7 +116,7 @@ const EachEmployeeKPIScore = () => {
             }
             catch (error) {
 
-                
+
 
             }
 

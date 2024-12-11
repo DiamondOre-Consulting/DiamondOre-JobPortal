@@ -11,7 +11,7 @@ const AdminLogin = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-  
+
 
   const navigate = useNavigate();
 
@@ -21,23 +21,23 @@ const AdminLogin = () => {
     setError(null);
     // Perform login logic here
     try {
-      const response= await axios.post("https://api.diamondore.in/api/admin-confi/login-admin",
-      {
-        email,
-        password
-      });
+      const response = await axios.post("https://api.diamondore.in/api/admin-confi/login-admin",
+        {
+          email,
+          password
+        });
 
       if (response.status === 200) {
         const token = response.data.token;
         // Store the token in local storage
         localStorage.setItem("token", token);
-        
+
         // Redirect to dashboard page
         setTimeout(() => {
           navigate("/admin-dashboard");
         }, 1000);
       } else {
-        
+
         setError("Login Details Are Wrong!!");
         // Handle login error
       }

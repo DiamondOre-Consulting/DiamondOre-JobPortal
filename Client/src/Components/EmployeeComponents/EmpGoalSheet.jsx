@@ -22,7 +22,7 @@ const EmpGoalSheet = () => {
           setFilteredGoalSheetData(alldata); // Initialize with all data
         }
       } catch (error) {
-        
+
       }
     };
 
@@ -33,7 +33,7 @@ const EmpGoalSheet = () => {
   const handleYearChange = (e) => {
     const selectedYear = e.target.value;
     setSelectedYear(selectedYear);
-    
+
     if (selectedYear) {
       const filteredData = allGoalSheetData.filter((data) => data.year === selectedYear);
       setFilteredGoalSheetData(filteredData);
@@ -65,13 +65,13 @@ const EmpGoalSheet = () => {
         <div className='w-20 h-0.5 bg-blue-900'></div>
 
         <div className='col-span-2 mt-10'>
-         
+
 
           <div className='container mx-auto overflow-x-auto h-96 md:w-full w-72 relative'>
             <table className='table-auto w-full'>
               <thead className='sticky top-0 bg-blue-900 text-gray-100 text-xs shadow'>
                 <tr>
-                <th className='px-4 py-2'>Year</th> 
+                  <th className='px-4 py-2'>Year</th>
                   <th className='px-4 py-2'>Month</th>
                   <th className='px-4 py-2'>No. of Joinings</th>
                   <th className='px-4 py-2'>Revenue</th>
@@ -90,7 +90,7 @@ const EmpGoalSheet = () => {
                 {filteredGoalSheetData.length > 0 ? (
                   filteredGoalSheetData.map((data, index) => (
                     <tr key={data._id} className='text-center'>
-                        <td className='border px-4 py-2'>{data.year}</td>
+                      <td className='border px-4 py-2'>{data.year}</td>
                       <td className='border px-4 py-2'> {monthNames[data.month] || 'Unknown'}</td>
                       <td className='border px-4 py-2'>{data.noOfJoinings}</td>
                       <td className='border px-4 py-2'>{data.revenue}</td>
@@ -107,7 +107,7 @@ const EmpGoalSheet = () => {
                 ) : (
                   <tr>
                     <td colSpan='10' className='text-center'>
-                      no data is there  
+                      no data is there
                     </td>
                   </tr>
                 )}

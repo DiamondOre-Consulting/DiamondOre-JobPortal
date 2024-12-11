@@ -10,11 +10,11 @@ const AdminEditprofile = () => {
     name: "",
     email: "",
     profilePic: null,
-    passcode:""
+    passcode: ""
   });
   const navigate = useNavigate();
 
-  
+
   useEffect(() => {
     const fetchUserData = async () => {
       const token = localStorage.getItem("token");
@@ -46,19 +46,19 @@ const AdminEditprofile = () => {
     }));
   };
 
-  const handleEmailChange = (e)=>{
-    setAdminData(prevDetails => ({
-        ...prevDetails,
-        email:e.target.value
-    }))
-   
-  }
-
-  const handlePasscodeChange = (e)=>{
+  const handleEmailChange = (e) => {
     setAdminData(prevDetails => ({
       ...prevDetails,
-      passcode:e.target.value
-  }))
+      email: e.target.value
+    }))
+
+  }
+
+  const handlePasscodeChange = (e) => {
+    setAdminData(prevDetails => ({
+      ...prevDetails,
+      passcode: e.target.value
+    }))
   }
 
 
@@ -81,11 +81,11 @@ const AdminEditprofile = () => {
 
       if (response.status === 200) {
         ;
-        
+
         setProfilePicUrl(response.data);
       }
     } catch (error) {
-      
+
     }
   };
 
@@ -152,11 +152,11 @@ const AdminEditprofile = () => {
 
         <div className='flex flex-col '>
 
-        <label  htmlFor="">Passcode</label>
-        <input 
-        value={adminData.passcode}
-        onChange={handlePasscodeChange}
-        className='block  px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none    focus:outline-none focus:ring-0 focus:border-blue-600 peer' type="text" />
+          <label htmlFor="">Passcode</label>
+          <input
+            value={adminData.passcode}
+            onChange={handlePasscodeChange}
+            className='block  px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none    focus:outline-none focus:ring-0 focus:border-blue-600 peer' type="text" />
         </div>
 
 
@@ -170,7 +170,7 @@ const AdminEditprofile = () => {
             onChange={(e) => setProfilePic(e.target.files[0])}
             className="p-2"
           />
-          
+
           <button type='submit' onClick={handleUploadImage} className="text-white bg-blue-950 hover:bg-blue-950 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center   ">upload image</button>
 
         </div>

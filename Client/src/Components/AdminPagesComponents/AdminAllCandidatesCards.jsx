@@ -12,9 +12,9 @@ const AdminAllCandidatesCards = () => {
   let [loading, setLoading] = useState(true);
   const { decodedToken } = useJwt(localStorage.getItem("token"));
   const [searchQuery, setSearchQuery] = useState('');
-  const [startDate,setStartDate]=useState("")
-  const [endDate,setEndDate] = useState("")
-  
+  const [startDate, setStartDate] = useState("")
+  const [endDate, setEndDate] = useState("")
+
 
 
 
@@ -24,7 +24,7 @@ const AdminAllCandidatesCards = () => {
     alignItems: "center",
 
   };
-  
+
   const minDate = "2024-01-01";
 
   const handleStartDateChange = (e) => {
@@ -33,30 +33,30 @@ const AdminAllCandidatesCards = () => {
       alert(`Start date cannot be before ${minDate}.`);
       setStartDate("");
 
-    } 
+    }
     else {
       setStartDate(selectedDate);
     }
   };
 
-  const handleEndDateChange= (e)=>{
+  const handleEndDateChange = (e) => {
 
-    const selectedDate= e.target.value;
-   
-    if(new Date(selectedDate)>new Date(Date.now)){
+    const selectedDate = e.target.value;
+
+    if (new Date(selectedDate) > new Date(Date.now)) {
       setEndDate(selectedDate)
     }
-    else{
+    else {
       setEndDate(selectedDate)
 
     }
 
   }
 
-  
-  
 
-  
+
+
+
 
 
 
@@ -88,7 +88,7 @@ const AdminAllCandidatesCards = () => {
           const all = response.data;
           // 
           setLatestCandidates(all.reverse());
-          
+
           setLoading(false)
         }
       } catch (error) {
@@ -100,7 +100,7 @@ const AdminAllCandidatesCards = () => {
     fetchAllJobs();
   }, []);
 
-  
+
   // filter 
   const filteredCandidates = latestCandidates.filter((candidate) =>
     candidate.name.toLowerCase().startsWith(searchQuery.toLowerCase()) ||
@@ -113,45 +113,45 @@ const AdminAllCandidatesCards = () => {
     setSearchQuery(e.target.value);
   };
 
-  const handleDownloadExcelSheet = async()=>{
-     
-    try{
+  const handleDownloadExcelSheet = async () => {
+
+    try {
       const token = localStorage.getItem("token");
       setLoading(true);
 
-       const response = await axios.post('https://api.diamondore.in/api/admin-confi/download-excel',{
-          startDate,
-          endDate
-       },{
-        headers:{
-             Authorization: `Bearer ${token}`
+      const response = await axios.post('https://api.diamondore.in/api/admin-confi/download-excel', {
+        startDate,
+        endDate
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
         },
-          responseType: 'blob',  
-        
-       })
+        responseType: 'blob',
 
-       
+      })
 
-       if (response.data instanceof Blob) {
-       
+
+
+      if (response.data instanceof Blob) {
+
         const link = document.createElement('a');
-        link.href = URL.createObjectURL(response.data);  
-        link.download = 'candidates.xlsx';              
-  
-   
+        link.href = URL.createObjectURL(response.data);
+        link.download = 'candidates.xlsx';
+
+
         document.body.appendChild(link);
         link.click();
-        document.body.removeChild(link); 
+        document.body.removeChild(link);
       } else {
         console.error('Expected a Blob, but got', response.data);
       }
- 
+
     }
-    catch(error){
-         
+    catch (error) {
+
     }
-    finally{
-       setLoading(false)
+    finally {
+      setLoading(false)
     }
 
 
@@ -165,44 +165,44 @@ const AdminAllCandidatesCards = () => {
           All Candidates
         </h2>
 
-        
-      {/* Search bar */}
-            <div className=" text-xl font-semibold text-blue-950">Download Candidate Data</div>
-      <div className="flex gap-3 mt-20 md:mt-0  flex-col md:flex-row justify-end items-center md:h-24 h-20  mb-10">
-         
-     
-           <div className="w-full gap-4 flex items-center h-full ">
-           
+
+        {/* Search bar */}
+        <div className=" text-xl font-semibold text-blue-950">Download Candidate Data</div>
+        <div className="flex gap-3 mt-20 md:mt-0  flex-col md:flex-row justify-end items-center md:h-24 h-20  mb-10">
+
+
+          <div className="w-full gap-4 flex items-center h-full ">
+
 
             <div className="flex flex-col">
-            <label className="" htmlFor="">Start Date</label>  
-            <input className=" bg-blue-400 text-white rounded-md "  value={startDate} onChange={handleStartDateChange} type="date" min="2023-01-03" />
-            
+              <label className="" htmlFor="">Start Date</label>
+              <input className=" bg-blue-400 text-white rounded-md " value={startDate} onChange={handleStartDateChange} type="date" min="2023-01-03" />
+
             </div>
 
             <div className="flex flex-col">
-            <label className="" htmlFor="">End Date</label>
-            <input className="bg-blue-400 text-white rounded-md"  value={endDate}
-             onChange={handleEndDateChange} type="date" />
+              <label className="" htmlFor="">End Date</label>
+              <input className="bg-blue-400 text-white rounded-md" value={endDate}
+                onChange={handleEndDateChange} type="date" />
 
             </div>
-            
+
             <button onClick={handleDownloadExcelSheet} className="bg-blue-900 hover:bg-blue-700 p-2 rounded-md ml-4 mt-6 text-white" >Download</button>
-           </div>
+          </div>
 
-      <div class="relative p-3 border border-gray-200 rounded-lg w-full  max-w-lg">
-        <input type="text" class="rounded-md p-3 w-full " placeholder="Search By Name | Phone" value={searchQuery} onChange={handleSearchInputChange}/>
+          <div class="relative p-3 border border-gray-200 rounded-lg w-full  max-w-lg">
+            <input type="text" class="rounded-md p-3 w-full " placeholder="Search By Name | Phone" value={searchQuery} onChange={handleSearchInputChange} />
 
-        <button type="submit" class="absolute right-6 top-6">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                </svg>
-        </button>
+            <button type="submit" class="absolute right-6 top-6">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+              </svg>
+            </button>
 
-    </div>
-    </div>
+          </div>
+        </div>
         {
           loading ?
             <div style={override}>
@@ -219,7 +219,7 @@ const AdminAllCandidatesCards = () => {
                 <div key={latestCandidate._id}>
                   <div
                     href="#"
-                     className="flex flex-col justify-between h-48 overflow-hidden rounded-lg bg-white shadow-lg shadow-2xl-gray-200 p-4 shadow-lg hover:shadow-2xl"
+                    className="flex flex-col justify-between h-48 overflow-hidden rounded-lg bg-white shadow-lg shadow-2xl-gray-200 p-4 shadow-lg hover:shadow-2xl"
                   >
                     <h3 className="text-sm text-blue-950 font-bold text-wrap">
                       Name - <span className="text-blue-950">{latestCandidate?.name}</span>
@@ -229,8 +229,8 @@ const AdminAllCandidatesCards = () => {
                     </p>
                     <p className="text-sm text-gray-600 font-semibold">Phone Number - <span className="text-blue-950">{latestCandidate?.phone}</span></p>
 
-                    <Link to={`/admin-dashboard/each-candidate/${latestCandidate?._id}`}  className="cursor-pointer w-full flex-col rounded-lg bg-blue-900 p-4 text-center text-white hover:bg-white hover:text-black-100 hover:text-gray-900 border border-blue-950 mt-2">
-                      <span  className="text-md font-bold lg:text-md">
+                    <Link to={`/admin-dashboard/each-candidate/${latestCandidate?._id}`} className="cursor-pointer w-full flex-col rounded-lg bg-blue-900 p-4 text-center text-white hover:bg-white hover:text-black-100 hover:text-gray-900 border border-blue-950 mt-2">
+                      <span className="text-md font-bold lg:text-md">
                         Know More
                       </span>
                     </Link>

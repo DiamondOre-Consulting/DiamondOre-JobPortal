@@ -10,12 +10,12 @@ const EmployeePerformence = () => {
     const [record, setRecord] = useState([]);
     const navigate = useNavigate();
     const { id } = useParams();
-  
-   const { decodedToken } = useJwt(localStorage.getItem("token"));
-   
+
+    const { decodedToken } = useJwt(localStorage.getItem("token"));
+
     const userId = decodedToken?.userId; // Accessing the ID from decoded token
-    
-   
+
+
 
     useEffect(() => {
         const fetchEmployeePerformenceReport = async () => {
@@ -39,13 +39,13 @@ const EmployeePerformence = () => {
                     }
                 );
                 if (Response.status === 200) {
-                    
+
                     setRecord(Response.data);
 
                 }
             }
             catch (error) {
-                
+
             }
         };
 
@@ -57,9 +57,9 @@ const EmployeePerformence = () => {
             <EmployeeNavbar />
             <div className='p-4'>
                 <h2 className='text-center font-bold  mb-1 mb-1 text-2xl mt-2 text-blue-950'>Performence</h2>
-                <div  className="relative overflow-x-auto mt-8">
-                    <table  className="w-full text-sm text-left rtl:text-right text-gray-500  bg-gray-50">
-                        <thead  className="text-xs text-gray-700 uppercase bg-gray-100  ">
+                <div className="relative overflow-x-auto mt-8">
+                    <table className="w-full text-sm text-left rtl:text-right text-gray-500  bg-gray-50">
+                        <thead className="text-xs text-gray-700 uppercase bg-gray-100  ">
 
                             <tr>
                                 <th scope="col" className="px-6 py-3 rounded-s-lg ">

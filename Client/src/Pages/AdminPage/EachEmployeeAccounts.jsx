@@ -17,7 +17,7 @@ const EachEmployeeAccounts = () => {
                 const response = await axios.get(`https://api.diamondore.in/api/employee/accounts/${id}`);
 
                 if (response.status === 200) {
-                    
+
                     seAccountDetail(response.data);
                 }
             } catch (error) {
@@ -66,7 +66,7 @@ const EachEmployeeAccounts = () => {
 
 
     const handleClick = (id) => {
-        
+
         setAccountId(id);
         setShowPopup(true)
 
@@ -74,7 +74,7 @@ const EachEmployeeAccounts = () => {
 
 
     const handledeleteclick = (id) => {
-        
+
         setAccountId(id)
         setDeletePopup(true)
     }
@@ -86,39 +86,39 @@ const EachEmployeeAccounts = () => {
             <div>
 
                 <div className='md:w-full w-80 overflow-x-auto'>
-                <table className="w-full divide-y divide-gray-200  mt-4 ">
-                    <thead className='border text-center'>
-                        <tr className='border text-center bg-gray-100'>
-                            <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">S.No</th>
-                            <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">HR Name</th>
-                            <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">Zone</th>
-                            <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">Channel</th>
-                            <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">Client Name</th>
-                            <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">phone</th>
-                            <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">Action</th>
-                        </tr>
-                    </thead>
-
-                    <tbody className="divide-y divide-gray-200  text-center ">
-                        {accountdetail?.findAccount?.accountDetails?.map((row, index) => (
-                            <tr key={index}>
-                                <td className="px-6 py-4 whitespace-nowrap border text-sm font-medium text-gray-800 ">{index + 1}</td>
-                                <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 ">{row.detail.hrName}</td>
-                                <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 ">{row.detail.zone}</td>
-                                <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 ">{row.detail.channel}</td>
-                                <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 ">{row.detail.clientName}</td>
-                                <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 ">{row.detail.phone}</td>
-                                <td className='borrder px-4 py-2 text-xs cursor-pointer'> <span className='text-red-400 hover:underline' onClick={() => handleClick(row._id)}>Edit </span> / <span onClick={() => handledeleteclick(row._id)} className='text-red-600 hover:underline'>Delete</span></td>
+                    <table className="w-full divide-y divide-gray-200  mt-4 ">
+                        <thead className='border text-center'>
+                            <tr className='border text-center bg-gray-100'>
+                                <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">S.No</th>
+                                <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">HR Name</th>
+                                <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">Zone</th>
+                                <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">Channel</th>
+                                <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">Client Name</th>
+                                <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">phone</th>
+                                <th scope="col" className="px-6 py-3 border text-center text-xs font-medium text-gray-500 uppercase ">Action</th>
                             </tr>
-                        ))}
+                        </thead>
 
-                        {accountdetail?.length === 0 && (
-                            <div className="text-center mt-10">
-                                No data available .
-                            </div>
-                        )}
-                    </tbody>
-                </table>
+                        <tbody className="divide-y divide-gray-200  text-center ">
+                            {accountdetail?.findAccount?.accountDetails?.map((row, index) => (
+                                <tr key={index}>
+                                    <td className="px-6 py-4 whitespace-nowrap border text-sm font-medium text-gray-800 ">{index + 1}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 ">{row.detail.hrName}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 ">{row.detail.zone}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 ">{row.detail.channel}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 ">{row.detail.clientName}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap border text-sm text-gray-800 ">{row.detail.phone}</td>
+                                    <td className='borrder px-4 py-2 text-xs cursor-pointer'> <span className='text-red-400 hover:underline' onClick={() => handleClick(row._id)}>Edit </span> / <span onClick={() => handledeleteclick(row._id)} className='text-red-600 hover:underline'>Delete</span></td>
+                                </tr>
+                            ))}
+
+                            {accountdetail?.length === 0 && (
+                                <div className="text-center mt-10">
+                                    No data available .
+                                </div>
+                            )}
+                        </tbody>
+                    </table>
 
                 </div>
             </div>

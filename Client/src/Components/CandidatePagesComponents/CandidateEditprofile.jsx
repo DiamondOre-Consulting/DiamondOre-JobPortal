@@ -18,7 +18,7 @@ const CandidateEditprofile = () => {
     profilePic: null
   });
   const navigate = useNavigate();
-  const [error,setError]=useState(null);
+  const [error, setError] = useState(null);
   useEffect(() => {
     const fetchUserData = async () => {
       const token = localStorage.getItem("token");
@@ -74,7 +74,7 @@ const CandidateEditprofile = () => {
         setProfilePicUrl(response.data);
       }
     } catch (error) {
-      
+
     }
   };
 
@@ -100,7 +100,7 @@ const CandidateEditprofile = () => {
         ;
       }
     } catch (error) {
-      
+
     }
   };
 
@@ -117,33 +117,33 @@ const CandidateEditprofile = () => {
       formData.append("profilePic", profilePicUrl);
 
       const token = localStorage.getItem("token");
-      const response=await axios.put('https://api.diamondore.in/api/candidates/edit-profile',
-       formData,
+      const response = await axios.put('https://api.diamondore.in/api/candidates/edit-profile',
+        formData,
         {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      if(response.status === 201){
-        
-        
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+      if (response.status === 201) {
+
+
         alert('Profile updated successfully!');
         navigate('/dashboard');
-      }   
+      }
     } catch (error) {
       console.error('Error updating profile:', error.message);
-      if(error.response){
-        const status=error.response.status;
-        if(status==500){
-         setError("error occured in updating files")
+      if (error.response) {
+        const status = error.response.status;
+        if (status == 500) {
+          setError("error occured in updating files")
         }
-        else{
-          
+        else {
+
         }
       }
-      else{
-        
+      else {
+
       }
       // alert('Failed to update profile. Please try again.');
     }
@@ -151,7 +151,7 @@ const CandidateEditprofile = () => {
 
   return (
     <>
-     <CandidateNav/>
+      <CandidateNav />
 
       <div className='py-6  px-4'>
         <h2 className='text-center text-2xl font-bold '>Edit Profile image</h2>
@@ -231,10 +231,10 @@ const CandidateEditprofile = () => {
         </form>
 
         {error && (
-            <div className="flex items-center justify-center bg-red-300 p-4 rounded-md">
-              <p className="text-center text-sm text-red-500">{error}</p>
-            </div>
-          )}
+          <div className="flex items-center justify-center bg-red-300 p-4 rounded-md">
+            <p className="text-center text-sm text-red-500">{error}</p>
+          </div>
+        )}
       </div>
       <Footer />
     </>

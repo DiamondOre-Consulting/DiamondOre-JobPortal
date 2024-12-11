@@ -52,9 +52,9 @@ const AdminAllJobsCards = () => {
         );
         if (response.status == 200) {
           const all = response.data;
-          
+
           const filteredJobs = all.filter(job => job.JobStatus === "true");
-          
+
           setLatestJobs(filteredJobs.reverse());
           setLoading(false)
         }
@@ -84,7 +84,7 @@ const AdminAllJobsCards = () => {
         setLatestJobs(latestJobs.filter((job) => job._id !== jobToDelete));
       }
     } catch (error) {
-      
+
     }
   };
 

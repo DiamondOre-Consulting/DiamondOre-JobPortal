@@ -49,7 +49,7 @@ const Homemain = () => {
   const submitCallReq = async (e) => {
     e.preventDefault();
     setShowSubmitLoader(true);
-    
+
     // const payload = { name, phone };
 
     try {
@@ -67,13 +67,13 @@ const Homemain = () => {
         // Handle form submission error
         alert('Failed to submit the form');
         setShowSubmitLoader(false);
-      
+
       }
     } catch (error) {
       console.error('Error submitting form:', error.message);
       alert('An error occurred while submitting the form');
       setShowSubmitLoader(false);
-    
+
     }
   };
 
@@ -185,11 +185,11 @@ const Homemain = () => {
                 </div>
                 <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                   <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
-                  Thank you for contacting us!
+                    Thank you for contacting us!
                   </h3>
                   <div className="mt-2">
                     <p className="text-sm text-gray-500">
-                    We'll respond to you soon.
+                      We'll respond to you soon.
                     </p>
                   </div>
                 </div>

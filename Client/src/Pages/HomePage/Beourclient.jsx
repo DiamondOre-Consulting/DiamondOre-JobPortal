@@ -20,7 +20,7 @@ const Beourclient = () => {
         if (!name || !email || !phone || !company || !designation) {
             setError("Filling all the feild are compulsory.")
         }
-        
+
         // const formData = { Name, Email, Message };
         try {
             const response = await axios.post(
@@ -34,10 +34,10 @@ const Beourclient = () => {
                 }
             );
 
-            
+
 
             if (response.status === 201) {
-                
+
                 setsucess("Data Sent Sucessfully");
                 setName('');
                 setEmail('');
@@ -45,11 +45,11 @@ const Beourclient = () => {
                 setCompanyName('');
                 setDesignation('');
             } else {
-                
+
             }
 
         } catch (error) {
-            
+
         }
     };
 

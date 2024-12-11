@@ -44,7 +44,7 @@ const Prompt = () => {
 
             if (response.status === 200) {
                 setsheeturl(response.data); // Assuming the response contains a URL
-                
+
             } else {
                 console.error('Failed to upload file:', response.data);
             }
@@ -84,7 +84,7 @@ const Prompt = () => {
             const response = await axios.get(
                 `https://api.diamondore.in/api/admin-confi/findJobs/${phone}`
             );
-             // Log the response for debugging
+            // Log the response for debugging
             if (response.status === 201) {
                 setProfile(response.data);
                 setError('');
@@ -100,48 +100,48 @@ const Prompt = () => {
                 const status = error.response.status;
                 if (status === 404) {
                     setError('Suitable job not found !!');
-                    
+
                 }
             }
         } finally {
             setShowLoader2(false);
         }
     };
-    
 
-    const handlesendbulkjobs = async (e) =>{
+
+    const handlesendbulkjobs = async (e) => {
         e.preventDefault();
-        try{
+        try {
 
             const response = await axios.get(
                 `https://api.diamondore.in/api/admin-confi/find-bulk-jobs`
             );
-            if(response.status === 200){
+            if (response.status === 200) {
                 alert("email has been Sent successfully")
             }
 
-        } catch(error){
-            
+        } catch (error) {
+
             if (error.response) {
                 const status = error.response.status;
                 if (status === 404) {
                     alert('No Candidate Found')
-                    
+
                 }
             }
 
 
         }
     }
-      
+
 
     return (
         <>
             {/* <AdminNav /> */}
-            <button className= " bg-blue-900 px-6 py-2 text-gray-100 float-right mr-0 md:mr-10 rounded-md" onClick={handlesendbulkjobs}>Send Bulk Jobs</button>
+            <button className=" bg-blue-900 px-6 py-2 text-gray-100 float-right mr-0 md:mr-10 rounded-md" onClick={handlesendbulkjobs}>Send Bulk Jobs</button>
             <div className='flex flex-col mt-20 md:mt-10'>
-            <h1 className="text-4xl ml-0 font-bold text-center">Prompt</h1>
-            <div className="w-40 bg-blue-950 h-0.5 text-center mx-auto"></div>
+                <h1 className="text-4xl ml-0 font-bold text-center">Prompt</h1>
+                <div className="w-40 bg-blue-950 h-0.5 text-center mx-auto"></div>
             </div>
 
             <div className="md:flex justify-center align-center  items-center mt-10 px-4">
@@ -195,7 +195,7 @@ const Prompt = () => {
                         type="button"
                         onClick={handleSearch}
                         className="absolute inline-flex items-center h-10 px-4 py-2 text-sm text-white transition duration-150 ease-in-out rounded-full outline-none right-3 top-3 bg-blue-950 sm:px-6 sm:text-base sm:font-medium hover:bg-blue-950 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-950"
-                    > 
+                    >
                         Search
                     </button>
                 </div>
@@ -213,7 +213,7 @@ const Prompt = () => {
                 profile && (
                     <div className="px-4 md:px-40 py-4">
                         <h2 className="text-2xl font-bold mb-4 text-center">Recommended Jobs For {profile?.candidateName}</h2>
-                        
+
                         <div className="relative md:w-full w-80 overflow-x-auto">
                             <table className="w-full text-sm text-left text-gray-500 ">
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50  ">

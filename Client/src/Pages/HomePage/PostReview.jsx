@@ -1,4 +1,4 @@
-import React, { useState, useEffect , useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import diamond from '..//..//assets/diamond.png';
@@ -25,8 +25,8 @@ const PostReview = () => {
 
     const handleCardClick = (reviewId) => {
         // Handle click event, e.g., expand the card
-        
-      };
+
+    };
 
     // post review
     const handleSubmit = async (e) => {
@@ -46,8 +46,8 @@ const PostReview = () => {
                 });
 
             if (response.status === 200) {
-                
-                
+
+
                 setPopUp(false);
                 setLoader(false);
                 setRefresh(!refresh);
@@ -98,7 +98,7 @@ const PostReview = () => {
     // contact Us PopUp
 
     const [showPopup, setShowPopup] = useState(false);
-  
+
     const [phone, setPhone] = useState('');
     const [showsubmitloader, setShowSubmitLoader] = useState(false);
     const badgeRef = useRef(null);
@@ -107,7 +107,7 @@ const PostReview = () => {
     const submitCallReq = async (e) => {
         e.preventDefault();
         setShowSubmitLoader(true);
-        
+
         // const payload = { name, phone };
 
         try {
@@ -191,7 +191,7 @@ const PostReview = () => {
                             </div>
                             <div className="mb-4">
                                 <label className="block text-gray-700 font-bold mb-2" htmlFor="reviewFor">
-                                <span className='text-red-600 text-lg'>*</span> Review For:
+                                    <span className='text-red-600 text-lg'>*</span> Review For:
                                 </label>
                                 <select
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -213,7 +213,7 @@ const PostReview = () => {
                             </div>
                             <div className="mb-4">
                                 <label className="block text-gray-700 font-bold mb-2">
-                                <span className='text-red-600 text-lg'>*</span> Rating:
+                                    <span className='text-red-600 text-lg'>*</span> Rating:
                                     <div className='flex mt-2 cursor-pointer'>
                                         <RatingStars
                                             count={5}
@@ -269,7 +269,7 @@ const PostReview = () => {
                                                         <img key={index} src={bluediamond} className="w-6 h-6 mr-1" alt="diamond" />
                                                     ))}
                                                 </div>
-                                              
+
                                             </div>
                                             <div className="absolute top-0 left-4 h-4 w-1 bg-blue-900 rounded-full"></div>
                                             <div className="absolute top-0 right-4 h-4 w-1 bg-blue-900 rounded-full"></div>
@@ -327,9 +327,9 @@ const PostReview = () => {
             )}
 
 
-{/* call Popup */}
+            {/* call Popup */}
 
-<div className="fixed right-0 top-0 h-full w-6 bg-transparent pointer-events-none flex items-end justify-center">
+            <div className="fixed right-0 top-0 h-full w-6 bg-transparent pointer-events-none flex items-end justify-center">
                 <div
                     ref={badgeRef}
                     className="absolute right-0 w-40 mt-0 bg-gradient-to-r from-blue-900 to-gray-900 text-white text-center pb-6 pt-4 cursor-pointer pointer-events-auto shadow-lg transform transition-transform duration-300 hover:scale-105 mb-6 ribbon-2"

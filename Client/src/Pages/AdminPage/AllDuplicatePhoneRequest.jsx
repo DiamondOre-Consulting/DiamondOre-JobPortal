@@ -82,7 +82,7 @@ const AllDuplicatePhoneRequest = () => {
                     }));
 
                     setAllPhoneRequest(requestsWithNames);
-                    
+
                     setLoading(false)
                 }
             } catch (error) {
@@ -103,7 +103,7 @@ const AllDuplicatePhoneRequest = () => {
 
     // Open the popup by id
     const handleClick = (id) => {
-        
+
         setId(id);
         setShowPopup(true)
     }
@@ -125,13 +125,13 @@ const AllDuplicatePhoneRequest = () => {
             )
 
             if (response.status === 200) {
-                
+
                 setSnackbarOpen(true);
                 setShowPopup(false);
                 window.location.reload();
             }
         } catch (error) {
-            
+
         }
     }
 

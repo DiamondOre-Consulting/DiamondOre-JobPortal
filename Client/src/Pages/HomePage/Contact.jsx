@@ -31,21 +31,21 @@ const Contact = () => {
                 }
             );
 
-            
+
 
             if (response.status === 201) {
-                
+
                 setsucess("Data Sent Sucessfully");
                 setName('');
                 setEmail('');
                 setMsg('');
             } else {
-                
+
 
             }
 
         } catch (error) {
-            
+
             if (error.response) {
                 const status = error.response.status;
                 if (status === 500) {
@@ -68,7 +68,7 @@ const Contact = () => {
     const submitCallReq = async (e) => {
         e.preventDefault();
         setShowSubmitLoader(true);
-        
+
         // const payload = { name, phone };
 
         try {

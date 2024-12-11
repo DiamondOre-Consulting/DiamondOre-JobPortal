@@ -135,13 +135,13 @@ const AdminDrawerSidebar = () => {
     const navigate = useNavigate();
     const theme = useTheme();
     const [open, setOpen] = useState(false);
-    const [loading,setLoading]= useState(true)
+    const [loading, setLoading] = useState(true)
 
     const { decodedToken } = useJwt(localStorage.getItem("token"));
     const token = localStorage.getItem("token");
 
     useEffect(() => {
-        
+
         if (!token) {
             navigate("/admin-login"); // Redirect to login page if not authenticated
             return;
@@ -154,7 +154,7 @@ const AdminDrawerSidebar = () => {
             localStorage.removeItem("token");
             navigate("/admin-login");
         }
-        
+
     }, [decodedToken, navigate, token]);
 
     useEffect(() => {
@@ -180,7 +180,7 @@ const AdminDrawerSidebar = () => {
                 );
                 if (response.status === 200) {
                     setUserData(response.data);
-                    
+
                 } else {
                     setUserData("Did not get any response!!!");
                 }
@@ -188,19 +188,19 @@ const AdminDrawerSidebar = () => {
                 console.error("Error fetching admin data:", error);
             }
 
-            finally{
-                setTimeout(()=>{
+            finally {
+                setTimeout(() => {
                     setLoading(false)
-                },1000)
+                }, 1000)
             }
         };
 
         fetchUserData();
     }, [navigate]);
 
-    
 
-    
+
+
 
     const handleLogout = () => {
         localStorage.removeItem("token");
@@ -223,7 +223,7 @@ const AdminDrawerSidebar = () => {
 
 
     return (
-         <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             <AppBar position="fixed" open={open} style={{ background: '#0d47a1' }}>
                 <Toolbar>
@@ -243,7 +243,7 @@ const AdminDrawerSidebar = () => {
                         <img src={logo} alt='logo' className='w-40 cursor-pointer' />
                     </Typography>
                     <Box sx={{ flexGrow: 1 }} />
-                    <Link to={'/admin-dashboard/edit-profile'}><img src={userData?.profilePic} alt="" className='w-10 h-10 object-cover mr-2 rounded-full cursor-pointer '/></Link>
+                    <Link to={'/admin-dashboard/edit-profile'}><img src={userData?.profilePic} alt="" className='w-10 h-10 object-cover mr-2 rounded-full cursor-pointer ' /></Link>
                     <IconButton
                         style={{ color: 'white' }}
                         aria-label='logout'
@@ -260,7 +260,7 @@ const AdminDrawerSidebar = () => {
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
-                
+
 
                 <List>
                     {[
@@ -268,14 +268,14 @@ const AdminDrawerSidebar = () => {
                         { text: 'All Jobs', icon: <WorkIcon />, path: '/all-Jobs' },
                         { text: 'Add & Delete Jobs', icon: <DomainAddIcon />, path: '/add-jobs' },
                         { text: 'All Candidate', icon: <GroupIcon />, path: '/all-candidates' },
-                        ...(userData?.adminType!=="subAdmin"?[{ text: 'All Accounts', icon: <ManageAccountsIcon />, path: '/all-accounts' }]:[]),
+                        ...(userData?.adminType !== "subAdmin" ? [{ text: 'All Accounts', icon: <ManageAccountsIcon />, path: '/all-accounts' }] : []),
                         { text: 'Prompt', icon: <SaveAsIcon />, path: '/prompt' },
                         { text: 'ERP', icon: <img src={erpicon} className='w-6 h-6' />, path: '/erp-dashboard' },
                         { text: 'All Reviews', icon: <ReviewsIcon />, path: '/all-reviews' },
-                        ...(userData?.adminType!=="subAdmin"?[{ text: 'All Employees', icon: <BadgeIcon />, path: '/all-employees' }]:[]),
-                        ...(userData?.adminType!=="subAdmin"?[{ text: 'Add Recruiter', icon: <AddCircleOutlineIcon />, path: '/add-recruiter'}]:[]),
-                        ...(userData?.adminType!=="subAdmin"?[{ text: 'Add Employee', icon: <PersonAddIcon />, path: '/add-employee' }]:[]),
-                        ...(userData?.adminType!=="subAdmin"?[{ text: 'Make Admin', icon: <AdminPanelSettingsIcon />, path: '/make-admin'}]:[]),
+                        ...(userData?.adminType !== "subAdmin" ? [{ text: 'All Employees', icon: <BadgeIcon />, path: '/all-employees' }] : []),
+                        ...(userData?.adminType !== "subAdmin" ? [{ text: 'Add Recruiter', icon: <AddCircleOutlineIcon />, path: '/add-recruiter' }] : []),
+                        ...(userData?.adminType !== "subAdmin" ? [{ text: 'Add Employee', icon: <PersonAddIcon />, path: '/add-employee' }] : []),
+                        ...(userData?.adminType !== "subAdmin" ? [{ text: 'Make Admin', icon: <AdminPanelSettingsIcon />, path: '/make-admin' }] : []),
                         { text: 'Edit Profile', icon: <AccountBoxIcon />, path: '/edit-profile' },
 
                     ].map((item) => (
@@ -318,17 +318,17 @@ const AdminDrawerSidebar = () => {
                     <Route path='/add-jobs' element={<AddJobs />} />
                     <Route path='/all-reviews' element={<AllReviews />} />
                     <Route path='/all-employees' element={<AllEmployee />} />
-                    <Route path='/employee/:id' element={<EmployeeBranchesPage/>}/>
+                    <Route path='/employee/:id' element={<EmployeeBranchesPage />} />
                     <Route path='/goal-sheet/:id/:employeename' element={<EachEmployeeGoalSheet />} />
-                    <Route path='/each-account/:id' element={<EachEmployeeAccounts/>}/>
-                    <Route path='/kpi/:id' element={<EachEmployeeKPIScore/>}/>
+                    <Route path='/each-account/:id' element={<EachEmployeeAccounts />} />
+                    <Route path='/kpi/:id' element={<EachEmployeeKPIScore />} />
                     <Route path='/add-recruiter' element={<AddRecruiter />} />
                     <Route path='/add-employee' element={<Employeesignup />} />
                     <Route path='/prompt' element={<Prompt />} />
                     <Route path='/make-admin' element={<AdminSignup />} />
                     <Route path='/edit-profile' element={<AdminEditprofile />} />
-                    <Route path='/all-accounts' element={<AllEmployeeAccounts/>}/>
-                    <Route path='/all-duplicate-phone/request' element={<AllDuplicatePhoneRequest/>}/>
+                    <Route path='/all-accounts' element={<AllEmployeeAccounts />} />
+                    <Route path='/all-duplicate-phone/request' element={<AllDuplicatePhoneRequest />} />
                 </Routes>
                 <AdminFooter />
             </Box>

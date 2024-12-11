@@ -15,9 +15,9 @@ const EmployeeLeaves = () => {
   const { id } = useParams();
 
   const { decodedToken } = useJwt(localStorage.getItem("token"));
-  
+
   const userId = decodedToken?.userId; // Accessing the ID from decoded token
-  
+
 
 
 
@@ -43,21 +43,21 @@ const EmployeeLeaves = () => {
           }
         );
         if (leaveReportResponse.status === 200) {
-          
-          
+
+
           const all = leaveReportResponse.data;
           const latest = all.slice(-1);
           ;
           setTotalLeavesis(latest[0]);
 
-          
-          
+
+
           setRecord(leaveReportResponse.data);
 
         }
       }
       catch (error) {
-        
+
       }
     };
 
@@ -71,10 +71,10 @@ const EmployeeLeaves = () => {
 
       <div className='p-4'>
         <h2 className='text-center font-bold  mb-1 text-2xl mt-2 text-blue-950 mb-4 font-bold'>Attendence</h2>
-        <div  className="relative overflow-x-auto mt-8 pt-8 mb-4 px-16">
-        <span className='bg-blue-950 shadow-lg text-white  rounded-lg p-2 border-black m-4 '>totalleaves:- {totalLeavesis.totalLeaves}</span>
-          <table  className="w-full text-sm text-left rtl:text-right text-gray-500  bg-gray-50 mt-4">
-            <thead  className="text-xs text-gray-700 uppercase bg-gray-100  ">
+        <div className="relative overflow-x-auto mt-8 pt-8 mb-4 px-16">
+          <span className='bg-blue-950 shadow-lg text-white  rounded-lg p-2 border-black m-4 '>totalleaves:- {totalLeavesis.totalLeaves}</span>
+          <table className="w-full text-sm text-left rtl:text-right text-gray-500  bg-gray-50 mt-4">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-100  ">
 
               <tr>
                 <th scope="col" className="px-6 py-3 rounded-s-lg ">

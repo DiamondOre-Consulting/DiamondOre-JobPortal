@@ -72,6 +72,7 @@ const AllEmployee = () => {
             }
         );
 
+
         if (response.status === 201) {
             fetchAllEmployee()
         }

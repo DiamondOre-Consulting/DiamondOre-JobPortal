@@ -8,7 +8,7 @@ const HomeNewRecommend = () => {
   let [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [latestJobs, setLatestJobs] = useState([]);
-  const[ empty,setEmpty] =  useState(null);
+  const [empty, setEmpty] = useState(null);
   const override = {
     display: "flex",
     justifyContent: "center",
@@ -45,24 +45,24 @@ const HomeNewRecommend = () => {
           }
         );
         if (response.status === 200) {
-          if(response.data.length === 0){
+          if (response.data.length === 0) {
             setEmpty(`No Job Found According to your prefrence `)
             setLoading(false);
             return;
-              
-          }
-          else{
-          
-          const all = response.data;
-          const filteredJobs = all.filter(job => job.jobStatus === "true");
-          const latest = filteredJobs.slice(-7);
-          // ;
-          setLatestJobs(latest.reverse());
-          setLoading(false)
-          
 
           }
-          
+          else {
+
+            const all = response.data;
+            const filteredJobs = all.filter(job => job.jobStatus === "true");
+            const latest = filteredJobs.slice(-7);
+            // ;
+            setLatestJobs(latest.reverse());
+            setLoading(false)
+
+
+          }
+
         }
 
 
@@ -94,7 +94,7 @@ const HomeNewRecommend = () => {
         ) : (
           <>
             {latestJobs.length === 0 ? (
-            <p className="text-center text-red-500 font-semibold">{empty} <Link to={'/edit-prefrence-form'} className="underline text-blue-600">click here</Link> to change your prefrence </p>
+              <p className="text-center text-red-500 font-semibold">{empty} <Link to={'/edit-prefrence-form'} className="underline text-blue-600">click here</Link> to change your prefrence </p>
             ) : (
               <div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4 mb-4">
                 {latestJobs.map((latestJob, index) => (
@@ -133,7 +133,7 @@ const HomeNewRecommend = () => {
       </div>
     </div>
   );
-  
+
 };
 
 export default HomeNewRecommend;

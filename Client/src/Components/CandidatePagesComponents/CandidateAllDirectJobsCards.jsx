@@ -54,7 +54,7 @@ const CandidateAllDirectJobsCards = () => {
           const filteredJobs = all.filter(job => job.jobStatus === "true");
           setDirectJobs(filteredJobs.reverse());
           setLoading(false)
-          
+
         }
       } catch (error) {
         console.error("Error fetching jobs:", error);

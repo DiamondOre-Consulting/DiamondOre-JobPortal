@@ -86,7 +86,7 @@ const AppBar = styled(MuiAppBar, {
     }),
   }),
 }));
- 
+
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
     width: drawerWidth,
@@ -116,7 +116,7 @@ export default function EmpDrawerSidebar() {
   const token = localStorage.getItem('token');
   const { decodedToken } = useJwt(token);
   const [empOfMonthDesc, setEmpOfMonthDesc] = useState("");
-  const [recognitionType , setRecognitionType] = useState("")
+  const [recognitionType, setRecognitionType] = useState("")
 
   useEffect(() => {
     if (!token) {
@@ -154,10 +154,10 @@ export default function EmpDrawerSidebar() {
           setEmpOfMonthDesc(lastData.EmpOfMonthDesc || "");
           setRecognitionType(lastData.recognitionType || "");
         } else {
-          
+
         }
       } catch (e) {
-        
+
       }
     };
 
@@ -209,7 +209,7 @@ export default function EmpDrawerSidebar() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     window.location.href = "/employee-login";
-    
+
   };
 
 
@@ -228,7 +228,7 @@ export default function EmpDrawerSidebar() {
     navigate(`/employee-dashboard${path}`);
   };
 
- 
+
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -252,7 +252,7 @@ export default function EmpDrawerSidebar() {
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <img src={userData?.profilePic} alt="" className='w-8 mr-2' />
-        
+
           <IconButton
             style={{ color: 'white' }}
             aria-label='logout'
@@ -273,10 +273,10 @@ export default function EmpDrawerSidebar() {
           {[
             { text: 'Home', icon: <HomeIcon sx={{ fontSize: 30 }} />, path: '/home' },
             { text: 'Goal Sheet', icon: <img src={goalsheeticon} className='w-8 h-8' />, path: '/goal-sheet' },
-            { text: 'Incentive', icon: <img src={incentiveicon} className='w-8 h-8'/>, path: '/incentive' },
+            { text: 'Incentive', icon: <img src={incentiveicon} className='w-8 h-8' />, path: '/incentive' },
             { text: 'KPI-Score', icon: <img src={kpiicon} className='w-8 h-8' />, path: '/kpi-score' },
             { text: 'Account Handling', icon: <AccountCircleIcon sx={{ fontSize: 30 }} />, path: '/acount-handling' },
-            { text: 'All Accounts', icon: <ManageAccountsIcon  sx={{ fontSize: 30 }}/>, path: '/all-accounts' },
+            { text: 'All Accounts', icon: <ManageAccountsIcon sx={{ fontSize: 30 }} />, path: '/all-accounts' },
           ].map((item) => (
             <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
@@ -285,7 +285,7 @@ export default function EmpDrawerSidebar() {
                   minHeight: 48,
                   justifyContent: open ? 'initial' : 'center',
                   px: 2.5,
-                 
+
                 }}
               >
                 <ListItemIcon
@@ -293,7 +293,7 @@ export default function EmpDrawerSidebar() {
                     minWidth: 0,
                     mr: open ? 3 : 'auto',
                     justifyContent: 'center',
-                    
+
                   }}
                 >
                   {item.icon}
@@ -307,13 +307,13 @@ export default function EmpDrawerSidebar() {
       <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
         <Routes>
-          <Route path='/' element={<EmpHome employee={employee} latestnews={latestnews} hrname={hrname} client={client} RnRRecruiter={RnRRecruiter} RnRinterns={RnRinterns} Joinings={Joinings}  userData={userData} empOfMonthDesc={empOfMonthDesc} recognitionType={recognitionType} />} />
-          <Route path='/home' element={<EmpHome employee={employee} latestnews={latestnews} hrname={hrname} client={client} RnRRecruiter={RnRRecruiter} RnRinterns={RnRinterns} Joinings={Joinings} userData={userData} empOfMonthDesc={empOfMonthDesc}  recognitionType={recognitionType}/>} />
+          <Route path='/' element={<EmpHome employee={employee} latestnews={latestnews} hrname={hrname} client={client} RnRRecruiter={RnRRecruiter} RnRinterns={RnRinterns} Joinings={Joinings} userData={userData} empOfMonthDesc={empOfMonthDesc} recognitionType={recognitionType} />} />
+          <Route path='/home' element={<EmpHome employee={employee} latestnews={latestnews} hrname={hrname} client={client} RnRRecruiter={RnRRecruiter} RnRinterns={RnRinterns} Joinings={Joinings} userData={userData} empOfMonthDesc={empOfMonthDesc} recognitionType={recognitionType} />} />
           <Route path='/goal-sheet' element={<EmpGoalSheet />} />
-          <Route path='/kpi-score' element={<KPIscore/>}/>
-          <Route path='/acount-handling' element={<AccountHandling userData={userData}/>}/>
-          <Route path='/incentive' element={<Incentive/>}/>
-          <Route path='/all-accounts' element={<AllAccounts/>}/>
+          <Route path='/kpi-score' element={<KPIscore />} />
+          <Route path='/acount-handling' element={<AccountHandling userData={userData} />} />
+          <Route path='/incentive' element={<Incentive />} />
+          <Route path='/all-accounts' element={<AllAccounts />} />
         </Routes>
       </Box>
     </Box>

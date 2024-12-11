@@ -13,7 +13,7 @@ const AccountHandling = ({ userData }) => {
     const [accountdetails, setAccountDetails] = useState([])
     const [error, setError] = useState('');
     const [form, setForm] = useState({
-        hrName:'',
+        hrName: '',
         zoneName: '',
         channelName: '',
         clientName: '',
@@ -21,22 +21,22 @@ const AccountHandling = ({ userData }) => {
     });
 
 
-    const [eastArray,setEastArray]=useState([]);
-    const [westArray,setWestArray]=useState([]);
-    const [northArray,setNorthArray]= useState([])
-    const [southArray,setSouthArray]=useState([])
+    const [eastArray, setEastArray] = useState([]);
+    const [westArray, setWestArray] = useState([]);
+    const [northArray, setNorthArray] = useState([])
+    const [southArray, setSouthArray] = useState([])
 
     console.log(form)
 
     console.log(accountdetails)
 
 
-    console.log("east",eastArray)
-    console.log("west",westArray)
-    console.log("north",northArray)
-    console.log("south",southArray)
+    console.log("east", eastArray)
+    console.log("west", westArray)
+    console.log("north", northArray)
+    console.log("south", southArray)
 
-    
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -46,15 +46,15 @@ const AccountHandling = ({ userData }) => {
 
                 if (response.status === 200) {
                     setRows(response.data);
-                    
+
                     setAccountDetails(response.data);
                     console.log("check")
-                    console.log("res",response.data)
+                    console.log("res", response.data)
 
-                    setEastArray(response.data.findAccount.accountDetails.filter(item=>item.zoneName==="east"))
-                    setWestArray(response.data.findAccount.accountDetails.filter(item=>item.zoneName==="west"))
-                    setNorthArray(response.data.findAccount.accountDetails.filter(item=>item.zoneName==="north"))
-                    setSouthArray(response.data.findAccount.accountDetails.filter(item=>item.zoneName==="south"))
+                    setEastArray(response.data.findAccount.accountDetails.filter(item => item.zoneName === "east"))
+                    setWestArray(response.data.findAccount.accountDetails.filter(item => item.zoneName === "west"))
+                    setNorthArray(response.data.findAccount.accountDetails.filter(item => item.zoneName === "north"))
+                    setSouthArray(response.data.findAccount.accountDetails.filter(item => item.zoneName === "south"))
 
 
 
@@ -69,11 +69,11 @@ const AccountHandling = ({ userData }) => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        console.log("text",name,value)
+        console.log("text", name, value)
         setForm({ ...form, [name]: value.toLowerCase() });
     };
 
-   
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -88,7 +88,7 @@ const AccountHandling = ({ userData }) => {
                 }
             });
             if (response.status === 200) {
-                 
+
                 setShowSubmitLoader(false);
                 setSnackbarOpen(true);
                 setPopUpForm(false);
@@ -102,13 +102,13 @@ const AccountHandling = ({ userData }) => {
                     clientName: '',
                     hrPhone: '',
                 });
-               
+
 
             }
         } catch (error) {
             if (error.response && error.response.status === 400) {
                 const { message } = error.response.data;
-                
+
                 setError(message);
                 setForm({
                     hrName: '',
@@ -117,7 +117,7 @@ const AccountHandling = ({ userData }) => {
                     clientName: '',
                     hrPhone: '',
                 });
-                
+
             }
             else {
                 setError("Something went wrong. Please try again later.");
@@ -135,8 +135,8 @@ const AccountHandling = ({ userData }) => {
         setSnackbarOpen(false);
     };
 
-    let a=0;
-    
+    let a = 0;
+
     console.log(accountdetails?.findAccount?.accountDetails)
     // const tableData = accountdetails?.accountHandling?.accountDetails.flatMap((zone) => {
     //     return zone.channels.map((channel) => {
@@ -153,7 +153,7 @@ const AccountHandling = ({ userData }) => {
 
     return (
         <div>
-            
+
             <h1 className='text-3xl md:text-4xl font-bold'>Account Handling</h1>
             <div className='w-20 h-0.5 bg-blue-900'></div>
 
@@ -206,54 +206,54 @@ const AccountHandling = ({ userData }) => {
                                             <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.channels[0]?.hrDetails[0]?.hrPhone}</td>
                                             <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.clientName[0]}</td>
                                             <td className="px-6 py-4 whitespace-nowrap border text-center text-sm font-medium">
-                                            <button type="button" className="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none  ">Delete</button>
-                                            </td> 
+                                                <button type="button" className="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none  ">Delete</button>
+                                            </td>
                                         </tr>
                                     ))}
-                                     {eastArray?.map((row, index) => (
+                                    {eastArray?.map((row, index) => (
                                         <tr key={index}>
-                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm font-medium text-gray-800 ">{westArray.length + index+1}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm font-medium text-gray-800 ">{westArray.length + index + 1}</td>
                                             <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.channels[0]?.hrDetails[0]?.hrName}</td>
                                             <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.zoneName}</td>
                                             <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.channels[0]?.channelName}</td>
                                             <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.channels[0]?.hrDetails[0]?.hrPhone}</td>
                                             <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.clientName[0]}</td>
                                             <td className="px-6 py-4 whitespace-nowrap border text-center text-sm font-medium">
-                                            <button type="button" className="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none  ">Delete</button>
-                                            </td> 
+                                                <button type="button" className="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none  ">Delete</button>
+                                            </td>
                                         </tr>
                                     ))}
                                     {northArray?.map((row, index) => (
                                         <tr key={index}>
-                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm font-medium text-gray-800 ">{eastArray.length+westArray.length + 1+index}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm font-medium text-gray-800 ">{eastArray.length + westArray.length + 1 + index}</td>
                                             <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.channels[0]?.hrDetails[0]?.hrName}</td>
                                             <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.zoneName}</td>
                                             <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.channels[0]?.channelName}</td>
                                             <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.channels[0]?.hrDetails[0]?.hrPhone}</td>
                                             <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.clientName[0]}</td>
                                             <td className="px-6 py-4 whitespace-nowrap border text-center text-sm font-medium">
-                                            <button type="button" className="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none  ">Delete</button>
-                                            </td> 
+                                                <button type="button" className="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none  ">Delete</button>
+                                            </td>
                                         </tr>
                                     ))}
 
                                     {southArray?.map((row, index) => (
                                         <tr key={index}>
-                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm font-medium text-gray-800 ">{northArray.length+eastArray.length+westArray.length + 1 +index}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm font-medium text-gray-800 ">{northArray.length + eastArray.length + westArray.length + 1 + index}</td>
                                             <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.channels[0]?.hrDetails[0]?.hrName}</td>
                                             <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.zoneName}</td>
                                             <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.channels[0]?.channelName}</td>
                                             <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.channels[0]?.hrDetails[0]?.hrPhone}</td>
                                             <td className="px-6 py-4 whitespace-nowrap border border-gray-500 text-sm text-gray-800 ">{row?.clientName[0]}</td>
                                             <td className="px-6 py-4 whitespace-nowrap border text-center text-sm font-medium">
-                                            <button type="button" className="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none  ">Delete</button>
-                                            </td> 
+                                                <button type="button" className="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none  ">Delete</button>
+                                            </td>
                                         </tr>
                                     ))}
 
-                                    
 
-                                    
+
+
                                 </tbody>
                             </table>
                         </div>
@@ -280,13 +280,13 @@ const AccountHandling = ({ userData }) => {
                                 className="px-4 py-2 border rounded-md"
                                 required
                             />
-                           <select  className='p-2 rounded-md' onChange={handleInputChange} name="zoneName" id="">
-                            <option value="">Select a zone</option>
-                            <option value="north">North</option>
-                            <option value="south">South</option>
-                            <option value="east">East</option>
-                            <option value="west">West</option>
-                           </select>
+                            <select className='p-2 rounded-md' onChange={handleInputChange} name="zoneName" id="">
+                                <option value="">Select a zone</option>
+                                <option value="north">North</option>
+                                <option value="south">South</option>
+                                <option value="east">East</option>
+                                <option value="west">West</option>
+                            </select>
                             <input
                                 type="text"
                                 name="channelName"

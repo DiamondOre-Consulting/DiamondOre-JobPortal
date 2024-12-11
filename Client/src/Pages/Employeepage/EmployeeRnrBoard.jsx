@@ -1,4 +1,4 @@
-import React, { useEffect, useState  } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useJwt } from "react-jwt";
 import axios from 'axios';
@@ -19,14 +19,14 @@ const EmployeeRnrBoard = () => {
   const [RnRRecruiter, setRnRRecruiter] = useState([]);
   const [joinings, setJoinings] = useState([]);
   const [empOfMonthDesc, setEmpOfMonthDesc] = useState(""); // New state for EmpOfMonthDesc
-  const [recognitionType , setRecognitionType] = useState("")
+  const [recognitionType, setRecognitionType] = useState("")
 
   const token = localStorage.getItem("token");
   const { decodedToken } = useJwt(token);
   const navigate = useNavigate();
-  const {passcode} = useParams();
+  const { passcode } = useParams();
 
-  
+
 
   useEffect(() => {
 
@@ -43,16 +43,16 @@ const EmployeeRnrBoard = () => {
         // const passcode= 123456;
         const response = await axios.get(
           `https://api.diamondore.in/api/employee/rnr-leaderboraddetails/${passcode}`,
-          
+
         );
 
-        
+
 
         if (response.status === 200) {
           const lastData = response.data.allData;
           const empdata = response.data.findEmp;
           setEmployee(empdata);
-          
+
           setLatestNews(lastData.BreakingNews || []);
           setHrName(lastData.Top5HRs || []);
           setClient(lastData.Top5Clients || []);
@@ -62,10 +62,10 @@ const EmployeeRnrBoard = () => {
           setEmpOfMonthDesc(lastData.EmpOfMonthDesc || ""); // Set EmpOfMonthDesc
           setRecognitionType(lastData.recognitionType || "");
         } else {
-          
+
         }
       } catch (e) {
-        
+
       }
     };
 
@@ -75,23 +75,23 @@ const EmployeeRnrBoard = () => {
 
   const [showConfetti, setShowConfetti] = useState(true);
   useEffect(() => {
-      // Automatically stop the confetti after 5 seconds
-      const timer = setTimeout(() => {
-          setShowConfetti(false);
-      }, 20000);
+    // Automatically stop the confetti after 5 seconds
+    const timer = setTimeout(() => {
+      setShowConfetti(false);
+    }, 20000);
 
-      return () => clearTimeout(timer);
+    return () => clearTimeout(timer);
   }, []);
 
 
   return (
-    
+
     <div> {showConfetti && <Confetti />}
       {/* <h2 className="text-3xl md:text-5xl px-4 font-bold text-gray-800 py-4">
         Welcome aboard, <span className="text-blue-900">{decodedToken?.name}</span>
       </h2> */}
-     
-      <HomeNews employee={employee} latestnews={latestnews} empOfMonthDesc={empOfMonthDesc}  recognitionType={recognitionType}/> {/* Pass EmpOfMonthDesc */}
+
+      <HomeNews employee={employee} latestnews={latestnews} empOfMonthDesc={empOfMonthDesc} recognitionType={recognitionType} /> {/* Pass EmpOfMonthDesc */}
       <ERPTop5s hrname={hrname} client={client} />
       <RnRLeaderboard RnRinterns={RnRinterns} RnRRecruiter={RnRRecruiter} />
       <JoiningsForWeek Joinings={joinings} />

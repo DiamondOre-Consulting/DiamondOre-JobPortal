@@ -42,7 +42,7 @@ const AllReviews = () => {
                 });
 
             if (response.status === 200) {
-                
+
                 fetchAllReviews(); // Fetch updated list after deletion
                 closePopup(); // Close the popup after successful deletion
             } else {
@@ -67,9 +67,9 @@ const AllReviews = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-    
-      };
-    
+
+    };
+
 
     return (
         <>

@@ -13,9 +13,9 @@ const EditPrefrenceform = () => {
         preferredChannel: null,
         expectedCTC: null,
     });
-    const [prefcity,setPrefCity]=useState(null);
-    const [prefchannel,setPrefChannel]=useState(null);
-    const [prefctc,setPrefCtc]=useState(null);
+    const [prefcity, setPrefCity] = useState(null);
+    const [prefchannel, setPrefChannel] = useState(null);
+    const [prefctc, setPrefCtc] = useState(null);
     const [userInputs, setUserInputs] = useState([]);
     const [step, setStep] = useState(0);
 
@@ -31,7 +31,7 @@ const EditPrefrenceform = () => {
     };
 
     useEffect(() => {
-        
+
     }, [userInputs]);
 
     const handleSubmit = async (e) => {
@@ -48,10 +48,10 @@ const EditPrefrenceform = () => {
 
             );
             if (response.status === 201) {
-                
+
                 const all = response.data;
                 setUserInputs(all);
-                
+
                 setFormData({
                     preferredCity: '',
                     preferredChannel: '',
@@ -94,11 +94,11 @@ const EditPrefrenceform = () => {
 
                 const uniquicities = [...new Set(response.data.map(job => job.City))];
                 const uniquiChannels = [...new Set(response.data.map(job => job.Channel))];
-                
-                
+
+
                 setCities(uniquicities);
                 setChannels(uniquiChannels);
-                
+
                 if (response.status === 200) {
                     ;
                     const all = response.data;
@@ -114,7 +114,7 @@ const EditPrefrenceform = () => {
 
 
     useEffect(() => {
-    
+
         const fetchPrefData = async () => {
 
             try {
@@ -128,29 +128,29 @@ const EditPrefrenceform = () => {
                     }
 
                 )
-                if(response.status === 200){
-                    
-                    const prefdata= response.data
+                if (response.status === 200) {
+
+                    const prefdata = response.data
                     setPrefCity(prefdata?.preferredCity);
                     setPrefChannel(prefdata?.preferredChannel);
-                    const ctc=(`${prefdata?.minExpectedCTC}-${prefdata?.maxExpectedCTC}`)
+                    const ctc = (`${prefdata?.minExpectedCTC}-${prefdata?.maxExpectedCTC}`)
                     setPrefCtc(ctc)
                     // const myctc=`${setPrefMaxCtc(prefdata?.maxExpectedCTC)} - ${setPrefMinCtc(prefdata?.minExpectedCTC)}`
-                    
+
                 }
-               
+
             }
-            catch(error){
-                
+            catch (error) {
+
             }
 
         }
         fetchPrefData();
 
-    },[])
+    }, [])
     return (
         <div className=''>
-            <CandidateNav/>
+            <CandidateNav />
             <h1 className='text-3xl font-bold  mx-auto text-center'>Edit Your Prefrence</h1>
             <div className='w-44 h-1 bg-blue-900 mx-auto mb-4'></div>
             <div className="max-w-screen-md mx-auto mt-2 px-8  mt-2 shadow-lg shadow-gray-500 pb-8 pt-4">
@@ -163,7 +163,7 @@ const EditPrefrenceform = () => {
                             value={formData.preferredCity}
                             onChange={handleChange}
                         >
-                            <option>{prefcity?prefcity:"select preffered City"}</option>
+                            <option>{prefcity ? prefcity : "select preffered City"}</option>
                             {cities.map((city, index) => (
                                 <option
                                     key={index}
@@ -185,7 +185,7 @@ const EditPrefrenceform = () => {
                             value={formData.preferredChannel}
                             onChange={handleChange}
                         >
-                            <option>{prefchannel?prefchannel:"Select your Prefferd Channel"}</option>
+                            <option>{prefchannel ? prefchannel : "Select your Prefferd Channel"}</option>
                             {channels.map((channel, index) => (
                                 <option
                                     key={index}
@@ -208,7 +208,7 @@ const EditPrefrenceform = () => {
                             value={formData.expectedCTC}
                             onChange={handleChange}
                         >
-                            <option>{prefctc?prefctc:"Select your Prefferd Ctc"}</option>
+                            <option>{prefctc ? prefctc : "Select your Prefferd Ctc"}</option>
                             <option>0-3</option>
                             <option>3-6</option>
                             <option>6-9</option>
@@ -235,7 +235,7 @@ const EditPrefrenceform = () => {
                     </div> */}
                 </form>
             </div>
-            <Footer/>
+            <Footer />
         </div>
 
     )

@@ -13,17 +13,17 @@ const AdminSignup = ({ toggleForm }) => {
   const [otp, setOtp] = useState("");
   const [profilePic, setProfilePic] = useState(null);
   const [profilePicUrl, setProfilePicUrl] = useState("");
-  const [loading,setLoading]= useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const [adminType,setAdminType] = useState("subAdmin")
+  const [adminType, setAdminType] = useState("subAdmin")
 
   const [error, setError] = useState(null);
 
   const [showPass, setShowPass] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
-  
 
-  
+
+
 
   const handleUploadImage = async (e) => {
     try {
@@ -46,7 +46,7 @@ const AdminSignup = ({ toggleForm }) => {
         setProfilePicUrl(response.data);
       }
     } catch (error) {
-      
+
     }
   };
 
@@ -66,14 +66,14 @@ const AdminSignup = ({ toggleForm }) => {
       setTimeout(() => {
         if (response.status === 201) {
           setOtpSent(true);
-          
+
         }
       }, 1000);
     } catch (error) {
       console.error("Error sending OTP:", error);
       setError("Error sending OTP. Please try again.");
     }
-    finally{
+    finally {
       setLoading(false)
     }
   };
@@ -93,15 +93,15 @@ const AdminSignup = ({ toggleForm }) => {
           email,
           password,
           otp,
-          adminType, 
+          adminType,
           profilePic: profilePicUrl,
         }
       );
 
-      
+
 
       if (response.status === 201) {
-        
+
 
       } else {
 
@@ -113,7 +113,7 @@ const AdminSignup = ({ toggleForm }) => {
       setError("Some details are wrong!!");
       // Handle error
     }
-    finally{
+    finally {
       setLoading(false)
     }
   };
@@ -122,9 +122,9 @@ const AdminSignup = ({ toggleForm }) => {
     return setShowPass(!showPass);
   };
 
-  if(loading){
+  if (loading) {
     return (
-      <div className="flex justify-center items-center w-full h-screen"> 
+      <div className="flex justify-center items-center w-full h-screen">
         <img src={loader} alt="" />
       </div>
     )
@@ -242,10 +242,10 @@ const AdminSignup = ({ toggleForm }) => {
               <div>
                 <label htmlFor="">Admin Type</label>
                 <select
-                 value={adminType} // Bind the select value to state
-                 onChange={(e) => setAdminType(e.target.value)} 
+                  value={adminType} // Bind the select value to state
+                  onChange={(e) => setAdminType(e.target.value)}
                   className="w-full  rounded-md p-4" name="" id="">
-                  
+
                   <option value="subAdmin">Sub Admin</option>
                   <option value="superAdmin">Super Admin</option>
 
@@ -373,8 +373,8 @@ const AdminSignup = ({ toggleForm }) => {
               <button
                 type="submit"
                 className={`block w-full rounded-lg bg-indigo-600 px-5 py-3 text-sm font-medium text-white ${!name || !email || !password
-                    ? "opacity-50 cursor-not-allowed"
-                    : ""
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
                   }`}
                 disabled={!name || !email || !password}
               >

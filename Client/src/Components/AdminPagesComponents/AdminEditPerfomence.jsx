@@ -32,7 +32,7 @@ const AdminEditPerfomence = () => {
                     navigate("/admin-login");
                     return;
                 }
-               
+
                 const response = await axios.get(
                     `https://api.diamondore.in/api/admin-confi/all-employees/${id}`,
                     {
@@ -43,11 +43,11 @@ const AdminEditPerfomence = () => {
                 );
 
                 if (response.status === 201) {
-                    
+
                     setEmployeeDetails(response.data);
                 }
             } catch (error) {
-                
+
             }
         };
 
@@ -77,7 +77,7 @@ const AdminEditPerfomence = () => {
                     }
                 );
                 if (leaveReportResponse.status === 200) {
-                    
+
                     setRecord(leaveReportResponse.data);
                     // const rec = leaveReportResponse.data;
                     // if (rec.length > 0) {
@@ -91,7 +91,7 @@ const AdminEditPerfomence = () => {
                 }
             }
             catch (error) {
-                
+
             }
         };
 
@@ -112,7 +112,7 @@ const AdminEditPerfomence = () => {
         e.preventDefault();
         // totalLeaves(null);
         try {
-            const { month , year, multipleOf4x, monthlyIncentive, kpiScore } = formData;
+            const { month, year, multipleOf4x, monthlyIncentive, kpiScore } = formData;
 
             // Save form data
             const response = await axios.post(
@@ -128,7 +128,7 @@ const AdminEditPerfomence = () => {
             );
 
 
-            
+
 
 
             // Update record state with new data
@@ -158,9 +158,9 @@ const AdminEditPerfomence = () => {
                 setFormData({
                     month: '',
                     year: '',
-                    multipleOf4x:'',
-                    monthlyIncentive:'',
-                    kpiScore:'',
+                    multipleOf4x: '',
+                    monthlyIncentive: '',
+                    kpiScore: '',
                 });
             }
             console.error('Error submitting form:', error);
@@ -170,7 +170,7 @@ const AdminEditPerfomence = () => {
 
     return (
         <div>
-            <AdminNav/>
+            <AdminNav />
             <h1 className='text-center text-2xl font-bold my-4'>Add Performence Report</h1>
             <form onSubmit={handleSubmit} className='w-full max-w-md mx-auto my-8 p-6 bg-gray-50 shadow-lg rounded-lg shadow-lg'>
                 <div className="grid grid-cols-2 gap-4">
@@ -223,7 +223,7 @@ const AdminEditPerfomence = () => {
                             <th className="whitespace-nowrap px-2 py-2 font-medium text-white border ">multiply of 4x</th>
                             <th className="whitespace-nowrap px-2 py-2 font-medium text-white border ">Monthly Incentive</th>
                             <th className="whitespace-nowrap px-2 py-2 font-medium text-white border ">Kpi Score</th>
-                         
+
                         </tr>
                     </thead>
 
@@ -238,13 +238,13 @@ const AdminEditPerfomence = () => {
                                 }</td>
                                 <td className="whitespace-nowrap px-4 py-2 font-medium text-black">{rec.kpiScore
                                 }</td>
-                              
+
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
-            <Footer/>
+            <Footer />
         </div>
     )
 }

@@ -74,13 +74,13 @@ const EmployeeNavbar = () => {
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
-    
+
   };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     window.location.href = "/employee-login";
-    
+
   };
   return (
     <div>
@@ -169,12 +169,12 @@ const EmployeeNavbar = () => {
               onClick={toggleMenu}
               className="inline-flex items-center gap-2 rounded-lg  px-2.5 py-2 text-sm font-semibold text-gray-500 ring-indigo-300  focus-visible:ring active:text-gray-700 md:text-base lg:hidden"
             >
-               <img
-                  onClick={toggleDropdown}
-                  className="cursor-pointer rounded-full w-12 h-12 hover:border-4 hover:border-blue-950"
-                  src={userData?.profilePic}
-                  alt="account"
-                />
+              <img
+                onClick={toggleDropdown}
+                className="cursor-pointer rounded-full w-12 h-12 hover:border-4 hover:border-blue-950"
+                src={userData?.profilePic}
+                alt="account"
+              />
 
             </button>
           </header>

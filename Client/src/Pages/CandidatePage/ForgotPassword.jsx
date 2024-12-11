@@ -28,7 +28,7 @@ const ForgotPassword = () => {
             setTimeout(() => {
                 if (response.status === 201) {
                     setOtpSent(true);
-                    
+
                 }
             }, 1000);
         } catch (error) {
@@ -38,13 +38,13 @@ const ForgotPassword = () => {
     };
 
     const updatePassword = async (e) => {
-        
+
         e.preventDefault();
         if (!password || !otp || !email) {
             alert("Filling all the feild are compulsory")
             return;
         }
-        
+
         try {
 
             const response = await axios.put("https://api.diamondore.in/api/candidates/update-password",
@@ -57,14 +57,14 @@ const ForgotPassword = () => {
 
             if (response.status === 200) {
                 alert("Password has been Updated Sucessfully...");
-                
+
                 setEmail("");
                 setPassword("");
                 setOtp("");
             }
         }
         catch (error) {
-            
+
             if (error.response) {
                 const status = error.response.status;
                 if (status === 404) {

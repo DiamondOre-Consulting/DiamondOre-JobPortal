@@ -33,7 +33,7 @@ const CandidateNav = () => {
           }
         );
         if (response.status == 200) {
-          
+
           setUserData(response.data);
 
         } else {
@@ -42,17 +42,16 @@ const CandidateNav = () => {
         }
       } catch (error) {
         console.error("Error fetching associates:", error);
-          if (error.response)
-          {
-            const status = error.response.status;
-            if (status === 404) {
-             alert("User Not Found")
-            } else {
-              
-            }
+        if (error.response) {
+          const status = error.response.status;
+          if (status === 404) {
+            alert("User Not Found")
           } else {
-            
+
           }
+        } else {
+
+        }
       }
     }
     fetchUserData();
@@ -75,7 +74,7 @@ const CandidateNav = () => {
         }
       )
       if (response.status === 200) {
-        
+
         setShowPopup(true);
         window.alert("Your account has been deleted")
         navigate("/login");
@@ -83,7 +82,7 @@ const CandidateNav = () => {
 
     }
     catch (error) {
-      
+
     }
 
 
@@ -113,13 +112,13 @@ const CandidateNav = () => {
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
-    
+
   };
 
   const handleLogout = () => {
     localStorage.removeItem("token");;
     window.location.href = "/login";
-    
+
   };
 
   const profilePicUrl = userData?.profilePic ? `${userData.profilePic}?${userData.profilePic}` : 'https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=';
@@ -328,20 +327,20 @@ const CandidateNav = () => {
         >
           <section className="rounded-3xl shadow-xl bg-white">
 
-            
+
             <div className="p-4 text-center sm:p-12">
-            <svg class="w-20 h-20 text-red-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              <svg class="w-20 h-20 text-red-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
               <h2 className="mt-6 text-gray-700 text-xs te lg:text-xl md:xl sm:text-sm font-bold">
-              Are you sure you want to delete this Account?
+                Are you sure you want to delete this Account?
               </h2>
               <div className="flex justify-center align-center ">
 
 
-              <button
+                <button
                   className="mt-8 inline-block w-1/2 rounded-md bg-red-600 py-4 text-sm font-bold text-white shadow-md hover:bg-red-700"
                   onClick={deleteAccount}
                 >
@@ -355,7 +354,7 @@ const CandidateNav = () => {
                   No , cancel
                 </button>
 
-              
+
 
               </div>
 

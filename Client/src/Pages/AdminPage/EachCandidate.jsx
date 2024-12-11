@@ -11,7 +11,7 @@ const EachCandidate = () => {
   const [candidateApplied, setCandidateApplied] = useState(null);
 
   const { id } = useParams();
-  
+
 
   const { decodedToken } = useJwt(localStorage.getItem("token"));
   const token = localStorage.getItem("token");
@@ -62,7 +62,7 @@ const EachCandidate = () => {
           setCandidateDetails(response.data);
         }
       } catch (error) {
-        
+
       }
     };
 
@@ -85,7 +85,7 @@ const EachCandidate = () => {
         }
 
       } catch (error) {
-        
+
       }
     }
 
@@ -147,7 +147,7 @@ const EachCandidate = () => {
           <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
             <div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-4 xl:grid-cols-4">
               {candidateApplied?.map((job) => (
-                <Link className="float-left" to={`/admin-dashboard/each-job/${job?._id}`} > 
+                <Link className="float-left" to={`/admin-dashboard/each-job/${job?._id}`} >
                   <div
                     href="#"
                     className="flex flex-col  items-start h-40 overflow-hidden rounded-lg bg-white  shadow-lg hover:shadow-2xl"

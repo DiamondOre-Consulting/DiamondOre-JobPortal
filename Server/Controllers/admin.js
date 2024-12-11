@@ -2504,6 +2504,13 @@ router.post('/set-goalSheet', async (req, res) => {
       variableIncentive // Leave variable incentive blank for now
     });
 
+    goalSheet.goalSheetDetails.sort((a, b) => {
+      if (a.year !== b.year) {
+        return a.year - b.year;
+      }
+      return a.month - b.month;
+    });
+
     // Save the GoalSheet
     await goalSheet.save();
 
@@ -2562,17 +2569,7 @@ router.put('/edit-goalSheet', async (req, res) => {
       return res.status(404).json({ error: 'GoalSheet not found' });
     }
 
-
-    console.log(1)
-    // Find the specific goal sheet detail by month and year
-
-    console.log(goalSheet)
-    console.log(sheetId)
     const goalDetailIndex = goalSheet.goalSheetDetails.findIndex(data => data?._id.toString() === sheetId.toString())
-    console.log(2)
-    console.log(3)
-
-    console.log(goalDetailIndex)
 
     if (goalDetailIndex === -1) {
       console.log(typeof (goalDetailIndex))
@@ -2581,9 +2578,6 @@ router.put('/edit-goalSheet', async (req, res) => {
 
     // Get the current goalSheetDetail for updates
     let goalDetail = goalSheet.goalSheetDetails[goalDetailIndex];
-
-    console.log(goalDetail)
-
 
     // Get the last entry for cumulative calculations  
     const lastDetail = goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length - 2] || {};

@@ -10,18 +10,18 @@ const AllEmployeeAccounts = () => {
     const [deletepopup, setDeletePopup] = useState(false);
     let [loading, setLoading] = useState(true);;
     const navigate = useNavigate();
-    
+
     useEffect(() => {
         const fetchAllAccount = async () => {
             try {
                 const response = await axios.get('https://api.diamondore.in/api/employee/accounts');
                 if (response.status === 200) {
                     setAllAccountsData(response.data);
-                    
+
                     setLoading(false)
                 }
             } catch (error) {
-                
+
             }
         }
 
@@ -79,7 +79,7 @@ const AllEmployeeAccounts = () => {
 
 
     const handleClick = (id) => {
-        
+
         setAccountId(id);
         setShowPopup(true)
 
@@ -88,7 +88,7 @@ const AllEmployeeAccounts = () => {
 
 
     const handledeleteclick = (id) => {
-        
+
         setAccountId(id)
         setDeletePopup(true)
     }
@@ -120,7 +120,7 @@ const AllEmployeeAccounts = () => {
 
                 if (response.status === 200) {
 
-                    
+
                     setLength(response.data.length)
 
                 }

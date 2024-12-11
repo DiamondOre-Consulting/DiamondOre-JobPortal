@@ -90,7 +90,7 @@ const Chatboot = () => {
                     ...prevMessages,
                     { sender: 'chatbot', text: endingMessage },
                 ]);
-                
+
             }
         } catch (error) {
             console.error('Error sending response:', error);
@@ -103,7 +103,7 @@ const Chatboot = () => {
                 ...prevUserDetails,
                 [key]: value
             };
-            
+
             return updatedDetails;
         });
     };
@@ -223,7 +223,7 @@ const Chatboot = () => {
                                 type="text"
                                 value={inputValue}
                                 onChange={handleInputChange}
-                                onKeyDown={handleKeyDown} 
+                                onKeyDown={handleKeyDown}
                                 className="flex-grow border border-gray-300 rounded-l-lg px-2 py-2 focus:outline-none  w-1/2"
                                 placeholder="Type your message..."
                             />

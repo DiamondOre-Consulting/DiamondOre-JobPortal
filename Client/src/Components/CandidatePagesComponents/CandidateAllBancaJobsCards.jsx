@@ -55,7 +55,7 @@ const CandidateAllBancaJobsCards = () => {
           const filteredJobs = all.filter(job => job.jobStatus === "true");
           setBancaJobs(filteredJobs.reverse());
           setLoading(false)
-          
+
         }
       } catch (error) {
         console.error("Error fetching associates:", error);
@@ -109,7 +109,7 @@ const CandidateAllBancaJobsCards = () => {
                 </div>
               ))}
             </div>
-            
+
         }
         <div className="flex justify-center items-center mt-8 ">
           <ReactPaginate

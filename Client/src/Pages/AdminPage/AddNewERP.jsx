@@ -88,7 +88,7 @@ const AddERPForm = () => {
       );
       // Handle success, e.g., show a success message or redirect to another page
       if (response.status === 201) {
-        
+
         navigate("/admin-dashboard/erp-dashboard");
       }
 
@@ -139,12 +139,12 @@ const AddERPForm = () => {
         RNR LEADERBOARD
       </h1>
 
-     
+
 
       <div className="w-44 h-0.5 bg-blue-900 justify-center mx-auto"></div>
       <form className="mx-auto grid max-w-screen-md gap-4 sm:grid-cols-2 shadow-lg p-5">
 
-        
+
         <div>
           <label
             htmlFor="EmpOfMonth"
@@ -168,23 +168,23 @@ const AddERPForm = () => {
         </div>
 
         <div className="w-full col-span-2">
-        <label
-          htmlFor="recognitionType"
-          className="mb-2 inline-block text-sm text-gray-800 sm:text-base"
-        >
-          Recognition Type
-        </label>
-        <br />
-        <input
-          id="recognitionType" // Add an id for better accessibility
-          type="text"
-          className="w-full py-2 px-2 border rounded-md"
-          value={formData.recognitionType}
-          onChange={(e) => handleInputChange("recognitionType", e.target.value)}
-        />
-      </div>
+          <label
+            htmlFor="recognitionType"
+            className="mb-2 inline-block text-sm text-gray-800 sm:text-base"
+          >
+            Recognition Type
+          </label>
+          <br />
+          <input
+            id="recognitionType" // Add an id for better accessibility
+            type="text"
+            className="w-full py-2 px-2 border rounded-md"
+            value={formData.recognitionType}
+            onChange={(e) => handleInputChange("recognitionType", e.target.value)}
+          />
+        </div>
 
-     
+
         <div className="w-full col-span-2">
           <label
             htmlFor="EmpOfMonthDesc"

@@ -76,13 +76,13 @@ const AdminNav = () => {
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
-    
+
   };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     window.location.to = "/admin-login";
-    
+
   };
 
 
@@ -97,40 +97,40 @@ const AdminNav = () => {
 
   //  POP UP
 
- const AddingRecruiter = async (e) => {
-  setError(null);
-  e.preventDefault();
-  setShowLoader(true);
+  const AddingRecruiter = async (e) => {
+    setError(null);
+    e.preventDefault();
+    setShowLoader(true);
 
-  try {
-    const response = await axios.post("https://api.diamondore.in/api/admin-confi/register-recruiter-kam", {
-      name,
-      email,
-    });
+    try {
+      const response = await axios.post("https://api.diamondore.in/api/admin-confi/register-recruiter-kam", {
+        name,
+        email,
+      });
 
-    if (response.status === 201) {
-      setShowPopup(false);
-      setShowLoader(false);
-      setName("");
-      setEmail("");
-      setError(null); 
-    }
-  } catch (error) {
-    console.error("Error Registering:", error);
-    if (error.response) {
-      const status = error.response.status;
-      if (status === 402) {
-        setError("Filling all the fields is required!");
-      } else if (status === 401) {
-        setError("This recruiter or KAM has already been registered!");
+      if (response.status === 201) {
+        setShowPopup(false);
+        setShowLoader(false);
+        setName("");
+        setEmail("");
+        setError(null);
       }
-    } else {
-      setError("An error occurred while registering.");
+    } catch (error) {
+      console.error("Error Registering:", error);
+      if (error.response) {
+        const status = error.response.status;
+        if (status === 402) {
+          setError("Filling all the fields is required!");
+        } else if (status === 401) {
+          setError("This recruiter or KAM has already been registered!");
+        }
+      } else {
+        setError("An error occurred while registering.");
+      }
+    } finally {
+      setShowLoader(false);
     }
-  } finally {
-    setShowLoader(false); 
-  }
-};
+  };
 
 
   return (
@@ -385,11 +385,11 @@ const AdminNav = () => {
 
             <a>
               <li
-              onClick={()=>{setShowPopup(true)}}
+                onClick={() => { setShowPopup(true) }}
                 className={`${menuOpen ? "block" : "hidden"
                   } px-18 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
-                 Add Recruiter/KAM
+                Add Recruiter/KAM
               </li>
             </a>
 

@@ -18,7 +18,7 @@ const AdminERP = () => {
   const [RnRRecruiter, setRnRRecruiter] = useState([]);
   const [joinings, setJoinings] = useState([]);
   const [empOfMonthDesc, setEmpOfMonthDesc] = useState(""); // New state for EmpOfMonthDesc
-  const [recognitionType , setRecognitionType] = useState("")
+  const [recognitionType, setRecognitionType] = useState("")
 
   const token = localStorage.getItem("token");
   const { decodedToken } = useJwt(token);
@@ -53,7 +53,7 @@ const AdminERP = () => {
           const lastData = response.data.allData;
           const empdata = response.data.findEmp;
           setEmployee(empdata);
-          
+
           setLatestNews(lastData.BreakingNews || []);
           setHrName(lastData.Top5HRs || []);
           setClient(lastData.Top5Clients || []);
@@ -63,17 +63,17 @@ const AdminERP = () => {
           setEmpOfMonthDesc(lastData.EmpOfMonthDesc || ""); // Set EmpOfMonthDesc
           setRecognitionType(lastData.recognitionType || "");
         } else {
-          
+
         }
       } catch (e) {
-        
+
       }
     };
 
     fetchData();
   }, [decodedToken, navigate, token]);
 
-  
+
 
   return (
     <div>

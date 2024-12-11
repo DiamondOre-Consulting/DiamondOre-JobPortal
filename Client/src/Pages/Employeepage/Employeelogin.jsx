@@ -14,16 +14,16 @@ const Employeelogin = () => {
     const [error, setError] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [passcode,setPasscode] = useState("")
+    const [passcode, setPasscode] = useState("")
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
-        
+
         try {
-            
+
             const response = await axios.post("https://api.diamondore.in/api/employee/login",
                 {
                     email,
@@ -33,16 +33,16 @@ const Employeelogin = () => {
 
             if (response.status === 200) {
                 const token = response.data.token;
-                
+
                 // Store the token in local storage
                 localStorage.setItem("token", token);
-                
+
                 // Redirect to dashboard page
                 setTimeout(() => {
                     navigate("/employee-dashboard");
                 }, 1000);
             } else {
-                
+
                 setError("Login Details Are Wrong!!");
                 setLoading(false)
                 // Handle login error
@@ -56,39 +56,39 @@ const Employeelogin = () => {
         }
     };
 
-    const handleLoginWithPasscode = async()=>{
-        if(!passcode){
+    const handleLoginWithPasscode = async () => {
+        if (!passcode) {
             alert("please enter the passcode")
             return
         }
 
-        try{
+        try {
 
             const response = await axios.get(`https://api.diamondore.in/api/employee/rnr-Leaderborad/${passcode}`)
 
-             
+
             navigate(`/employee-rnrboard/${passcode}`)
-    
+
 
         }
-        catch(err){
-           
-           if(err?.response?.data?.message==="passcode is incorrect"){
-            alert("Please enter a valid password");
-           }
+        catch (err) {
+
+            if (err?.response?.data?.message === "passcode is incorrect") {
+                alert("Please enter a valid password");
+            }
         }
-       
-        
+
+
 
     }
-    
-    const handlesetPasscode = (e)=>{
+
+    const handlesetPasscode = (e) => {
         setPasscode(e.target.value)
     }
 
-    
 
-    
+
+
 
 
     const handleShowPassword = () => {
@@ -97,30 +97,30 @@ const Employeelogin = () => {
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-50">
-            <div className="max-w-screen-xl sm:max-w-screen-lg md:max-w-screen-md lg:max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 shadow-lg bg-white rounded-md w-full sm:w-full lg:min-w-screen m-8 ">
+            <div className="grid w-full max-w-screen-xl grid-cols-1 px-4 py-16 m-8 bg-white rounded-md shadow-lg sm:max-w-screen-lg md:max-w-screen-md lg:max-w-screen-xl sm:px-6 lg:px-8 md:grid-cols-2 sm:w-full lg:min-w-screen ">
                 <div className="space-y-4 ">
 
-                    <form onSubmit={handleLogin} className="mx-auto mb-0 mt-8 max-w-md space-y-4">
+                    <form onSubmit={handleLogin} className="max-w-md mx-auto mt-8 mb-0 space-y-4">
 
-                        <h1 className=" text-2xl font-bold sm:text-3xl text-blue-950">
+                        <h1 className="text-2xl font-bold  sm:text-3xl text-blue-950">
                             Employee Login
                         </h1>
                         <div>
-                            <label for="email" className="sr-only">Email</label>
+                            <label htmlFor="email" className="sr-only">Email</label>
 
                             <div className="relative">
                                 <input
                                     type="email"
-                                    className="w-full rounded-lg border-1 p-4 pe-12 text-sm"
+                                    className="w-full p-4 text-sm rounded-lg border-1 pe-12"
                                     placeholder="Enter email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
 
-                                <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
+                                <span className="absolute inset-y-0 grid px-4 end-0 place-content-center">
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
-                                        className="h-4 w-4 text-gray-400"
+                                        className="w-4 h-4 text-gray-400"
                                         fill="none"
                                         viewBox="0 0 24 24"
                                         stroke="currentColor"
@@ -137,21 +137,21 @@ const Employeelogin = () => {
                         </div>
 
                         <div>
-                            <label for="password" className="sr-only">Password</label>
+                            <label htmlFor="password" className="sr-only">Password</label>
 
                             <div className="relative">
                                 <input
                                     type={showPassword ? 'text' : 'password'}
-                                    className="w-full rounded-lg border-1 p-4 pe-12 text-sm"
+                                    className="w-full p-4 text-sm rounded-lg border-1 pe-12"
                                     placeholder="Enter password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
 
-                                <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
+                                <span className="absolute inset-y-0 grid px-4 end-0 place-content-center">
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
-                                        className="h-4 w-4 text-gray-400"
+                                        className="w-4 h-4 text-gray-400"
                                         fill="none"
                                         viewBox="0 0 24 24"
                                         stroke="currentColor"
@@ -171,7 +171,7 @@ const Employeelogin = () => {
                                     </svg>
                                 </span>
                             </div>
-                            <label for="check">Show Password</label>
+                            <label htmlFor="check">Show Password</label>
                             <input
                                 className='ml-2'
                                 id="check"
@@ -191,7 +191,7 @@ const Employeelogin = () => {
 
                             <button
                                 type="submit"
-                                className="hover:bg-blue-700 inline-block rounded-lg bg-blue-950 px-5 py-3 text-sm font-medium text-white shadow-xl w-full "
+                                className="inline-block w-full px-5 py-3 text-sm font-medium text-white rounded-lg shadow-xl hover:bg-blue-700 bg-blue-950 "
 
                             >
                                 Login
@@ -199,28 +199,28 @@ const Employeelogin = () => {
                         </div>
                     </form>
                     {error && (
-                        <div className="flex items-center justify-center bg-red-300 p-4 rounded-md">
-                            <p className="text-center text-sm text-red-500">{error}</p>
+                        <div className="flex items-center justify-center p-4 bg-red-300 rounded-md">
+                            <p className="text-sm text-center text-red-500">{error}</p>
                         </div>
                     )}
                 </div>
 
-                <div className="flex mt-8 justify-center rounded-lg">
+                <div className="flex justify-center mt-8 rounded-lg">
                     <div className='w-[80%]'>
 
-                    <div className='text-center mb-3 font-semibold text-3xl'>Enter the passcode</div>
-                    <input onChange={handlesetPasscode} value={passcode} className='w-full rounded-lg  border-1 p-4 pe-12 text-sm' placeholder='Passcode' type="text" />
+                        <div className='mb-3 text-3xl font-semibold text-center'>Enter the passcode</div>
+                        <input onChange={handlesetPasscode} value={passcode} className='w-full p-4 text-sm rounded-lg border-1 pe-12' placeholder='Passcode' type="text" />
 
-                    <button onClick={handleLoginWithPasscode} className='hover:bg-blue-700 p-3 bg-blue-950 w-full mt-6 rounded-md text-white'>Login</button>
+                        <button onClick={handleLoginWithPasscode} className='w-full p-3 mt-6 text-white rounded-md hover:bg-blue-700 bg-blue-950'>Login</button>
                     </div>
                 </div>
 
             </div>
             {loading && (
-                <div className="absolute inset-0 bg-gray-800 text-gray-300 text-5xl font-bold opacity-75 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center text-5xl font-bold text-gray-300 bg-gray-800 opacity-75">
                     <svg
                         aria-hidden="true"
-                        className="w-8 h-8 text-gray-200 animate-spin  fill-blue-600"
+                        className="w-8 h-8 text-gray-200 animate-spin fill-blue-600"
                         viewBox="0 0 100 101"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"

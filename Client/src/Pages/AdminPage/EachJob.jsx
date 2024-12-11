@@ -11,7 +11,7 @@ const AdminEachJob = () => {
   const [jobsApplied, setJobsApplied] = useState(null);
 
   const { id } = useParams();
-  
+
 
   const { decodedToken } = useJwt(localStorage.getItem("token"));
   const token = localStorage.getItem("token");
@@ -62,7 +62,7 @@ const AdminEachJob = () => {
           setJobDetails(response.data);
         }
       } catch (error) {
-        
+
       }
     };
 
@@ -87,7 +87,7 @@ const AdminEachJob = () => {
           setJobsApplied(applieds);
         }
       } catch (error) {
-        
+
       }
     };
 
@@ -122,7 +122,7 @@ const AdminEachJob = () => {
                   </span>
                 </p>
 
-              
+
 
                 <p className="mb-8 max-w-md text-gray-800 text-xl">
                   Min. Experience:{" "}
@@ -154,15 +154,15 @@ const AdminEachJob = () => {
         <h1 className="text-center text-2xl px-16 text-bold py-lg">
           Applicants Applied For This Position
         </h1>
-        <div  className="mt-10 mx-10 grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-3">
+        <div className="mt-10 mx-10 grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-3">
           {jobsApplied?.map((jobs) => (
             <div>
               <div
                 href="#"
-                 className="flex flex-col justify-between overflow-x-auto overflow-hidden rounded-lg bg-gray-100 p-4 shadow-lg"
+                className="flex flex-col justify-between overflow-x-auto overflow-hidden rounded-lg bg-gray-100 p-4 shadow-lg"
               >
                 <h3 className="text-sm text-blue-950 font-bold mb-1 text-wrap">
-                  Name -{" "}  
+                  Name -{" "}
                   <span className="text-blue-950">{jobs?.name}</span>
                 </h3>
                 <p className="text-sm text-gray-600 font-semibold mb-1 flex flex-wrap">
@@ -179,15 +179,15 @@ const AdminEachJob = () => {
                 </p>
                 <a
                   href={jobs?.resume}
-                   className="cursor-pointer w-full mb-2 flex-col rounded-lg bg-white p-2 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200"
+                  className="cursor-pointer w-full mb-2 flex-col rounded-lg bg-white p-2 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200"
                 >
-                  <span  className="text-md font-bold lg:text-md">Download Resume</span>
+                  <span className="text-md font-bold lg:text-md">Download Resume</span>
                 </a>
                 <Link
                   to={`/admin-dashboard/update-status/${jobs?._id}/${id}`}
-                   className="cursor-pointer w-full flex-col rounded-lg bg-white p-4 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200"
+                  className="cursor-pointer w-full flex-col rounded-lg bg-white p-4 text-center hover:bg-blue-950 text-gray-800 hover:text-gray-200"
                 >
-                  <span  className="text-md font-bold lg:text-md">Update Status</span>
+                  <span className="text-md font-bold lg:text-md">Update Status</span>
                 </Link>
               </div>
             </div>

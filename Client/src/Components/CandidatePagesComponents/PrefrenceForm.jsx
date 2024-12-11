@@ -16,7 +16,7 @@ const PrefrenceForm = () => {
     });
     const [userInputs, setUserInputs] = useState([]);
     const [step, setStep] = useState(0);
-    const[error, setError] = useState(null)
+    const [error, setError] = useState(null)
     const token = localStorage.getItem("token");
     const navigate = useNavigate();
 
@@ -29,7 +29,7 @@ const PrefrenceForm = () => {
     };
 
     useEffect(() => {
-        
+
     }, [userInputs]);
 
     const handleSubmit = async (e) => {
@@ -51,9 +51,9 @@ const PrefrenceForm = () => {
 
             );
             if (response.status === 200) {
-                
+
                 setUserInputs(response.data);
-                
+
                 setFormData({
                     preferredCity: '',
                     preferredChannel: '',
@@ -94,11 +94,11 @@ const PrefrenceForm = () => {
 
                 const uniquicities = [...new Set(response.data.map(job => job.City))];
                 const uniquiChannels = [...new Set(response.data.map(job => job.Channel))];
-                
-                
+
+
                 setCities(uniquicities);
                 setChannels(uniquiChannels);
-                
+
                 if (response.status == 200) {
                     ;
                     const all = response.data;

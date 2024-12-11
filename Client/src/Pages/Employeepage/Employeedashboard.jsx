@@ -20,10 +20,10 @@ const Employeedashboard = () => {
   const [RnRinterns, setRnRinterns] = useState(null);
   const [RnRRecruiter, setRnRRecruiter] = useState(null);
   const [Joinings, setjoinings] = useState(null);
-  const [empOfMonthDesc, setEmpOfMonthDesc] = useState(""); 
+  const [empOfMonthDesc, setEmpOfMonthDesc] = useState("");
   const token = localStorage.getItem("token");
   const { decodedToken } = useJwt(localStorage.getItem("token"));
-  const [recognitionType , setRecognitionType] = useState("")
+  const [recognitionType, setRecognitionType] = useState("")
   const navigate = useNavigate();
 
 
@@ -42,106 +42,106 @@ const Employeedashboard = () => {
       }
     }
     const fetchdata = async () => {
-      try{
+      try {
         const response = await axios.get(
-          "https://api.diamondore.in/api/employee/all-erp-data", 
+          "https://api.diamondore.in/api/employee/all-erp-data",
           {
             headers: {
               Authorization: `Bearer ${token}`
             }
           }
-          
+
         )
-        if(response.status === 200){
-          
-        const lastData = response.data.reverse()[0];
-        const latest= response.data.allData;
-        setRecognitionType(lastData.recognitionType || "");
-        setEmpOfMonthDesc(latest.EmpOfMonthDesc || "");
-        
+        if (response.status === 200) {
 
-         setempofthemonth(lastData.EmpOfMonth);  //emp of the mounth
-         //breaking news
-         if (lastData.BreakingNews && lastData.BreakingNews.length > 0) {
-          
-          setlatestnews(lastData.BreakingNews)
-         } 
-        else {
-          
-        }
+          const lastData = response.data.reverse()[0];
+          const latest = response.data.allData;
+          setRecognitionType(lastData.recognitionType || "");
+          setEmpOfMonthDesc(latest.EmpOfMonthDesc || "");
+
+
+          setempofthemonth(lastData.EmpOfMonth);  //emp of the mounth
+          //breaking news
+          if (lastData.BreakingNews && lastData.BreakingNews.length > 0) {
+
+            setlatestnews(lastData.BreakingNews)
+          }
+          else {
+
+          }
           //top hr
-        if (lastData.Top5HRs && lastData.Top5HRs.length > 0) {
-          
-          sethrname(lastData.Top5HRs)
-         } 
-        else {
-          
-        }
+          if (lastData.Top5HRs && lastData.Top5HRs.length > 0) {
 
-        //top 5 client 
+            sethrname(lastData.Top5HRs)
+          }
+          else {
 
-        if (lastData.Top5Clients && lastData.Top5Clients.length > 0) {
-          
-          setclient(lastData.Top5Clients)
-         } 
-        else {
-          
-        }
+          }
 
-        //Rnr recuiter
-        if (lastData.RnRRecruiters && lastData.RnRRecruiters.length > 0) {
-          
-          setRnRRecruiter(lastData.RnRRecruiters);
-         } 
-        else {
-          
-        }
+          //top 5 client 
 
-         //Rnr interns
-         if (lastData.RnRInterns && lastData.RnRInterns.length > 0) {
-          
-          setRnRinterns(lastData.RnRInterns);
-         } 
-        else {
-          
-        }
+          if (lastData.Top5Clients && lastData.Top5Clients.length > 0) {
 
-        //Joinings
-        if (lastData.JoningsForWeek && lastData.JoningsForWeek.length > 0) {
-          
-          setjoinings(lastData.JoningsForWeek);
-         } 
+            setclient(lastData.Top5Clients)
+          }
+          else {
+
+          }
+
+          //Rnr recuiter
+          if (lastData.RnRRecruiters && lastData.RnRRecruiters.length > 0) {
+
+            setRnRRecruiter(lastData.RnRRecruiters);
+          }
+          else {
+
+          }
+
+          //Rnr interns
+          if (lastData.RnRInterns && lastData.RnRInterns.length > 0) {
+
+            setRnRinterns(lastData.RnRInterns);
+          }
+          else {
+
+          }
+
+          //Joinings
+          if (lastData.JoningsForWeek && lastData.JoningsForWeek.length > 0) {
+
+            setjoinings(lastData.JoningsForWeek);
+          }
+          else {
+
+          }
+
+        }
         else {
-          
-        }
-       
-        }
-        else{
-          
+
         }
       }
-      catch(e){
-        
+      catch (e) {
+
       }
-     
+
     }
- 
+
     fetchdata()
   }, [decodedToken]);
-     
+
   return (
     <div className=" ">
-      <EmployeeNavbar/>
+      <EmployeeNavbar />
       <h2 className="text-5xl px-10 font-bold text-gray-800">
         Welcome aboard <span className="text-blue-900">{userName} </span>
       </h2>
-      <HomeNews empofthemonth={empofthemonth} latestnews={latestnews} empOfMonthDesc={empOfMonthDesc} recognitionType={recognitionType}/>
+      <HomeNews empofthemonth={empofthemonth} latestnews={latestnews} empOfMonthDesc={empOfMonthDesc} recognitionType={recognitionType} />
       <ERPTop5s hrname={hrname} client={client} />
       <RnRLeaderboard RnRinterns={RnRinterns} RnRRecruiter={RnRRecruiter} />
       <JoiningsForWeek Joinings={Joinings} />
-      <EmployeeFooter/>
-  
-  </div>
+      <EmployeeFooter />
+
+    </div>
   )
 }
 

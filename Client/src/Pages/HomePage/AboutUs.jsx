@@ -24,7 +24,7 @@ const AboutUs = () => {
     const submitCallReq = async (e) => {
         e.preventDefault();
         setShowSubmitLoader(true);
-        
+
         // const payload = { name, phone };
 
         try {
@@ -336,7 +336,7 @@ const AboutUs = () => {
                     <p className="text-gray-700 mb-8">
                         He has graduated in Business Administration from Symbiosis Pune with a dual specialization in Marketing and International Business. 5+ years of experience in international markets like Middle East and South Asia working with a Singapore based Supply Chain major where he has taken responsibilities in vendor development, supply chain optimization, business development. Furthermore he has 3 years of experience in the recruitment space, focusing on channel development, internal talent acquisition, process implementation, following a system oriented approach driving numbers.
                     </p>
-                  
+
                 </div>
                 <div className='rounded-full w-full h-full' style={{ backgroundImage: `url('${utsavmathur}')`, backgroundPosition: "top", backgroundSize: "cover" }}></div>
             </div>

@@ -5,7 +5,7 @@ import { useJwt } from "react-jwt";
 import axios from "axios";
 import loader from '../../assets/loader.svg'
 
-const EmployessEditDetails = ({id,handleEditEmployeeBack}) => {
+const EmployessEditDetails = ({ id, handleEditEmployeeBack }) => {
     const navigate = useNavigate();
     const { decodedToken } = useJwt(localStorage.getItem("token"));
     const token = localStorage.getItem("token");
@@ -24,8 +24,8 @@ const EmployessEditDetails = ({id,handleEditEmployeeBack}) => {
     }, [decodedToken, navigate, token]);
     // 
 
- 
-    
+
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [empType, setEmpType] = useState('');
@@ -34,12 +34,12 @@ const EmployessEditDetails = ({id,handleEditEmployeeBack}) => {
     const [error, setError] = useState(null);
     const [showPass, setShowPass] = useState(false);
     const [added, setAdded] = useState(null);
-    const [accountHandler,setAccountHandler] = useState()
-    const [editEmployee,setEditEmployee]= useState();
-    const [loading,setLoading]= useState(false)
-   
+    const [accountHandler, setAccountHandler] = useState()
+    const [editEmployee, setEditEmployee] = useState();
+    const [loading, setLoading] = useState(false)
 
-    const [employee,setEmployeeData]= useState()
+
+    const [employee, setEmployeeData] = useState()
 
     useEffect(() => {
         setEditEmployee(employee);
@@ -56,39 +56,39 @@ const EmployessEditDetails = ({id,handleEditEmployeeBack}) => {
                         Authorization: `Bearer ${token}`
                     }
                 })
-                
+
                 if (response.status === 201) {
-                    
+
                     setEmployeeData(response.data);
-                    
+
                 }
-                
+
             }
             catch (error) {
-                
-                
+
+
             }
-            
+
         }
-        
-        
+
+
         getEmployeeData();
     }, [])
-    
-    
-
-
-    
-    
-    
-    
 
 
 
-   
+
+
+
+
+
+
+
+
+
     const hadnleEditEmplyeeDetails = async () => {
-          // Log the editEmployee to check its structure
-    
+        // Log the editEmployee to check its structure
+
         try {
             setLoading(true);
             const id = employee._id; // Get the employee ID
@@ -102,106 +102,106 @@ const EmployessEditDetails = ({id,handleEditEmployeeBack}) => {
                     }
                 }
             );
-            
-            
-            
+
+
+
             // setRerender(prev=>!prev)
             handleEditEmployeeBack();
-              // Log the response data
-            
-    
+            // Log the response data
+
+
         } catch (error) {
             console.error("Error updating employee:", error);  // Log the error if something goes wrong
         }
-        finally{
+        finally {
             setLoading(false)
 
         }
     }
 
-    const hadndleFullName =(e)=>{
-     
-        setEmployeeData(prevDetails=>(
-             {
-            ...prevDetails,
-            name:e.target.value
-        }))
+    const hadndleFullName = (e) => {
 
-    }
-
-    const handleEditEmployeeEmail=(e)=>{
-        setEmployeeData(prevDetails=>(
+        setEmployeeData(prevDetails => (
             {
-           ...prevDetails,
-           email:e.target.value
-       }))
+                ...prevDetails,
+                name: e.target.value
+            }))
+
     }
 
-
-    const handleEditEmpType=(e)=>{
-        setEmployeeData(prevDetails=>(
+    const handleEditEmployeeEmail = (e) => {
+        setEmployeeData(prevDetails => (
             {
-           ...prevDetails,
-           empType:e.target.value
-       }))
+                ...prevDetails,
+                email: e.target.value
+            }))
     }
 
 
-    const handleEditAccountHandler =(e)=>{
-        setEmployeeData(prevDetails=>(
+    const handleEditEmpType = (e) => {
+        setEmployeeData(prevDetails => (
             {
-           ...prevDetails,
-           accountHandler:e.target.value==="true"
-       }))
+                ...prevDetails,
+                empType: e.target.value
+            }))
     }
 
 
-    const handleEditEmployeeDob = (e)=>{
-        setEmployeeData(prevDetails=>(
+    const handleEditAccountHandler = (e) => {
+        setEmployeeData(prevDetails => (
             {
-           ...prevDetails,
-           dob:e.target.value
-       }))
+                ...prevDetails,
+                accountHandler: e.target.value === "true"
+            }))
     }
 
-    const handleEditEmployeeDoj =(e)=>{
-        setEmployeeData(prevDetails=>(
+
+    const handleEditEmployeeDob = (e) => {
+        setEmployeeData(prevDetails => (
             {
-           ...prevDetails,
-           doj:e.target.value
-       }))
+                ...prevDetails,
+                dob: e.target.value
+            }))
     }
 
-   
-   
+    const handleEditEmployeeDoj = (e) => {
+        setEmployeeData(prevDetails => (
+            {
+                ...prevDetails,
+                doj: e.target.value
+            }))
+    }
 
-    
 
 
-   if(!editEmployee||loading){
-    return (
-        <div className="flex justify-center items-center"> <img className="h-16 w-16" src={loader} alt="Loader" /> </div>
-    )
-   }
 
-   
 
-   
 
-  
-  
-    
-    
+
+    if (!editEmployee || loading) {
+        return (
+            <div className="flex justify-center items-center"> <img className="h-16 w-16" src={loader} alt="Loader" /> </div>
+        )
+    }
+
+
+
+
+
+
+
+
+
 
     return (
         <div className="mx-auto max-w-screen-xl  px-4 py-16 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-lg">
                 <div
-                   
+
                     className="mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8 bg-white shadow-gray-300"
                 >
                     <p className="text-center text-xl uppercase font-bold">
-                        
+
                         Edit Employee
                     </p>
 
@@ -271,7 +271,7 @@ const EmployessEditDetails = ({id,handleEditEmployeeBack}) => {
                             <option value="">Select Account Handeling</option>
                             <option value="true">Yes </option>
                             <option value="false">No</option>
-                           
+
 
 
                         </select>
@@ -307,12 +307,12 @@ const EmployessEditDetails = ({id,handleEditEmployeeBack}) => {
                         />
                     </div>
 
-                   
+
 
                     <button
                         onClick={hadnleEditEmplyeeDetails}
                         className={`block w-full rounded-lg bg-blue-900 px-5 py-3 text-sm font-medium text-white hover:bg-blue-600`}
-                       
+
                     >
                         Edit Employee Details
                     </button>

@@ -8,11 +8,11 @@ const EmployeeBranchesPage = () => {
     const { id } = useParams();
     const [employee, setEmployee] = useState('')
     const [editEmployeeToggle, setEditEmployeeToggle] = useState(false);
-    const [update,setUpdate]= useState(false);
+    const [update, setUpdate] = useState(false);
 
     // get Employee Data
-     
-   
+
+
     useEffect(() => {
         const getEmployeeData = async () => {
             try {
@@ -22,36 +22,36 @@ const EmployeeBranchesPage = () => {
                         Authorization: `Bearer ${token}`
                     }
                 })
-                
+
                 if (response.status === 201) {
-                    
+
                     setEmployee(response.data);
-                    
-                    
+
+
                 }
-                
+
             }
             catch (error) {
-                
+
             }
-            
+
         }
-        
-        
+
+
         getEmployeeData();
     }, [])
-    
-    
+
+
     const handleEditEmloyeeClick = () => {
 
         setEditEmployeeToggle(prev => !prev);
 
 
     }
-   
 
 
-    const handleEditEmployeeBack =()=>{
+
+    const handleEditEmployeeBack = () => {
         setEditEmployeeToggle(prev => !prev);
 
     }
@@ -66,11 +66,11 @@ const EmployeeBranchesPage = () => {
                 <>
                     {/* Overlay with opacity */}
                     <div className='fixed top-10 left-0 z-20 h-screen w-full bg-black opacity-60  '></div>
-                        
-                        <div  className='ml-8  absolute z-40 cursor-pointer'  > 
-                       
+
+                    <div className='ml-8  absolute z-40 cursor-pointer'  >
+
                         <img onClick={handleEditEmployeeBack} src={crossIcon} alt="" className='h-12 w-12  z-40 cursor-pointer' />
-                        </div>
+                    </div>
                     {/* Popup Form */}
                     <div className=' mt-20 absolute z-30 inset-0 flex justify-center items-center'>
                         <div className='mt-28  p-6 rounded-lg  max-w-lg w-full'>
@@ -89,7 +89,7 @@ const EmployeeBranchesPage = () => {
 
                 <div className='grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-10 md:px-20 px-2   my-20 '>
 
-                    {employee.accountHandler&&<Link className='rounded-md relative flex h-60 items-center justify-center overflow-hidden bg-blue-900 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-blue-950 before:duration-500 before:ease-out hover:shadow-blue-950 hover:before:h-96 hover:before:w-96'>
+                    {employee.accountHandler && <Link className='rounded-md relative flex h-60 items-center justify-center overflow-hidden bg-blue-900 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-blue-950 before:duration-500 before:ease-out hover:shadow-blue-950 hover:before:h-96 hover:before:w-96'>
                         <Link to={`/admin-dashboard/each-account/${id}`} className='relative z-10 text-xl cursor-pointer'>Account Handling</Link>
                     </Link>}
 
