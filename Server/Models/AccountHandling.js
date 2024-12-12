@@ -72,7 +72,7 @@ const channelSchema = new mongoose.Schema({
   hrDetails: {
     type: [hrDetailSchema],
     default: [],
-  }, 
+  },
 });
 
 // Define the Zone schema
@@ -85,12 +85,12 @@ const zoneSchema = new mongoose.Schema({
     type: [channelSchema],
     default: [],
   },
-  clientName:[{
-    type:String,
-    default:[]
+  clientName: [{
+    type: String,
+    default: []
   }]
- 
-  
+
+
 });
 
 // Define the request schema
@@ -108,7 +108,7 @@ const requestSchema = new mongoose.Schema({
     enum: ['pending', 'approved', 'rejected'],
     default: 'pending'
   },
-  
+
   requestDate: {
     type: Date,
     default: Date.now
@@ -126,7 +126,7 @@ const accountHandlingSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-   
+
   accountDetails: {
     type: [zoneSchema],
     default: [],

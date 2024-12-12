@@ -86,7 +86,7 @@ const AdminEditAttendence = () => {
 
                     const all = leaveReportResponse.data;
                     const latest = all.slice(-1);
-                    ;
+
                     setTotalLeavesis(latest[0]);
 
 
@@ -175,8 +175,8 @@ const AdminEditAttendence = () => {
     return (
         <div>
             <AdminNav />
-            <h1 className='text-center text-2xl font-bold my-4'>Add Leave Report</h1>
-            <form onSubmit={handleSubmit} className='w-full max-w-md mx-auto my-8 p-6 bg-gray-50 shadow-lg rounded-lg shadow-lg'>
+            <h1 className='my-4 text-2xl font-bold text-center'>Add Leave Report</h1>
+            <form onSubmit={handleSubmit} className='w-full max-w-md p-6 mx-auto my-8 rounded-lg shadow-lg bg-gray-50'>
                 <div className="grid grid-cols-2 gap-4">
                     <div>
                         <label className="block text-gray-700">Month:</label>
@@ -222,31 +222,31 @@ const AdminEditAttendence = () => {
 
 
             {/* Table */}
-            <div className="overflow-x-auto rounded-lg border border-gray-200 px-0 sm:px-0 lg:px-8 md:px-6 mt-6 pt-4">
-                <span className='bg-blue-950 shadow-lg text-white  rounded-lg p-2 border-black m-4'>totalleaves:- {totalLeavesis.totalLeaves}</span>
-                <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm mt-4">
+            <div className="px-0 pt-4 mt-6 overflow-x-auto border border-gray-200 rounded-lg sm:px-0 lg:px-8 md:px-6">
+                <span className='p-2 m-4 text-white border-black rounded-lg shadow-lg bg-blue-950'>totalleaves:- {totalLeavesis.totalLeaves}</span>
+                <table className="min-w-full mt-4 text-sm bg-white divide-y-2 divide-gray-200">
                     <thead className="ltr:text-left rtl:text-right bg-blue-950">
                         <tr>
-                            <th className="whitespace-nowrap px-2 py-2 font-medium text-white border ">Month</th>
-                            <th className="whitespace-nowrap px-2 py-2 font-medium text-white border ">Absent</th>
-                            <th className="whitespace-nowrap px-2 py-2 font-medium text-white border ">Late</th>
-                            <th className="whitespace-nowrap px-2 py-2 font-medium text-white border ">Half Day</th>
-                            <th className="whitespace-nowrap px-2 py-2 font-medium text-white border ">Adjustment</th>
+                            <th className="px-2 py-2 font-medium text-white border whitespace-nowrap ">Month</th>
+                            <th className="px-2 py-2 font-medium text-white border whitespace-nowrap ">Absent</th>
+                            <th className="px-2 py-2 font-medium text-white border whitespace-nowrap ">Late</th>
+                            <th className="px-2 py-2 font-medium text-white border whitespace-nowrap ">Half Day</th>
+                            <th className="px-2 py-2 font-medium text-white border whitespace-nowrap ">Adjustment</th>
                         </tr>
                     </thead>
 
                     <tbody className="divide-y divide-gray-200">
                         {record.map((rec, index) => (
                             <tr key={index} className='text-center '>
-                                <td className="whitespace-nowrap px-4 py-2 font-medium text-black">{rec.month}</td>
-                                <td className="whitespace-nowrap px-4 py-2 font-medium text-black">{rec.absentDays
+                                <td className="px-4 py-2 font-medium text-black whitespace-nowrap">{rec.month}</td>
+                                <td className="px-4 py-2 font-medium text-black whitespace-nowrap">{rec.absentDays
                                 }</td>
-                                <td className="whitespace-nowrap px-4 py-2 font-medium text-black">{rec.
+                                <td className="px-4 py-2 font-medium text-black whitespace-nowrap">{rec.
                                     lateDays
                                 }</td>
-                                <td className="whitespace-nowrap px-4 py-2 font-medium text-black">{rec.halfDays
+                                <td className="px-4 py-2 font-medium text-black whitespace-nowrap">{rec.halfDays
                                 }</td>
-                                <td className="whitespace-nowrap px-4 py-2 font-medium text-black">{rec.adjustedLeaves
+                                <td className="px-4 py-2 font-medium text-black whitespace-nowrap">{rec.adjustedLeaves
                                 }</td>
                             </tr>
                         ))}

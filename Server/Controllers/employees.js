@@ -24,7 +24,7 @@ const router = express.Router();
 // EMPLOYEE SIGNUP
 router.post("/add-emp", AdminAuthenticateToken, async (req, res) => {
   try {
-    const { empType, name, email, password, dob, doj,accountHandler } = req.body;
+    const { empType, name, email, password, dob, doj, accountHandler } = req.body;
     const { userId } = req.user;
 
     const user = await Admin.findById({ _id: userId });
@@ -70,7 +70,7 @@ router.post("/add-emp", AdminAuthenticateToken, async (req, res) => {
 
     const info = await transporter.sendMail(mailOptions);
     console.log(info);
-    
+
 
     res
       .status(201)
@@ -327,7 +327,7 @@ router.post(
       const { hrName, hrPhone, clientName, channelName, zoneName } = req.body;
       console.log(hrName);
       console.log(req.body)
-      
+
       // Find the employee by userId
       const employee = await Employees.findById(userId);
       if (!employee) {
@@ -377,7 +377,7 @@ router.post(
           owner: userId,
           accountHandlingStatus: true,
           accountDetails: [],
-          
+
         });
       }
 
@@ -388,13 +388,13 @@ router.post(
       //   clientName = {clientName};
       //   // accountHandling.accountDetail s.push(zone);
       // }
-     
-      
+
+
       await accountHandling.save()
 
       // Find or create the zone
       // let zone = accountHandling.accountDetails.find((z) => z.zoneName === zoneName);
-      let zone = { zoneName, channels: []};
+      let zone = { zoneName, channels: [] };
       // if (!zone) {
       //   zone = { zoneName, channels: []};
       //   // accountHandling.accountDetail s.push(zone);
@@ -403,14 +403,14 @@ router.post(
       // console.log(zone);
 
       // Find or create the channel within the zone
-      zone.clientName= clientName
+      zone.clientName = clientName
       // let channel = zone.channels.find((c) => c.channelName === channelName);
-      let channel = {channelName, hrDetails: []};
+      let channel = { channelName, hrDetails: [] };
       // console.log("channel",channel)
       // if (!channel) {
-        // channel = { hrDetails: []};
-        // zone.channels.push(channel);
-        // accountHandling.accountDetails.push(zone);
+      // channel = { hrDetails: []};
+      // zone.channels.push(channel);
+      // accountHandling.accountDetails.push(zone);
 
       // }
       // console.log("zone", zone);
@@ -420,10 +420,10 @@ router.post(
       channel.hrDetails.push({ hrName, hrPhone });
 
       // console.log("channel2",channel)
-      
+
       zone.channels.push(channel);
       accountHandling.accountDetails.push(zone);
-      console.log("hrName", zone.channels[0]);
+      // console.log("hrName", zone.channels[0]);
       await accountHandling.save()
 
       // Save the updated account handling details
@@ -442,18 +442,18 @@ router.post(
       //     arrayFilters: [{ "channel.channelName": channelName }]
       //   }
       // );
-      
-      
-      
+
+
+
 
       // Update the account handling document with the new accountDetails
-     
+
 
       // console.log("res",response)
-      
-      console.log(accountHandling);
 
-      res.status(200).json({ message: "Account details updated successfully","accountHandling":accountHandling });
+      // console.log(accountHandling);
+
+      res.status(200).json({ message: "Account details updated successfully", "accountHandling": accountHandling });
     } catch (error) {
       console.error(error.message);
       res.status(500).json({ message: error.message });
@@ -476,14 +476,14 @@ router.get("/accounts", async (req, res) => {
 
     const empNames = [];
     const empAccounts = [];
-    for(let i=0; i<allAccounts.length; i++) {
+    for (let i = 0; i < allAccounts.length; i++) {
       const empName = await Employees.findById(allAccounts[i].owner).select('name');
       if (empName) {
         empNames.push(empName);
         empAccounts.push({ ...allAccounts[i]._doc, ownerName: empName.name });
       }
     }
-    
+
     console.log(empNames);
     // console.log(empAccounts);
 
@@ -506,10 +506,87 @@ router.get("/accounts/:id", async (req, res) => {
 
     res.status(200).json({ findAccount });
   } catch (error) {
-    console.error(error.message);
+    // console.error(error.message);
     res.status(500).json({ message: error.message });
   }
 });
+
+// Delete Account Handling Single List
+router.delete("/accounts/delete/:id/:deleteId", async (req, res) => {
+  try {
+    const { id, deleteId } = req.params;
+    const result = await AccountHandling.updateOne(
+      { owner: id },
+      { $pull: { accountDetails: { _id: deleteId } } }
+    );
+
+    console.log(result)
+
+    if (result.modifiedCount > 0) {
+      res.status(200).json({ message: "Account handling details deleted successfully" });
+    } else {
+      res.status(401).json({ message: "Failed to delete!!!" });
+    }
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
+  }
+})
+
+router.put("/accounts/change-owner/:currentOwner/:futureOwner/:updateId", async (req, res) => {
+  try {
+    const { currentOwner, futureOwner, updateId } = req.params;
+
+    let accountHandling = await AccountHandling.findOne({ owner: futureOwner });
+    if (!accountHandling) {
+      accountHandling = new AccountHandling({
+        owner: futureOwner,
+        accountHandlingStatus: true,
+        accountDetails: [],
+
+      });
+    }
+
+    await accountHandling.save();
+
+    const currentAccount = await AccountHandling.findOne({ owner: currentOwner });
+    if (!currentAccount) {
+      return res.status(402).json({ message: "Current owner not found." });
+    }
+
+    const itemToMove = currentAccount.accountDetails.find(
+      (data) => String(data?._id) === updateId
+    );
+    if (!itemToMove) {
+      return res.status(402).json({ message: "Item to move not found in current owner's accountDetails." });
+    }
+
+    const removeResult = await AccountHandling.updateOne(
+      { owner: currentOwner },
+      { $pull: { accountDetails: { _id: updateId } } }
+    );
+    if (removeResult.modifiedCount === 0) {
+      return res.status(400).json({ message: "Failed to remove the item from current owner." });
+    }
+
+    const addResult = await AccountHandling.updateOne(
+      { owner: futureOwner },
+      { $push: { accountDetails: itemToMove } }
+    );
+
+    console.log(addResult)
+
+    if (addResult.modifiedCount === 0) {
+      return res.status(400).json({ message: "Failed to add the item to future owner's accountDetails." });
+    }
+
+    return res.status(200).json({ message: "Item successfully moved to future owner's accountDetails." });
+  } catch (error) {
+    console.error("An error occurred:", error);
+    return res.status(500).json({ message: "An error occurred during the operation." });
+  }
+
+})
 
 // GET MY GOALSHEET
 router.get("/my-goalsheet", EmployeeAuthenticateToken, async (req, res) => {
@@ -531,15 +608,15 @@ router.get("/my-goalsheet", EmployeeAuthenticateToken, async (req, res) => {
 // MY KPI SCORE
 router.get("/my-kpi", EmployeeAuthenticateToken, async (req, res) => {
   try {
-    const {userId} = req.user;
+    const { userId } = req.user;
 
-    const myKPI = await KPI.findOne({owner: userId});
-    if(!myKPI) {
-      return res.status(402).json({message: "No KPI found!!!"});
+    const myKPI = await KPI.findOne({ owner: userId });
+    if (!myKPI) {
+      return res.status(402).json({ message: "No KPI found!!!" });
     }
 
     res.status(200).json(myKPI);
-  } catch(error) {
+  } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
   }
@@ -547,42 +624,42 @@ router.get("/my-kpi", EmployeeAuthenticateToken, async (req, res) => {
 
 
 
-router.get('/rnr-Leaderborad/:passcode' , async(req,res)=>{
-          
-   try{
+router.get('/rnr-Leaderborad/:passcode', async (req, res) => {
+
+  try {
     const { passcode } = req.params;
 
-    const employee = await Admin.findOne({passcode})
+    const employee = await Admin.findOne({ passcode })
 
-    if(!employee){
-       return res.status(403).json({"message":"passcode is incorrect"})
+    if (!employee) {
+      return res.status(403).json({ "message": "passcode is incorrect" })
     }
 
-   
-    
+
+
 
     res.status(200).json({ message: "Employee found", employee });
 
 
-   }
-   catch(error){
+  }
+  catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
-   }
+  }
 
 })
 
 
-router.get('/rnr-leaderboraddetails/:passcode', async(req,res)=>{
+router.get('/rnr-leaderboraddetails/:passcode', async (req, res) => {
 
-  try{
+  try {
 
     const { passcode } = req.params;
 
-    const employee = await Admin.findOne({passcode})
+    const employee = await Admin.findOne({ passcode })
 
-    if(!employee){
-       return  res.status(403).json({"message":"passcode is incorrect"})
+    if (!employee) {
+      return res.status(403).json({ "message": "passcode is incorrect" })
     }
 
 
@@ -590,17 +667,17 @@ router.get('/rnr-leaderboraddetails/:passcode', async(req,res)=>{
     const allData = await ERP.findOne().sort({ _id: -1 });
 
     console.log(allData.EmpOfMonth);
-  
+
     const findEmp = await Employees.findById({ _id: allData.EmpOfMonth });
-  
+
     res.status(200).json({ allData, findEmp });
   }
-  catch(error){
+  catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
   }
 
-  
+
 
 
 })

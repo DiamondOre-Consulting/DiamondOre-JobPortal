@@ -65,15 +65,15 @@ const EmployeeBranchesPage = () => {
             {editEmployeeToggle && (
                 <>
                     {/* Overlay with opacity */}
-                    <div className='fixed top-10 left-0 z-20 h-screen w-full bg-black opacity-60  '></div>
+                    <div className='fixed left-0 z-20 w-full h-screen bg-black top-10 opacity-60 '></div>
 
-                    <div className='ml-8  absolute z-40 cursor-pointer'  >
+                    <div className='absolute z-40 ml-8 cursor-pointer'  >
 
-                        <img onClick={handleEditEmployeeBack} src={crossIcon} alt="" className='h-12 w-12  z-40 cursor-pointer' />
+                        <img onClick={handleEditEmployeeBack} src={crossIcon} alt="" className='z-40 w-12 h-12 cursor-pointer' />
                     </div>
                     {/* Popup Form */}
-                    <div className=' mt-20 absolute z-30 inset-0 flex justify-center items-center'>
-                        <div className='mt-28  p-6 rounded-lg  max-w-lg w-full'>
+                    <div className='absolute inset-0 z-30 flex items-center justify-center mt-20 '>
+                        <div className='w-full max-w-lg p-6 rounded-lg mt-28'>
                             <EmployessEditDetails id={employee._id} handleEditEmployeeBack={handleEditEmployeeBack} />
                         </div>
                     </div>
@@ -83,26 +83,33 @@ const EmployeeBranchesPage = () => {
 
             <div>
 
-                <h1 className='text-center text-3xl uppercase'>{employee.name}</h1>
-                <button onClick={handleEditEmloyeeClick} className='bg-blue-900 px-3 py-2 text-white rounded-sm font-medium right-14 absolute'> Edit Employee </button>
-                <div className='mx-auto w-20 h-1 bg-blue-900'></div>
+                <div className='flex items-center justify-center'>
+                    <h1 className='text-3xl text-center uppercase'>{employee.name}</h1>
+                    <div className='relative flex items-center justify-center'>
+                        <div className={`size-3 animate-ping ml-4 rounded-full ${employee.activeStatus ? "bg-green-700" : "bg-red-700"}`}>
+                        </div>
+                        <div className={`size-1 animate-ping absolute z-10 ml-4 rounded-full ${employee.activeStatus ? "bg-green-700" : "bg-red-700"}`}></div>
+                    </div>
+                </div>
+                <button onClick={handleEditEmloyeeClick} className='absolute px-3 py-2 font-medium text-white bg-blue-900 rounded-sm right-14'> Edit Employee </button>
+                <div className='w-20 h-1 mx-auto bg-blue-900'></div>
 
-                <div className='grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-10 md:px-20 px-2   my-20 '>
+                <div className='grid grid-cols-1 gap-4 px-2 my-20 md:grid-cols-4 md:gap-10 md:px-20 '>
 
-                    {employee.accountHandler && <Link className='rounded-md relative flex h-60 items-center justify-center overflow-hidden bg-blue-900 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-blue-950 before:duration-500 before:ease-out hover:shadow-blue-950 hover:before:h-96 hover:before:w-96'>
-                        <Link to={`/admin-dashboard/each-account/${id}`} className='relative z-10 text-xl cursor-pointer'>Account Handling</Link>
+                    {employee.accountHandler && <Link to={`/admin-dashboard/each-account/${id}`} className='relative z-20 flex items-center justify-center overflow-hidden text-white transition-all bg-blue-900 rounded-md shadow-2xl h-60 before:absolute before:h-0 before:w-0 before:rounded-full before:bg-blue-950 before:duration-500 before:ease-out hover:shadow-blue-950 hover:before:h-96 hover:before:w-96'>
+                        <p className='relative z-10 text-xl cursor-pointer'>Account Handling</p>
                     </Link>}
 
-                    <Link className='rounded-md relative flex h-60 items-center justify-center overflow-hidden bg-blue-900 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-blue-950 before:duration-500 before:ease-out hover:shadow-blue-950 hover:before:h-96 hover:before:w-96'>
-                        <Link to={`/admin-dashboard/kpi/${id}`} className='relative z-10 text-xl'>KPI Score</Link>
+                    <Link to={`/admin-dashboard/kpi/${id}`} className='relative flex items-center justify-center overflow-hidden text-white transition-all bg-blue-900 rounded-md shadow-2xl h-60 before:absolute before:h-0 before:w-0 before:rounded-full before:bg-blue-950 before:duration-500 before:ease-out hover:shadow-blue-950 hover:before:h-96 hover:before:w-96'>
+                        <p className='relative z-10 text-xl'>KPI Score</p>
                     </Link>
 
-                    <Link to={`/admin-dashboard/goal-sheet/${id}/${encodeURIComponent(employeename)}`} className="rounded-md relative flex h-60 items-center justify-center overflow-hidden bg-blue-900 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-blue-950 before:duration-500 before:ease-out hover:shadow-blue-950 hover:before:h-96 hover:before:w-96">
-                        <span className="relative z-10 text-xl">Goal Sheet</span>
+                    <Link to={`/admin-dashboard/goal-sheet/${id}/${encodeURIComponent(employeename)}`} className="relative flex items-center justify-center overflow-hidden text-white transition-all bg-blue-900 rounded-md shadow-2xl h-60 before:absolute before:h-0 before:w-0 before:rounded-full before:bg-blue-950 before:duration-500 before:ease-out hover:shadow-blue-950 hover:before:h-96 hover:before:w-96">
+                        <p className="relative z-10 text-xl">Goal Sheet</p>
                     </Link>
 
-                    <Link className='rounded-md relative flex h-60 items-center justify-center overflow-hidden bg-blue-900 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-blue-950 before:duration-500 before:ease-out hover:shadow-blue-950 hover:before:h-96 hover:before:w-96'>
-                        <Link className='relative z-10 text-xl'>Incentive</Link>
+                    <Link className='relative flex items-center justify-center overflow-hidden text-white transition-all bg-blue-900 rounded-md shadow-2xl h-60 before:absolute before:h-0 before:w-0 before:rounded-full before:bg-blue-950 before:duration-500 before:ease-out hover:shadow-blue-950 hover:before:h-96 hover:before:w-96'>
+                        <p className='relative z-10 text-xl'>Incentive</p>
                     </Link>
 
 

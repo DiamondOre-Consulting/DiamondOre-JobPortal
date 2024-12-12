@@ -1934,9 +1934,21 @@ router.get("/all-employees", AdminAuthenticateToken, async (req, res) => {
 
     const allEmployees = await Employees.find({}, { password: 0 });
 
+    const activeEmployees = await allEmployees.filter(
+      (emp) => emp.activeStatus == true
+    )
+
+    const inactiveEmployees = await allEmployees.filter(
+      (emp) => emp.activeStatus == false
+    )
+
     console.log(allEmployees);
 
-    return res.status(200).json(allEmployees);
+    return res.status(200).json({
+      allEmployees,
+      activeEmployees,
+      inactiveEmployees,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Something went wrong!!!" });
@@ -1969,16 +1981,6 @@ router.delete("/delete/employee/:id", AdminAuthenticateToken, async (req, res, n
 
     await Employees.deleteOne({ _id: id });
 
-    // console.log(oneEmployee)
-
-    // if (!oneEmployee) {
-    //   return res.status(400).json({ message: "Employee not found!!!" });
-    // }
-
-    // console.log(oneEmployee)
-
-    // await Employees.save()
-
     return res.status(201).json({ message: "Employee deleted successfully!" });
 
   } catch (e) {
@@ -1987,6 +1989,27 @@ router.delete("/delete/employee/:id", AdminAuthenticateToken, async (req, res, n
   }
 })
 
+router.put("/update-status/employee/:id", AdminAuthenticateToken, async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const { status } = req.body
+    console.log(id)
+
+    const employee = await Employees.findById({ _id: id });
+
+    console.log(employee)
+
+    employee.activeStatus = status;
+
+    await employee.save();
+
+    return res.status(201).json({ message: "Employee status updated successfully!" });
+
+  } catch (e) {
+    return res.status(500).json({ message: "Something went wrong!!!", err: e.message });
+
+  }
+})
 
 router.put('/all-employees-edit/:id', AdminAuthenticateToken, async (req, res) => {
   // console.log("request-accepted")

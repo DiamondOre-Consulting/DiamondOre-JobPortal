@@ -8,7 +8,7 @@ const AllEmployeeAccounts = () => {
     const [allAccountsData, setAllAccountsData] = useState([]);
     const [showpopup, setShowPopup] = useState(false);
     const [deletepopup, setDeletePopup] = useState(false);
-    let [loading, setLoading] = useState(true);;
+    let [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -66,7 +66,7 @@ const AllEmployeeAccounts = () => {
                 );
 
                 if (response.status === 200) {
-                    setEmployees(response.data);
+                    setEmployees(response.data.allEmployees);
                 }
             } catch (error) {
                 console.error("Error fetching employees:", error);
@@ -146,17 +146,17 @@ const AllEmployeeAccounts = () => {
         <>
             <div>
                 <h1 className='text-3xl text-center'>All Accounts</h1>
-                <div className='w-40 h-1 bg-blue-900 mx-auto'></div>
+                <div className='w-40 h-1 mx-auto bg-blue-900'></div>
 
                 <Link to={'/admin-dashboard/all-duplicate-phone/request'} className="relative group">
                     <div className='flex justify-end'>
-                        <svg className="h-8 w-8 text-gray-600 md:-top-5 -top-8 float-right -mr-6 md:mr-4 hover:text-gray-900 cursor-pointer relative" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <svg className="relative float-right w-8 h-8 -mr-6 text-gray-600 cursor-pointer md:-top-5 -top-8 md:mr-4 hover:text-gray-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                             <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                         </svg>
-                        <div className='w-6 h-6 items-center text-center rounded-full text-gray-100 relative -top-5 md:-top-4 md:right-7 -right-3 bg-red-500'>{length}</div>
+                        <div className='relative items-center w-6 h-6 text-center text-gray-100 bg-red-500 rounded-full -top-5 md:-top-4 md:right-7 -right-3'>{length}</div>
                     </div>
-                    <div className="absolute z-10  right-0 hidden group-hover:inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-100 tooltip ">
+                    <div className="absolute right-0 z-10 hidden px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-100 group-hover:inline-block tooltip ">
                         Duplicate Account Phone Request
                         <div className="tooltip-arrow"></div>
                     </div>
@@ -179,11 +179,11 @@ const AllEmployeeAccounts = () => {
                         <div>
                             {Object.keys(groupedData).map(ownerName => (
                                 <div key={ownerName}>
-                                    <h2 className='text-2xl text-center mt-8 font-bold'> Account Holder : {ownerName}</h2>
+                                    <h2 className='mt-8 text-2xl font-bold text-center'> Account Holder : {ownerName}</h2>
 
-                                    <div className='md:w-full w-80 overflow-x-auto'>
-                                        <table id="example" className="table-auto w-full  mt-4">
-                                            <thead className='sticky top-0 bg-blue-900 text-gray-100 text-xs shadow'>
+                                    <div className='overflow-x-auto md:w-full w-80'>
+                                        <table id="example" className="w-full mt-4 table-auto">
+                                            <thead className='sticky top-0 text-xs text-gray-100 bg-blue-900 shadow'>
                                                 <tr>
                                                     <th className="px-4 py-2">HR Name</th>
                                                     <th className="px-4 py-2">Client Name</th>
@@ -196,11 +196,11 @@ const AllEmployeeAccounts = () => {
                                                 {groupedData[ownerName].flatMap(account =>
                                                     account.accountDetails.map((detail, index) => (
                                                         <tr key={`${account._id}-${index}`} className='text-center'>
-                                                            <td className="border px-4 py-2">{detail.detail.hrName}</td>
-                                                            <td className="border px-4 py-2">{detail.detail.clientName}</td>
-                                                            <td className="border px-4 py-2">{detail.detail.phone}</td>
-                                                            <td className="border px-4 py-2">{detail.detail.zone}</td>
-                                                            <td className='borrder px-4 py-2 text-xs cursor-pointer'> <span className='text-red-400 hover:underline' onClick={() => handleClick(detail._id)}>Edit </span> / <span onClick={() => handledeleteclick(detail._id)} className='text-red-600 hover:underline'>Delete</span></td>
+                                                            <td className="px-4 py-2 border">{detail.detail.hrName}</td>
+                                                            <td className="px-4 py-2 border">{detail.detail.clientName}</td>
+                                                            <td className="px-4 py-2 border">{detail.detail.phone}</td>
+                                                            <td className="px-4 py-2 border">{detail.detail.zone}</td>
+                                                            <td className='px-4 py-2 text-xs cursor-pointer borrder'> <span className='text-red-400 hover:underline' onClick={() => handleClick(detail._id)}>Edit </span> / <span onClick={() => handledeleteclick(detail._id)} className='text-red-600 hover:underline'>Delete</span></td>
                                                         </tr>
                                                     ))
                                                 )}
@@ -211,7 +211,7 @@ const AllEmployeeAccounts = () => {
                             ))}
 
                             {allAccountsData.length === 0 && (
-                                <div className="text-center mt-10">
+                                <div className="mt-10 text-center">
                                     No data available .
                                 </div>
                             )}
@@ -222,15 +222,15 @@ const AllEmployeeAccounts = () => {
 
 
             {showpopup && (
-                <div className="fixed inset-0 flex items-center bg-gray-900 bg-opacity-60 justify-center z-50">
-                    <div className="bg-white shadow-md rounded-md p-6 w-3/4 max-w-md">
-                        <h2 className="text-lg font-semibold mb-4">Change Account Owner</h2>
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-60">
+                    <div className="w-3/4 max-w-md p-6 bg-white rounded-md shadow-md">
+                        <h2 className="mb-4 text-lg font-semibold">Change Account Owner</h2>
                         <form>
 
 
                             <div className="mb-4">
                                 <select
-                                    className="w-full py-2 px-2"
+                                    className="w-full px-2 py-2"
                                 // value={formData.EmpOfMonth}
                                 // onChange={(e) => handleInputChange("EmpOfMonth", e.target.value)}
                                 >
@@ -245,8 +245,8 @@ const AllEmployeeAccounts = () => {
                             </div>
 
                             <div className="flex justify-end">
-                                <button type="button" onClick={() => setShowPopup(false)} className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 mr-2">Close</button>
-                                <button type="submit" className="px-4 py-2 bg-orange-400 text-white rounded-md hover:bg-orange-500">Submit</button>
+                                <button type="button" onClick={() => setShowPopup(false)} className="px-4 py-2 mr-2 text-white bg-gray-500 rounded-md hover:bg-gray-600">Close</button>
+                                <button type="submit" className="px-4 py-2 text-white bg-orange-400 rounded-md hover:bg-orange-500">Submit</button>
                             </div>
                         </form>
                     </div>
@@ -257,8 +257,8 @@ const AllEmployeeAccounts = () => {
 
 
             {deletepopup && (
-                <div id="modelConfirm" className="fixed z-50 inset-0 bg-gray-900 bg-opacity-60 overflow-y-auto h-full w-full px-4">
-                    <div className="relative top-40 mx-auto shadow-xl rounded-md bg-white max-w-md">
+                <div id="modelConfirm" className="fixed inset-0 z-50 w-full h-full px-4 overflow-y-auto bg-gray-900 bg-opacity-60">
+                    <div className="relative max-w-md mx-auto bg-white rounded-md shadow-xl top-40">
                         <div className="flex justify-end p-2">
                             <button onClick={() => setDeletePopup(false)}
                                 type="button"
@@ -272,11 +272,11 @@ const AllEmployeeAccounts = () => {
                             </button>
                         </div>
                         <div className="p-6 pt-0 text-center">
-                            <svg className="w-20 h-20 text-red-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <svg className="w-20 h-20 mx-auto text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                                     d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
-                            <h3 className="text-xl font-normal text-gray-500 mt-5 mb-6">Are you sure you want to delete this Account?</h3>
+                            <h3 className="mt-5 mb-6 text-xl font-normal text-gray-500">Are you sure you want to delete this Account?</h3>
                             <a href="#"
                                 className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-base inline-flex items-center px-3 py-2.5 text-center mr-2">
                                 Yes, I'm sure

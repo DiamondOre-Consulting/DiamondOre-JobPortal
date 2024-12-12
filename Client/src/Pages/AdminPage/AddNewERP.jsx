@@ -122,7 +122,7 @@ const AddERPForm = () => {
         );
 
         if (response.status === 200) {
-          setEmployees(response.data);
+          setEmployees(response.data.allEmployees);
         }
       } catch (error) {
         console.error("Error fetching employees:", error);
@@ -135,26 +135,26 @@ const AddERPForm = () => {
 
   return (
     <div className="">
-      <h1 className="mx-auto text-center text-3xl my-2">
+      <h1 className="mx-auto my-2 text-3xl text-center">
         RNR LEADERBOARD
       </h1>
 
 
 
       <div className="w-44 h-0.5 bg-blue-900 justify-center mx-auto"></div>
-      <form className="mx-auto grid max-w-screen-md gap-4 sm:grid-cols-2 shadow-lg p-5">
+      <form className="grid max-w-screen-md gap-4 p-5 mx-auto shadow-lg sm:grid-cols-2">
 
 
         <div>
           <label
             htmlFor="EmpOfMonth"
-            className="mb-2 inline-block text-sm text-gray-800 sm:text-base"
+            className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
           >
             Select Employee*
           </label>
           <br />
           <select
-            className="w-full py-2 px-2"
+            className="w-full px-2 py-2"
             value={formData.EmpOfMonth}
             onChange={(e) => handleInputChange("EmpOfMonth", e.target.value)}
           >
@@ -170,7 +170,7 @@ const AddERPForm = () => {
         <div className="w-full col-span-2">
           <label
             htmlFor="recognitionType"
-            className="mb-2 inline-block text-sm text-gray-800 sm:text-base"
+            className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
           >
             Recognition Type
           </label>
@@ -178,7 +178,7 @@ const AddERPForm = () => {
           <input
             id="recognitionType" // Add an id for better accessibility
             type="text"
-            className="w-full py-2 px-2 border rounded-md"
+            className="w-full px-2 py-2 border rounded-md"
             value={formData.recognitionType}
             onChange={(e) => handleInputChange("recognitionType", e.target.value)}
           />
@@ -188,7 +188,7 @@ const AddERPForm = () => {
         <div className="w-full col-span-2">
           <label
             htmlFor="EmpOfMonthDesc"
-            className="mb-2 inline-block text-sm text-gray-800 sm:text-base"
+            className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
           >
             Description*
           </label>
@@ -197,7 +197,7 @@ const AddERPForm = () => {
             id="EmpOfMonthDesc" // Add an id for better accessibility
             rows="4"
             type="text"
-            className="w-full py-2 px-2 border rounded-md" // Ensure consistent styling
+            className="w-full px-2 py-2 border rounded-md" // Ensure consistent styling
             value={formData.EmpOfMonthDesc} // Ensure this is bound to the state
             onChange={(e) =>
               handleInputChange("EmpOfMonthDesc", e.target.value)
@@ -209,7 +209,7 @@ const AddERPForm = () => {
         <div className="sm:col-span-2">
           <label
             htmlFor="Top5HRs"
-            className="mb-2 inline-block text-sm text-gray-800 sm:text-base"
+            className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
           >
             Top 5 HRs*
           </label>
@@ -217,7 +217,7 @@ const AddERPForm = () => {
             <div key={index} className="flex items-center">
               <input
                 type="text"
-                className="w-full rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 my-1"
+                className="w-full px-3 py-2 my-1 text-gray-800 transition duration-100 border rounded outline-none bg-gray-50 ring-indigo-300"
                 value={hr.name}
                 onChange={(e) =>
                   handleItemInputChange(
@@ -230,7 +230,7 @@ const AddERPForm = () => {
               />
               <button
                 type="button"
-                className="bg-red-400 p-2 mx-2 text-gray-100 hover:bg-red-600"
+                className="p-2 mx-2 text-gray-100 bg-red-400 hover:bg-red-600"
                 onClick={() => handleRemoveItem("Top5HRs", index)}
               >
                 Remove
@@ -240,7 +240,7 @@ const AddERPForm = () => {
           <button
             type="button"
             onClick={() => handleAddItem("Top5HRs")}
-            className="p-2 my-2 bg-blue-500 rounded text-gray-100"
+            className="p-2 my-2 text-gray-100 bg-blue-500 rounded"
           >
             Add HR
           </button>
@@ -250,7 +250,7 @@ const AddERPForm = () => {
         <div className="sm:col-span-2">
           <label
             htmlFor="Top5Clients"
-            className="mb-2 inline-block text-sm text-gray-800 sm:text-base"
+            className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
           >
             Top 5 Clients*
           </label>
@@ -258,7 +258,7 @@ const AddERPForm = () => {
             <div key={index} className="flex items-center">
               <input
                 type="text"
-                className="my-1 w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
+                className="w-full px-3 py-2 my-1 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
                 value={client.name}
                 onChange={(e) =>
                   handleItemInputChange(
@@ -271,7 +271,7 @@ const AddERPForm = () => {
               />
               <button
                 type="button"
-                className="bg-red-400 p-2 mx-2 text-gray-100 rounded hover:bg-red-600"
+                className="p-2 mx-2 text-gray-100 bg-red-400 rounded hover:bg-red-600"
                 onClick={() => handleRemoveItem("Top5Clients", index)}
               >
                 Remove
@@ -281,7 +281,7 @@ const AddERPForm = () => {
           <button
             type="button"
             onClick={() => handleAddItem("Top5Clients")}
-            className="p-2 my-2 bg-blue-500 rounded text-gray-100"
+            className="p-2 my-2 text-gray-100 bg-blue-500 rounded"
           >
             Add Client
           </button>
@@ -291,7 +291,7 @@ const AddERPForm = () => {
         <div className="sm:col-span-2">
           <label
             htmlFor="RnRInterns"
-            className="mb-2 inline-block text-sm text-gray-800 sm:text-base"
+            className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
           >
             RnR Interns*
           </label>
@@ -300,7 +300,7 @@ const AddERPForm = () => {
               <input
                 type="text"
                 placeholder="Title"
-                className="my-1 w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
+                className="w-full px-3 py-2 my-1 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
                 value={intern.title}
                 onChange={(e) =>
                   handleItemInputChange(
@@ -314,7 +314,7 @@ const AddERPForm = () => {
               <input
                 type="text"
                 placeholder="Name"
-                className="my-1 w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
+                className="w-full px-3 py-2 my-1 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
                 value={intern.name}
                 onChange={(e) =>
                   handleItemInputChange(
@@ -328,7 +328,7 @@ const AddERPForm = () => {
               <input
                 type="number"
                 placeholder="Count"
-                className="my-1 w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
+                className="w-full px-3 py-2 my-1 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
                 value={intern.count}
                 onChange={(e) =>
                   handleItemInputChange(
@@ -342,7 +342,7 @@ const AddERPForm = () => {
               <input
                 type="number"
                 placeholder="Percentage"
-                className="my-1 w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
+                className="w-full px-3 py-2 my-1 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
                 value={intern.percentage}
                 onChange={(e) =>
                   handleItemInputChange(
@@ -355,7 +355,7 @@ const AddERPForm = () => {
               />
               <button
                 type="button"
-                className="bg-red-400 p-2 mx-2 text-gray-100 rounded hover:bg-red-600"
+                className="p-2 mx-2 text-gray-100 bg-red-400 rounded hover:bg-red-600"
                 onClick={() => handleRemoveItem("RnRInterns", index)}
               >
                 Remove
@@ -365,7 +365,7 @@ const AddERPForm = () => {
           <button
             type="button"
             onClick={() => handleAddItem("RnRInterns")}
-            className="p-2 my-2 bg-blue-500 rounded text-gray-100"
+            className="p-2 my-2 text-gray-100 bg-blue-500 rounded"
           >
             Add Intern
           </button>
@@ -375,7 +375,7 @@ const AddERPForm = () => {
         <div className="sm:col-span-2">
           <label
             htmlFor="RnRRecruiters"
-            className="mb-2 inline-block text-sm text-gray-800 sm:text-base"
+            className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
           >
             RnR Recruiters*
           </label>
@@ -384,7 +384,7 @@ const AddERPForm = () => {
               <input
                 type="text"
                 placeholder="Title"
-                className="my-1 w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
+                className="w-full px-3 py-2 my-1 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
                 value={recruiter.title}
                 onChange={(e) =>
                   handleItemInputChange(
@@ -398,7 +398,7 @@ const AddERPForm = () => {
               <input
                 type="text"
                 placeholder="Name"
-                className="my-1 w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
+                className="w-full px-3 py-2 my-1 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
                 value={recruiter.name}
                 onChange={(e) =>
                   handleItemInputChange(
@@ -412,7 +412,7 @@ const AddERPForm = () => {
               <input
                 type="number"
                 placeholder="Count"
-                className="my-1 w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
+                className="w-full px-3 py-2 my-1 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
                 value={recruiter.count}
                 onChange={(e) =>
                   handleItemInputChange(
@@ -426,7 +426,7 @@ const AddERPForm = () => {
               <input
                 type="number"
                 placeholder="Percentage"
-                className="my-1 w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
+                className="w-full px-3 py-2 my-1 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
                 value={recruiter.percentage}
                 onChange={(e) =>
                   handleItemInputChange(
@@ -439,7 +439,7 @@ const AddERPForm = () => {
               />
               <button
                 type="button"
-                className="bg-red-400 p-2 mx-2 text-gray-100 rounded hover:bg-red-600"
+                className="p-2 mx-2 text-gray-100 bg-red-400 rounded hover:bg-red-600"
                 onClick={() => handleRemoveItem("RnRRecruiters", index)}
               >
                 Remove
@@ -449,7 +449,7 @@ const AddERPForm = () => {
           <button
             type="button"
             onClick={() => handleAddItem("RnRRecruiters")}
-            className="p-2 my-2 bg-blue-500 rounded text-gray-100"
+            className="p-2 my-2 text-gray-100 bg-blue-500 rounded"
           >
             Add Recruiter
           </button>
@@ -459,7 +459,7 @@ const AddERPForm = () => {
         <div className="sm:col-span-2">
           <label
             htmlFor="BreakingNews"
-            className="mb-2 inline-block text-sm text-gray-800 sm:text-base"
+            className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
           >
             Breaking News*
           </label>
@@ -467,7 +467,7 @@ const AddERPForm = () => {
             <div key={index} className="flex items-center">
               <input
                 type="text"
-                className="my-1 w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
+                className="w-full px-3 py-2 my-1 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
                 value={newsItem.news}
                 onChange={(e) =>
                   handleItemInputChange(
@@ -480,7 +480,7 @@ const AddERPForm = () => {
               />
               <button
                 type="button"
-                className="bg-red-400 p-2 mx-2 text-gray-100 rounded hover:bg-red-600"
+                className="p-2 mx-2 text-gray-100 bg-red-400 rounded hover:bg-red-600"
                 onClick={() => handleRemoveItem("BreakingNews", index)}
               >
                 Remove
@@ -490,7 +490,7 @@ const AddERPForm = () => {
           <button
             type="button"
             onClick={() => handleAddItem("BreakingNews")}
-            className="p-2 my-2 bg-blue-500 rounded text-gray-100"
+            className="p-2 my-2 text-gray-100 bg-blue-500 rounded"
           >
             Add News
           </button>
@@ -500,19 +500,19 @@ const AddERPForm = () => {
         <div className="sm:col-span-2">
           <label
             htmlFor="JoningsForWeek"
-            className="mb-2 inline-block text-sm text-gray-800 sm:text-base"
+            className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
           >
             Jonings for the Week*
           </label>
           {formData.JoningsForWeek.map((joining, index) => (
             <div
               key={index}
-              className="flex flex-col md:flex-row items-center space-y-2 my-2"
+              className="flex flex-col items-center my-2 space-y-2 md:flex-row"
             >
               <input
                 type="text"
                 placeholder="Name"
-                className="w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none mt-2 ring-indigo-300 transition duration-100"
+                className="w-full px-3 py-2 mt-2 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
                 value={joining.names}
                 onChange={(e) =>
                   handleItemInputChange(
@@ -526,7 +526,7 @@ const AddERPForm = () => {
               <input
                 type="text"
                 placeholder="Client"
-                className="w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
+                className="w-full px-3 py-2 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
                 value={joining.client}
                 onChange={(e) =>
                   handleItemInputChange(
@@ -540,7 +540,7 @@ const AddERPForm = () => {
               <input
                 type="text"
                 placeholder="Location"
-                className="w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
+                className="w-full px-3 py-2 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
                 value={joining.location}
                 onChange={(e) =>
                   handleItemInputChange(
@@ -554,7 +554,7 @@ const AddERPForm = () => {
               <input
                 type="number"
                 placeholder="CTC"
-                className="w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
+                className="w-full px-3 py-2 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
                 value={joining.ctc}
                 onChange={(e) =>
                   handleItemInputChange(
@@ -568,7 +568,7 @@ const AddERPForm = () => {
               <input
                 type="text"
                 placeholder="Recruiter Name"
-                className="w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
+                className="w-full px-3 py-2 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
                 value={joining.recruiterName}
                 onChange={(e) =>
                   handleItemInputChange(
@@ -582,7 +582,7 @@ const AddERPForm = () => {
               <input
                 type="text"
                 placeholder="Team Leader Name"
-                className="w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
+                className="w-full px-3 py-2 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
                 value={joining.teamLeaderName}
                 onChange={(e) =>
                   handleItemInputChange(
@@ -596,7 +596,7 @@ const AddERPForm = () => {
               <input
                 type="number"
                 placeholder="Number of Joinings"
-                className="w-full rounded border bg-gray-100 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100"
+                className="w-full px-3 py-2 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
                 value={joining.noOfJoinings}
                 onChange={(e) =>
                   handleItemInputChange(
@@ -609,7 +609,7 @@ const AddERPForm = () => {
               />
               <button
                 type="button"
-                className="bg-red-400 p-2 mx-2 text-gray-100 rounded hover:bg-red-600"
+                className="p-2 mx-2 text-gray-100 bg-red-400 rounded hover:bg-red-600"
                 onClick={() => handleRemoveItem("JoningsForWeek", index)}
               >
                 Remove
@@ -619,7 +619,7 @@ const AddERPForm = () => {
           <button
             type="button"
             onClick={() => handleAddItem("JoningsForWeek")}
-            className="p-2 my-2 bg-blue-500 rounded text-gray-100"
+            className="p-2 my-2 text-gray-100 bg-blue-500 rounded"
           >
             Add Joining
           </button>
@@ -629,7 +629,7 @@ const AddERPForm = () => {
         <button
           type="button"
           onClick={handleFormSubmit}
-          className="p-3 my-5 mx-2 w-full bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="w-full p-3 mx-2 my-5 text-white bg-blue-600 rounded hover:bg-blue-700"
         >
           Submit
         </button>

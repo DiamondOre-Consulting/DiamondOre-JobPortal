@@ -46,9 +46,7 @@ const AdminEmployeeAttendence = () => {
                     }
                 );
                 if (response.status == 200) {
-                    ;
-                    ;
-                    setEmployees(response.data)
+                    setEmployees(response.data.allEmployees)
                 }
             } catch (error) {
                 console.error("Error fetching associates:", error);
@@ -192,40 +190,40 @@ const AdminEmployeeAttendence = () => {
 
         <div>
             <AdminNav />
-            <h1 className='text-bold  text-center text-3xl my-8'> Employee Details</h1>
-            <div className="overflow-x-auto px-0 py-8 border border-1  sm:px-0 lg:px-16 md:px-8">
-                <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
-                    <thead className="ltr:text-left rtl:text-right bg-blue-950 text-white">
+            <h1 className='my-8 text-3xl text-center text-bold'> Employee Details</h1>
+            <div className="px-0 py-8 overflow-x-auto border border-1 sm:px-0 lg:px-16 md:px-8">
+                <table className="min-w-full text-sm bg-white divide-y-2 divide-gray-200">
+                    <thead className="text-white ltr:text-left rtl:text-right bg-blue-950">
                         <tr>
-                            <th className="whitespace-nowrap px-4 py-2 font-medium text-white">UserImage</th>
-                            <th className="whitespace-nowrap px-4 py-2 font-medium text-white">Name</th>
-                            <th className="whitespace-nowrap px-4 py-2 font-medium text-white">Email</th>
-                            <th className="whitespace-nowrap px-4 py-2 font-medium text-white">EditAttendece</th>
-                            <th className="whitespace-nowrap px-4 py-2 font-medium text-white">EditPerfomence</th>
+                            <th className="px-4 py-2 font-medium text-white whitespace-nowrap">UserImage</th>
+                            <th className="px-4 py-2 font-medium text-white whitespace-nowrap">Name</th>
+                            <th className="px-4 py-2 font-medium text-white whitespace-nowrap">Email</th>
+                            <th className="px-4 py-2 font-medium text-white whitespace-nowrap">EditAttendece</th>
+                            <th className="px-4 py-2 font-medium text-white whitespace-nowrap">EditPerfomence</th>
                             <th className="px-4 py-2"></th>
                         </tr>
                     </thead>
 
-                    <tbody className="divide-y divide-gray-200 text-center">
+                    <tbody className="text-center divide-y divide-gray-200">
                         {employees.map((emp) => {
                             return (
                                 <tr>
-                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700 object-cover w-4 cursor-pointer"><img onClick={() => handleOpen(emp)} src={emp.profilePic} /></td>
-                                    <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{emp.name}</td>
-                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">{emp.email}</td>
-                                    {/* <td  className="whitespace-nowrap px-4 py-2 text-gray-700"><Link to={'/'} className="bg-blue-950 text-white p-2">EditAttendence</Link></td> */}
-                                    <td className="whitespace-nowrap px-4 py-2">
+                                    <td className="object-cover w-4 px-4 py-2 text-gray-700 cursor-pointer whitespace-nowrap"><img onClick={() => handleOpen(emp)} src={emp.profilePic} /></td>
+                                    <td className="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">{emp.name}</td>
+                                    <td className="px-4 py-2 text-gray-700 whitespace-nowrap">{emp.email}</td>
+                                    {/* <td  className="px-4 py-2 text-gray-700 whitespace-nowrap"><Link to={'/'} className="p-2 text-white bg-blue-950">EditAttendence</Link></td> */}
+                                    <td className="px-4 py-2 whitespace-nowrap">
                                         <Link to={`/admin-all-employee/attendence/${emp._id}`}
                                             href="#"
-                                            className="inline-block rounded bg-blue-900 px-4 py-4 text-xs font-medium text-white hover:bg-blue-950"
+                                            className="inline-block px-4 py-4 text-xs font-medium text-white bg-blue-900 rounded hover:bg-blue-950"
                                         >
                                             EditAttendence
                                         </Link>
                                     </td>
-                                    <td className="whitespace-nowrap px-4 py-2">
+                                    <td className="px-4 py-2 whitespace-nowrap">
                                         <Link to={`/admin-all-employee/performence/${emp._id}`}
                                             href="#"
-                                            className="inline-block rounded bg-blue-900 px-4 py-4 text-xs font-medium text-white hover:bg-blue-950"
+                                            className="inline-block px-4 py-4 text-xs font-medium text-white bg-blue-900 rounded hover:bg-blue-950"
                                         >
                                             EditPerformence
                                         </Link>
@@ -240,9 +238,9 @@ const AdminEmployeeAttendence = () => {
                 {/* Dialog component */}
                 {selectedEmployee && (
                     <div className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded shadow-lg shadow-gray-500 p-6 overflow-scroll h-4/6 ${open ? 'block' : 'hidden'}`}>
-                        <svg className="h-8 w-8 text-red-600 float-right" onClick={() => setOpen(false)} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">  <circle cx="12" cy="12" r="10" />  <line x1="15" y1="9" x2="9" y2="15" />  <line x1="9" y1="9" x2="15" y2="15" /></svg>
-                        <div className='flex items-center justify-center text-center flex-col'>
-                            <img src={selectedEmployee.profilePic} alt={selectedEmployee.name} className='w-24 flex  justify-center' />
+                        <svg className="float-right w-8 h-8 text-red-600" onClick={() => setOpen(false)} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">  <circle cx="12" cy="12" r="10" />  <line x1="15" y1="9" x2="9" y2="15" />  <line x1="9" y1="9" x2="15" y2="15" /></svg>
+                        <div className='flex flex-col items-center justify-center text-center'>
+                            <img src={selectedEmployee.profilePic} alt={selectedEmployee.name} className='flex justify-center w-24' />
                             <h1>
 
                                 <p>Name: {selectedEmployee.name}</p>
@@ -252,10 +250,10 @@ const AdminEmployeeAttendence = () => {
                         </div>
                         <div className="grid grid-cols-1 gap-4 ">
                             <div>
-                                <h2 className='text-center font-bold  mb-1 text-2xl mt-2 text-blue-950'>Attendence</h2>
+                                <h2 className='mt-2 mb-1 text-2xl font-bold text-center text-blue-950'>Attendence</h2>
                                 <div className="relative overflow-x-auto">
-                                    <table className="w-full text-sm text-left rtl:text-right text-gray-500  bg-gray-50">
-                                        <thead className="text-xs text-gray-700 uppercase bg-gray-100  ">
+                                    <table className="w-full text-sm text-left text-gray-500 rtl:text-right bg-gray-50">
+                                        <thead className="text-xs text-gray-700 uppercase bg-gray-100 ">
 
                                             <tr>
                                                 <th scope="col" className="px-6 py-3 rounded-s-lg ">
@@ -312,10 +310,10 @@ const AdminEmployeeAttendence = () => {
                             </div>
 
                             <div>
-                                <h2 className='text-center font-bold  mb-1 mb-1 text-2xl mt-2 text-blue-950'>Performence</h2>
+                                <h2 className='mt-2 mb-1 text-2xl font-bold text-center text-blue-950'>Performence</h2>
                                 <div className="relative overflow-x-auto">
-                                    <table className="w-full text-sm text-left rtl:text-right text-gray-500  bg-gray-50">
-                                        <thead className="text-xs text-gray-700 uppercase bg-gray-100  ">
+                                    <table className="w-full text-sm text-left text-gray-500 rtl:text-right bg-gray-50">
+                                        <thead className="text-xs text-gray-700 uppercase bg-gray-100 ">
 
                                             <tr>
                                                 <th scope="col" className="px-6 py-3 rounded-s-lg ">
@@ -366,7 +364,7 @@ const AdminEmployeeAttendence = () => {
                             </div>
                         </div>
                         <p>
-                            <button className="border bg-blue-950 rounded-md py-2 px-8 flex justify-center items-center float-right text-white mt-2" onClick={() => setOpen(false)}>
+                            <button className="flex items-center justify-center float-right px-8 py-2 mt-2 text-white border rounded-md bg-blue-950" onClick={() => setOpen(false)}>
                                 <span>okk</span>
                             </button>
                         </p>

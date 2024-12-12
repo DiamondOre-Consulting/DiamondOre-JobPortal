@@ -143,7 +143,7 @@ export default function EmpDrawerSidebar() {
         if (response.status === 200) {
           const lastData = response.data.allData;
           const empdata = response.data.findEmp;
-          ;
+
           setEmployee(empdata);
           setlatestnews(lastData.BreakingNews || []);
           sethrname(lastData.Top5HRs || []);
@@ -190,10 +190,10 @@ export default function EmpDrawerSidebar() {
           }
         );
         if (response.status == 200) {
-          ;
+
           setUserData(response.data);
         } else {
-          ;
+
           setUserData("Did not get any response!!!");
         }
       } catch (error) {
