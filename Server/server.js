@@ -8,10 +8,10 @@ const app = express();
 dotenv.config();
 
 // Use express-fileupload middleware for handling file uploads
+app.use(cors());
 app.use(fileUpload());
 
 app.use(express.json());
-app.use(cors());
 
 app.use(morgan('dev'))
 app.use(express.static("ProfileImgUploads"));
