@@ -20,6 +20,7 @@ const EmployeeRnrBoard = () => {
   const [joinings, setJoinings] = useState([]);
   const [empOfMonthDesc, setEmpOfMonthDesc] = useState(""); // New state for EmpOfMonthDesc
   const [recognitionType, setRecognitionType] = useState("")
+  const [profilePicUrl, setProfilePicUrl] = useState("")
 
   const token = localStorage.getItem("token");
   const { decodedToken } = useJwt(token);
@@ -61,6 +62,7 @@ const EmployeeRnrBoard = () => {
           setJoinings(lastData.JoningsForWeek || []);
           setEmpOfMonthDesc(lastData.EmpOfMonthDesc || ""); // Set EmpOfMonthDesc
           setRecognitionType(lastData.recognitionType || "");
+          setProfilePicUrl(lastData.profilePic || "");
         } else {
 
         }
@@ -87,11 +89,11 @@ const EmployeeRnrBoard = () => {
   return (
 
     <div> {showConfetti && <Confetti />}
-      {/* <h2 className="text-3xl md:text-5xl px-4 font-bold text-gray-800 py-4">
+      {/* <h2 className="px-4 py-4 text-3xl font-bold text-gray-800 md:text-5xl">
         Welcome aboard, <span className="text-blue-900">{decodedToken?.name}</span>
       </h2> */}
 
-      <HomeNews employee={employee} latestnews={latestnews} empOfMonthDesc={empOfMonthDesc} recognitionType={recognitionType} /> {/* Pass EmpOfMonthDesc */}
+      <HomeNews employee={employee} profilePicUrl={profilePicUrl} latestnews={latestnews} empOfMonthDesc={empOfMonthDesc} recognitionType={recognitionType} /> {/* Pass EmpOfMonthDesc */}
       <ERPTop5s hrname={hrname} client={client} />
       <RnRLeaderboard RnRinterns={RnRinterns} RnRRecruiter={RnRRecruiter} />
       <JoiningsForWeek Joinings={joinings} />
