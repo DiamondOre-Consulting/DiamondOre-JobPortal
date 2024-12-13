@@ -80,7 +80,7 @@ const EmployeeRnrBoard = () => {
     // Automatically stop the confetti after 5 seconds
     const timer = setTimeout(() => {
       setShowConfetti(false);
-    }, 20000);
+    }, 10000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -88,7 +88,7 @@ const EmployeeRnrBoard = () => {
 
   return (
 
-    <div> {showConfetti && <Confetti />}
+    <div className="relative w-full overflow-x-hidden"> {showConfetti && <Confetti />}
       {/* <h2 className="px-4 py-4 text-3xl font-bold text-gray-800 md:text-5xl">
         Welcome aboard, <span className="text-blue-900">{decodedToken?.name}</span>
       </h2> */}
