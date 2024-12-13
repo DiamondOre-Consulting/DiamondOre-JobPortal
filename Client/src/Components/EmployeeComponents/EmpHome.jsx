@@ -232,7 +232,7 @@ const EmpHome = ({ employee, latestnews, profilePicUrl, hrname, client, RnRinter
                     <thead className="text-xs text-center text-gray-700 uppercase border bg-gray-50">
                         <tr className="text-white bg-blue-950">
                             <th scope="col" className="px-6 py-3">
-                                Name
+                                Channel
                             </th>
                             <th scope="col" className="px-6 py-3">
                                 Client
