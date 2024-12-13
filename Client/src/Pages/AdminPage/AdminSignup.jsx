@@ -42,11 +42,10 @@ const AdminSignup = ({ toggleForm }) => {
       );
 
       if (response.status === 200) {
-        ;
         setProfilePicUrl(response.data);
       }
     } catch (error) {
-
+      console.log("")
     }
   };
 
@@ -124,22 +123,22 @@ const AdminSignup = ({ toggleForm }) => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center w-full h-screen">
+      <div className="flex items-center justify-center w-full h-screen">
         <img src={loader} alt="" />
       </div>
     )
   }
 
   return (
-    <div className="flex items-center justify-center  ">
-      <div className="mx-auto max-w-screen-xl px-4  sm:px-6 bg-white rounded-md ">
+    <div className="flex items-center justify-center ">
+      <div className="max-w-screen-xl px-4 mx-auto bg-white rounded-md sm:px-6 ">
         <div className="grid grid-cols-1 md:grid-cols-2">
-          <div className=" space-y-4">
+          <div className="space-y-4 ">
             <form
               onSubmit={handleAdminSignup}
-              className="mb-0 mt-6 space-y-4 rounded-lg p-4 sm:p-6 lg:p-8 "
+              className="p-4 mt-6 mb-0 space-y-4 rounded-lg sm:p-6 lg:p-8 "
             >
-              <h1 className=" text-3xl font-bold sm:text-3xl text-blue-950">
+              <h1 className="text-3xl font-bold sm:text-3xl text-blue-950">
                 Register a Sub Admin
               </h1>
 
@@ -150,7 +149,7 @@ const AdminSignup = ({ toggleForm }) => {
 
                 <div className="relative">
                   <input
-                    className="w-full rounded-lg border-1 p-4 pe-12 text-sm shadow-sm"
+                    className="w-full p-4 text-sm rounded-lg shadow-sm border-1 pe-12"
                     type="text"
                     id="name"
                     name="name"
@@ -159,10 +158,10 @@ const AdminSignup = ({ toggleForm }) => {
                     onChange={(e) => setName(e.target.value)}
                   />
 
-                  <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
+                  <span className="absolute inset-y-0 grid px-4 end-0 place-content-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4 text-gray-400"
+                      className="w-4 h-4 text-gray-400"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -185,7 +184,7 @@ const AdminSignup = ({ toggleForm }) => {
 
                 <div className="relative">
                   <input
-                    className="w-full rounded-lg border-1 p-4 pe-12 text-sm shadow-sm"
+                    className="w-full p-4 text-sm rounded-lg shadow-sm border-1 pe-12"
                     type="email"
                     id="email"
                     name="email"
@@ -194,10 +193,10 @@ const AdminSignup = ({ toggleForm }) => {
                     onChange={(e) => setEmail(e.target.value)}
                   />
 
-                  <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
+                  <span className="absolute inset-y-0 grid px-4 end-0 place-content-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4 text-gray-400"
+                      className="w-4 h-4 text-gray-400"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -227,7 +226,7 @@ const AdminSignup = ({ toggleForm }) => {
                   </label>
                   <div className="relative">
                     <input
-                      className="w-full rounded-lg border-1 p-4 pe-12 text-sm shadow-sm"
+                      className="w-full p-4 text-sm rounded-lg shadow-sm border-1 pe-12"
                       type="text"
                       id="otp"
                       name="otp"
@@ -244,7 +243,7 @@ const AdminSignup = ({ toggleForm }) => {
                 <select
                   value={adminType} // Bind the select value to state
                   onChange={(e) => setAdminType(e.target.value)}
-                  className="w-full  rounded-md p-4" name="" id="">
+                  className="w-full p-4 rounded-md" name="" id="">
 
                   <option value="subAdmin">Sub Admin</option>
                   <option value="superAdmin">Super Admin</option>
@@ -259,7 +258,7 @@ const AdminSignup = ({ toggleForm }) => {
 
                 <div className="relative">
                   <input
-                    className="w-full rounded-lg border-1 p-4 pe-12 text-sm shadow-sm"
+                    className="w-full p-4 text-sm rounded-lg shadow-sm border-1 pe-12"
                     type={showPass ? "text" : "password"}
                     id="password"
                     name="password"
@@ -271,7 +270,7 @@ const AdminSignup = ({ toggleForm }) => {
                   {showPass ? (
                     <span
                       onClick={handleShowPassword}
-                      className="cursor-pointer absolute inset-y-0 end-0 grid place-content-center px-4"
+                      className="absolute inset-y-0 grid px-4 cursor-pointer end-0 place-content-center"
                     >
                       <svg
                         width="16px"
@@ -319,11 +318,11 @@ const AdminSignup = ({ toggleForm }) => {
                   ) : (
                     <span
                       onClick={handleShowPassword}
-                      className="cursor-pointer absolute inset-y-0 end-0 grid place-content-center px-4"
+                      className="absolute inset-y-0 grid px-4 cursor-pointer end-0 place-content-center"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4 text-gray-400"
+                        className="w-4 h-4 text-gray-400"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -348,10 +347,10 @@ const AdminSignup = ({ toggleForm }) => {
 
               {/* Profile Image upload feild starts  */}
 
-              <div className="mt-1 flex items-center space-x-4">
-                <div className="w-full relative">
+              <div className="flex items-center mt-1 space-x-4">
+                <div className="relative w-full">
                   <input
-                    className="w-full rounded-lg border-1 p-4 pe-12 text-sm shadow-sm"
+                    className="w-full p-4 text-sm rounded-lg shadow-sm border-1 pe-12"
                     type="file"
                     name="profilePic"
                     onChange={(e) => setProfilePic(e.target.files[0])}
@@ -360,7 +359,7 @@ const AdminSignup = ({ toggleForm }) => {
 
                 <button
                   onClick={handleUploadImage}
-                  className="bg-blue-950 hover:bg-blue-950 text-white px-1 w-1/2 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="w-1/2 px-1 py-2 text-sm font-medium text-white rounded-md bg-blue-950 hover:bg-blue-950 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                   Upload Image
                 </button>
@@ -383,7 +382,7 @@ const AdminSignup = ({ toggleForm }) => {
 
               {/* Sign up button ends  */}
 
-              <p className="text-center text-sm text-gray-500">
+              <p className="text-sm text-center text-gray-500">
                 Have account already?
                 <Link to={"/admin-login"} className="underline cursor-pointer">
                   Sign in
@@ -392,12 +391,12 @@ const AdminSignup = ({ toggleForm }) => {
             </form>
 
             {error && (
-              <div className="flex items-center justify-center bg-red-300 p-4 rounded-md">
-                <p className="text-center text-sm text-red-500">{error}</p>
+              <div className="flex items-center justify-center p-4 bg-red-300 rounded-md">
+                <p className="text-sm text-center text-red-500">{error}</p>
               </div>
             )}
           </div>
-          <div className="flex items-center justify-center  rounded-lg  ">
+          <div className="flex items-center justify-center rounded-lg ">
             <div className="hidden md:block">
               <img src={simg} />
             </div>

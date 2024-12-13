@@ -58,12 +58,12 @@ const addedJobsMailToAllTheCandidates = async (candidateEmail, candidateName) =>
       <a href="https://www.diamondore.in/" style="color:blue;">Diamond Ore pvt.Ltd</p>
       // <p style="text-align: left;"><img src="cid:logo" alt="Company Logo" style="width:200px;height:auto;"/></p>
             `,
-            // attachments: [{
-            //   filename: 'logo.png',
-            //   path: 'C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/Logo.png',
-            //   cid: 'logo'
-            // }]
-          };
+      // attachments: [{
+      //   filename: 'logo.png',
+      //   path: 'C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/Logo.png',
+      //   cid: 'logo'
+      // }]
+    };
 
     const info = await transporter.sendMail(mailOptions);
     console.log("Email sent: " + info.response);
@@ -198,7 +198,7 @@ const downloadFile = async (url, outputFilePath) => {
 router.post("/upload-job-excel", AdminAuthenticateToken, async (req, res) => {
   const { url } = req.body;
   const outputFilePath = path.join(__dirname, 'tempFile.xlsx');
-  
+
   try {
     console.log(url);
     await downloadFile(url, outputFilePath);
@@ -224,9 +224,9 @@ router.post("/upload-job-excel", AdminAuthenticateToken, async (req, res) => {
         for (const job of result) {
           const { Company, JobTitle, Industry, Channel, Zone, City, State, JobStatus, DateAdded } = job; // Extract JobTitle, DateAdded, and JobStatus from the Excel row
 
-                    // Convert DateAdded from DD-MM-YYYY to a JavaScript Date object
-                    const [day, month, year] = DateAdded.split("-");
-                    const formattedDateAdded = new Date(`${year}-${month}-${day}`);
+          // Convert DateAdded from DD-MM-YYYY to a JavaScript Date object
+          const [day, month, year] = DateAdded.split("-");
+          const formattedDateAdded = new Date(`${year}-${month}-${day}`);
 
           // Check if the job already exists in the database
           const existingJob = await Jobs.findOne({
@@ -277,10 +277,12 @@ router.post("/upload-job-excel", AdminAuthenticateToken, async (req, res) => {
       }
     );
   } catch (err) {
-    return res.status(400).json({ message: "Something went wrong!!!" });
+    return res.status(400).json({ message: "Something went wrong!!!", err: err.message });
   } finally {
     // Clean up: Delete the temporary file
     fs.unlinkSync(outputFilePath);
+    return res.status(400).json({ message: "Something went wrong!!!" });
+
   }
 });
 

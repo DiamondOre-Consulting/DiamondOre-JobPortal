@@ -6,11 +6,15 @@ const erpSchema = new mongoose.Schema({
     ref: "Employees",
   },
 
-  recognitionType:{
+  recognitionType: {
     type: String,
   },
   EmpOfMonthDesc: {
     type: String,
+  },
+  profilePic: {
+    type: String,
+    default: "https://cdn-icons-png.flaticon.com/512/9131/9131529.png"
   },
   Top5HRs: [
     {

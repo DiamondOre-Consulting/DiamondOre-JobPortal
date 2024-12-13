@@ -1,20 +1,22 @@
 import React, { useEffect } from "react";
 
-const HomeNews = ({ employee, latestnews, empOfMonthDesc , recognitionType}) => {
+const HomeNews = ({ employee, latestnews, profilePicUrl, empOfMonthDesc, recognitionType }) => {
+  console.log(profilePicUrl)
 
+  console.log(employee)
   return (
-    <div className="mx-4 md:mx-10 my-16">
+    <div className="mx-4 my-16 md:mx-10">
       {/* Employee of the month */}
-      {latestnews?.map((newNews) => (
-        <div id="alert-additional-content-3" class="p-4 mb-4 text-green-800 border border-green-300 rounded-lg bg-green-50    mt-8" role="alert">
-          <div class="flex items-center">
-            <svg class="flex-shrink-0 w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+      {latestnews?.map((newNews, ind) => (
+        <div key={ind} id="alert-additional-content-3" className="p-4 mt-8 mb-4 text-green-800 border border-green-300 rounded-lg bg-green-50" role="alert">
+          <div className="flex items-center">
+            <svg className="flex-shrink-0 w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
               <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
             </svg>
-            <span class="sr-only">Info</span>
-            <h3 class="text-lg font-medium">Breaking News & Annoucement</h3>
+            <span className="sr-only">Info</span>
+            <h3 className="text-lg font-medium">Breaking News & Annoucement</h3>
           </div>
-          <div class="mt-2 mb-4 text-sm">
+          <div className="mt-2 mb-4 text-sm">
             {newNews.news}
           </div>
           {/* <div class="flex">
@@ -34,18 +36,18 @@ const HomeNews = ({ employee, latestnews, empOfMonthDesc , recognitionType}) => 
       {/* Employee Of the Month  */}
 
       <div className='my-10 '>
-        <div className='grid grid-cols-1 md:grid-cols-3 px-6'>
+        <div className='grid grid-cols-1 px-6 md:grid-cols-3'>
           <div className='col'>
-            <div className='absolute border border-blue-900 border-2 opacity-1 h-40 w-60 mt-10 '></div>
-            <div><img className="relative bottom-1 left-10  w-60 h-40 " src="https://easy-feedback.de/wp-content/uploads/2022/10/Employee-Journey-What-it-is-and-how-to-improve-it.jpg" alt="" /></div>
+            <div className='absolute mt-10 border border-2 border-blue-900 h-52 opacity-1 w-60 '></div>
+            <div><img className="relative object-cover h-52 bottom-1 left-10 w-60 " src={profilePicUrl || "https://easy-feedback.de/wp-content/uploads/2022/10/Employee-Journey-What-it-is-and-how-to-improve-it.jpg"} alt="" /></div>
           </div>
 
-          <div className='md:col-span-2  mt-20 md:mt-0 flex flex-col '>
-            {/* <h1 className='uppercase font-bold text-3xl md:text-5xl text-gray-700'>Employee of the month</h1> */}
-            <h1 className='uppercase font-bold text-3xl md:text-5xl text-gray-700'>{recognitionType}</h1>
+          <div className='flex flex-col mt-20 md:col-span-2 md:mt-0 '>
+            {/* <h1 className='text-3xl font-bold text-gray-700 uppercase md:text-5xl'>Employee of the month</h1> */}
+            <h1 className='text-3xl font-bold text-gray-700 uppercase md:text-5xl'>{recognitionType}</h1>
 
             <div className='mt-4'>
-              <h1 className='font-bold text-xl capitilized'>{employee?.name}</h1>
+              <h1 className='text-xl font-bold capitilized'>{employee?.name}</h1>
               <p>{empOfMonthDesc}</p>
             </div>
           </div>

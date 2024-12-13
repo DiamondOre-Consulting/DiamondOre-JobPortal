@@ -62,6 +62,7 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import AllDuplicatePhoneRequest from '../../Pages/AdminPage/AllDuplicatePhoneRequest';
 import EachEmployeeKPIScore from '../../Pages/AdminPage/EachEmployeeKPIScore';
 import loader from '../../assets/loader.svg';
+import EditErp from '../../Pages/AdminPage/EditErp';
 
 
 const drawerWidth = 240;
@@ -243,7 +244,7 @@ const AdminDrawerSidebar = () => {
                         <img src={logo} alt='logo' className='w-40 cursor-pointer' />
                     </Typography>
                     <Box sx={{ flexGrow: 1 }} />
-                    <Link to={'/admin-dashboard/edit-profile'}><img src={userData?.profilePic} alt="" className='w-10 h-10 object-cover mr-2 rounded-full cursor-pointer ' /></Link>
+                    <Link to={'/admin-dashboard/edit-profile'}><img src={userData?.profilePic} alt="" className='object-cover w-10 h-10 mr-2 rounded-full cursor-pointer ' /></Link>
                     <IconButton
                         style={{ color: 'white' }}
                         aria-label='logout'
@@ -315,6 +316,7 @@ const AdminDrawerSidebar = () => {
                     <Route path='/update-status/:id1/:id2' element={<UpdateStatus />} />
                     <Route path='/erp-dashboard' element={<AdminERP />} />
                     <Route path='/add-erp' element={<AddERPForm />} />
+                    <Route path='/edit-erp/:erpId' element={<EditErp />} />
                     <Route path='/add-jobs' element={<AddJobs />} />
                     <Route path='/all-reviews' element={<AllReviews />} />
                     <Route path='/all-employees' element={<AllEmployee />} />

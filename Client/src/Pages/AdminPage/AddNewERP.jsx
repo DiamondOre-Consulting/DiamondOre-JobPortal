@@ -2,9 +2,14 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useJwt } from "react-jwt";
 import { useNavigate } from "react-router-dom";
+import { FaCamera } from 'react-icons/fa'
+
 
 const AddERPForm = () => {
   const navigate = useNavigate();
+  const [profilePic, setProfilePic] = useState(null);
+  const [preview, setPreview] = useState("");
+
   const initialFormData = {
     EmpOfMonth: "",
     recognitionType: "",
@@ -15,15 +20,26 @@ const AddERPForm = () => {
     RnRRecruiters: [{ title: "", name: "", count: 0, percentage: 0 }],
     BreakingNews: [{ news: "" }],
     JoningsForWeek: [{ names: "", noOfJoinings: 0 }],
+    profilePicUrl: "",
   };
 
+
   const [formData, setFormData] = useState(initialFormData);
+  console.log(formData)
   const { decodedToken } = useJwt(localStorage.getItem("token"));
   const token = localStorage.getItem("token");
   if (!token) {
     navigate("/admin-login"); // Redirect to login page if not authenticated
     return null;
   }
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setProfilePic(file);
+      setPreview(URL.createObjectURL(file)); // Preview the selected image
+    }
+  };
 
   const userName = decodedToken ? decodedToken.name : "No Name Found";
 
@@ -51,6 +67,7 @@ const AddERPForm = () => {
   };
 
   const handleAddItem = (field) => {
+    console.log(field)
     setFormData({
       ...formData,
       [field]: [...formData[field], {}],
@@ -133,6 +150,36 @@ const AddERPForm = () => {
     fetchAllEmployee();
   }, [navigate, token]);
 
+
+  const handleUploadImage = async (e) => {
+    try {
+      e.preventDefault();
+
+      const formData = new FormData();
+      formData.append("myFileImage", profilePic);
+      const response = await axios.post(
+        "https://api.diamondore.in/api/admin-confi/upload-profile-pic",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log(response.data)
+
+      if (response.status === 200) {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          profilePicUrl: response.data,
+        }));
+      }
+    } catch (error) {
+      console.log("")
+    }
+  };
+
   return (
     <div className="">
       <h1 className="mx-auto my-2 text-3xl text-center">
@@ -166,7 +213,43 @@ const AddERPForm = () => {
             ))}
           </select>
         </div>
+        <div className="flex flex-col items-center justify-center mt-4">
+          <div className="relative w-32 h-32 group">
+            {/* Profile Image or Placeholder */}
+            <img
+              src={preview || "https://via.placeholder.com/200x200.png"}
+              alt="Profile"
+              className="object-cover w-full h-full rounded-full shadow-md"
+            />
 
+            {/* Overlay with Camera Icon */}
+            <label
+              htmlFor="profilePicInput"
+              className="absolute inset-0 flex items-center justify-center transition-opacity bg-black bg-opacity-50 rounded-full opacity-0 cursor-pointer group-hover:opacity-100"
+            >
+              <FaCamera className="w-6 h-6 text-white" />
+            </label>
+
+            {/* Hidden File Input */}
+            <input
+              id="profilePicInput"
+              type="file"
+              name="profilePic"
+              className="hidden"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+          </div>
+
+          {/* Upload Button */}
+          <button
+            type="button"
+            onClick={handleUploadImage}
+            className="px-4 py-2 mt-4 text-sm font-medium text-white rounded-md shadow-md bg-blue-950 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Upload Image
+          </button>
+        </div>
         <div className="w-full col-span-2">
           <label
             htmlFor="recognitionType"
@@ -213,7 +296,7 @@ const AddERPForm = () => {
           >
             Top 5 HRs*
           </label>
-          {formData.Top5HRs.map((hr, index) => (
+          {formData?.Top5HRs?.map((hr, index) => (
             <div key={index} className="flex items-center">
               <input
                 type="text"
@@ -254,7 +337,7 @@ const AddERPForm = () => {
           >
             Top 5 Clients*
           </label>
-          {formData.Top5Clients.map((client, index) => (
+          {formData?.Top5Clients?.map((client, index) => (
             <div key={index} className="flex items-center">
               <input
                 type="text"
@@ -295,7 +378,7 @@ const AddERPForm = () => {
           >
             RnR Interns*
           </label>
-          {formData.RnRInterns.map((intern, index) => (
+          {formData?.RnRInterns?.map((intern, index) => (
             <div key={index} className="flex items-center">
               <input
                 type="text"
@@ -379,7 +462,7 @@ const AddERPForm = () => {
           >
             RnR Recruiters*
           </label>
-          {formData.RnRRecruiters.map((recruiter, index) => (
+          {formData?.RnRRecruiters?.map((recruiter, index) => (
             <div key={index} className="flex items-center">
               <input
                 type="text"
@@ -463,7 +546,7 @@ const AddERPForm = () => {
           >
             Breaking News*
           </label>
-          {formData.BreakingNews.map((newsItem, index) => (
+          {formData?.BreakingNews?.map((newsItem, index) => (
             <div key={index} className="flex items-center">
               <input
                 type="text"
@@ -504,14 +587,14 @@ const AddERPForm = () => {
           >
             Jonings for the Week*
           </label>
-          {formData.JoningsForWeek.map((joining, index) => (
+          {formData?.JoningsForWeek?.map((joining, index) => (
             <div
               key={index}
               className="flex flex-col items-center my-2 space-y-2 md:flex-row"
             >
               <input
                 type="text"
-                placeholder="Name"
+                placeholder="Channel"
                 className="w-full px-3 py-2 mt-2 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
                 value={joining.names}
                 onChange={(e) =>

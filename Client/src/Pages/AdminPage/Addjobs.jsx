@@ -94,13 +94,13 @@ const AddJobs = () => {
 
   return (
     <div>
-      <h1 className="text-3xl text-blue-950 text-center">Upload Job Sheet</h1>
+      <h1 className="text-3xl text-center text-blue-950">Upload Job Sheet</h1>
       <div className="w-48 bg-blue-950 h-0.5 text-center mx-auto my-3"></div>
 
       <div className="flex items-center justify-center w-full px-12 py-4">
         <label
           htmlFor="dropzone-file"
-          className="flex flex-col items-center justify-center w-full h-64 border-2 border-blue-950 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+          className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer border-blue-950 bg-gray-50 hover:bg-gray-100"
         >
           <div className="flex flex-col items-center justify-center pt-5 pb-6">
             <svg
@@ -161,18 +161,18 @@ const AddJobs = () => {
       </button>
 
       {errorMessage && (
-        <div className="text-red-500 text-center my-3">{errorMessage}</div>
+        <div className="my-3 text-center text-red-500">{errorMessage}</div>
       )}
 
       {uploadSuccess && !isUploading && (
-        <div className="text-green-500 text-center my-3">File uploaded successfully!</div>
+        <div className="my-3 text-center text-green-500">File uploaded successfully!</div>
       )}
 
       {uploadSuccess ? (
         <button
           type="submit"
           onClick={handlesubmit}
-          className="bg-blue-950 text-white p-2 px-12 flex items-center justify-center mx-auto rounded-md my-4"
+          className="flex items-center justify-center p-2 px-12 mx-auto my-4 text-white rounded-md bg-blue-950"
           disabled={isSubmitting}  // Disable button when submitting
         >
           {isSubmitting ? (
