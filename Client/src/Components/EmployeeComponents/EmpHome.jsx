@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Confetti from 'react-confetti';
 
 
-const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruiter, Joinings, userData  , empOfMonthDesc , recognitionType}) => {
+const EmpHome = ({ employee, latestnews, profilePicUrl, hrname, client, RnRinterns, RnRRecruiter, Joinings, userData, empOfMonthDesc, recognitionType }) => {
 
     const [showConfetti, setShowConfetti] = useState(true);
     useEffect(() => {
@@ -14,24 +14,24 @@ const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruite
         return () => clearTimeout(timer);
     }, []);
 
-    
+
 
     return (
-        <>
+        <div className='relative overflow-x-hidden'>
             {showConfetti && <Confetti />}
             <span className='text-4xl font-bold text-gray-700'>Welcome,</span>
-            <span className='font-bold text-4xl ml-2 text-gray-700'>{userData?.name}</span>
+            <span className='ml-2 text-4xl font-bold text-gray-700'>{userData?.name}</span>
 
-            {latestnews?.map((newNews) => (
-                <div id="alert-additional-content-3" class="p-4 mb-4 text-green-800 border border-green-300 rounded-lg bg-green-50    mt-8" role="alert">
-                    <div class="flex items-center">
-                        <svg class="flex-shrink-0 w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+            {latestnews?.map((newNews, index) => (
+                <div key={index} id="alert-additional-content-3" className="p-4 mt-8 mb-4 text-green-800 border border-green-300 rounded-lg bg-green-50" role="alert">
+                    <div className="flex items-center">
+                        <svg className="flex-shrink-0 w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
                         </svg>
-                        <span class="sr-only">Info</span>
-                        <h3 class="text-lg font-medium">Breaking News & Annoucement</h3>
+                        <span className="sr-only">Info</span>
+                        <h3 className="text-lg font-medium">Breaking News & Annoucement</h3>
                     </div>
-                    <div class="mt-2 mb-4 text-sm">
+                    <div className="mt-2 mb-4 text-sm">
                         {newNews.news}
                     </div>
                     {/* <div class="flex">
@@ -51,18 +51,18 @@ const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruite
             {/* Employee Of the Month  */}
 
             <div className='my-10 '>
-                <div className='grid grid-cols-1 md:grid-cols-3 px-6'>
+                <div className='grid grid-cols-1 px-6 md:grid-cols-3'>
                     <div className='col'>
-                        <div className='absolute border border-blue-900 border-2 opacity-1 h-40 w-60 mt-10 '></div>
-                        <div><img className="relative bottom-1 left-10  w-60 h-40 " src="https://easy-feedback.de/wp-content/uploads/2022/10/Employee-Journey-What-it-is-and-how-to-improve-it.jpg" alt="" /></div>
+                        <div className='absolute mt-10 border border-2 border-blue-900 h-52 opacity-1 w-60 '></div>
+                        <div><img className="relative object-cover h-52 bottom-1 left-10 w-60 " src={profilePicUrl || "https://easy-feedback.de/wp-content/uploads/2022/10/Employee-Journey-What-it-is-and-how-to-improve-it.jpg"} alt="" /></div>
                     </div>
 
-                    <div className='md:col-span-2  mt-20 md:mt-0 flex flex-col '>
-                        {/* <h1 className='uppercase font-bold text-3xl md:text-5xl text-gray-700'>Employee of the month</h1> */}
-                            <h1 className='uppercase font-bold text-3xl md:text-5xl text-gray-700'>{recognitionType}</h1>
+                    <div className='flex flex-col mt-20 md:col-span-2 md:mt-0 '>
+                        {/* <h1 className='text-3xl font-bold text-gray-700 uppercase md:text-5xl'>Employee of the month</h1> */}
+                        <h1 className='text-3xl font-bold text-gray-700 uppercase md:text-5xl'>{recognitionType}</h1>
 
                         <div className='mt-4'>
-                            <h1 className='font-bold text-xl capitilized'>{employee?.name}</h1>
+                            <h1 className='text-xl font-bold capitilized'>{employee?.name}</h1>
                             <p>{empOfMonthDesc}</p>
                         </div>
                     </div>
@@ -77,12 +77,12 @@ const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruite
             {/* hr and clints div */}
 
             <div className='mt-10 md:mt-20 md:px-6'>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-10'>
+                <div className='grid grid-cols-1 gap-10 md:grid-cols-2'>
                     <div className=''>
-                        <h1 className='uppercase text-2xl font-semibold  text-gray-900 px-10 py-2 text-center'> Top 5 hr</h1>
-                        <table className="w-full text-sm text-center rtl:text-right text-gray-500 border border-1">
-                            <thead className="text-xs text-gray-700 uppercase bg-white  ">
-                                <tr className="bg-blue-900 text-white">
+                        <h1 className='px-10 py-2 text-2xl font-semibold text-center text-gray-900 uppercase'> Top 5 hr</h1>
+                        <table className="w-full text-sm text-center text-gray-500 border rtl:text-right border-1">
+                            <thead className="text-xs text-gray-700 uppercase bg-white ">
+                                <tr className="text-white bg-blue-900">
                                     <th scope="col" className="px-6 py-3">
                                         serial No
                                     </th>
@@ -108,10 +108,10 @@ const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruite
                         </table>
                     </div>
                     <div className=''>
-                        <h1 className='uppercase text-xl font-semibold  text-gray-900 px-10 py-2 text-center'> Top 5 Clients</h1>
-                        <table className="w-full text-sm text-center rtl:text-right text-gray-500 border border-1">
-                            <thead className="text-xs text-gray-700 uppercase bg-white  ">
-                                <tr className="bg-blue-900 text-white">
+                        <h1 className='px-10 py-2 text-xl font-semibold text-center text-gray-900 uppercase'> Top 5 Clients</h1>
+                        <table className="w-full text-sm text-center text-gray-500 border rtl:text-right border-1">
+                            <thead className="text-xs text-gray-700 uppercase bg-white ">
+                                <tr className="text-white bg-blue-900">
                                     <th scope="col" className="px-6 py-3">
                                         S. No.
                                     </th>
@@ -141,13 +141,13 @@ const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruite
 
             {/* leaderbord & joinings */}
 
-            <div className='mt-20 px-2'>
+            <div className='px-2 mt-20'>
                 <div className='grid grid-cols-1 md:grid-cols-2 md:gap-10'>
-                    <div className='md:overflow-auto overflow-scroll'>
-                        <h1 className='uppercase text-2xl font-semibold  text-gray-900 px-10 py-2 text-center'>R & R LeaderBoard Interns</h1>
-                        <table className="w-full text-sm text-left rtl:text-right text-gray-500 border border-1 ">
-                            <thead className="text-xs text-gray-700 uppercase   text-center">
-                                <tr className='bg-blue-900 text-white'>
+                    <div className='overflow-scroll md:overflow-auto'>
+                        <h1 className='px-10 py-2 text-2xl font-semibold text-center text-gray-900 uppercase'>R & R LeaderBoard Interns</h1>
+                        <table className="w-full text-sm text-left text-gray-500 border rtl:text-right border-1 ">
+                            <thead className="text-xs text-center text-gray-700 uppercase">
+                                <tr className='text-white bg-blue-900'>
                                     <th scope="col" className="px-6 py-3">
                                         Title
                                     </th>
@@ -164,7 +164,7 @@ const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruite
                             </thead>
                             <tbody>
                                 {RnRinterns?.map((interns) => (
-                                    <tr className="bg-white border-b hover:bg-gray-50 text-center">
+                                    <tr className="text-center bg-white border-b hover:bg-gray-50">
                                         <th
                                             scope="row"
                                             className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
@@ -181,11 +181,11 @@ const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruite
                             </tbody>
                         </table>
                     </div>
-                    <div className='md:overflow-auto overflow-scroll'>
-                        <h1 className='uppercase text-xl font-semibold  text-gray-900 px-10 py-2 text-center'>R & R LeaderBoard Recruiter</h1>
-                        <table className="w-full text-sm text-left rtl:text-right text-gray-500 border border-1 ">
-                            <thead className="text-xs text-gray-700 uppercase bg-gray-50  ">
-                                <tr className='bg-blue-900 text-white text-center'>
+                    <div className='overflow-scroll md:overflow-auto'>
+                        <h1 className='px-10 py-2 text-xl font-semibold text-center text-gray-900 uppercase'>R & R LeaderBoard Recruiter</h1>
+                        <table className="w-full text-sm text-left text-gray-500 border rtl:text-right border-1 ">
+                            <thead className="text-xs text-gray-700 uppercase bg-gray-50 ">
+                                <tr className='text-center text-white bg-blue-900'>
                                     <th scope="col" className="px-6 py-3">
                                         Title
                                     </th>
@@ -203,10 +203,10 @@ const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruite
                             <tbody>
                                 {RnRRecruiter?.map((recuiter) => (
 
-                                    <tr className="bg-white border-b hover:bg-gray-50 text-center ">
+                                    <tr className="text-center bg-white border-b hover:bg-gray-50 ">
                                         <th
                                             scope="row"
-                                            className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-center"
+                                            className="px-6 py-4 font-medium text-center text-gray-900 whitespace-nowrap"
                                         >
                                             {recuiter.title}
                                         </th>
@@ -226,11 +226,11 @@ const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruite
                 </div>
             </div>
 
-            <div className='mt-6 mb-10 md:overflow-auto overflow-scroll'>
-                <h1 className='uppercase text-xl font-semibold  text-gray-900 px-10 py-2 text-center'> This Week's Joinings</h1>
-                <table className="w-full text-sm text-center rtl:text-right text-gray-500 border">
-                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 text-center border">
-                        <tr className="bg-blue-950 text-white">
+            <div className='mt-6 mb-10 overflow-scroll md:overflow-auto'>
+                <h1 className='px-10 py-2 text-xl font-semibold text-center text-gray-900 uppercase'> This Week's Joinings</h1>
+                <table className="w-full text-sm text-center text-gray-500 border rtl:text-right">
+                    <thead className="text-xs text-center text-gray-700 uppercase border bg-gray-50">
+                        <tr className="text-white bg-blue-950">
                             <th scope="col" className="px-6 py-3">
                                 Name
                             </th>
@@ -241,7 +241,7 @@ const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruite
                                 Location
                             </th>
                             <th scope="col" className="px-6 py-3">
-                               Recruiter Name
+                                Recruiter Name
                             </th>
                             <th scope="col" className="px-6 py-3">
                                 Tema Leader
@@ -253,45 +253,45 @@ const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruite
                     </thead>
                     <tbody>
                         {Joinings?.map((join) => (
-                            <tr className="bg-white border-b  hover:bg-gray-50 ">
-                            <th
-                              scope="row"
-                              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
-                            >
-                              {join.names}
-                            </th>
-            
-                            <th
-                              scope="row"
-                              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
-                            >
-                              {join.client}
-                            </th>
-                            <th
-                              scope="row"
-                              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
-                            >
-                              {join.location}
-                            </th>
-            
-                            <th
-                              scope="row"
-                              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
-                            >
-                              {join.recruiterName}
-                            </th>
-            
-                            <th
-                              scope="row"
-                              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
-                            >
-                              {join.teamLeaderName}
-                            </th>
-            
-                            
-            
-                            <td className="px-6 py-4">{join.noOfJoinings}</td>
-                          </tr>
+                            <tr className="bg-white border-b hover:bg-gray-50 ">
+                                <th
+                                    scope="row"
+                                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
+                                >
+                                    {join.names}
+                                </th>
+
+                                <th
+                                    scope="row"
+                                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
+                                >
+                                    {join.client}
+                                </th>
+                                <th
+                                    scope="row"
+                                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
+                                >
+                                    {join.location}
+                                </th>
+
+                                <th
+                                    scope="row"
+                                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
+                                >
+                                    {join.recruiterName}
+                                </th>
+
+                                <th
+                                    scope="row"
+                                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
+                                >
+                                    {join.teamLeaderName}
+                                </th>
+
+
+
+                                <td className="px-6 py-4">{join.noOfJoinings}</td>
+                            </tr>
 
                         ))}
 
@@ -300,7 +300,7 @@ const EmpHome = ({ employee, latestnews, hrname, client, RnRinterns, RnRRecruite
             </div>
 
 
-        </>
+        </div>
     )
 }
 

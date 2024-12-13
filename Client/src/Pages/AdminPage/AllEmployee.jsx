@@ -137,7 +137,7 @@ const AllEmployee = () => {
                                         onClick={(e) => {
                                             e.stopPropagation()
                                             e.preventDefault()
-                                            if (window.confirm('Are you sure you want to cancel?')) {
+                                            if (window.confirm('Are you sure you want to delete?')) {
                                                 deleteClick(emp?._id)
                                             }
                                         }}

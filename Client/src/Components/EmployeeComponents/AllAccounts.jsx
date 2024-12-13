@@ -4,7 +4,7 @@ import PropagateLoader from "react-spinners/PropagateLoader";
 
 const AllAccounts = () => {
     const [allAccountsData, setAllAccountsData] = useState([]);
-    let [loading, setLoading] = useState(true);;
+    let [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchAllAccount = async () => {
@@ -43,7 +43,7 @@ const AllAccounts = () => {
         <>
             <div>
                 <h1 className='text-3xl text-center'>All Accounts</h1>
-                <div className='w-40 h-1 bg-blue-900 mx-auto mb-10'></div>
+                <div className='w-40 h-1 mx-auto mb-10 bg-blue-900'></div>
 
                 {
                     loading ?
@@ -60,11 +60,11 @@ const AllAccounts = () => {
                         <div >
                             {Object.keys(groupedData).map(ownerName => (
                                 <div key={ownerName}>
-                                    <h2 className='text-2xl text-center mt-8 font-bold'> Account Holder : {ownerName}</h2>
+                                    <h2 className='mt-8 text-2xl font-bold text-center'> Account Holder : {ownerName}</h2>
 
-                                    <div className='md:w-full w-72 overflow-x-auto'>
-                                        <table id="example" className="table-auto w-full mt-4 ">
-                                            <thead className='sticky top-0 bg-blue-900 text-gray-100 text-xs shadow'>
+                                    <div className='overflow-x-auto md:w-full w-72'>
+                                        <table id="example" className="w-full mt-4 table-auto ">
+                                            <thead className='sticky top-0 text-xs text-gray-100 bg-blue-900 shadow'>
                                                 <tr>
                                                     <th className="px-4 py-2">HR Name</th>
                                                     <th className="px-4 py-2">Client Name</th>
@@ -76,10 +76,10 @@ const AllAccounts = () => {
                                                 {groupedData[ownerName].flatMap(account =>
                                                     account.accountDetails.map((detail, index) => (
                                                         <tr key={`${account._id}-${index}`} className='text-center'>
-                                                            <td className="border px-4 py-2">{detail.detail.hrName}</td>
-                                                            <td className="border px-4 py-2">{detail.detail.clientName}</td>
-                                                            <td className="border px-4 py-2">{detail.detail.phone}</td>
-                                                            <td className="border px-4 py-2">{detail.detail.zone}</td>
+                                                            <td className="px-4 py-2 border">{detail?.detail?.hrName}</td>
+                                                            <td className="px-4 py-2 border">{detail?.detail?.clientName}</td>
+                                                            <td className="px-4 py-2 border">{detail?.detail?.phone}</td>
+                                                            <td className="px-4 py-2 border">{detail?.detail?.zone}</td>
                                                         </tr>
                                                     ))
                                                 )}
@@ -90,7 +90,7 @@ const AllAccounts = () => {
                             ))}
 
                             {allAccountsData.length === 0 && (
-                                <div className="text-center mt-10">
+                                <div className="mt-10 text-center">
                                     No data available .
                                 </div>
                             )}

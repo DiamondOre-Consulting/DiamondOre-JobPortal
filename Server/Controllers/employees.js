@@ -515,6 +515,8 @@ router.get("/accounts/:id", async (req, res) => {
 router.delete("/accounts/delete/:id/:deleteId", async (req, res) => {
   try {
     const { id, deleteId } = req.params;
+
+    console.log(req.params)
     const result = await AccountHandling.updateOne(
       { owner: id },
       { $pull: { accountDetails: { _id: deleteId } } }

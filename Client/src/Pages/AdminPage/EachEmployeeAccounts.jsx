@@ -12,6 +12,8 @@ const EachEmployeeAccounts = () => {
     const [eastData, setEastData] = useState([])
     const [southData, setSouthData] = useState([])
     const [westData, setWestData] = useState([])
+    const [centralData, setCentralData] = useState([])
+    const [allData, setAllData] = useState([])
     const [listId, setListId] = useState()
     const token = localStorage.getItem("token");
 
@@ -29,6 +31,8 @@ const EachEmployeeAccounts = () => {
                 setEastData(response.data.findAccount.accountDetails.filter(item => (item.zoneName).toLowerCase() === "east"));
                 setSouthData(response.data.findAccount.accountDetails.filter(item => (item.zoneName).toLowerCase() === "south"));
                 setWestData(response.data.findAccount.accountDetails.filter(item => (item.zoneName).toLowerCase() === "west"));
+                setCentralData(response.data.findAccount.accountDetails.filter(item => (item.zoneName).toLowerCase() === "central"));
+                setAllData(response.data.findAccount.accountDetails.filter(item => (item.zoneName).toLowerCase() === "all"));
             }
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -151,6 +155,28 @@ const EachEmployeeAccounts = () => {
                             </tr>
                         </thead>
                         <tbody className="text-center divide-y divide-gray-200">
+                            {allData?.map((row, index) => (
+                                <tr key={index}>
+                                    <td className="px-6 py-4 text-sm font-medium text-gray-800 border border-gray-500 whitespace-nowrap ">{index + 1}</td>
+                                    <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.hrDetails[0]?.hrName}</td>
+                                    <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.zoneName}</td>
+                                    <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.channelName}</td>
+                                    <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.hrDetails[0]?.hrPhone}</td>
+                                    <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.clientName[0]}</td>
+                                    <td className='px-4 py-2 text-xs border cursor-pointer'> <span className='text-red-400 hover:underline' onClick={() => handleClick(row._id)}>Edit </span> / <span onClick={() => handleDeleteClick(row._id)} className='text-red-600 hover:underline'>Delete</span></td>
+                                </tr>
+                            ))}
+                            {centralData?.map((row, index) => (
+                                <tr key={index}>
+                                    <td className="px-6 py-4 text-sm font-medium text-gray-800 border border-gray-500 whitespace-nowrap ">{index + 1}</td>
+                                    <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.hrDetails[0]?.hrName}</td>
+                                    <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.zoneName}</td>
+                                    <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.channelName}</td>
+                                    <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.hrDetails[0]?.hrPhone}</td>
+                                    <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.clientName[0]}</td>
+                                    <td className='px-4 py-2 text-xs border cursor-pointer'> <span className='text-red-400 hover:underline' onClick={() => handleClick(row._id)}>Edit </span> / <span onClick={() => handleDeleteClick(row._id)} className='text-red-600 hover:underline'>Delete</span></td>
+                                </tr>
+                            ))}
                             {westData?.map((row, index) => (
                                 <tr key={index}>
                                     <td className="px-6 py-4 text-sm font-medium text-gray-800 border border-gray-500 whitespace-nowrap ">{index + 1}</td>

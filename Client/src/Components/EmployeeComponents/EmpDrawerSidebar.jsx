@@ -117,6 +117,7 @@ export default function EmpDrawerSidebar() {
   const { decodedToken } = useJwt(token);
   const [empOfMonthDesc, setEmpOfMonthDesc] = useState("");
   const [recognitionType, setRecognitionType] = useState("")
+  const [profilePicUrl, setProfilePicUrl] = useState("")
 
   useEffect(() => {
     if (!token) {
@@ -153,6 +154,7 @@ export default function EmpDrawerSidebar() {
           setjoinings(lastData.JoningsForWeek || []);
           setEmpOfMonthDesc(lastData.EmpOfMonthDesc || "");
           setRecognitionType(lastData.recognitionType || "");
+          setProfilePicUrl(lastData.profilePic || "");
         } else {
 
         }
@@ -307,8 +309,8 @@ export default function EmpDrawerSidebar() {
       <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
         <Routes>
-          <Route path='/' element={<EmpHome employee={employee} latestnews={latestnews} hrname={hrname} client={client} RnRRecruiter={RnRRecruiter} RnRinterns={RnRinterns} Joinings={Joinings} userData={userData} empOfMonthDesc={empOfMonthDesc} recognitionType={recognitionType} />} />
-          <Route path='/home' element={<EmpHome employee={employee} latestnews={latestnews} hrname={hrname} client={client} RnRRecruiter={RnRRecruiter} RnRinterns={RnRinterns} Joinings={Joinings} userData={userData} empOfMonthDesc={empOfMonthDesc} recognitionType={recognitionType} />} />
+          <Route path='/' element={<EmpHome profilePicUrl={profilePicUrl} employee={employee} latestnews={latestnews} hrname={hrname} client={client} RnRRecruiter={RnRRecruiter} RnRinterns={RnRinterns} Joinings={Joinings} userData={userData} empOfMonthDesc={empOfMonthDesc} recognitionType={recognitionType} />} />
+          <Route path='/home' element={<EmpHome profilePicUrl={profilePicUrl} employee={employee} latestnews={latestnews} hrname={hrname} client={client} RnRRecruiter={RnRRecruiter} RnRinterns={RnRinterns} Joinings={Joinings} userData={userData} empOfMonthDesc={empOfMonthDesc} recognitionType={recognitionType} />} />
           <Route path='/goal-sheet' element={<EmpGoalSheet />} />
           <Route path='/kpi-score' element={<KPIscore />} />
           <Route path='/acount-handling' element={<AccountHandling userData={userData} />} />
