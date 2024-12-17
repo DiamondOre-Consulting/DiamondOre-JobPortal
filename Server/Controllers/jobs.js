@@ -197,92 +197,90 @@ const downloadFile = async (url, outputFilePath) => {
 
 router.post("/upload-job-excel", AdminAuthenticateToken, async (req, res) => {
   const { url } = req.body;
-  const outputFilePath = path.join(__dirname, 'tempFile.xlsx');
+  const outputFilePath = path.join(__dirname, "tempFile.xlsx");
 
   try {
-    console.log(url);
+    // Download the Excel file
     await downloadFile(url, outputFilePath);
-    node_xj(
-      {
-        input: outputFilePath,
-        output: null,
-        lowerCaseHeaders: true,
-        allowEmptyKey: false,
-      },
-      async (err, result) => {
-        if (err) {
-          return res
-            .status(500)
-            .json({ error: "Error converting Excel to JSON", err });
-        }
 
-        console.log(result);
-
-        let jobsAdded = [];
-        let jobsUpdated = [];
-
-        for (const job of result) {
-          const { Company, JobTitle, Industry, Channel, Zone, City, State, JobStatus, DateAdded } = job; // Extract JobTitle, DateAdded, and JobStatus from the Excel row
-
-          // Convert DateAdded from DD-MM-YYYY to a JavaScript Date object
-          const [day, month, year] = DateAdded.split("-");
-          const formattedDateAdded = new Date(`${year}-${month}-${day}`);
-
-          // Check if the job already exists in the database
-          const existingJob = await Jobs.findOne({
-            JobTitle: JobTitle,
-            City: City,
-            DateAdded: formattedDateAdded,
-          });
-
-          if (existingJob) {
-            // If the job exists, update the JobStatus if necessary
-            existingJob.JobStatus = JobStatus === 'Active';
-            await existingJob.save();
-            jobsUpdated.push(existingJob);
-          } else {
-            // If the job does not exist, add it to the database
-            const newJob = new Jobs({
-              ...job,
-              JobStatus: JobStatus === 'Active', // Convert JobStatus to boolean (true for Active)
-              DateAdded: formattedDateAdded
-            });
-            await newJob.save();
-            jobsAdded.push(newJob);
+    // Convert Excel to JSON
+    const result = await new Promise((resolve, reject) => {
+      node_xj(
+        {
+          input: outputFilePath,
+          output: null,
+          lowerCaseHeaders: true,
+          allowEmptyKey: false,
+        },
+        (err, data) => {
+          if (err) {
+            return reject(err);
           }
+          resolve(data);
         }
+      );
+    });
 
-        console.log("Jobs added: ", jobsAdded);
-        console.log("Jobs updated: ", jobsUpdated);
+    let jobsAdded = [];
+    let jobsUpdated = [];
 
-        // res.status(201).json({
-        //   message: "Jobs added successfully!",
-        //   jobsAdded: jobsAdded.length,
-        //   jobsUpdated: jobsUpdated.length,
-        // });
+    for (const job of result) {
+      const {
+        Company,
+        JobTitle,
+        Industry,
+        Channel,
+        Zone,
+        City,
+        State,
+        JobStatus,
+        DateAdded,
+      } = job;
 
-        // Notify all candidates about new jobs
-        // if (jobsAdded.length > 0) {
-        //   const allCandidates = await Candidates.find({}, { password: 0 });
-        //   for (const candidate of allCandidates) {
-        //     await addedJobsMailToAllTheCandidates(candidate.email, candidate.name);
-        //   }
-        // }
+      const [day, month, year] = DateAdded.split("-");
+      const formattedDateAdded = new Date(`${year}-${month}-${day}`);
 
-        return res.status(200).json({
-          message: "Jobs processed successfully & sent emails",
-          jobsAdded: jobsAdded.length,
-          jobsUpdated: jobsUpdated.length,
+      const existingJob = await Jobs.findOne({
+        JobTitle: JobTitle,
+        City: City,
+        DateAdded: formattedDateAdded,
+      });
+
+      if (existingJob) {
+        if (existingJob.JobStatus !== (JobStatus === "Active")) {
+          existingJob.JobStatus = JobStatus === "Active";
+          await existingJob.save();
+          jobsUpdated.push(existingJob);
+        }
+      } else {
+        const newJob = new Jobs({
+          ...job,
+          JobStatus: JobStatus === "Active",
+          DateAdded: formattedDateAdded,
         });
+        await newJob.save();
+        jobsAdded.push(newJob);
       }
-    );
+    }
+
+
+    console.log(jobsAdded)
+    console.log(jobsUpdated)
+    // Respond with success
+    return res.status(200).json({
+      jobsAdded: jobsAdded.length,
+      jobsUpdated: jobsUpdated.length,
+      message: "Jobs processed successfully & sent emails",
+    });
   } catch (err) {
-    return res.status(400).json({ message: "Something went wrong!!!", err: err.message });
+    return res
+      .status(500)
+      .json({ message: "Something went wrong!!!", error: err.message });
   } finally {
     // Clean up: Delete the temporary file
-    fs.unlinkSync(outputFilePath);
-    return res.status(400).json({ message: "Something went wrong!!!" });
-
+    if (fs.existsSync(outputFilePath)) {
+      fs.unlinkSync(outputFilePath);
+    }
   }
 });
 
@@ -301,7 +299,7 @@ router.post("/add-job", AdminAuthenticateToken, async (req, res) => {
       MinExperience,
       MaxSalary,
     } = req.body;
-
+    console.log(1)
     const { email } = req.user;
 
     // Find the user in the database
@@ -326,7 +324,7 @@ router.post("/add-job", AdminAuthenticateToken, async (req, res) => {
       MaxSalary,
     });
 
-
+    console.log(2, newJob)
 
     // Save the user to the database
     await newJob.save();
