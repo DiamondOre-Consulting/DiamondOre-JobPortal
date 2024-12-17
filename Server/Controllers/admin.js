@@ -1491,8 +1491,9 @@ router.post("/upload-dsr-excel", async (req, res) => {
   } catch (err) {
     return res.status(400).json({ message: err.message });
   } finally {
-    // Clean up: Delete the temporary file
-    fs.unlinkSync(outputFilePath);
+    if (fs.existsSync(outputFilePath)) {
+      fs.unlinkSync(outputFilePath);
+    }
   }
 });
 
