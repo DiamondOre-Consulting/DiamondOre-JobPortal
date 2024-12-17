@@ -8,7 +8,7 @@ const RnRLeaderboard = ({ RnRinterns, RnRRecruiter }) => {
       <div className='mt-20 px-2'>
         <div className='grid grid-cols-1 md:grid-cols-2 md:gap-10'>
           <div className='md:overflow-auto overflow-scroll'>
-            <h1 className='uppercase text-2xl font-semibold  text-gray-900 px-10 py-2 text-center'>R & R LeaderBoard</h1>
+            <h1 className='uppercase text-2xl font-semibold  text-gray-900 px-10 py-2 text-center'>R & R LeaderBoard Intern</h1>
             <table className="w-full text-sm text-left rtl:text-right text-gray-500 border border-1 ">
               <thead className="text-xs text-gray-700 uppercase   text-center">
                 <tr className='bg-blue-900 text-white'>
