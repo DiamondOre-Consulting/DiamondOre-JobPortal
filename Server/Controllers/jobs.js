@@ -203,6 +203,9 @@ router.post("/upload-job-excel", AdminAuthenticateToken, async (req, res) => {
     // Download the Excel file
     await downloadFile(url, outputFilePath);
 
+    const job = await Jobs.countDocuments()
+    console.log(job)
+
     // Convert Excel to JSON
     const result = await new Promise((resolve, reject) => {
       node_xj(
@@ -237,7 +240,7 @@ router.post("/upload-job-excel", AdminAuthenticateToken, async (req, res) => {
         DateAdded,
       } = job;
 
-      const [day, month, year] = DateAdded.split("-");
+      const [day, month, year] = DateAdded.split("/");
       const formattedDateAdded = new Date(`${year}-${month}-${day}`);
 
       const existingJob = await Jobs.findOne({
@@ -264,8 +267,11 @@ router.post("/upload-job-excel", AdminAuthenticateToken, async (req, res) => {
     }
 
 
-    console.log(jobsAdded)
-    console.log(jobsUpdated)
+    const jobsLength = await Jobs.countDocuments();
+
+    console.log(jobsLength)
+
+
     // Respond with success
     return res.status(200).json({
       jobsAdded: jobsAdded.length,
