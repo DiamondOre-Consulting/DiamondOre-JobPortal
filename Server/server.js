@@ -17,7 +17,7 @@ app.use(morgan('dev'))
 app.use(express.static("ProfileImgUploads"));
 // app.use(bodyParser.urlencoded(extended))
 
-const PORT = 8000;
+const PORT = 5000;
 
 // Database connect
 mongoose
