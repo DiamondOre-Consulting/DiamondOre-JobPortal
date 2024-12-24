@@ -61,6 +61,7 @@ import AllEmployee from "./Pages/AdminPage/AllEmployee";
 import EachEmployeeGoalSheet from "./Pages/AdminPage/EachEmployeeGoalSheet";
 import AdminDrawerSidebar from "./Components/AdminPagesComponents/AdminDrawerSidebar";
 import EmployeeRnrBoard from '../src/Pages/Employeepage/EmployeeRnrBoard'
+import Snowfall from 'react-snowfall'
 
 function App() {
   let [loading, setLoading] = useState(true);
@@ -97,7 +98,12 @@ function App() {
         </>
          :
       <Router>
+          <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none" , zIndex:"10000000" }}>
+            <Snowfall />
+          </div>
         <Routes>
+      
+              
           <Route path="/" element={<Homemain/>} />
            
             <Route path="/about" element={<AboutUs/>}/>
@@ -157,7 +163,7 @@ function App() {
             <Route path="/employee-dashboard/*" element={<EmpDrawerSidebar />} />
             <Route path ='*' element ={<ErrorPage/>}/>
             <Route path='/employee-rnrboard/:passcode' element={<EmployeeRnrBoard />} />
-          
+      
         </Routes>
       </Router>
 }

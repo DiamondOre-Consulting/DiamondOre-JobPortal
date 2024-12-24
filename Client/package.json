@@ -39,6 +39,7 @@
     "react-rating-stars-component": "^2.2.0",
     "react-router-dom": "^6.21.1",
     "react-slick": "^0.30.2",
+    "react-snowfall": "^2.2.0",
     "react-spinners": "^0.13.8",
     "react-treebeard": "^3.2.4",
     "slick-carousel": "^1.8.1",
