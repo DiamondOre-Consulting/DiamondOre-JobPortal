@@ -8,6 +8,9 @@ import AdminAllJobsCards from "../../Components/AdminPagesComponents/AdminAllJob
 const AdminAllJobs = () => {
   const navigate = useNavigate();
 
+
+
+  
   const { decodedToken } = useJwt(localStorage.getItem("token"));
   const token = localStorage.getItem("token");
   if (!token) {
