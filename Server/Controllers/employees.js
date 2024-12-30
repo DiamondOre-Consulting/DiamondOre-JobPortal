@@ -128,13 +128,15 @@ router.get("/user-data", EmployeeAuthenticateToken, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const { id, name, profilePic } = user;
+    const { id, name, profilePic , joiningExcel , Policies} = user;
 
     res.status(200).json({
       id,
       name,
       email,
       profilePic,
+      joiningExcel,
+      Policies
     });
   } catch (error) {
     console.error("Error logging in:", error);

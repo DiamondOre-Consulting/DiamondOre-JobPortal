@@ -9,7 +9,7 @@ const AllDuplicatePhoneRequest = () => {
     const [popup, setShowPopup] = useState(false);
     const [status, setStatus] = useState('');
     const [snackbarOpen, setSnackbarOpen] = useState(false);
-    let [loading, setLoading] = useState(true);;
+    let [loading, setLoading] = useState(false);;
     const [id, setId] = useState('');
 
     useEffect(() => {
@@ -36,7 +36,7 @@ const AllDuplicatePhoneRequest = () => {
                     const requests = response.data;
 
                     // Extract unique employee and owner IDs
-                    const employeeIds = Array.from(new Set(requests.flatMap(account => account.requests.map(request => request.reqDetail.employee))));
+                    const employeeIds = Array.from(new Set(requests.flatMap(account => account.requests.map(request => request?.reqDetail?.employee))));
                     const ownerIds = Array.from(new Set(requests.map(account => account.owner)));
 
                     // Fetch employee names
@@ -163,9 +163,9 @@ const AllDuplicatePhoneRequest = () => {
                             account.requests.map(request => (
                                 <div key={request._id} className="grid grid-rows-1 p-5 bg-white rounded-xl gap-y-2 w-full border border-slate-500/50 hover:shadow-[5px_5px_0_rgba(0,0,0,0.5)] transition-shadow duration-150 ease-linear cursor-pointer" onClick={() => handleClick(account._id)}>
                                     <div className="flex flex-col gap-y-2.5">
-                                        <p className="text-xl font-semibold">Current Owner: {account.ownerName}</p>
-                                        <h3 className="text-lg font-semibold">Requested Owner: {request.reqDetail.employeeName}</h3>
-                                        <p className="text-xl font-semibold">Requested Phone: {request.reqDetail.accountPhone}</p>
+                                        <p className="text-xl font-semibold">Current Owner: {account?.ownerName}</p>
+                                        <h3 className="text-lg font-semibold">Requested Owner: {request?.reqDetail?.employeeName}</h3>
+                                        <p className="text-xl font-semibold">Requested Phone: {request?.reqDetail?.accountPhone}</p>
                                     </div>
                                     <p className='flex'> Request Status:<span className={`text-base ml-2 ${request.reqDetail.status ? 'text-green-500' : 'text-red-500'}`}>{request.reqDetail.status ? 'Active' : 'Inactive'}</span></p>
                                 </div>

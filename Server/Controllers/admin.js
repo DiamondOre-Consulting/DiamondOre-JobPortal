@@ -2452,7 +2452,7 @@ router.post(
 //   }
 // });
 router.post('/set-goalSheet', async (req, res) => {
-  const { empId, year, month, noOfJoinings, cost, revenue, incentive, variableIncentive } = req.body;
+  const { empId, year, month, noOfJoinings, cost, revenue, incentive, leakage } = req.body;
 
   try {
     // Find the employee by empId
@@ -2544,7 +2544,8 @@ router.post('/set-goalSheet', async (req, res) => {
       achYTD,
       achMTD,
       incentive, // Leave incentive blank for now
-      variableIncentive // Leave variable incentive blank for now
+      leakage // Leave variable incentive blank for now   , now varible incentive is leakage
+
     });
 
     goalSheet.goalSheetDetails.sort((a, b) => {
@@ -2621,7 +2622,7 @@ router.get("/goalsheet/:id", AdminAuthenticateToken, async (req, res) => {
 // EDIT A GOALSHEET
 router.put('/edit-goalSheet', async (req, res) => {
   // console.log("enter")
-  const { empId, year, month, prevYear, prevMonth, sheetId, noOfJoinings, cost, revenue, incentive, variableIncentive } = req.body;
+  const { empId, year, month, prevYear, prevMonth, sheetId, noOfJoinings, cost, revenue, incentive, leakage } = req.body;
 
   console.log(req.body)
 
@@ -2731,8 +2732,8 @@ router.put('/edit-goalSheet', async (req, res) => {
       goalDetail.incentive = incentive;
     }
 
-    if (variableIncentive !== undefined) {
-      goalDetail.variableIncentive = variableIncentive;
+    if (leakage !== undefined) {
+      goalDetail.leakage = leakage;
     }
 
 
@@ -3065,6 +3066,9 @@ router.put(
   }
 );
 
+
+
+
 // SET KPI SCORE
 router.post("/set-kpi-score", async (req, res) => {
   try {
@@ -3197,7 +3201,7 @@ router.get("/employee-kpi-score/:id", AdminAuthenticateToken, async (req, res) =
 })
 
 
-
+//download excel of all the candidate data
 router.post('/download-excel', AdminAuthenticateToken, async (req, res) => {
 
   try {
@@ -3257,5 +3261,253 @@ router.post('/download-excel', AdminAuthenticateToken, async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 })
+
+// getting url of excel sheet 
+
+router.post("/upload-excelsheet-url", async (req, res) => {
+  try {
+    const file = req.files && req.files.myFileImage; // Change 'myFile' to match the key name in Postman
+
+    if (!file) {
+      return res.status(400).send("No file uploaded");
+    }
+
+    // Generate a unique identifier
+    const uniqueIdentifier = uuidv4();
+
+    // Get the file extension from the original file name
+    const fileExtension = file.name.split(".").pop();
+
+    // Create a unique filename by appending the unique identifier to the original filename
+    const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
+
+    // Convert file to base64
+    const base64Data = file.data.toString("base64");
+
+    // Create a buffer from the base64 data
+    const fileBuffer = Buffer.from(base64Data, "base64");
+
+    const uploadData = await s3Client.send(
+      new PutObjectCommand({
+        Bucket: "profilepics",
+        Key: uniqueFileName, // Use the unique filename for the S3 object key
+        Body: fileBuffer, // Provide the file buffer as the Body
+      })
+    );
+
+    // Generate a public URL for the uploaded file
+    const getObjectCommand = new GetObjectCommand({
+      Bucket: "profilepics",
+      Key: uniqueFileName,
+    });
+
+    const signedUrl = await getSignedUrl(s3Client, getObjectCommand); // Generate URL valid for 1 hour
+
+    // Parse the signed URL to extract the base URL
+    const parsedUrl = new URL(signedUrl);
+    const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
+
+    // Send the URL as a response
+    res.status(200).send(baseUrl);
+
+    // Log the URL in the console
+    console.log("File uploaded. URL:", baseUrl);
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    return res.status(500).send("Error uploading file");
+  }
+});
+// upload excel sheet data 
+
+router.post('/upload-joiningsheet/:id' , async(req ,res)=>{
+  try{
+    const { id } = req.params;
+        const {joiningExcel} = req.body;
+        if(!joiningExcel){
+          return res.status(400).json({message : "joining excel sheet Url is required "});
+        }
+
+        const employee = await Employees.findById(id);
+        if (!employee) {
+          return res.status(404).json({ message: "Employee not found." });
+        }
+    
+        employee.joiningExcel = joiningExcel;
+
+
+        await employee.save();
+
+        res.status(200).json({
+          message : "Joinings sheet URL uploaded Successfully",
+          employeeId: employee._id,
+          joiningExcel: employee.joiningExcel,
+        })
+  }
+  catch(error){
+    console.log("something went wrong " ,error )
+    res.status(500).json({ message: 'Internal server error.', error: error.message });
+  }
+})
+
+
+// Fire Ticker when ytd is lesss then 2.5 
+
+router.post('/fire-ticker/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { tickerMessage } = req.body; 
+
+    if (!tickerMessage) {
+      return res.status(400).json({ message: "Ticker message is required." });
+    }
+    const goalSheet = await GoalSheet.findOne({ owner: id });
+
+    if (!goalSheet) {
+      return res.status(404).json({ message: "Goal sheet for the employee not found." });
+    }
+
+  
+      goalSheet.YTDLessTickerMessage = tickerMessage;
+
+      await goalSheet.save();
+
+      return res.status(200).json({
+        message: "Ticker triggered successfully for the employee.",
+        tickerMessage: goalSheet.YTDLessTicker,
+      });
+  } catch (error) {
+    console.error("Error in /fire-ticker/:id route:", error);
+    res.status(500).json({ message: "Internal server error.", error: error.message });
+  }
+});
+
+// policies uploading for employee URL 
+router.post("/get-policy-url", async (req, res) => {
+  try {
+    const file = req.files && req.files.myFileImage; // Change 'myFile' to match the key name in Postman
+
+    if (!file) {
+      return res.status(400).send("No file uploaded");
+    }
+
+    // Generate a unique identifier
+    const uniqueIdentifier = uuidv4();
+
+    // Get the file extension from the original file name
+    const fileExtension = file.name.split(".").pop();
+
+    // Create a unique filename by appending the unique identifier to the original filename
+    const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
+
+    // Convert file to base64
+    const base64Data = file.data.toString("base64");
+
+    // Create a buffer from the base64 data
+    const fileBuffer = Buffer.from(base64Data, "base64");
+
+    const uploadData = await s3Client.send(
+      new PutObjectCommand({
+        Bucket: "profilepics",
+        Key: uniqueFileName, // Use the unique filename for the S3 object key
+        Body: fileBuffer, // Provide the file buffer as the Body
+      })
+    );
+
+    // Generate a public URL for the uploaded file
+    const getObjectCommand = new GetObjectCommand({
+      Bucket: "profilepics",
+      Key: uniqueFileName,
+    });
+
+    const signedUrl = await getSignedUrl(s3Client, getObjectCommand); // Generate URL valid for 1 hour
+
+    // Parse the signed URL to extract the base URL
+    const parsedUrl = new URL(signedUrl);
+    const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
+
+    // Send the URL as a response
+    res.status(200).send(baseUrl);
+
+    // Log the URL in the console
+    console.log("File uploaded. URL:", baseUrl);
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    return res.status(500).send("Error uploading file");
+  }
+});
+
+
+router.post('/upload-policies', async (req, res) => {
+  try {
+    const { leave, performanceMenegement, holidayCalendar } = req.body;
+
+   
+    const result = await Employees.updateMany(
+      {},
+      {
+        Policies: [
+          {
+            leave,
+            performanceMenegement,
+            holidayCalendar,
+          },
+        ],
+      }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).send("No employees were updated.");
+    }
+
+    res.status(200).send({
+      message: "Policies updated successfully for all employees.",
+    });
+  } catch (error) {
+    console.error("Error in /upload-policies route:", error);
+    res.status(500).send("Internal server error.");
+  }
+});
+
+
+// update account handling details
+
+router.put("/updateAccounts/:accountId/:accountDetailsId", async (req, res) => {
+  const { accountId, accountDetailsId } = req.params;
+  const { joinings, amount } = req.body;  // Fields to update (optional)
+
+  try {
+    // Find the account by its accountId
+    const account = await AccountHandling.findById(accountId);
+
+    // Check if the account exists
+    if (!account) {
+      return res.status(404).json({ message: "Account not found" });
+    }
+
+    // Find the specific zone within accountDetails using accountDetailsId
+    const zoneToUpdate = account.accountDetails.find(zone => zone._id.toString() === accountDetailsId);
+
+    // If the zone is not found, return an error
+    if (!zoneToUpdate) {
+      return res.status(404).json({ message: "Zone not found" });
+    }
+
+    // Update the joinings and amount if provided
+    if (joinings !== undefined) zoneToUpdate.joinings = joinings;
+    if (amount !== undefined) zoneToUpdate.amount = amount;
+
+    // Save the updated account
+    await account.save();
+
+    // Return success response
+    return res.status(200).json({ message: "Zone updated successfully", account });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
+
 
 export default router;

@@ -217,6 +217,8 @@ const AccountHandling = ({ userData }) => {
                                         <th scope="col" className="px-6 py-3 text-xs font-medium text-center text-gray-500 uppercase border border-gray-500 ">Channel</th>
                                         <th scope="col" className="px-6 py-3 text-xs font-medium text-center text-gray-500 uppercase border border-gray-500 ">phone</th>
                                         <th scope="col" className="px-6 py-3 text-xs font-medium text-center text-gray-500 uppercase border border-gray-500 ">Client Name</th>
+                                        <th scope="col" className="px-6 py-3 text-xs font-medium text-center text-gray-500 uppercase border border-gray-500 ">Joinings</th>
+                                        <th scope="col" className="px-6 py-3 text-xs font-medium text-center text-gray-500 uppercase border border-gray-500 ">Amount</th>
                                         <th scope="col" className="px-6 py-3 text-xs font-medium text-center text-gray-500 uppercase border ">Action</th>
                                     </tr>
                                 </thead>
@@ -230,6 +232,8 @@ const AccountHandling = ({ userData }) => {
                                             <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.channelName}</td>
                                             <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.hrDetails[0]?.hrPhone}</td>
                                             <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.clientName[0]}</td>
+                                            <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.joinings}</td>
+                                            <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.amount}</td>
                                             <td className="px-6 py-4 text-sm font-medium text-center border whitespace-nowrap">
                                                 <button onClick={(e) => {
                                                     e.stopPropagation()
@@ -249,6 +253,8 @@ const AccountHandling = ({ userData }) => {
                                             <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.channelName}</td>
                                             <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.hrDetails[0]?.hrPhone}</td>
                                             <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.clientName[0]}</td>
+                                            <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.joinings}</td>
+                                            <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.amount}</td>
                                             <td className="px-6 py-4 text-sm font-medium text-center border whitespace-nowrap">
                                                 <button onClick={(e) => {
                                                     e.stopPropagation()
@@ -268,6 +274,8 @@ const AccountHandling = ({ userData }) => {
                                             <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.channelName}</td>
                                             <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.hrDetails[0]?.hrPhone}</td>
                                             <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.clientName[0]}</td>
+                                            <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.joinings}</td>
+                                            <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.amount}</td>
                                             <td className="px-6 py-4 text-sm font-medium text-center border whitespace-nowrap">
                                                 <button onClick={(e) => {
                                                     e.stopPropagation()
@@ -287,6 +295,8 @@ const AccountHandling = ({ userData }) => {
                                             <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.channelName}</td>
                                             <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.hrDetails[0]?.hrPhone}</td>
                                             <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.clientName[0]}</td>
+                                            <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.joinings}</td>
+                                            <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.amount}</td>
                                             <td className="px-6 py-4 text-sm font-medium text-center border whitespace-nowrap">
                                                 <button onClick={(e) => {
                                                     e.stopPropagation()
@@ -306,6 +316,8 @@ const AccountHandling = ({ userData }) => {
                                             <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.channelName}</td>
                                             <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.hrDetails[0]?.hrPhone}</td>
                                             <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.clientName[0]}</td>
+                                            <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.joinings}</td>
+                                            <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.amount}</td>
                                             <td className="px-6 py-4 text-sm font-medium text-center border whitespace-nowrap">
                                                 <button onClick={(e) => {
                                                     e.stopPropagation()
@@ -326,6 +338,8 @@ const AccountHandling = ({ userData }) => {
                                             <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.channelName}</td>
                                             <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.hrDetails[0]?.hrPhone}</td>
                                             <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.clientName[0]}</td>
+                                            <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.joinings}</td>
+                                            <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.amount}</td>
                                             <td className="px-6 py-4 text-sm font-medium text-center border whitespace-nowrap">
                                                 <button onClick={(e) => {
                                                     e.stopPropagation()

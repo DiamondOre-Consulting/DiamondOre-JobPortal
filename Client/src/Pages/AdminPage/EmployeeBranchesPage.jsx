@@ -26,6 +26,7 @@ const EmployeeBranchesPage = () => {
                 if (response.status === 201) {
 
                     setEmployee(response.data);
+                    console.log(response.data)
 
 
                 }
@@ -59,6 +60,7 @@ const EmployeeBranchesPage = () => {
     const employeename = employee?.name;
     // 
 
+
     return (
         <div className='realtive'>
 
@@ -84,7 +86,11 @@ const EmployeeBranchesPage = () => {
             <div>
 
                 <div className='flex items-center justify-center'>
-                    <h1 className='text-3xl text-center uppercase'>{employee.name}</h1>
+                    <div className='flex items-center'>
+                    <h1 className='text-3xl text-center uppercase'>{employee.name} </h1>
+                    <p className='text-3xl ml-2'> ({employee?.empType})</p>
+                    </div>
+                  
                     <div className='relative flex items-center justify-center'>
                         <div className={`size-3 animate-ping ml-4 rounded-full ${employee.activeStatus ? "bg-green-700" : "bg-red-700"}`}>
                         </div>

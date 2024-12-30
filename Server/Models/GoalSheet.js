@@ -50,13 +50,20 @@ const goalSheetSchema = new mongoose.Schema({
           incentive: {
             type: Number
           },
-          // UM INCENTIVE
-          variableIncentive: { 
+          // UM INCENTIVE   variable insentive will change to leakage
+          leakage: { 
             type: Number
           }
       },
     ],
   },
+
+  // Ticker will Run if YTD is less then 2.5 then it will save here
+
+  YTDLessTickerMessage:{
+      type : String
+  },
+
   createdAt: {
     type: Date,
     default: Date.now,

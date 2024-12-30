@@ -25,7 +25,7 @@ const EachEmployeeAccounts = () => {
             const response = await axios.get(`https://api.diamondore.in/api/employee/accounts/${id}`);
 
             if (response.status === 200) {
-
+console.log("accounts details  also",response.data)
                 seAccountDetail(response.data);
                 setNorthData(response.data.findAccount.accountDetails.filter(item => (item.zoneName).toLowerCase() === "north"));
                 setEastData(response.data.findAccount.accountDetails.filter(item => (item.zoneName).toLowerCase() === "east"));
@@ -75,6 +75,7 @@ const EachEmployeeAccounts = () => {
 
                 if (response.status === 200) {
                     setEmployees(response?.data.allEmployees);
+                    
                 }
             } catch (error) {
                 console.error("Error fetching employees:", error);
@@ -151,6 +152,8 @@ const EachEmployeeAccounts = () => {
                                 <th scope="col" className="px-6 py-3 text-xs font-medium text-center text-gray-500 uppercase border ">Channel</th>
                                 <th scope="col" className="px-6 py-3 text-xs font-medium text-center text-gray-500 uppercase border ">phone</th>
                                 <th scope="col" className="px-6 py-3 text-xs font-medium text-center text-gray-500 uppercase border ">Client Name</th>
+                                <th scope="col" className="px-6 py-3 text-xs font-medium text-center text-gray-500 uppercase border ">Joinings</th>
+                                <th scope="col" className="px-6 py-3 text-xs font-medium text-center text-gray-500 uppercase border ">Amount</th>
                                 <th scope="col" className="px-6 py-3 text-xs font-medium text-center text-gray-500 uppercase border ">Action</th>
                             </tr>
                         </thead>
@@ -163,6 +166,8 @@ const EachEmployeeAccounts = () => {
                                     <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.channelName}</td>
                                     <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.hrDetails[0]?.hrPhone}</td>
                                     <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.clientName[0]}</td>
+                                    <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.joinings || 0}</td>
+                                    <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.amount || 0}</td>
                                     <td className='px-4 py-2 text-xs border cursor-pointer'> <span className='text-red-400 hover:underline' onClick={() => handleClick(row._id)}>Edit </span> / <span onClick={() => handleDeleteClick(row._id)} className='text-red-600 hover:underline'>Delete</span></td>
                                 </tr>
                             ))}
@@ -174,6 +179,8 @@ const EachEmployeeAccounts = () => {
                                     <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.channelName}</td>
                                     <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.hrDetails[0]?.hrPhone}</td>
                                     <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.clientName[0]}</td>
+                                    <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.joinings || 0}</td>
+                                    <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.amount || 0}</td>
                                     <td className='px-4 py-2 text-xs border cursor-pointer'> <span className='text-red-400 hover:underline' onClick={() => handleClick(row._id)}>Edit </span> / <span onClick={() => handleDeleteClick(row._id)} className='text-red-600 hover:underline'>Delete</span></td>
                                 </tr>
                             ))}
@@ -185,6 +192,8 @@ const EachEmployeeAccounts = () => {
                                     <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.channelName}</td>
                                     <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.hrDetails[0]?.hrPhone}</td>
                                     <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.clientName[0]}</td>
+                                    <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.joinings || 0}</td>
+                                    <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.amount || 0}</td>
                                     <td className='px-4 py-2 text-xs border cursor-pointer'> <span className='text-red-400 hover:underline' onClick={() => handleClick(row._id)}>Edit </span> / <span onClick={() => handleDeleteClick(row._id)} className='text-red-600 hover:underline'>Delete</span></td>
                                 </tr>
                             ))}
@@ -196,6 +205,8 @@ const EachEmployeeAccounts = () => {
                                     <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.channelName}</td>
                                     <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.hrDetails[0]?.hrPhone}</td>
                                     <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.clientName[0]}</td>
+                                    <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.joinings || 0}</td>
+                                    <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.amount || 0}</td>
                                     <td className='px-4 py-2 text-xs border cursor-pointer'> <span className='text-red-400 hover:underline' onClick={() => handleClick(row._id)}>Edit </span> / <span onClick={() => handleDeleteClick(row._id)} className='text-red-600 hover:underline'>Delete</span></td>
                                 </tr>
                             ))}
@@ -207,6 +218,8 @@ const EachEmployeeAccounts = () => {
                                     <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.channelName}</td>
                                     <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.hrDetails[0]?.hrPhone}</td>
                                     <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.clientName[0]}</td>
+                                    <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.joinings || 0}</td>
+                                    <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.amount || 0}</td>
                                     <td className='px-4 py-2 text-xs border cursor-pointer'> <span className='text-red-400 hover:underline' onClick={() => handleClick(row._id)}>Edit </span> / <span onClick={() => handleDeleteClick(row._id)} className='text-red-600 hover:underline'>Delete</span></td>
                                 </tr>
                             ))}
@@ -219,6 +232,8 @@ const EachEmployeeAccounts = () => {
                                     <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.channelName}</td>
                                     <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.channels[0]?.hrDetails[0]?.hrPhone}</td>
                                     <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.clientName[0]}</td>
+                                    <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.joinings || 0}</td>
+                                    <td className="px-6 py-4 text-sm text-gray-800 border border-gray-500 whitespace-nowrap ">{row?.amount || 0}</td>
                                     <td className='px-4 py-2 text-xs border cursor-pointer'> <span className='text-red-400 hover:underline' onClick={() => handleClick(row._id)}>Edit </span> / <span onClick={() => handleDeleteClick(row._id)} className='text-red-600 hover:underline'>Delete</span></td>
                                 </tr>
                             ))}

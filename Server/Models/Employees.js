@@ -66,6 +66,28 @@ const employeeSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "AccountHandling"
   },
+  // joining exelshel shet to uplaod 
+  joiningExcel:{
+    type : String
+  },
+
+  Policies: {
+    type: [
+      {
+        leave: {
+          type: String,
+        },
+        performanceMenegement: {
+          type: String,
+        },
+        holidayCalendar: {
+          type: String,
+        },
+      },
+    ],
+    default: [],
+  },
+
   activeStatus: {
     type: Boolean,
     default: true

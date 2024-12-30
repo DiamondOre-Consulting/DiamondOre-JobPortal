@@ -88,7 +88,16 @@ const zoneSchema = new mongoose.Schema({
   clientName: [{
     type: String,
     default: []
-  }]
+  }],
+  joinings: {
+    type: String, // Number may be more appropriate
+    default: "0",
+  },
+  amount: {
+    type: String, // Number may be more appropriate
+    default: "0",
+  }
+
 
 
 });

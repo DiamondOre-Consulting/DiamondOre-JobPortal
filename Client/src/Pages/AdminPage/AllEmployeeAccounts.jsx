@@ -17,7 +17,7 @@ const AllEmployeeAccounts = () => {
                 const response = await axios.get('https://api.diamondore.in/api/employee/accounts');
                 if (response.status === 200) {
                     setAllAccountsData(response.data);
-
+console.log(response.data)
                     setLoading(false)
                 }
             } catch (error) {
@@ -78,13 +78,7 @@ const AllEmployeeAccounts = () => {
     }, []);
 
 
-    const handleClick = (id) => {
-
-        setAccountId(id);
-        setShowPopup(true)
-
-    }
-
+  
 
 
     const handledeleteclick = (id) => {
@@ -142,6 +136,68 @@ const AllEmployeeAccounts = () => {
     };
 
 
+    // edit the joining and the amount  in the acccount handling 
+
+    const [amount , setAmount] = useState('');
+    const [joinings , setjoinings] = useState('');
+    const [accountDetailsId , setAccountDetailId] = useState();
+
+    const handleClick = (id , accountId) => {
+
+        setAccountId(id);
+        setAccountDetailId(accountId)
+        console.table([accountid, accountDetailsId])
+        setShowPopup(true)
+
+    }
+
+
+  // Update the handleEditAccounthandling function
+const handleEditAccounthandling = async () => {
+    try {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            console.error("No token found");
+            navigate("/admin-login");
+            return;
+        }
+
+        if (!accountid) {
+            console.error("No account ID selected");
+            return;
+        }
+
+        const data = {
+            joinings,
+            amount,
+        };
+
+        const response = await axios.put(
+            `https://api.diamondore.in/api/admin-confi/updateAccounts/${accountid}/${accountDetailsId}`,
+            data,
+            console.log(data),
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        if (response.status === 200) {
+            alert("Account updated successfully");
+            setjoinings("");
+            setAmount("");
+            setShowPopup(false);
+            window.location.reload();
+        }
+    } catch (error) {
+        console.error("Error updating account handling:", error);
+        alert("Failed to update account. Please try again.");
+    }
+};
+
+
     return (
         <>
             <div>
@@ -189,18 +245,23 @@ const AllEmployeeAccounts = () => {
                                                     <th className="px-4 py-2">Client Name</th>
                                                     <th className="px-4 py-2">Phone</th>
                                                     <th className="px-4 py-2">Zone</th>
+                                                    <th className="px-4 py-2">Joinings</th>
+                                                    <th className='px-4 py-2'> Amount</th>
                                                     <th className='px-4 py-2'> Action</th>
+                                                    
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {groupedData[ownerName].flatMap(account =>
                                                     account.accountDetails.map((detail, index) => (
                                                         <tr key={`${account._id}-${index}`} className='text-center'>
-                                                            <td className="px-4 py-2 border">{detail.detail.hrName}</td>
-                                                            <td className="px-4 py-2 border">{detail.detail.clientName}</td>
-                                                            <td className="px-4 py-2 border">{detail.detail.phone}</td>
-                                                            <td className="px-4 py-2 border">{detail.detail.zone}</td>
-                                                            <td className='px-4 py-2 text-xs cursor-pointer borrder'> <span className='text-red-400 hover:underline' onClick={() => handleClick(detail._id)}>Edit </span> / <span onClick={() => handledeleteclick(detail._id)} className='text-red-600 hover:underline'>Delete</span></td>
+                                                            <td className="px-4 py-2 border">{detail?.channels[0]?.hrDetails[0]?.hrName}</td>
+                                                            <td className="px-4 py-2 border">{detail?.clientName}</td>
+                                                            <td className="px-4 py-2 border">{detail?.channels[0]?.hrDetails[0]?.hrPhone}</td>
+                                                            <td className="px-4 py-2 border">{detail?.zoneName}</td>
+                                                            <td className="px-4 py-2 border">{detail?.joinings}</td>
+                                                            <td className="px-4 py-2 border">{detail?.amount}</td>
+                                                            <td className='px-4 py-2 text-xs cursor-pointer borrder'> <span className='text-red-400 hover:underline' onClick={() => handleClick( account._id,detail._id  )}>Edit </span> / <span onClick={() => handledeleteclick(detail._id)} className='text-red-600 hover:underline'>Delete</span></td>
                                                         </tr>
                                                     ))
                                                 )}
@@ -220,8 +281,55 @@ const AllEmployeeAccounts = () => {
                 }
             </div>
 
-
             {showpopup && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-60">
+        <div className="w-3/4 max-w-md p-6 bg-white rounded-md shadow-md">
+            <h2 className="mb-4 text-lg font-semibold">Edit Account Details</h2>
+            <form onSubmit={(e) => e.preventDefault()}>
+                <div className="mb-4">
+                    <label className="block mb-2 text-sm font-medium text-gray-700">
+                        Joinings
+                    </label>
+                    <input
+                        type="text"
+                        value={joinings}
+                        onChange={(e) => setjoinings(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block mb-2 text-sm font-medium text-gray-700">
+                        Amount
+                    </label>
+                    <input
+                        type="text"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+                <div className="flex justify-end">
+                    <button
+                        type="button"
+                        onClick={() => setShowPopup(false)}
+                        className="px-4 py-2 mr-2 text-white bg-gray-500 rounded-md hover:bg-gray-600"
+                    >
+                        Close
+                    </button>
+                    <button
+                        type="button"
+                        onClick={handleEditAccounthandling}
+                        className="px-4 py-2 text-white bg-orange-400 rounded-md hover:bg-orange-500"
+                    >
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+)}
+
+            {/* {showpopup && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-60">
                     <div className="w-3/4 max-w-md p-6 bg-white rounded-md shadow-md">
                         <h2 className="mb-4 text-lg font-semibold">Change Account Owner</h2>
@@ -251,7 +359,7 @@ const AllEmployeeAccounts = () => {
                         </form>
                     </div>
                 </div>
-            )}
+            )} */}
 
 
 

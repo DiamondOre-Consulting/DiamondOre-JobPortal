@@ -37,6 +37,7 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import goalsheeticon from '../../assets/goalsheeticon.png';
 import incentiveicon from '../../assets/incentiveicon.png';
 import kpiicon from '../../assets/kpiicon.png'
+import EmployeePolicies from './EmployeePolicies';
 
 const drawerWidth = 240;
 
@@ -192,7 +193,7 @@ export default function EmpDrawerSidebar() {
           }
         );
         if (response.status == 200) {
-
+console.log(response.data)
           setUserData(response.data);
         } else {
 
@@ -279,6 +280,8 @@ export default function EmpDrawerSidebar() {
             { text: 'KPI-Score', icon: <img src={kpiicon} className='w-8 h-8' />, path: '/kpi-score' },
             { text: 'Account Handling', icon: <AccountCircleIcon sx={{ fontSize: 30 }} />, path: '/acount-handling' },
             { text: 'All Accounts', icon: <ManageAccountsIcon sx={{ fontSize: 30 }} />, path: '/all-accounts' },
+            { text: 'Policies', icon: <ManageAccountsIcon sx={{ fontSize: 30 }} />, path: '/all-policies' },
+
           ].map((item) => (
             <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
@@ -316,6 +319,7 @@ export default function EmpDrawerSidebar() {
           <Route path='/acount-handling' element={<AccountHandling userData={userData} />} />
           <Route path='/incentive' element={<Incentive />} />
           <Route path='/all-accounts' element={<AllAccounts />} />
+          <Route path='/all-policies' element={<EmployeePolicies/>}/>
         </Routes>
       </Box>
     </Box>

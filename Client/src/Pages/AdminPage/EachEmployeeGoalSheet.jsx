@@ -19,28 +19,26 @@ const EachEmployeeGoalSheet = () => {
   const [goalSheetData, setGoalSheetData] = useState([]);
   const [year, setYear] = useState(null);
   const [month, setMonth] = useState(null);
-  const [prevYear, setPrevYear] = useState(null)
-  const [goalListId, setGoalListId] = useState()
-  const [prevMonth, setPrevMonth] = useState(null)
+  const [prevYear, setPrevYear] = useState(null);
+  const [goalListId, setGoalListId] = useState();
+  const [prevMonth, setPrevMonth] = useState(null);
   const [noOfJoinings, setNoOfJoinings] = useState(0);
   const [revenue, setRevenue] = useState(null);
   const [cost, setCost] = useState(null);
   const [incentive, setInsentive] = useState(null);
-  const [variableIncentive, setVariableIncentive] = useState(null);
+  const [leakage, setLeakage] = useState(null);
   const [showSubmitLoader, setShowSubmitLoader] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const navigate = useNavigate();
   const [selectedYear, setSelectedYear] = useState("");
   const [allGoalSheetData, setAllGoalSheetData] = useState([]);
   const [filteredGoalSheetData, setFilteredGoalSheetData] = useState([]);
-  const [trigger, setTrigger] = useState(0)
+  const [trigger, setTrigger] = useState(0);
 
   // Submit the goal sheet form
   const handleSetGoalSheet = async (e) => {
     e.preventDefault();
     setShowSubmitLoader(true);
-
-
 
     try {
       const token = localStorage.getItem("token");
@@ -50,7 +48,7 @@ const EachEmployeeGoalSheet = () => {
       const revenueNumber = Number(revenue);
       const costNumber = Number(cost);
       const incentiveNumber = Number(incentive);
-      const variableIncentiveNumber = Number(variableIncentive);
+      const leakageNumber = Number(leakage);
 
       // Validate conversion
       if (
@@ -58,7 +56,7 @@ const EachEmployeeGoalSheet = () => {
         isNaN(revenueNumber) ||
         isNaN(costNumber) ||
         isNaN(incentiveNumber) ||
-        isNaN(variableIncentiveNumber)
+        isNaN(leakageNumber)
       ) {
         console.error("One or more fields are not valid numbers");
         setShowSubmitLoader(false);
@@ -75,7 +73,7 @@ const EachEmployeeGoalSheet = () => {
           revenue: revenueNumber,
           cost: costNumber,
           incentive: incentiveNumber,
-          variableIncentive: variableIncentiveNumber,
+          leakage: leakageNumber,
         },
         {
           headers: {
@@ -85,8 +83,7 @@ const EachEmployeeGoalSheet = () => {
       );
 
       if (response.status === 201) {
-
-        setTrigger((prev) => prev + 1)
+        setTrigger((prev) => prev + 1);
         setSnackbarOpen(true); // Open Snackbar on successful submission
         setCost("");
         setRevenue("");
@@ -94,8 +91,7 @@ const EachEmployeeGoalSheet = () => {
         setYear("");
         setMonth("");
         setInsentive("");
-        setVariableIncentive("");
-
+        setLeakage("");
       } else {
         setSnackbarOpen(false);
         setCost("");
@@ -103,22 +99,18 @@ const EachEmployeeGoalSheet = () => {
         setNoOfJoinings("");
         setYear("");
         setInsentive("");
-        setVariableIncentive("");
+        setLeakage("");
         setMonth(""); // Close Snackbar if submission fails
       }
     } catch (error) {
       console.error("Error setting goal sheet:", error);
       setShowSubmitLoader(false);
 
-
       if (error.response && error.response.status === 404) {
-
         setGoalSheetForm(false);
       } else {
-
       }
-    }
-    finally {
+    } finally {
       setShowSubmitLoader(false);
     }
   };
@@ -153,7 +145,7 @@ const EachEmployeeGoalSheet = () => {
           revenue: editRevenue,
           sheetId: goalListId,
           incentive: editIncentive,
-          variableIncentive: editVariableIncentive,
+          leakage: editleakage,
         },
         {
           headers: {
@@ -163,22 +155,22 @@ const EachEmployeeGoalSheet = () => {
       );
 
       if (response.status === 200) {
-        setTrigger((prev) => prev + 1)
+        setTrigger((prev) => prev + 1);
 
         // Trigger a re-fetch of the goal sheet data
         // This will trigger useEffect to fetch updated data
         setEditMode(false); // Close the edit mode/modal
 
         // Optionally, you can display a success message
-
       }
     } catch (error) {
       console.error("Error updating goal sheet:", error);
     }
   };
 
-
-  // 
+  //get goal sheeht 
+  //get also ticker message 
+  const [tickermessage , setgetTickerMessage] = useState("");
 
   useEffect(() => {
     const handleGoalSheet = async () => {
@@ -195,16 +187,18 @@ const EachEmployeeGoalSheet = () => {
 
         if (response.status === 200) {
           setAllGoalSheetData(response.data); // Update the goal sheet data
+          setgetTickerMessage(response.data[0].YTDLessTickerMessage);
           // You can verify the data here
+          console.log("My Goal Sheet ", response.data);
+          setFilteredData(response.data);
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     };
 
     handleGoalSheet();
   }, [trigger]);
-
 
   // useEffect(() => {
   //   if (selectedYear) {
@@ -244,14 +238,14 @@ const EachEmployeeGoalSheet = () => {
   const [editCost, setEditCost] = useState(0);
   const [editRevenue, setEditRevenue] = useState(0);
   const [editIncentive, setEditIncentive] = useState(0);
-  const [editVariableIncentive, setEditVariableIncentive] = useState(0);
+  const [editleakage, setEditLeakage] = useState(0);
 
   const [goalSheetToEdit, setGoalSheetToEdit] = useState({});
 
   const handleEditClick = (detail) => {
-    setGoalListId(detail?._id)
-    setPrevYear(detail?.year)
-    setPrevMonth(detail?.month)
+    setGoalListId(detail?._id);
+    setPrevYear(detail?.year);
+    setPrevMonth(detail?.month);
     setEditMode(true); // Open the modal
     setEditYear(detail.year);
     setEditMonth(detail.month);
@@ -259,19 +253,143 @@ const EachEmployeeGoalSheet = () => {
     setEditCost(detail.cost);
     setEditRevenue(detail.revenue);
     setEditIncentive(detail.incentive);
-    setEditVariableIncentive(detail.variableIncentive);
+    setEditLeakage(detail.leakage);
     setGoalSheetToEdit(detail);
   };
 
+  const [filteredData, setFilteredData] = useState([]);
+  const [selectedYearchange, setSelectedYearchange] = useState("All");
 
+  const handleYearChanging = (year) => {
+    setSelectedYear(year);
+
+    if (year === "All") {
+      setFilteredData(allGoalSheetData);
+    } else {
+      const filtered = allGoalSheetData.map((data) => ({
+        ...data,
+        goalSheetDetails: data.goalSheetDetails.filter(
+          (detail) => detail.year === parseInt(year)
+        ),
+      }));
+      setFilteredData(filtered);
+    }
+  };
+
+  const totals = filteredData
+    .flatMap((data) => data.goalSheetDetails) // Flatten all goalSheetDetails
+    .reduce(
+      (acc, detail) => {
+        acc.noOfJoinings += detail.noOfJoinings;
+        acc.revenue += detail.revenue;
+        acc.cost += detail.cost;
+        acc.target += detail.target;
+        return acc;
+      },
+      { noOfJoinings: 0, revenue: 0, cost: 0, target: 0 }
+    );
+
+  console.log(totals); // { noOfJoinings: X, revenue: Y, cost: Z, target: W }
+
+  // for uploading joining Excel
+  const [file, setFile] = useState(null); // Selected file
+  const [loading, setLoading] = useState(false); // Loader state
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const hanndleUpload = async () => {
+    if (!file) {
+      alert("Please Upload File.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const formData = new FormData();
+      formData.append("myFileImage", file);
+
+      const uploadResponse = await axios.post(
+        "https://api.diamondore.in/api/admin-confi/upload-excelsheet-url",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const excelUrl = uploadResponse.data;
+      console.log(excelUrl);
+
+      const response = await axios.post(
+        `https://api.diamondore.in/api/admin-confi/upload-joiningsheet/${id}`,
+        { joiningExcel: excelUrl }
+      );
+
+      if (response.status === 200) {
+        setLoading(false);
+        alert("File Uploaded  Successfully");
+        setFile("");
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Error in uploading File", error);
+      setLoading(false);
+    }
+  };
+
+  const [updateTicker, setUpdateTicker] = useState(false);
+  const [tickerMessage, setTickerMessage] = useState("");
+
+  console.log(tickerMessage);
+  const fireTicker = async () => {
+    try {
+      const response = await axios.post(
+        `https://api.diamondore.in/api/admin-confi/fire-ticker/${id}`,
+        {
+          tickerMessage,
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("Ticker Triggered Successfully", response.data);
+        alert(response.data.message);
+        window.location.reload();
+      }
+    } catch (error) {
+      console.log("Error Firing Ticker", error);
+      alert("Failed To trigger the ticker");
+    }
+  };
   return (
     <>
       {/* <AdminNav /> */}
+      
+      {tickermessage && (
+        <>
+          <div class="bg-red-200 px-6 py-4 mx-2 my-4 rounded-md text-lg flex items-center mx-auto w-full animate-pulse">
+            <svg
+              viewBox="0 0 24 24"
+              class="text-red-600 w-5 h-5 sm:w-5 sm:h-5 mr-3"
+            >
+              <path
+                fill="currentColor"
+                d="M11.983,0a12.206,12.206,0,0,0-8.51,3.653A11.8,11.8,0,0,0,0,12.207,11.779,11.779,0,0,0,11.8,24h.214A12.111,12.111,0,0,0,24,11.791h0A11.766,11.766,0,0,0,11.983,0ZM10.5,16.542a1.476,1.476,0,0,1,1.449-1.53h.027a1.527,1.527,0,0,1,1.523,1.47,1.475,1.475,0,0,1-1.449,1.53h-.027A1.529,1.529,0,0,1,10.5,16.542ZM11,12.5v-6a1,1,0,0,1,2,0v6a1,1,0,1,1-2,0Z"
+              ></path>
+            </svg>
+            <span class="text-red-800">{tickermessage}</span>
+          </div>
+        </>
+      )}
       <div className="flex">
         <h1 className="mx-auto mb-4 text-2xl font-bold text-center md:text-4xl">
           Goal Sheet {employeename}
         </h1>
       </div>
+
       <div className="grid grid-cols-1 gap-0 px-2 py-6 md:grid-cols-3 md:gap-10 md:px-10">
         <div className=" md:col-1">
           <div className="relative max-w-md p-8 mb-10 bg-white border-blue-900 rounded-lg shadow-lg md:w-full md:mt-0">
@@ -373,18 +491,15 @@ const EachEmployeeGoalSheet = () => {
                   </div>
 
                   <div className="">
-                    <label
-                      htmlFor="variableIncentive"
-                      className="block text-gray-700"
-                    >
-                      Variable Incentive:
+                    <label htmlFor="leakage" className="block text-gray-700">
+                      Leakage:
                     </label>
                     <input
                       type="number"
-                      id="variableIncentive"
+                      id="leakage"
                       className="w-full px-3 py-2 border border-gray-500 rounded-lg"
-                      value={variableIncentive}
-                      onChange={(e) => setVariableIncentive(e.target.value)}
+                      value={leakage}
+                      onChange={(e) => setLeakage(e.target.value)}
                     />
                   </div>
                 </div>
@@ -435,6 +550,48 @@ const EachEmployeeGoalSheet = () => {
         </div>
 
         <div className="col-span-2">
+          <div className="mb-4 flex  justify-between items-end">
+            <div>
+              <label htmlFor="yearFilter" className="mr-2  uppercase">
+                Filter by Year:
+              </label>
+              <select
+                id="yearFilter"
+                className="px-2 py-1 border"
+                value={selectedYearchange}
+                onChange={(e) => handleYearChanging(e.target.value)}
+              >
+                <option value="All" >All</option>
+                {[
+                  ...new Set(
+                    allGoalSheetData.flatMap((d) =>
+                      d.goalSheetDetails.map((detail) => detail.year)
+                    )
+                  ),
+                ].map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex float-right ">
+              <input
+                className="border border-1"
+                onChange={handleFileChange}
+                type="file"
+              />{" "}
+              <p
+                className="bg-black text-gray-100 p-2 cursor-pointer"
+                onClick={hanndleUpload}
+                disable={loading}
+              >
+                {loading ? "uploading..." : "Upload Joinings"}
+              </p>
+            </div>
+          </div>
+
           <div className="container mx-auto overflow-x-auto h-[500px] relative">
             <table id="example" className="w-full table-auto ">
               <thead className="sticky top-0 text-xs text-gray-100 bg-blue-900 shadow">
@@ -450,79 +607,82 @@ const EachEmployeeGoalSheet = () => {
                   <th className="px-4 py-2">YTD</th>
                   <th className="px-4 py-2">MTD</th>
                   <th className="px-4 py-2">Incentive</th>
-                  <th className="px-4 y-2">Variable Incentive</th>
+                  <th className="px-4 y-2">Leakage</th>
                   <th className="px-4 y-2">Action</th>
                 </tr>
               </thead>
 
               <tbody>
-                {allGoalSheetData.length > 0 &&
-                  allGoalSheetData.map((data) => (
-                    <React.Fragment key={data._id}>
-                      {data.goalSheetDetails.length > 0 ? (
-                        data.goalSheetDetails.map((detail, index) => (
-                          <tr
-                            key={`${data._id}-${index}`}
-                            className="text-center"
-                          >
-                            {" "}
-                            <td className="px-4 py-2 border">{detail.year}</td>
-                            <td className="px-4 py-2 border">
-                              {" "}
-                              {monthNames[detail.month] || "Unknown"}{" "}
-                            </td>
-                            <td className="px-4 py-2 border">
-                              {detail.noOfJoinings}
-                            </td>
-                            <td className="px-4 py-2 border">
-                              {detail.revenue}
-                            </td>
-                            <td className="px-4 py-2 border">{detail.cost}</td>
-                            <td className="px-4 py-2 border">
-                              {detail.target}
-                            </td>
-                            <td className="px-4 py-2 border">
-                              {detail.cumulativeCost}
-                            </td>
-                            <td className="px-4 py-2 border">
-                              {detail.cumulativeRevenue}
-                            </td>
-                            <td className="px-4 py-2 border">
-                              {detail.achYTD}
-                            </td>
-                            <td className="px-4 py-2 border">
-                              {detail.achMTD}
-                            </td>
-                            <td className="px-4 py-2 border">
-                              {detail.incentive ?? "N/A"}
-                            </td>
-                            <td className="px-4 py-2 border">
-                              {detail.variableIncentive ?? "N/A"}
-                            </td>
-                            <td
-                              className="px-4 py-2 text-red-600 border cursor-pointer"
-                              onClick={() => {
-
-                                handleEditClick(detail)
-                              }}
-                            >
-                              Edit
-                            </td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
+                {filteredData.length > 0 &&
+                  filteredData.map((data) =>
+                    data.goalSheetDetails.length > 0 ? (
+                      data.goalSheetDetails.map((detail, index) => (
+                        <tr
+                          key={`${data._id}-${index}`}
+                          className="text-center"
+                        >
+                          <td className="px-4 py-2 border">{detail.year}</td>
+                          <td className="px-4 py-2 border">
+                            {monthNames[detail.month] || "Unknown"}{" "}
+                          </td>
+                          <td className="px-4 py-2 border">
+                            {detail.noOfJoinings}
+                          </td>
+                          <td className="px-4 py-2 border">{detail.revenue}</td>
+                          <td className="px-4 py-2 border">{detail.cost}</td>
+                          <td className="px-4 py-2 border">{detail.target}</td>
+                          <td className="px-4 py-2 border">
+                            {detail.cumulativeCost}
+                          </td>
+                          <td className="px-4 py-2 border">
+                            {detail.cumulativeRevenue}
+                          </td>
                           <td
-                            colSpan="11"
-                            className="px-4 py-2 text-center border"
+                            className={`px-4 py-2 border cursor-pointer ${
+                              detail.achYTD < 2.5 ? "bg-red-400" : "bg-white"
+                            }`}
+                            onClick={() => setUpdateTicker(true)}
                           >
-                            No details available
+                            {detail.achYTD}
+                          </td>
+                          <td className="px-4 py-2 border">{detail.achMTD}</td>
+                          <td className="px-4 py-2 border">
+                            {detail.incentive ?? "N/A"}
+                          </td>
+                          <td className="px-4 py-2 border">
+                            {detail.leakage ?? "N/A"}
+                          </td>
+                          <td
+                            className="px-4 py-2 text-red-600 border cursor-pointer"
+                            onClick={() => {
+                              handleEditClick(detail);
+                            }}
+                          >
+                            Edit
                           </td>
                         </tr>
-                      )}
-                    </React.Fragment>
-                  ))}
+                      ))
+                    ) : (
+                      <tr key={data._id}>
+                        <td
+                          colSpan="13"
+                          className="px-4 py-2 text-center border"
+                        >
+                          No details available
+                        </td>
+                      </tr>
+                    )
+                  )}
               </tbody>
+              <tr className="border border-1 bg-blue-400 text-center w-full">
+                <td colSpan="2" className="font-bold">
+                  Grand Total
+                </td>
+                <td className="font-bold">{totals.noOfJoinings}</td>
+                <td className="font-bold">{totals.revenue}</td>
+                <td className="font-bold">{totals.cost}</td>
+                <td className="font-bold">{totals.target}</td>
+              </tr>
             </table>
           </div>
         </div>
@@ -654,14 +814,12 @@ const EachEmployeeGoalSheet = () => {
               </div>
 
               <div>
-                <label className="block text-gray-700">
-                  Variable Incentive
-                </label>
+                <label className="block text-gray-700">Leakage</label>
                 <input
                   type="number"
-                  value={editVariableIncentive}
-                  onChange={(e) => setEditVariableIncentive(e.target.value)}
-                  placeholder="Variable Incentive"
+                  value={editleakage}
+                  onChange={(e) => setEditLeakage(e.target.value)}
+                  placeholder="Leakage"
                   className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -671,6 +829,47 @@ const EachEmployeeGoalSheet = () => {
                 className="w-full p-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
               >
                 Save Changes
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {updateTicker && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+          onClick={() => setUpdateTicker(false)} // Close modal when clicking outside
+        >
+          <div
+            className="w-full max-w-xl p-6 bg-white rounded-lg shadow-lg"
+            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
+          >
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                fireTicker();
+                setUpdateTicker(false); // Close modal after firing the ticker
+              }}
+              className="space-y-4"
+            >
+              <div>
+                <label className="block text-gray-700 font-semibold mb-4">
+                  Write Description
+                </label>
+                <textarea
+                  rows={4}
+                  value={tickerMessage}
+                  onChange={(e) => setTickerMessage(e.target.value)}
+                  placeholder="Enter the ticker message here"
+                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full p-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
+              >
+                Fire Ticker
               </button>
             </form>
           </div>
