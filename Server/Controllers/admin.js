@@ -3509,5 +3509,124 @@ router.put("/updateAccounts/:accountId/:accountDetailsId", async (req, res) => {
 
 
 
+  // Goal sheet 
+  const sendMailToEmployee = async (email, emailContent) => {
+    try {
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "tech@diamondore.in",
+          pass: "zlnbcvnhzdddzrqn",
+        },
+      });
+
+      const mailOptions = {
+        from: "Diamondore.in <tech@diamondore.in>",
+        to: `Recipient <${email}>`,
+        subject: "Your Goal Sheet Analysis",
+        text: emailContent,
+        html: `
+          <h1 style="color: blue; text-align: center; font-size: 1rem">Diamond Consulting Pvt.Ltd.</h1>
+          <p style="font-size: 1.2rem;">${emailContent.replace(/\n/g, "<br/>")}</p>
+        `,
+      };
+
+      const info = await transporter.sendMail(mailOptions);
+      console.log("Email sent: " + info.response);
+      return info;
+    } catch (error) {
+      console.error("Error sending email:", error);
+      throw error;
+    }
+  };
+  // Route to send email
+  router.post("/send-mail/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { description, total_costs, total_revenue, expected_revenue } = req.body;
+  
+      if (!total_costs || !total_revenue || !expected_revenue) {
+        return res.status(400).send({ error: "Invalid or missing financial data" });
+      }
+  
+      const employee = await Employees.findById(id);
+      if (!employee) {
+        return res.status(404).send({ error: "Employee not found" });
+      }
+
+      const goalSheet = await GoalSheet.findOne({ owner: id });
+      if (!goalSheet) {
+        return res.status(404).send({ error: "Goal sheet not found for this employee" });
+      }
+  
+      const formattedGoalSheetDetails = goalSheet.goalSheetDetails
+        .map((detail) => `
+          <tr>
+            <td>${detail.year || "N/A"}</td>
+            <td>${detail.month || "N/A"}</td>
+            <td>${detail.noOfJoinings || "N/A"}</td>
+            <td>${detail.cost || "N/A"}</td>
+            <td>${detail.revenue || "N/A"}</td>
+            <td>${detail.target || "N/A"}</td>
+            <td>${detail.cumulativeCost || "N/A"}</td>
+            <td>${detail.cumulativeRevenue || "N/A"}</td>
+            <td>${detail.achYTD || "N/A"}</td>
+            <td>${detail.achMTD || "N/A"}</td>
+            <td>${detail.incentive || "N/A"}</td>
+            <td>${detail.leakage || "N/A"}</td>
+          </tr>
+        `)
+        .join("");
+  
+      const goalSheetTable = `
+        <table border="1" style="border-collapse: collapse; width: 100%;">
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Month</th>
+              <th>No of Joinings</th>
+              <th>Cost</th>
+              <th>Revenue</th>
+              <th>Target</th>
+              <th>Cumulative Cost</th>
+              <th>Cumulative Revenue</th>
+              <th>Achievement YTD</th>
+              <th>Achievement MTD</th>
+              <th>Incentive</th>
+              <th>Leakage</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${formattedGoalSheetDetails}
+          </tbody>
+        </table>
+      `;
+  
+      const achievement_ratio = (total_revenue / total_costs).toFixed(2);
+  
+      const emailContent = `
+          <p>${description || "No additional details provided."}</p>
+        <h2>Financial Overview</h2>
+        <ul>
+          <li><strong>Total Costs:</strong> ₹${total_costs}</li>
+          <li><strong>Total Revenue:</strong> ₹${total_revenue}</li>
+          <li><strong>Expected Revenue:</strong> ₹${expected_revenue}</li>
+        </ul>
+        <p><strong>Achievement Ratio:</strong> ${achievement_ratio}x</p>
+        <h2>Goal Sheet Details</h2>
+        ${goalSheetTable}
+      
+      `;
+  
+      await sendMailToEmployee(employee.email, emailContent);
+  
+      res.status(200).send({ message: "Email sent successfully with goal sheet details" });
+    } catch (error) {
+      console.error("Error sending email:", error);
+      res.status(500).send({ error: "Failed to send email. Please try again later." });
+    }
+  });
+  
+
 
 export default router;

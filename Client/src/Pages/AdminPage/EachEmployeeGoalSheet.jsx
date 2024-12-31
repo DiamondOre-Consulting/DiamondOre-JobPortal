@@ -168,9 +168,9 @@ const EachEmployeeGoalSheet = () => {
     }
   };
 
-  //get goal sheeht 
-  //get also ticker message 
-  const [tickermessage , setgetTickerMessage] = useState("");
+  //get goal sheeht
+  //get also ticker message
+  const [tickermessage, setgetTickerMessage] = useState("");
 
   useEffect(() => {
     const handleGoalSheet = async () => {
@@ -364,10 +364,44 @@ const EachEmployeeGoalSheet = () => {
       alert("Failed To trigger the ticker");
     }
   };
+
+  //send mail to the admin about Goal Sheet
+  const [sendEmialPopup, setSendEmailPopup] = useState(false);
+  const [description, setDescription] = useState("");
+  const [totalCosts, setTotalCosts] = useState("");
+  const [totalRevenue, setTotalRevenue] = useState("");
+  const [expectedRevenue, setExpectedRevenue] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const sendMail = async (e) => {
+    e.preventDefault(); // Prevent page reload
+    setIsLoading(true);
+
+    try {
+      const response = await axios.post(
+        `https://api.diamondore.in/api/admin-confi/send-mail/${id}`,
+        {
+          description,
+          total_costs: totals.cost,
+          total_revenue: totals.revenue,
+          expected_revenue: totals.target,
+        }
+      );
+
+      alert("Email sent successfully!");
+      setIsLoading(false);
+      setSendEmailPopup(false)
+    } catch (error) {
+      console.error("Failed to send email:", error);
+      alert("An error occurred. Please try again.");
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
       {/* <AdminNav /> */}
-      
+
       {tickermessage && (
         <>
           <div class="bg-red-200 px-6 py-4 mx-2 my-4 rounded-md text-lg flex items-center mx-auto w-full animate-pulse">
@@ -561,7 +595,7 @@ const EachEmployeeGoalSheet = () => {
                 value={selectedYearchange}
                 onChange={(e) => handleYearChanging(e.target.value)}
               >
-                <option value="All" >All</option>
+                <option value="All">All</option>
                 {[
                   ...new Set(
                     allGoalSheetData.flatMap((d) =>
@@ -589,9 +623,12 @@ const EachEmployeeGoalSheet = () => {
               >
                 {loading ? "uploading..." : "Upload Joinings"}
               </p>
+
+              <p className="p-2 bg-black text-white  w-fit  mx-4 cursor-pointer " onClick={()=> setSendEmailPopup(true)}>Send Email</p>
             </div>
           </div>
 
+        
           <div className="container mx-auto overflow-x-auto h-[500px] relative">
             <table id="example" className="w-full table-auto ">
               <thead className="sticky top-0 text-xs text-gray-100 bg-blue-900 shadow">
@@ -870,6 +907,81 @@ const EachEmployeeGoalSheet = () => {
                 className="w-full p-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
               >
                 Fire Ticker
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {sendEmialPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div
+            className="w-full max-w-xl p-6 bg-white rounded-lg shadow-lg"
+            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
+          >
+            <h2 className="text-lg font-bold   text-center uppercase">Send Email to Employess</h2>
+            <div className="bg-blue-900 w-40 h-1 mx-auto mb-4"></div>
+            <form onSubmit={sendMail} className="space-y-4">
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">
+                  Description
+                </label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Enter the description"
+                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">
+                  Total Costs
+                </label>
+                <input
+                  type="number"
+                  value={totals.cost}
+                  onChange={(e) => setTotalCosts(e.target.value)}
+                  placeholder="Enter total costs"
+                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">
+                  Total Revenue
+                </label>
+                <input
+                  type="number"
+                  value={totals.revenue}
+                  onChange={(e) => setTotalRevenue(e.target.value)}
+                  placeholder="Enter total revenue"
+                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">
+                  Expected Revenue
+                </label>
+                <input
+                  type="number"
+                  value={totals.target}
+                  onChange={(e) => setExpectedRevenue(e.target.value)}
+                  placeholder="Enter expected revenue"
+                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full p-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
+                disabled={isLoading}
+              >
+                {isLoading ? "Sending..." : "Send Email"}
+              </button>
+              <button
+                type="button"
+                onClick={()=> setSendEmailPopup(false)}
+                className="w-full mt-2 p-2 text-gray-700 border rounded-md hover:bg-gray-100"
+              >
+                Cancel
               </button>
             </form>
           </div>
