@@ -62,6 +62,8 @@ import EachEmployeeGoalSheet from "./Pages/AdminPage/EachEmployeeGoalSheet";
 import AdminDrawerSidebar from "./Components/AdminPagesComponents/AdminDrawerSidebar";
 import EmployeeRnrBoard from '../src/Pages/Employeepage/EmployeeRnrBoard'
 import Snowfall from 'react-snowfall'
+import AuthVerify from "./Pages/AdminPage/AuthVerify";
+import EmpAuthVerify from "./Pages/Employeepage/EmpAuthVerify";
 
 function App() {
   let [loading, setLoading] = useState(true);
@@ -141,6 +143,7 @@ function App() {
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path='/admin/forgot-password' element={<Adminforgotpassword/>}/>
             {/* <Route path="/admin-dashboard" element={<AdminDashboard />} /> */}
+            <Route element={<AuthVerify/>}>
             <Route path="/admin-dashboard/*" element={<AdminDrawerSidebar/>}/>
             <Route path="/admin/all-jobs" element={<AdminAllJobs />} />
             <Route path='/admin/all-employee' element={<AllEmployee/>}/>
@@ -157,15 +160,18 @@ function App() {
             <Route path='/admin-all-employee/attendence/:id'element={<AdminEditAttendence/>}/>
             <Route path='/admin-all-employee/performence/:id'element={<AdminEditPerfomence/>}/>
             <Route path='/admin/all-reviews' element={<AllReviews/>}/>
+            </Route>
             <Route path='/employee-signup' element={<Employeesignup/>}/>
+        
             <Route path='/employee-login'element={<Employeelogin/>}/>
             {/* <Route path='/employee-dashboard' element={<Employeedashboard/>}/> */}
+            <Route element={<EmpAuthVerify/>}>
             <Route path='/employee-leaves' element={<EmployeeLeaves/>}/>
             <Route path='/employee-performence'element={<EmployeePerformence/>}/>
             <Route path="/employee-dashboard/*" element={<EmpDrawerSidebar />} />
             <Route path ='*' element ={<ErrorPage/>}/>
             <Route path='/employee-rnrboard/:passcode' element={<EmployeeRnrBoard />} />
-      
+            </Route>
         </Routes>
       </Router>
 }
