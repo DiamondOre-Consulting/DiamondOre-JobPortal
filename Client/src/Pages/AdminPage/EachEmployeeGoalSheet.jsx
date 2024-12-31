@@ -672,7 +672,7 @@ const EachEmployeeGoalSheet = () => {
                             {detail.cumulativeCost}
                           </td>
                           <td className="px-4 py-2 border">
-                            {detail.cumulativeRevenue}
+                            {detail.cumulativeRevenue.toFixed(2)}
                           </td>
                           <td
                             className={`px-4 py-2 border cursor-pointer ${
