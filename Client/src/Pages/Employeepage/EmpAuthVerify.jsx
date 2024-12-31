@@ -17,7 +17,7 @@ const EmpAuthVerify = () => {
             }
 
             try {
-                const response = await axios.get('http://localhost:5000/api/employee/user-data', {
+                const response = await axios.get('https://api.diamondore.in/api/employee/user-data', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 

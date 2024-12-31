@@ -17,7 +17,7 @@ const AuthVerify = () => {
             }
 
             try {
-                const response = await axios.get('http://localhost:5000/api/admin-confi/user-data', {
+                const response = await axios.get('https://api.diamondore.in/api/admin-confi/user-data', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
