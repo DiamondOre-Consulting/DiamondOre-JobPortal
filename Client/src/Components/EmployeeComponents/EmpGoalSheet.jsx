@@ -18,6 +18,7 @@ const EmpGoalSheet = () => {
 
         if (response.status === 200) {
           console.log("all goal sheet data",response.data)
+          setFilteredData(response.data);
           const alldata = response.data?.[0].goalSheetDetails;
           setgetTickerMessage(response.data[0].YTDLessTickerMessage);
           setAllGoalSheetData(alldata);
@@ -59,6 +60,21 @@ const EmpGoalSheet = () => {
     11: 'November',
     12: 'December',
   };
+
+   const [filteredData, setFilteredData] = useState([]);
+  const totals = filteredData
+  .flatMap((data) => data.goalSheetDetails) // Flatten all goalSheetDetails
+  .reduce(
+    (acc, detail) => {
+      acc.noOfJoinings += detail.noOfJoinings;
+      acc.revenue += detail.revenue;
+      acc.cost += detail.cost;
+      acc.target += detail.target;
+      return acc;
+    },
+    { noOfJoinings: 0, revenue: 0, cost: 0, target: 0 }
+  );
+
 
   return (
     <>
@@ -130,6 +146,15 @@ const EmpGoalSheet = () => {
                   </tr>
                 )}
               </tbody>
+              <tr className="border border-1 bg-blue-400 text-center w-full">
+                <td colSpan="2" className="font-bold">
+                  Grand Total
+                </td>
+                <td className="font-bold">{totals.noOfJoinings}</td>
+                <td className="font-bold">{totals.revenue}</td>
+                <td className="font-bold">{totals.cost}</td>
+                <td className="font-bold">{totals.target}</td>
+              </tr>
             </table>
           </div>
         </div>
