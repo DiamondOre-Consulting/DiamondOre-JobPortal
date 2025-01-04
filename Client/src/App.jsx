@@ -170,8 +170,10 @@ function App() {
             <Route path='/employee-performence'element={<EmployeePerformence/>}/>
             <Route path="/employee-dashboard/*" element={<EmpDrawerSidebar />} />
             <Route path ='*' element ={<ErrorPage/>}/>
-            <Route path='/employee-rnrboard/:passcode' element={<EmployeeRnrBoard />} />
+        
             </Route>
+
+            <Route path='/employee-rnrboard/:passcode' element={<EmployeeRnrBoard />} />
         </Routes>
       </Router>
 }
