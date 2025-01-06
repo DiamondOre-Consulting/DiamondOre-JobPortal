@@ -448,7 +448,7 @@ const AllEmployee = () => {
 
               <div>
                 <label className="block text-gray-800  mb-1">
-                 Performence Menegement
+                Performance Management
                 </label>
                 <input type='file'    onChange={(e) => {
                     handleFileChange(e, 'performanceMenegement');

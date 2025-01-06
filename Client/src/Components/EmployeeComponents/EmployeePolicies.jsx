@@ -47,7 +47,7 @@ const EmployeePolicies = () => {
           <a href={userData?.leave}>Leave Report</a>
         </a>
         <a href={userData?.performanceMenegement} className="bg-blue-900 cursor-pointer text-gray-200 text-xl w-full border border-1 h-60 text-center flex items-center  justify-center">
-          <a href={userData?.performanceMenegement}> performance Menegement</a>
+          <a href={userData?.performanceMenegement}>Performance Management</a>
         </a>
         <a href={userData?.holidayCalendar} className="bg-blue-900 cursor-pointer  text-gray-200 text-xl w-full border border-1 h-60 text-center flex items-center  justify-center">
           <a href={userData?.holidayCalendar}> Holiday Calendar</a>

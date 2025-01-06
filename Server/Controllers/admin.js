@@ -2012,6 +2012,43 @@ router.put("/update-status/employee/:id", AdminAuthenticateToken, async (req, re
   }
 })
 
+// will send mail to the employee the your emailid is changed  
+
+const SendMailWhenEditEmployee = async (email, updatedFields) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "tech@diamondore.in",
+        pass: "zlnbcvnhzdddzrqn", // Use environment variables for security
+      },
+    });
+
+    const mailOptions = {
+      from: "Diamondore.in <tech@diamondore.in>",
+      to: email, 
+      subject: "Updated Details Notification",
+      html: `
+        <h3>Your details have been updated:</h3>
+        <ul>
+          ${Object.entries(updatedFields)
+            .map(([key, value]) => `<li><strong>${key}:</strong> ${value}</li>`)
+            .join("")}
+        </ul>
+        <p>If you have any questions, please contact HR.</p>
+        <h1 style="color: blue; text-align: center; font-size: 1rem">Diamond Consulting Pvt.Ltd.</h1>
+      `,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent: " + info.response);
+    return info;
+  } catch (error) {
+    console.error("Error sending email:", error);
+    throw error;
+  }
+};
+
 router.put('/all-employees-edit/:id', AdminAuthenticateToken, async (req, res) => {
   // console.log("request-accepted")
   try {
@@ -2046,13 +2083,14 @@ router.put('/all-employees-edit/:id', AdminAuthenticateToken, async (req, res) =
     console.log("test")
     console.log(updatedFields.accountHandler)
 
-    const updateEmployee = await Employees.findByIdAndUpdate({ _id: id }, updatedFields, { new: true })
+    const updateEmployee = await Employees.findByIdAndUpdate({ _id: id }, 
+      updatedFields, { new: true })
 
     if (!updateEmployee) {
       return res.status(404).json({ message: "Employee not found" });
     }
     console.log(updateEmployee)
-
+    await SendMailWhenEditEmployee(updateEmployee.email, updatedFields);
     return res.status(200).json(updateEmployee);
 
 
