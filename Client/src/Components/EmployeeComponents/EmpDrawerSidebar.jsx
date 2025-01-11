@@ -38,6 +38,8 @@ import goalsheeticon from '../../assets/goalsheeticon.png';
 import incentiveicon from '../../assets/incentiveicon.png';
 import kpiicon from '../../assets/kpiicon.png'
 import EmployeePolicies from './EmployeePolicies';
+import MappedEmployee from './MappedEmployee';
+import Shortlisting from './Shortlisting';
 
 const drawerWidth = 240;
 
@@ -281,6 +283,8 @@ console.log(response.data)
             { text: 'Account Handling', icon: <AccountCircleIcon sx={{ fontSize: 30 }} />, path: '/acount-handling' },
             { text: 'All Accounts', icon: <ManageAccountsIcon sx={{ fontSize: 30 }} />, path: '/all-accounts' },
             { text: 'Policies', icon: <ManageAccountsIcon sx={{ fontSize: 30 }} />, path: '/all-policies' },
+            { text: 'Mapped Employee', icon: <ManageAccountsIcon sx={{ fontSize: 30 }} />, path: '/mapped-emp' },
+            { text: 'Shortlisted Candidate', icon: <ManageAccountsIcon sx={{ fontSize: 30 }} />, path: '/shortlisted' },
 
           ].map((item) => (
             <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
@@ -320,6 +324,8 @@ console.log(response.data)
           <Route path='/incentive' element={<Incentive />} />
           <Route path='/all-accounts' element={<AllAccounts />} />
           <Route path='/all-policies' element={<EmployeePolicies/>}/>
+          <Route path='/mapped-emp' element={<MappedEmployee userData={userData}/>}/>
+          <Route path='/shortlisted' element={<Shortlisting userData={userData}/>}/>
         </Routes>
       </Box>
     </Box>

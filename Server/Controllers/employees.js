@@ -128,7 +128,7 @@ router.get("/user-data", EmployeeAuthenticateToken, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const { id, name, profilePic , joiningExcel , Policies} = user;
+    const { id, name, profilePic , joiningExcel , Policies , team ,shortlistedCandidates} = user;
 
     res.status(200).json({
       id,
@@ -136,7 +136,9 @@ router.get("/user-data", EmployeeAuthenticateToken, async (req, res) => {
       email,
       profilePic,
       joiningExcel,
-      Policies
+      Policies,
+      team,
+      shortlistedCandidates
     });
   } catch (error) {
     console.error("Error logging in:", error);
@@ -685,5 +687,30 @@ router.get('/rnr-leaderboraddetails/:passcode', async (req, res) => {
 
 
 })
+
+
+
+
+// get goal sheet 
+
+
+router.get("/goalsheet/:id", EmployeeAuthenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const findGoalSheets = await GoalSheet.find({ owner: id });
+    if (!findGoalSheets) {
+      return res.status(402).json({ message: "No goalsheet found!!!" });
+    }
+
+    res.status(200).json(findGoalSheets);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+
 
 export default router;

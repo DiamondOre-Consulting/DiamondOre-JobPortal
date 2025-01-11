@@ -8,6 +8,7 @@ import { otpStore, storeOtp } from "../server.js";
 import { S3Client } from "@aws-sdk/client-s3";
 import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import mongoose from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 import Candidates from "../Models/Candidates.js";
 import Admin from "../Models/Admin.js";
@@ -20,7 +21,7 @@ import LeaveReport from "../Models/LeaveReport.js";
 import PerformanceReport from "../Models/PerformanceReport.js";
 import ChatBotMessages from "../Models/ChatBotMessages.js";
 import ClientForm from "../Models/ClientForm.js";
-
+import { Team } from "../Models/Employees.js";
 import multer from "multer";
 import path from "path";
 import fs, { stat } from "fs";
@@ -29,7 +30,7 @@ import node_xj from "xls-to-json";
 import { fileURLToPath } from "url";
 import xlsx from "xlsx";
 import readXlsxFile from "read-excel-file/node";
-import Exceljs from 'exceljs'
+import Exceljs from "exceljs";
 import DSR from "../Models/DSR.js";
 import JobsTesting from "../Models/JobsTesting.js";
 import RecruitersAndKAMs from "../Models/RecruitersAndKAMs.js";
@@ -91,9 +92,9 @@ router.post("/send-otp", async (req, res) => {
 
     // Generate and store OTP
     const otp = generateOTP();
-    console.log("generated otp in sent otp", otp)
-    storeOtp(email, otp) // Store OTP for the email
-    console.log(otp)
+    console.log("generated otp in sent otp", otp);
+    storeOtp(email, otp); // Store OTP for the email
+    console.log(otp);
 
     console.log(email);
     // console.log("otpStore in send otp email: ", otpStore[email]);
@@ -180,10 +181,10 @@ router.post("/upload-profile-pic", async (req, res) => {
 // SIGNUP AS ADMIN
 router.post("/signup-admin", async (req, res) => {
   const { name, email, password, otp, profilePic, adminType } = req.body;
-  console.log(adminType)
-  console.log("check")
+  console.log(adminType);
+  console.log("check");
 
-  console.log(otpStore)
+  console.log(otpStore);
 
   console.log("Signup Email:", email);
   console.log("Entered OTP:", otp);
@@ -194,7 +195,7 @@ router.post("/signup-admin", async (req, res) => {
   // TESTING OTP
   try {
     // Verify OTP
-    console.log(otpStore[email].otp)
+    console.log(otpStore[email].otp);
 
     if (otpStore[email].otp == otp) {
       const userExists = await Admin.exists({ email });
@@ -202,7 +203,7 @@ router.post("/signup-admin", async (req, res) => {
         return res.status(409).json({ message: "User already exists" });
       }
 
-      console.log(1)
+      console.log(1);
       // Hash the password
       const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -213,17 +214,17 @@ router.post("/signup-admin", async (req, res) => {
         otp: null,
         password: hashedPassword,
         profilePic,
-        adminType
+        adminType,
       });
 
-      console.log(2)
+      console.log(2);
 
       // Save the user to the database
       await newUser.save();
 
       delete otpStore[email];
 
-      console.log(newUser)
+      console.log(newUser);
 
       return res
         .status(201)
@@ -295,7 +296,7 @@ router.get("/user-data", AdminAuthenticateToken, async (req, res) => {
       email,
       profilePic,
       adminType,
-      passcode
+      passcode,
     });
   } catch (error) {
     console.error("Error fetching user data:", error);
@@ -578,11 +579,13 @@ router.put(
             <p style="text-align: left;  ">Regards,</p>
             <p style="text-align: left;"><img src="cid:logo" alt="Company Logo" style="width:200px;height:auto;"/></p>
             `,
-            attachments: [{
-              filename: 'logo.png',
-              path: 'C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png',
-              cid: 'logo'
-            }]
+            attachments: [
+              {
+                filename: "logo.png",
+                path: "C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png",
+                cid: "logo",
+              },
+            ],
           };
 
           const info = await transporter.sendMail(mailOptions);
@@ -668,13 +671,14 @@ router.put(
               <p style="text-align: left;  ">Regards,</p>
             <p style="text-align: left;"><img src="cid:logo" alt="Company Logo" style="width:200px;height:auto;"/></p>
             `,
-            attachments: [{
-              filename: 'logo.png',
-              path: 'C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png',
-              cid: 'logo'
-            }]
+            attachments: [
+              {
+                filename: "logo.png",
+                path: "C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png",
+                cid: "logo",
+              },
+            ],
           };
-
 
           const info = await transporter.sendMail(mailOptions);
           console.log("Email sent: " + info.response);
@@ -762,11 +766,13 @@ router.put(
             <p style="text-align: left;  ">Regards,</p>
             <p style="text-align: left;"><img src="cid:logo" alt="Company Logo" style="width:200px;height:auto;"/></p>
             `,
-            attachments: [{
-              filename: 'logo.png',
-              path: 'C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png',
-              cid: 'logo'
-            }]
+            attachments: [
+              {
+                filename: "logo.png",
+                path: "C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png",
+                cid: "logo",
+              },
+            ],
           };
 
           const info = await transporter.sendMail(mailOptions);
@@ -906,11 +912,13 @@ router.put(
             <p style="text-align: left;  ">Regards,</p>
             <p style="text-align: left;"><img src="cid:logo" alt="Company Logo" style="width:200px;height:auto;"/></p>
             `,
-            attachments: [{
-              filename: 'logo.png',
-              path: 'C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png',
-              cid: 'logo'
-            }]
+            attachments: [
+              {
+                filename: "logo.png",
+                path: "C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png",
+                cid: "logo",
+              },
+            ],
           };
           const info = await transporter.sendMail(mailOptions);
           console.log("Email sent: " + info.response);
@@ -1003,11 +1011,13 @@ router.put(
             <p style="text-align: left;  ">Regards,</p>
             <p style="text-align: left;"><img src="cid:logo" alt="Company Logo" style="width:200px;height:auto;"/></p>
             `,
-            attachments: [{
-              filename: 'logo.png',
-              path: 'C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png',
-              cid: 'logo'
-            }]
+            attachments: [
+              {
+                filename: "logo.png",
+                path: "C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png",
+                cid: "logo",
+              },
+            ],
           };
 
           const info = await transporter.sendMail(mailOptions);
@@ -1102,7 +1112,7 @@ router.put("/edit-profile", AdminAuthenticateToken, async (req, res) => {
     }
 
     if (passcode) {
-      user.passcode = passcode
+      user.passcode = passcode;
       await user.save();
     }
 
@@ -1145,7 +1155,7 @@ router.post("/send-chatbot", async (req, res) => {
     const mailOptions = {
       from: "DOC_Labz <tech@diamondore.in>",
       to: "rahul@rasonline.in",
-      cc: 'tech@diamondore.in',
+      cc: "tech@diamondore.in",
       subject: `ROBO_RECRUITER: New Message Received from ${userName}`,
       text: `A new message has been submitted by ${userName}.`,
       html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${userName}</h4> </br>
@@ -1198,7 +1208,7 @@ router.post("/client-form", async (req, res) => {
     const mailOptions = {
       from: "DOC_Labz <tech@diamondore.in>",
       to: "hr@diamondore.in",
-      cc: ['zoyas3423@gmail.com', 'zoya.rasonline@gmail.com'],
+      cc: ["zoyas3423@gmail.com", "zoya.rasonline@gmail.com"],
       subject: `DOC_LABZ - New Client: New Message Received from ${userName}`,
       text: `A new message has been submitted by ${userName}.`,
       html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${userName}</h4> </br>
@@ -1431,7 +1441,6 @@ const downloadFile = async (url, outputFilePath) => {
 //   }
 // });
 
-
 router.post("/upload-dsr-excel", async (req, res) => {
   const { url } = req.body;
   const outputFilePath = path.join(__dirname, "dsrFile.xlsx");
@@ -1450,9 +1459,10 @@ router.post("/upload-dsr-excel", async (req, res) => {
       },
       async (err, result) => {
         if (err) {
-          return res
-            .status(500)
-            .json({ error: "Error converting Excel to JSON", message: err.message });
+          return res.status(500).json({
+            error: "Error converting Excel to JSON",
+            message: err.message,
+          });
         }
 
         console.log(result);
@@ -1470,7 +1480,9 @@ router.post("/upload-dsr-excel", async (req, res) => {
               error: insertError.message,
               index,
             });
-            console.error(`Error adding entry at index ${index}: ${insertError.message}`);
+            console.error(
+              `Error adding entry at index ${index}: ${insertError.message}`
+            );
           }
         });
 
@@ -1501,33 +1513,36 @@ router.post("/upload-dsr-excel", async (req, res) => {
 async function sendErrorEmailToAdmin(errorArray) {
   // Configure your email service, replace with your email settings
   const transporter = nodemailer.createTransport({
-    service: 'gmail', // or any other email service you're using
+    service: "gmail", // or any other email service you're using
     auth: {
       user: "tech@diamondore.in",
       pass: "zlnbcvnhzdddzrqn",
     },
   });
 
-  const errorDetails = errorArray.map(
-    (error, index) =>
-      `Entry #${error.index + 1}: ${JSON.stringify(error.entry)}\nError: ${error.error}\n\n`
-  ).join("\n");
+  const errorDetails = errorArray
+    .map(
+      (error, index) =>
+        `Entry #${error.index + 1}: ${JSON.stringify(error.entry)}\nError: ${
+          error.error
+        }\n\n`
+    )
+    .join("\n");
 
   const mailOptions = {
-    from: 'tech@diamondore.in',
-    to: 'tech@diamondore.in',
-    subject: 'DSR Upload Errors',
+    from: "tech@diamondore.in",
+    to: "tech@diamondore.in",
+    subject: "DSR Upload Errors",
     text: `The following entries had errors during the DSR upload process:\n\n${errorDetails}`,
   };
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log('Error email sent to admin.');
+    console.log("Error email sent to admin.");
   } catch (emailError) {
-    console.error('Error sending email:', emailError.message);
+    console.error("Error sending email:", emailError.message);
   }
 }
-
 
 router.get("/findJobs/:phone", async (req, res) => {
   try {
@@ -1697,7 +1712,7 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
 //     // Convert fromDate and toDate into Date objects
 //     const from = new Date(fromDate);
 //     const to = new Date(toDate);
-//     // to.setHours(23, 59, 59, 999); 
+//     // to.setHours(23, 59, 59, 999);
 
 //     // Build the query object based on whether recruiterName is provided
 //     const query = {
@@ -1727,10 +1742,9 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
 //     }
 
 //     // Fetch candidates matching the criteria
-//     const candidates = await DSR.find(query); 
+//     const candidates = await DSR.find(query);
 
 //     console.log(candidates.length);
-
 
 //     if (!candidates.length) {
 //       return res.status(404).send("No candidates found");
@@ -1768,14 +1782,19 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
 //   }
 // });
 
-
-
-
 // REGISTER RECRUITER AND KAM
 
 router.get("/find-bulk-jobs", async (req, res) => {
   try {
-    const { recruiterName, fromDate, toDate, location, ctcStart, ctcEnd, role } = req.query; // Taking input from query params
+    const {
+      recruiterName,
+      fromDate,
+      toDate,
+      location,
+      ctcStart,
+      ctcEnd,
+      role,
+    } = req.query; // Taking input from query params
 
     if (!fromDate || !toDate) {
       return res.status(400).send("Please provide fromDate and toDate");
@@ -1784,7 +1803,7 @@ router.get("/find-bulk-jobs", async (req, res) => {
     // Convert fromDate and toDate into Date objects
     const from = new Date(fromDate);
     const to = new Date(toDate);
-    // to.setHours(23, 59, 59, 999); 
+    // to.setHours(23, 59, 59, 999);
 
     // Build the query object based on whether recruiterName is provided
     const query = {
@@ -1809,18 +1828,16 @@ router.get("/find-bulk-jobs", async (req, res) => {
     if (ctcStart && ctcEnd) {
       query.currentCTC = {
         $gte: ctcStart,
-        $lte: ctcEnd
-      }
+        $lte: ctcEnd,
+      };
     }
 
     console.log(query);
-
 
     // Fetch candidates matching the criteria
     const candidates = await DSR.find(query);
 
     console.log(candidates.length);
-
 
     if (!candidates.length) {
       return res.status(404).send("No candidates found");
@@ -1844,7 +1861,6 @@ router.get("/find-bulk-jobs", async (req, res) => {
       });
 
       console.log(recommendations);
-
 
       if (suitableJobs.length > 0) {
         const findRec = await RecruitersAndKAMs.findOne({
@@ -1937,11 +1953,11 @@ router.get("/all-employees", AdminAuthenticateToken, async (req, res) => {
 
     const activeEmployees = await allEmployees.filter(
       (emp) => emp.activeStatus == true
-    )
+    );
 
     const inactiveEmployees = await allEmployees.filter(
       (emp) => emp.activeStatus == false
-    )
+    );
 
     console.log(allEmployees);
 
@@ -1975,44 +1991,56 @@ router.get("/all-employees/:id", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
-router.delete("/delete/employee/:id", AdminAuthenticateToken, async (req, res, next) => {
-  try {
-    const { id } = req.params
-    console.log(id)
+router.delete(
+  "/delete/employee/:id",
+  AdminAuthenticateToken,
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      console.log(id);
 
-    await Employees.deleteOne({ _id: id });
+      await Employees.deleteOne({ _id: id });
 
-    return res.status(201).json({ message: "Employee deleted successfully!" });
-
-  } catch (e) {
-    return res.status(500).json({ message: "Something went wrong!!!", err: e.message });
-
+      return res
+        .status(201)
+        .json({ message: "Employee deleted successfully!" });
+    } catch (e) {
+      return res
+        .status(500)
+        .json({ message: "Something went wrong!!!", err: e.message });
+    }
   }
-})
+);
 
-router.put("/update-status/employee/:id", AdminAuthenticateToken, async (req, res, next) => {
-  try {
-    const { id } = req.params
-    const { status } = req.body
-    console.log(id)
+router.put(
+  "/update-status/employee/:id",
+  AdminAuthenticateToken,
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+      console.log(id);
 
-    const employee = await Employees.findById({ _id: id });
+      const employee = await Employees.findById({ _id: id });
 
-    console.log(employee)
+      console.log(employee);
 
-    employee.activeStatus = status;
+      employee.activeStatus = status;
 
-    await employee.save();
+      await employee.save();
 
-    return res.status(201).json({ message: "Employee status updated successfully!" });
-
-  } catch (e) {
-    return res.status(500).json({ message: "Something went wrong!!!", err: e.message });
-
+      return res
+        .status(201)
+        .json({ message: "Employee status updated successfully!" });
+    } catch (e) {
+      return res
+        .status(500)
+        .json({ message: "Something went wrong!!!", err: e.message });
+    }
   }
-})
+);
 
-// will send mail to the employee the your emailid is changed  
+// will send mail to the employee the your emailid is changed
 
 const SendMailWhenEditEmployee = async (email, updatedFields) => {
   try {
@@ -2026,7 +2054,7 @@ const SendMailWhenEditEmployee = async (email, updatedFields) => {
 
     const mailOptions = {
       from: "Diamondore.in <tech@diamondore.in>",
-      to: email, 
+      to: email,
       subject: "Updated Details Notification",
       html: `
         <h3>Your details have been updated:</h3>
@@ -2049,60 +2077,59 @@ const SendMailWhenEditEmployee = async (email, updatedFields) => {
   }
 };
 
-router.put('/all-employees-edit/:id', AdminAuthenticateToken, async (req, res) => {
-  // console.log("request-accepted")
-  try {
-    const { id } = req.params;
+router.put(
+  "/all-employees-edit/:id",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    // console.log("request-accepted")
+    try {
+      const { id } = req.params;
 
-    console.log(req.body)
-    console.log("check")
-    console.log(req.body.accountHandler)
+      console.log(req.body);
+      console.log("check");
+      console.log(req.body.accountHandler);
 
-    const updatedFields = {}
+      const updatedFields = {};
 
-    if (req.body.name) {
-      updatedFields.name = req.body.name;
+      if (req.body.name) {
+        updatedFields.name = req.body.name;
+      }
+      if (req.body.email) {
+        updatedFields.email = req.body.email;
+      }
+      if (req.body.empType) {
+        updatedFields.empType = req.body.empType;
+      }
+      if (req.body.dob) {
+        updatedFields.dob = req.body.dob;
+      }
+      if (req.body.doj) {
+        updatedFields.doj = req.body.doj;
+      }
+
+      updatedFields.accountHandler = req.body.accountHandler;
+
+      console.log("test");
+      console.log(updatedFields.accountHandler);
+
+      const updateEmployee = await Employees.findByIdAndUpdate(
+        { _id: id },
+        updatedFields,
+        { new: true }
+      );
+
+      if (!updateEmployee) {
+        return res.status(404).json({ message: "Employee not found" });
+      }
+      console.log(updateEmployee);
+      await SendMailWhenEditEmployee(updateEmployee.email, updatedFields);
+      return res.status(200).json(updateEmployee);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: "Something went wrong!!!" });
     }
-    if (req.body.email) {
-      updatedFields.email = req.body.email;
-    }
-    if (req.body.empType) {
-      updatedFields.empType = req.body.empType;
-    }
-    if (req.body.dob) {
-      updatedFields.dob = req.body.dob;
-    }
-    if (req.body.doj) {
-      updatedFields.doj = req.body.doj;
-    }
-
-
-
-    updatedFields.accountHandler = req.body.accountHandler;
-
-    console.log("test")
-    console.log(updatedFields.accountHandler)
-
-    const updateEmployee = await Employees.findByIdAndUpdate({ _id: id }, 
-      updatedFields, { new: true })
-
-    if (!updateEmployee) {
-      return res.status(404).json({ message: "Employee not found" });
-    }
-    console.log(updateEmployee)
-    await SendMailWhenEditEmployee(updateEmployee.email, updatedFields);
-    return res.status(200).json(updateEmployee);
-
-
   }
-  catch (error) {
-
-    console.log(error);
-    return res.status(500).json({ message: "Something went wrong!!!" });
-
-  }
-
-})
+);
 
 // EMPLOYEE LEAVE REPORT
 // ADD LEAVE REPORT
@@ -2335,13 +2362,11 @@ router.post(
 //   try {
 //     const { empId, year, month, noOfJoinings, revenue, cost } = req.body;
 
-
 //     // Convert year and month to numbers
 //     // const yearMain = parseInt(year);
 //     const yearMain = year;
 //     const monthMain = parseInt(month);
 //     console.log(yearMain, monthMain);
-
 
 //     // Find the employee by empId
 //     const employee = await Employees.findById(empId);
@@ -2489,14 +2514,23 @@ router.post(
 //     res.status(500).json({ message: error.message });
 //   }
 // });
-router.post('/set-goalSheet', async (req, res) => {
-  const { empId, year, month, noOfJoinings, cost, revenue, incentive, leakage } = req.body;
+router.post("/set-goalSheet", async (req, res) => {
+  const {
+    empId,
+    year,
+    month,
+    noOfJoinings,
+    cost,
+    revenue,
+    incentive,
+    leakage,
+  } = req.body;
 
   try {
     // Find the employee by empId
     const employee = await Employees.findOne({ _id: empId });
     if (!employee) {
-      return res.status(404).json({ error: 'Employee not found' });
+      return res.status(404).json({ error: "Employee not found" });
     }
 
     let goalSheet = await GoalSheet.findOne({ owner: employee._id });
@@ -2505,17 +2539,19 @@ router.post('/set-goalSheet', async (req, res) => {
       // If the GoalSheet does not exist, create one
       goalSheet = new GoalSheet({
         owner: employee._id,
-        goalSheetDetails: []
+        goalSheetDetails: [],
       });
     }
 
     // Check if the month and year combination already exists
     const existingDetail = goalSheet.goalSheetDetails.find(
-      detail => detail.year === year && detail.month === month
+      (detail) => detail.year === year && detail.month === month
     );
 
     if (existingDetail) {
-      return res.status(400).json({ error: 'GoalSheet for this month and year already exists' });
+      return res
+        .status(400)
+        .json({ error: "GoalSheet for this month and year already exists" });
     }
 
     goalSheet.goalSheetDetails.sort((a, b) => {
@@ -2525,11 +2561,14 @@ router.post('/set-goalSheet', async (req, res) => {
       return a.month - b.month;
     });
 
-
-
-    const lastDetail = goalSheet.goalSheetDetails
-      .filter(detail => detail.year < year || (detail.year == parseInt(year) && detail.month < parseInt(month)))
-      .slice(-1)[0] || {};
+    const lastDetail =
+      goalSheet.goalSheetDetails
+        .filter(
+          (detail) =>
+            detail.year < year ||
+            (detail.year == parseInt(year) && detail.month < parseInt(month))
+        )
+        .slice(-1)[0] || {};
 
     const previousCumulativeCost = lastDetail.cumulativeCost || 0;
     const previousCumulativeRevenue = lastDetail.cumulativeRevenue || 0;
@@ -2537,33 +2576,31 @@ router.post('/set-goalSheet', async (req, res) => {
     const cumulativeRevenue = previousCumulativeRevenue + revenue;
     const achYTD = (cumulativeRevenue / cumulativeCost).toFixed(2);
     const achMTD = (revenue / cost).toFixed(2);
-    const numberIndex = employee.empType.length - 2
+    const numberIndex = employee.empType.length - 2;
 
+    console.log(
+      goalSheet.goalSheetDetails.findIndex(
+        (detail) =>
+          detail.year < year ||
+          (detail.year == parseInt(year) && detail.month < parseInt(month))
+      )
+    );
 
-    console.log(goalSheet.goalSheetDetails.findIndex(
-      detail => detail.year < year || (detail.year == parseInt(year) && detail.month < parseInt(month))
-    ))
-
-    console.log(lastDetail)
-
+    console.log(lastDetail);
 
     // Calculate necessary fields
 
     let target;
 
-    console.log(employee.empType)
+    console.log(employee.empType);
 
     if (employee.empType === "Recruiter") {
-      target = cost * 4
-    }
-    else if (employee.empType === "SeniorRecruiter") {
-      target = cost * 4
-    }
-    else if (employee.empType === "TeamLeader") {
-      target = cost * 4
-    }
-
-    else {
+      target = cost * 4;
+    } else if (employee.empType === "SeniorRecruiter") {
+      target = cost * 4;
+    } else if (employee.empType === "TeamLeader") {
+      target = cost * 4;
+    } else {
       // console.log()
       target = cost * parseInt(employee.empType[numberIndex]);
     }
@@ -2582,8 +2619,7 @@ router.post('/set-goalSheet', async (req, res) => {
       achYTD,
       achMTD,
       incentive, // Leave incentive blank for now
-      leakage // Leave variable incentive blank for now   , now varible incentive is leakage
-
+      leakage, // Leave variable incentive blank for now   , now varible incentive is leakage
     });
 
     goalSheet.goalSheetDetails.sort((a, b) => {
@@ -2593,26 +2629,30 @@ router.post('/set-goalSheet', async (req, res) => {
       return a.month - b.month;
     });
 
-    let index = 1
+    let index = 1;
     let goalSheetIndex = goalSheet.goalSheetDetails.findIndex(
-      detail => (detail.year == parseInt(lastDetail.year) && detail.month == parseInt(lastDetail.month))
-    )
+      (detail) =>
+        detail.year == parseInt(lastDetail.year) &&
+        detail.month == parseInt(lastDetail.month)
+    );
 
     if (goalSheetIndex == -1) {
-      index = 1
+      index = 1;
     } else {
-      index = goalSheetIndex + 1
-
+      index = goalSheetIndex + 1;
     }
 
     if (goalSheet.goalSheetDetails.length > 1) {
       for (let i = index; i < goalSheet.goalSheetDetails.length; i++) {
         const detail = goalSheet.goalSheetDetails[i];
-        detail.cumulativeCost = goalSheet.goalSheetDetails[i - 1].cumulativeCost + detail.cost;
-        detail.cumulativeRevenue = goalSheet.goalSheetDetails[i - 1].cumulativeRevenue + detail.revenue;
-        detail.achYTD = (detail.cumulativeRevenue / detail.cumulativeCost).toFixed(2);
+        detail.cumulativeCost =
+          goalSheet.goalSheetDetails[i - 1].cumulativeCost + detail.cost;
+        detail.cumulativeRevenue =
+          goalSheet.goalSheetDetails[i - 1].cumulativeRevenue + detail.revenue;
+        detail.achYTD = (
+          detail.cumulativeRevenue / detail.cumulativeCost
+        ).toFixed(2);
         detail.achMTD = (detail.revenue / detail.cost).toFixed(2);
-
       }
     }
 
@@ -2632,11 +2672,14 @@ router.post('/set-goalSheet', async (req, res) => {
     //     await employee.save();
     // }
 
-    res.status(201).json({ message: 'GoalSheet updated successfully', goalSheet });
-
+    res
+      .status(201)
+      .json({ message: "GoalSheet updated successfully", goalSheet });
   } catch (error) {
-    res.status(500).json({ error: 'An error occurred', details: error.message });
-    console.log(error)
+    res
+      .status(500)
+      .json({ error: "An error occurred", details: error.message });
+    console.log(error);
   }
 });
 
@@ -2658,52 +2701,67 @@ router.get("/goalsheet/:id", AdminAuthenticateToken, async (req, res) => {
 });
 
 // EDIT A GOALSHEET
-router.put('/edit-goalSheet', async (req, res) => {
+router.put("/edit-goalSheet", async (req, res) => {
   // console.log("enter")
-  const { empId, year, month, prevYear, prevMonth, sheetId, noOfJoinings, cost, revenue, incentive, leakage } = req.body;
+  const {
+    empId,
+    year,
+    month,
+    prevYear,
+    prevMonth,
+    sheetId,
+    noOfJoinings,
+    cost,
+    revenue,
+    incentive,
+    leakage,
+  } = req.body;
 
-  console.log(req.body)
+  console.log(req.body);
 
-  console.log(month)
+  console.log(month);
 
-  console.log(typeof (year))
+  console.log(typeof year);
 
   try {
     // Find the employee by empId
     const employee = await Employees.findOne({ _id: empId });
     if (!employee) {
-      return res.status(404).json({ error: 'Employee not found' });
+      return res.status(404).json({ error: "Employee not found" });
     }
-
-
-
 
     // Find the GoalSheet for the employee
     let goalSheetBeforeSort = await GoalSheet.findOne({ owner: employee._id });
     if (!goalSheetBeforeSort) {
-      return res.status(404).json({ error: 'GoalSheet not found' });
+      return res.status(404).json({ error: "GoalSheet not found" });
     }
 
-    const goalSheet = await goalSheetBeforeSort.goalSheetDetails.sort((a, b) => {
-      if (a.year !== b.year) {
-        return a.year - b.year;
+    const goalSheet = await goalSheetBeforeSort.goalSheetDetails.sort(
+      (a, b) => {
+        if (a.year !== b.year) {
+          return a.year - b.year;
+        }
+        return a.month - b.month;
       }
-      return a.month - b.month;
-    });
+    );
 
-    console.log(goalSheet)
+    console.log(goalSheet);
 
-    const goalDetailIndex = goalSheet.findIndex(data => data?._id.toString() === sheetId.toString())
+    const goalDetailIndex = goalSheet.findIndex(
+      (data) => data?._id.toString() === sheetId.toString()
+    );
 
     if (goalDetailIndex === -1) {
-      console.log(typeof (goalDetailIndex))
-      return res.status(404).json({ error: 'GoalSheet for this month and year not found' });
+      console.log(typeof goalDetailIndex);
+      return res
+        .status(404)
+        .json({ error: "GoalSheet for this month and year not found" });
     }
 
     // Get the current goalSheetDetail for updates
     let goalDetail = goalSheet[goalDetailIndex];
 
-    // Get the last entry for cumulative calculations  
+    // Get the last entry for cumulative calculations
     const lastDetail = goalSheet[goalDetailIndex - 1] || {};
     const previousCumulativeCost = lastDetail.cumulativeCost || 0;
     const previousCumulativeRevenue = lastDetail.cumulativeRevenue || 0;
@@ -2721,38 +2779,38 @@ router.put('/edit-goalSheet', async (req, res) => {
       goalDetail.cumulativeCost = updatedCumulativeCost;
 
       // Update target if cost is provided
-      const numberIndex = employee.empType.length - 2
+      const numberIndex = employee.empType.length - 2;
 
       // let target;
 
-      console.log(employee.empType)
+      console.log(employee.empType);
 
       if (employee.empType === "Recruiter") {
-        goalDetail.target = parseInt(cost) * 4
-      }
-      else if (employee.empType === "SeniorRecruiter") {
-        goalDetail.target = parseInt(cost) * 4
-      }
-      else if (employee.empType === "TeamLeader") {
-        goalDetail.target = parseInt(cost) * 4
-      }
-
-      else {
+        goalDetail.target = parseInt(cost) * 4;
+      } else if (employee.empType === "SeniorRecruiter") {
+        goalDetail.target = parseInt(cost) * 4;
+      } else if (employee.empType === "TeamLeader") {
+        goalDetail.target = parseInt(cost) * 4;
+      } else {
         // console.log()
-        goalDetail.target = parseInt(cost) * parseInt(employee.empType[numberIndex]);
+        goalDetail.target =
+          parseInt(cost) * parseInt(employee.empType[numberIndex]);
       }
       // goalDetail.target = cost * 4;
     }
 
     if (revenue !== goalDetail?.revenue) {
       // Calculate cumulativeRevenue based on the new revenue value
-      const updatedCumulativeRevenue = previousCumulativeRevenue + parseInt(revenue);
+      const updatedCumulativeRevenue =
+        previousCumulativeRevenue + parseInt(revenue);
 
       goalDetail.revenue = parseInt(revenue);
       goalDetail.cumulativeRevenue = updatedCumulativeRevenue;
 
       // Update achMTD and achYTD if revenue is provided
-      goalDetail.achMTD = cost ? (revenue / cost).toFixed(2) : goalDetail.achMTD;
+      goalDetail.achMTD = cost
+        ? (revenue / cost).toFixed(2)
+        : goalDetail.achMTD;
       goalDetail.achYTD = goalDetail.cumulativeCost
         ? (updatedCumulativeRevenue / goalDetail.cumulativeCost).toFixed(2)
         : goalDetail.achYTD;
@@ -2774,29 +2832,32 @@ router.put('/edit-goalSheet', async (req, res) => {
       goalDetail.leakage = leakage;
     }
 
-
     if (goalSheet.length > 1) {
       for (let i = goalDetailIndex + 1; i < goalSheet.length; i++) {
         const detail = goalSheet[i];
         detail.cumulativeCost = goalSheet[i - 1].cumulativeCost + detail.cost;
-        detail.cumulativeRevenue = goalSheet[i - 1].cumulativeRevenue + detail.revenue;
-        detail.achYTD = (detail.cumulativeRevenue / detail.cumulativeCost).toFixed(2);
+        detail.cumulativeRevenue =
+          goalSheet[i - 1].cumulativeRevenue + detail.revenue;
+        detail.achYTD = (
+          detail.cumulativeRevenue / detail.cumulativeCost
+        ).toFixed(2);
         detail.achMTD = (detail.revenue / detail.cost).toFixed(2);
-
       }
     }
 
     // Save the updated GoalSheet
     await goalSheetBeforeSort.save();
 
-    res.status(200).json({ message: 'GoalSheet updated successfully', goalSheet });
-
+    res
+      .status(200)
+      .json({ message: "GoalSheet updated successfully", goalSheet });
   } catch (error) {
-    res.status(500).json({ error: 'An error occurred', details: error.message });
+    res
+      .status(500)
+      .json({ error: "An error occurred", details: error.message });
     console.log(error);
   }
 });
-
 
 // GET ALL THE DUPLICATE PHONE NUMBER REQUESTS
 router.get(
@@ -2951,16 +3012,22 @@ router.put(
       const { id } = req.params;
       const { status } = req.body;
 
-      const accountHandling = await AccountHandling.findById(id).populate("owner");
+      const accountHandling = await AccountHandling.findById(id).populate(
+        "owner"
+      );
       if (!accountHandling) {
-        return res.status(404).json({ message: "No account found with this id!!!" });
+        return res
+          .status(404)
+          .json({ message: "No account found with this id!!!" });
       }
 
       const requestToUpdate = accountHandling.requests.find(
         (req) => req.status === "pending"
       );
       if (!requestToUpdate) {
-        return res.status(400).json({ message: "No pending request found to update!" });
+        return res
+          .status(400)
+          .json({ message: "No pending request found to update!" });
       }
 
       if (status === "approved") {
@@ -2986,11 +3053,14 @@ router.put(
 
         if (!accountDetail) {
           return res.status(404).json({
-            message: "Account detail not found in previous owner's accountDetails!",
+            message:
+              "Account detail not found in previous owner's accountDetails!",
           });
         }
 
-        let newOwnerAccountHandling = await AccountHandling.findOne({ owner: newOwnerId });
+        let newOwnerAccountHandling = await AccountHandling.findOne({
+          owner: newOwnerId,
+        });
         if (!newOwnerAccountHandling) {
           newOwnerAccountHandling = new AccountHandling({
             owner: newOwnerId,
@@ -3009,7 +3079,9 @@ router.put(
         }
 
         // Check if the channel already exists within the zone
-        let channel = zone.channels.find((c) => c.channelName === accountHandling.channelName);
+        let channel = zone.channels.find(
+          (c) => c.channelName === accountHandling.channelName
+        );
         if (!channel) {
           channel = { channelName: accountHandling.channelName, hrDetails: [] };
           zone.channels.push(channel);
@@ -3062,11 +3134,9 @@ router.put(
           }
         );
 
-        return res
-          .status(200)
-          .json({
-            message: "AccountHandling updated successfully and emails sent.",
-          });
+        return res.status(200).json({
+          message: "AccountHandling updated successfully and emails sent.",
+        });
       }
 
       if (status === "rejected") {
@@ -3104,9 +3174,6 @@ router.put(
   }
 );
 
-
-
-
 // SET KPI SCORE
 router.post("/set-kpi-score", async (req, res) => {
   try {
@@ -3120,7 +3187,7 @@ router.post("/set-kpi-score", async (req, res) => {
       mentorship,
       processAdherence,
       leakage,
-      noOfJoining
+      noOfJoining,
     } = req.body;
 
     // Find the KPI document for the owner
@@ -3138,24 +3205,44 @@ router.post("/set-kpi-score", async (req, res) => {
       return { weight, kpiScore };
     };
 
-    const costVsRevenueScore = calculateScore(costVsRevenue.target, costVsRevenue.actual, 20);
-    const successfulDrivesScore = calculateScore(successfulDrives.target, successfulDrives.actual, 10);
+    const costVsRevenueScore = calculateScore(
+      costVsRevenue.target,
+      costVsRevenue.actual,
+      20
+    );
+    const successfulDrivesScore = calculateScore(
+      successfulDrives.target,
+      successfulDrives.actual,
+      10
+    );
     const accountsScore = calculateScore(accounts.target, accounts.actual, 15);
-    const mentorshipScore = calculateScore(mentorship.target, mentorship.actual, 15);
-    const processAdherenceScore = calculateScore(processAdherence.target, processAdherence.actual, 15);
+    const mentorshipScore = calculateScore(
+      mentorship.target,
+      mentorship.actual,
+      15
+    );
+    const processAdherenceScore = calculateScore(
+      processAdherence.target,
+      processAdherence.actual,
+      15
+    );
     const leakageScore = calculateScore(leakage.target, leakage.actual, 15);
-    const noOfJoiningScore = calculateScore(noOfJoining.target, noOfJoining.actual, 10);
+    const noOfJoiningScore = calculateScore(
+      noOfJoining.target,
+      noOfJoining.actual,
+      10
+    );
 
     // Calculate total KPI score
-    const totalKPIScore = (
-      costVsRevenueScore.kpiScore +
-      successfulDrivesScore.kpiScore +
-      accountsScore.kpiScore +
-      mentorshipScore.kpiScore +
-      processAdherenceScore.kpiScore +
-      leakageScore.kpiScore +
-      noOfJoiningScore.kpiScore
-    ) * 100;
+    const totalKPIScore =
+      (costVsRevenueScore.kpiScore +
+        successfulDrivesScore.kpiScore +
+        accountsScore.kpiScore +
+        mentorshipScore.kpiScore +
+        processAdherenceScore.kpiScore +
+        leakageScore.kpiScore +
+        noOfJoiningScore.kpiScore) *
+      100;
 
     // Construct the new KPI month information
     const newKpiMonth = {
@@ -3166,46 +3253,46 @@ router.post("/set-kpi-score", async (req, res) => {
           target: costVsRevenue.target,
           actual: costVsRevenue.actual,
           weight: costVsRevenueScore.weight,
-          kpiScore: costVsRevenueScore.kpiScore
+          kpiScore: costVsRevenueScore.kpiScore,
         },
         successfulDrives: {
           target: successfulDrives.target,
           actual: successfulDrives.actual,
           weight: successfulDrivesScore.weight,
-          kpiScore: successfulDrivesScore.kpiScore
+          kpiScore: successfulDrivesScore.kpiScore,
         },
         accounts: {
           target: accounts.target,
           actual: accounts.actual,
           weight: accountsScore.weight,
-          kpiScore: accountsScore.kpiScore
+          kpiScore: accountsScore.kpiScore,
         },
         mentorship: {
           target: mentorship.target,
           actual: mentorship.actual,
           weight: mentorshipScore.weight,
-          kpiScore: mentorshipScore.kpiScore
+          kpiScore: mentorshipScore.kpiScore,
         },
         processAdherence: {
           target: processAdherence.target,
           actual: processAdherence.actual,
           weight: processAdherenceScore.weight,
-          kpiScore: processAdherenceScore.kpiScore
+          kpiScore: processAdherenceScore.kpiScore,
         },
         leakage: {
           target: leakage.target,
           actual: leakage.actual,
           weight: leakageScore.weight,
-          kpiScore: leakageScore.kpiScore
+          kpiScore: leakageScore.kpiScore,
         },
         noOfJoining: {
           target: noOfJoining.target,
           actual: noOfJoining.actual,
           weight: noOfJoiningScore.weight,
-          kpiScore: noOfJoiningScore.kpiScore
+          kpiScore: noOfJoiningScore.kpiScore,
         },
-        totalKPIScore: totalKPIScore
-      }
+        totalKPIScore: totalKPIScore,
+      },
     };
 
     // Push the new KPI month information to the kpis array
@@ -3222,85 +3309,88 @@ router.post("/set-kpi-score", async (req, res) => {
 });
 
 // EMPLOYEE'S KPI SCORE
-router.get("/employee-kpi-score/:id", AdminAuthenticateToken, async (req, res) => {
-  try {
-    const { id } = req.params;
+router.get(
+  "/employee-kpi-score/:id",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
 
-    const myKPI = await KPI.findOne({ owner: id });
-    if (!myKPI) {
-      return res.status(402).json({ message: "No KPI found!!!" });
+      const myKPI = await KPI.findOne({ owner: id });
+      if (!myKPI) {
+        return res.status(402).json({ message: "No KPI found!!!" });
+      }
+
+      res.status(200).json(myKPI);
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).json({ message: error.message });
     }
-
-    res.status(200).json(myKPI);
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ message: error.message });
   }
-})
-
+);
 
 //download excel of all the candidate data
-router.post('/download-excel', AdminAuthenticateToken, async (req, res) => {
-
+router.post("/download-excel", AdminAuthenticateToken, async (req, res) => {
   try {
-
     const { startDate, endDate } = req.body;
 
-
     if (!startDate || !endDate) {
-      return res.status(400).json({ "message": "start date and end date are required" })
+      return res
+        .status(400)
+        .json({ message: "start date and end date are required" });
     }
 
     if (new Date(startDate) > new Date(endDate)) {
-      return res.status(400).json({ message: "Start date cannot be after end date." });
+      return res
+        .status(400)
+        .json({ message: "Start date cannot be after end date." });
     }
-
 
     const candidateData = await Candidates.find({
       createdAt: {
         $gte: startDate,
-        $lte: endDate
-      }
+        $lte: endDate,
+      },
     });
 
-
-
     const workbook = new Exceljs.Workbook();
-    const worksheet = workbook.addWorksheet('candidates')
+    const worksheet = workbook.addWorksheet("candidates");
 
     worksheet.columns = [
-      { header: 'Name', key: 'name' },
-      { header: 'Email', key: 'email' },
-      { header: 'Phone no.', key: 'phone' },
-      { header: 'Created At', key: 'createdAt' },
+      { header: "Name", key: "name" },
+      { header: "Email", key: "email" },
+      { header: "Phone no.", key: "phone" },
+      { header: "Created At", key: "createdAt" },
+    ];
+    console.log(candidateData);
 
-    ]
-    console.log(candidateData)
-
-    candidateData.forEach(candidate => {
+    candidateData.forEach((candidate) => {
       worksheet.addRow({
         name: candidate.name,
         email: candidate.email,
         phone: candidate.phone,
         createdAt: candidate.createdAt.toISOString().slice(0, 10),
-      })
-    })
+      });
+    });
 
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.setHeader('Content-Disposition', 'attachment; filename=candidates.xlsx');
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=candidates.xlsx"
+    );
 
     await workbook.xlsx.write(res);
     res.end();
-
-
-  }
-  catch (error) {
+  } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
   }
-})
+});
 
-// getting url of excel sheet 
+// getting url of excel sheet
 
 router.post("/upload-excelsheet-url", async (req, res) => {
   try {
@@ -3355,45 +3445,46 @@ router.post("/upload-excelsheet-url", async (req, res) => {
     return res.status(500).send("Error uploading file");
   }
 });
-// upload excel sheet data 
+// upload excel sheet data
 
-router.post('/upload-joiningsheet/:id' , async(req ,res)=>{
-  try{
-    const { id } = req.params;
-        const {joiningExcel} = req.body;
-        if(!joiningExcel){
-          return res.status(400).json({message : "joining excel sheet Url is required "});
-        }
-
-        const employee = await Employees.findById(id);
-        if (!employee) {
-          return res.status(404).json({ message: "Employee not found." });
-        }
-    
-        employee.joiningExcel = joiningExcel;
-
-
-        await employee.save();
-
-        res.status(200).json({
-          message : "Joinings sheet URL uploaded Successfully",
-          employeeId: employee._id,
-          joiningExcel: employee.joiningExcel,
-        })
-  }
-  catch(error){
-    console.log("something went wrong " ,error )
-    res.status(500).json({ message: 'Internal server error.', error: error.message });
-  }
-})
-
-
-// Fire Ticker when ytd is lesss then 2.5 
-
-router.post('/fire-ticker/:id', async (req, res) => {
+router.post("/upload-joiningsheet/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { tickerMessage } = req.body; 
+    const { joiningExcel } = req.body;
+    if (!joiningExcel) {
+      return res
+        .status(400)
+        .json({ message: "joining excel sheet Url is required " });
+    }
+
+    const employee = await Employees.findById(id);
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found." });
+    }
+
+    employee.joiningExcel = joiningExcel;
+
+    await employee.save();
+
+    res.status(200).json({
+      message: "Joinings sheet URL uploaded Successfully",
+      employeeId: employee._id,
+      joiningExcel: employee.joiningExcel,
+    });
+  } catch (error) {
+    console.log("something went wrong ", error);
+    res
+      .status(500)
+      .json({ message: "Internal server error.", error: error.message });
+  }
+});
+
+// Fire Ticker when ytd is lesss then 2.5
+
+router.post("/fire-ticker/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { tickerMessage } = req.body;
 
     if (!tickerMessage) {
       return res.status(400).json({ message: "Ticker message is required." });
@@ -3401,25 +3492,28 @@ router.post('/fire-ticker/:id', async (req, res) => {
     const goalSheet = await GoalSheet.findOne({ owner: id });
 
     if (!goalSheet) {
-      return res.status(404).json({ message: "Goal sheet for the employee not found." });
+      return res
+        .status(404)
+        .json({ message: "Goal sheet for the employee not found." });
     }
 
-  
-      goalSheet.YTDLessTickerMessage = tickerMessage;
+    goalSheet.YTDLessTickerMessage = tickerMessage;
 
-      await goalSheet.save();
+    await goalSheet.save();
 
-      return res.status(200).json({
-        message: "Ticker triggered successfully for the employee.",
-        tickerMessage: goalSheet.YTDLessTicker,
-      });
+    return res.status(200).json({
+      message: "Ticker triggered successfully for the employee.",
+      tickerMessage: goalSheet.YTDLessTicker,
+    });
   } catch (error) {
     console.error("Error in /fire-ticker/:id route:", error);
-    res.status(500).json({ message: "Internal server error.", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Internal server error.", error: error.message });
   }
 });
 
-// policies uploading for employee URL 
+// policies uploading for employee URL
 router.post("/get-policy-url", async (req, res) => {
   try {
     const file = req.files && req.files.myFileImage; // Change 'myFile' to match the key name in Postman
@@ -3474,12 +3568,10 @@ router.post("/get-policy-url", async (req, res) => {
   }
 });
 
-
-router.post('/upload-policies', async (req, res) => {
+router.post("/upload-policies", async (req, res) => {
   try {
     const { leave, performanceMenegement, holidayCalendar } = req.body;
 
-   
     const result = await Employees.updateMany(
       {},
       {
@@ -3506,12 +3598,11 @@ router.post('/upload-policies', async (req, res) => {
   }
 });
 
-
 // update account handling details
 
 router.put("/updateAccounts/:accountId/:accountDetailsId", async (req, res) => {
   const { accountId, accountDetailsId } = req.params;
-  const { joinings, amount } = req.body;  // Fields to update (optional)
+  const { joinings, amount } = req.body; // Fields to update (optional)
 
   try {
     // Find the account by its accountId
@@ -3523,7 +3614,9 @@ router.put("/updateAccounts/:accountId/:accountDetailsId", async (req, res) => {
     }
 
     // Find the specific zone within accountDetails using accountDetailsId
-    const zoneToUpdate = account.accountDetails.find(zone => zone._id.toString() === accountDetailsId);
+    const zoneToUpdate = account.accountDetails.find(
+      (zone) => zone._id.toString() === accountDetailsId
+    );
 
     // If the zone is not found, return an error
     if (!zoneToUpdate) {
@@ -3538,67 +3631,76 @@ router.put("/updateAccounts/:accountId/:accountDetailsId", async (req, res) => {
     await account.save();
 
     // Return success response
-    return res.status(200).json({ message: "Zone updated successfully", account });
+    return res
+      .status(200)
+      .json({ message: "Zone updated successfully", account });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 });
 
+// Goal sheet
+const sendMailToEmployee = async (email, emailContent) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "tech@diamondore.in",
+        pass: "zlnbcvnhzdddzrqn",
+      },
+    });
 
-
-  // Goal sheet 
-  const sendMailToEmployee = async (email, emailContent) => {
-    try {
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: "tech@diamondore.in",
-          pass: "zlnbcvnhzdddzrqn",
-        },
-      });
-
-      const mailOptions = {
-        from: "Diamondore.in <tech@diamondore.in>",
-        to: `Recipient <${email}>`,
-        subject: "Your Goal Sheet Analysis",
-        text: emailContent,
-        html: `
+    const mailOptions = {
+      from: "Diamondore.in <tech@diamondore.in>",
+      to: `Recipient <${email}>`,
+      subject: "Your Goal Sheet Analysis",
+      text: emailContent,
+      html: `
           <h1 style="color: blue; text-align: center; font-size: 1rem">Diamond Consulting Pvt.Ltd.</h1>
-          <p style="font-size: 1.2rem;">${emailContent.replace(/\n/g, "<br/>")}</p>
+          <p style="font-size: 1.2rem;">${emailContent.replace(
+            /\n/g,
+            "<br/>"
+          )}</p>
         `,
-      };
+    };
 
-      const info = await transporter.sendMail(mailOptions);
-      console.log("Email sent: " + info.response);
-      return info;
-    } catch (error) {
-      console.error("Error sending email:", error);
-      throw error;
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent: " + info.response);
+    return info;
+  } catch (error) {
+    console.error("Error sending email:", error);
+    throw error;
+  }
+};
+// Route to send email
+router.post("/send-mail/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { description, total_costs, total_revenue, expected_revenue } =
+      req.body;
+
+    if (!total_costs || !total_revenue || !expected_revenue) {
+      return res
+        .status(400)
+        .send({ error: "Invalid or missing financial data" });
     }
-  };
-  // Route to send email
-  router.post("/send-mail/:id", async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { description, total_costs, total_revenue, expected_revenue } = req.body;
-  
-      if (!total_costs || !total_revenue || !expected_revenue) {
-        return res.status(400).send({ error: "Invalid or missing financial data" });
-      }
-  
-      const employee = await Employees.findById(id);
-      if (!employee) {
-        return res.status(404).send({ error: "Employee not found" });
-      }
 
-      const goalSheet = await GoalSheet.findOne({ owner: id });
-      if (!goalSheet) {
-        return res.status(404).send({ error: "Goal sheet not found for this employee" });
-      }
-  
-      const formattedGoalSheetDetails = goalSheet.goalSheetDetails
-        .map((detail) => `
+    const employee = await Employees.findById(id);
+    if (!employee) {
+      return res.status(404).send({ error: "Employee not found" });
+    }
+
+    const goalSheet = await GoalSheet.findOne({ owner: id });
+    if (!goalSheet) {
+      return res
+        .status(404)
+        .send({ error: "Goal sheet not found for this employee" });
+    }
+
+    const formattedGoalSheetDetails = goalSheet.goalSheetDetails
+      .map(
+        (detail) => `
           <tr>
             <td>${detail.year || "N/A"}</td>
             <td>${detail.month || "N/A"}</td>
@@ -3613,10 +3715,11 @@ router.put("/updateAccounts/:accountId/:accountDetailsId", async (req, res) => {
             <td>${detail.incentive || "N/A"}</td>
             <td>${detail.leakage || "N/A"}</td>
           </tr>
-        `)
-        .join("");
-  
-      const goalSheetTable = `
+        `
+      )
+      .join("");
+
+    const goalSheetTable = `
         <table border="1" style="border-collapse: collapse; width: 100%;">
           <thead>
             <tr>
@@ -3639,10 +3742,10 @@ router.put("/updateAccounts/:accountId/:accountDetailsId", async (req, res) => {
           </tbody>
         </table>
       `;
-  
-      const achievement_ratio = (total_revenue / total_costs).toFixed(2);
-  
-      const emailContent = `
+
+    const achievement_ratio = (total_revenue / total_costs).toFixed(2);
+
+    const emailContent = `
           <p>${description || "No additional details provided."}</p>
         <h2>Financial Overview</h2>
         <ul>
@@ -3655,16 +3758,243 @@ router.put("/updateAccounts/:accountId/:accountDetailsId", async (req, res) => {
         ${goalSheetTable}
       
       `;
-  
-      await sendMailToEmployee(employee.email, emailContent);
-  
-      res.status(200).send({ message: "Email sent successfully with goal sheet details" });
-    } catch (error) {
-      console.error("Error sending email:", error);
-      res.status(500).send({ error: "Failed to send email. Please try again later." });
+
+    await sendMailToEmployee(employee.email, emailContent);
+
+    res
+      .status(200)
+      .send({ message: "Email sent successfully with goal sheet details" });
+  } catch (error) {
+    console.error("Error sending email:", error);
+    res
+      .status(500)
+      .send({ error: "Failed to send email. Please try again later." });
+  }
+});
+
+// making Team Lead to an employee
+router.post("/make-teamlead/:id", async (req, res) => {
+  try {
+    const empId = req.params.id;
+    const employee = await Employees.findByIdAndUpdate(
+      empId,
+      { isTeamLead: true },
+      { new: true }
+    );
+
+    if (!employee) {
+      return res.status(400).send({ error: "employee not found" });
     }
-  });
-  
+
+    return res
+      .status(200)
+      .json({ message: "TeamLead status updated successfully", employee });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .send({ error: "An error occurred while updating TeamLead status" });
+  }
+});
+
+// assign employee to a team lead
+router.post("/asign-to-teamlead/:id", async (req, res) => {
+  try {
+    const employeeid = req.params.id;
+    const { employeeIds } = req.body;
+
+    const teamLead = await Employees.findById(employeeid);
+
+    if (!teamLead || !teamLead.isTeamLead) {
+      return res.status(400).send({ error: "Team Lead not Found" });
+    }
+
+    let team = await Team.findOne({ teamLead: employeeid });
+    if (!team) {
+      team = new Team({
+        teamLead: employeeid,
+        employees: employeeIds,
+      });
+    } else {
+      team.employees = [...new Set([...team.employees, ...employeeIds])];
+    }
+
+    await team.save();
+    await Employees.updateMany(
+      { _id: { $in: employeeIds } },
+      { team: team._id }
+    );
+    await Employees.findByIdAndUpdate(employeeid, { team: team._id });
+    const populatedTeam = await Team.findById(team._id).populate("employees");
+    return res.status(200).json({
+      message: "Employees assigned to Team Lead successfully",
+      team: populatedTeam,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      error: "An error occurred while assigning employees to the Team Lead",
+    });
+  }
+});
 
 
+// Unassign employee from a Team Lead's team list
+router.post("/unassign-from-teamlead/:id", async (req, res) => {
+  try {
+    const teamLeadId = req.params.id;
+    const { employeeId } = req.body; // Single employee ID to unassign
+
+    // Find the team for the team lead
+    const team = await Team.findOne({ teamLead: teamLeadId });
+    if (!team) {
+      return res.status(404).send({ error: "Team not found for the specified Team Lead" });
+    }
+
+    // Check if the employee is part of the team
+    if (!team.employees.includes(employeeId)) {
+      return res.status(400).send({ error: "Employee is not assigned to this team" });
+    }
+
+    // Remove the employee from the team
+    team.employees = team.employees.filter(empId => empId.toString() !== employeeId);
+    await team.save();
+
+    // Clear the team field for the employee
+    await Employees.findByIdAndUpdate(employeeId, { team: null });
+
+    return res.status(200).json({
+      message: "Employee unassigned from Team Lead successfully",
+      team,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      error: "An error occurred while unassigning the employee from the Team Lead",
+    });
+  }
+});
+
+
+//get team by team lead id
+
+router.get("/get-team/:id", async (req, res) => {
+  const { id } = req.params;
+
+  // Validate the ID format
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid team ID" });
+  }
+
+  try {
+    // Find the team by its ID and populate the related fields
+    const team = await Team.findById(id)
+      .populate("teamLead", "name email profilePic empType") // Populate teamLead with selected fields
+      .populate("employees", "name email profilePic empType"); // Populate employees with selected fields
+
+    if (!team) {
+      return res.status(404).json({ message: "Team not found" });
+    }
+
+    // Respond with the team lead and employees details
+    res.status(200).json({
+      teamLead: team.teamLead,
+      employees: team.employees,
+    });
+  } catch (error) {
+    console.error("Error fetching team data:", error);
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+});
+
+// for employeee 
+
+// upload shorlisted sheet url 
+
+
+router.post("/upload-shortlisted-url", async (req, res) => {
+  try {
+    const file = req.files && req.files.myFileImage; // Change 'myFile' to match the key name in Postman
+
+    if (!file) {
+      return res.status(400).send("No file uploaded");
+    }
+
+    // Generate a unique identifier
+    const uniqueIdentifier = uuidv4();
+
+    // Get the file extension from the original file name
+    const fileExtension = file.name.split(".").pop();
+
+    // Create a unique filename by appending the unique identifier to the original filename
+    const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
+
+    // Convert file to base64
+    const base64Data = file.data.toString("base64");
+
+    // Create a buffer from the base64 data
+    const fileBuffer = Buffer.from(base64Data, "base64");
+
+    const uploadData = await s3Client.send(
+      new PutObjectCommand({
+        Bucket: "profilepics",
+        Key: uniqueFileName, // Use the unique filename for the S3 object key
+        Body: fileBuffer, // Provide the file buffer as the Body
+      })
+    );
+
+    // Generate a public URL for the uploaded file
+    const getObjectCommand = new GetObjectCommand({
+      Bucket: "profilepics",
+      Key: uniqueFileName,
+    });
+
+    const signedUrl = await getSignedUrl(s3Client, getObjectCommand); // Generate URL valid for 1 hour
+
+    // Parse the signed URL to extract the base URL
+    const parsedUrl = new URL(signedUrl);
+    const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
+
+    // Send the URL as a response
+    res.status(200).send(baseUrl);
+
+    // Log the URL in the console
+    console.log("File uploaded. URL:", baseUrl);
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    return res.status(500).send("Error uploading file");
+  }
+});
+// upload excel sheet data
+
+router.post("/upload-shortlistedsheet/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { shortlistedCandidates } = req.body;
+
+    if (!shortlistedCandidates) {
+      return res.status(400).json({ message: "Shortlisted candidates URL is required" });
+    }
+
+    const employee = await Employees.findById(id);
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found." });
+    }
+
+    employee.shortlistedCandidates = shortlistedCandidates;
+    await employee.save();
+
+    res.status(200).json({
+      message: "Shortlisted candidates URL uploaded successfully",
+      employeeId: employee._id,
+      shortlistedCandidates: employee.shortlistedCandidates,
+    });
+  } catch (error) {
+    console.log("Error:", error);
+    res.status(500).json({ message: "Internal server error.", error: error.message });
+  }
+});
 export default router;

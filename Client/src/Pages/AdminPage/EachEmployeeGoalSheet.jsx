@@ -35,6 +35,30 @@ const EachEmployeeGoalSheet = () => {
   const [filteredGoalSheetData, setFilteredGoalSheetData] = useState([]);
   const [trigger, setTrigger] = useState(0);
 
+  const [employee, setEmployee] = useState();
+  useEffect(() => {
+    const getEmployeeData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `https://api.diamondore.in/api/admin-confi/all-employees/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.status === 201) {
+          setEmployee(response.data);
+          console.log("emp data", response.data);
+        }
+      } catch (error) {}
+    };
+
+    getEmployeeData();
+  }, []);
+
   // Submit the goal sheet form
   const handleSetGoalSheet = async (e) => {
     e.preventDefault();
@@ -390,7 +414,7 @@ const EachEmployeeGoalSheet = () => {
 
       alert("Email sent successfully!");
       setIsLoading(false);
-      setSendEmailPopup(false)
+      setSendEmailPopup(false);
     } catch (error) {
       console.error("Failed to send email:", error);
       alert("An error occurred. Please try again.");
@@ -422,6 +446,19 @@ const EachEmployeeGoalSheet = () => {
         <h1 className="mx-auto mb-4 text-2xl font-bold text-center md:text-4xl">
           Goal Sheet {employeename}
         </h1>
+
+        <div>
+          {employee?.joiningExcel && (
+            <a
+              className=" text-center p-4 text-white  bg-green-600"
+              href={employee?.joiningExcel}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View Uploaded Joinings
+            </a>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-0 px-2 py-6 md:grid-cols-3 md:gap-10 md:px-10">
@@ -623,12 +660,15 @@ const EachEmployeeGoalSheet = () => {
               >
                 {loading ? "uploading..." : "Upload Joinings"}
               </p>
-
-              <p className="p-2 bg-black text-white  w-fit  mx-4 cursor-pointer " onClick={()=> setSendEmailPopup(true)}>Send Email</p>
+              <p
+                className="p-2 bg-black text-white  w-fit  mx-4 cursor-pointer "
+                onClick={() => setSendEmailPopup(true)}
+              >
+                Send Email
+              </p>
             </div>
           </div>
 
-        
           <div className="container mx-auto overflow-x-auto h-[500px] relative">
             <table id="example" className="w-full table-auto ">
               <thead className="sticky top-0 text-xs text-gray-100 bg-blue-900 shadow">
@@ -653,7 +693,7 @@ const EachEmployeeGoalSheet = () => {
                 {filteredData.length > 0 &&
                   filteredData.map((data) =>
                     data.goalSheetDetails.length > 0 ? (
-                      data.goalSheetDetails.map((detail, index) => (
+                      data.goalSheetDetails?.map((detail, index) => (
                         <tr
                           key={`${data._id}-${index}`}
                           className="text-center"
@@ -919,7 +959,9 @@ const EachEmployeeGoalSheet = () => {
             className="w-full max-w-xl p-6 bg-white rounded-lg shadow-lg"
             onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
           >
-            <h2 className="text-lg font-bold   text-center uppercase">Send Email to Employess</h2>
+            <h2 className="text-lg font-bold   text-center uppercase">
+              Send Email to Employess
+            </h2>
             <div className="bg-blue-900 w-40 h-1 mx-auto mb-4"></div>
             <form onSubmit={sendMail} className="space-y-4">
               <div>
@@ -978,7 +1020,7 @@ const EachEmployeeGoalSheet = () => {
               </button>
               <button
                 type="button"
-                onClick={()=> setSendEmailPopup(false)}
+                onClick={() => setSendEmailPopup(false)}
                 className="w-full mt-2 p-2 text-gray-700 border rounded-md hover:bg-gray-100"
               >
                 Cancel

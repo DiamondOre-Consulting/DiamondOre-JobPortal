@@ -1,18 +1,17 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 
 // / goalDetail.target = cost * 4;
 const employeeSchema = new mongoose.Schema({
   empType: {
     type: String,
-    default: "Recruiter"
+    default: "Recruiter",
   },
   name: {
     type: String,
     required: true,
   },
-  accountHandler:{
-    type:Boolean,
-   
+  accountHandler: {
+    type: Boolean,
   },
   email: {
     type: String,
@@ -25,49 +24,53 @@ const employeeSchema = new mongoose.Schema({
   },
   dob: {
     type: String,
-    required: true
+    required: true,
   },
-  doj:{
+  doj: {
     type: String,
-    required: true
+    required: true,
   },
   profilePic: {
     type: String,
-    default: "https://cdn-icons-png.flaticon.com/512/9131/9131529.png"
+    default: "https://cdn-icons-png.flaticon.com/512/9131/9131529.png",
   },
   myGoalSheet: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "GoalSheet",
-      }
+      },
     ],
-    default: []
+    default: [],
   },
   myIncentive: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Incentive",
-      }
+      },
     ],
-    default: []
+    default: [],
   },
   myKPI: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "KPI",
-      }
+      },
     ],
-    default: []
+    default: [],
   },
   myAccountHandling: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "AccountHandling"
+    ref: "AccountHandling",
   },
-  // joining exelshel shet to uplaod 
-  joiningExcel:{
+  // joining exelshel shet to uplaod
+  joiningExcel: {
+    type: String,
+  },
+
+  shortlistedCandidates:{
     type : String
   },
 
@@ -88,9 +91,19 @@ const employeeSchema = new mongoose.Schema({
     default: [],
   },
 
+  isTeamLead: {
+    type: Boolean,
+    default: false,
+  },
+
+  team: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Team', 
+    default: null, 
+  },
   activeStatus: {
     type: Boolean,
-    default: true
+    default: true,
   },
   createdAt: {
     type: Date,
@@ -98,4 +111,14 @@ const employeeSchema = new mongoose.Schema({
   },
 });
 
+const teamSchema = new mongoose.Schema({
+  teamLead: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Employees",
+    required: true,
+  },
+  employees: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employees" }],
+} ,{timestamps : true});
+
 export default mongoose.model("Employees", employeeSchema);
+export const Team = mongoose.model("Team" , teamSchema);
