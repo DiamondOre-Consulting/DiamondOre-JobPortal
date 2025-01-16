@@ -44,7 +44,8 @@
     "react-treebeard": "^3.2.4",
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.11",
-    "three": "^0.166.1"
+    "three": "^0.166.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

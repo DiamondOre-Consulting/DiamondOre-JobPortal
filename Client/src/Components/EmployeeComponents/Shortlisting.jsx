@@ -45,6 +45,7 @@ console.log(id)
       if (response.status === 200) {
         setLoading(false);
         alert("File Uploaded  Successfully");
+        window.location.reload();
         setFile("");
       }
     } catch (error) {
