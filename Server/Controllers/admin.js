@@ -21,7 +21,7 @@ import LeaveReport from "../Models/LeaveReport.js";
 import PerformanceReport from "../Models/PerformanceReport.js";
 import ChatBotMessages from "../Models/ChatBotMessages.js";
 import ClientForm from "../Models/ClientForm.js";
-import { Team } from "../Models/Employees.js";
+// import { Team } from "../Models/Employees.js";
 import multer from "multer";
 import path from "path";
 import fs, { stat } from "fs";
@@ -3797,110 +3797,125 @@ router.post("/make-teamlead/:id", async (req, res) => {
   }
 });
 
-// assign employee to a team lead
-router.post("/asign-to-teamlead/:id", async (req, res) => {
+//assigning
+router.post("/assign-to-teamlead/:id", async (req, res) => {
   try {
-    const employeeid = req.params.id;
+    const teamLeadId = req.params.id;
     const { employeeIds } = req.body;
 
-    const teamLead = await Employees.findById(employeeid);
+    if (!Array.isArray(employeeIds) || employeeIds.length === 0) {
+      return res
+        .status(400)
+        .json({ error: "Employee IDs must be a non-empty array" });
+    }
 
+    const teamLead = await Employees.findById(teamLeadId);
     if (!teamLead || !teamLead.isTeamLead) {
-      return res.status(400).send({ error: "Team Lead not Found" });
+      return res
+        .status(404)
+        .json({ error: "Team Lead not found or is not a Team Lead" });
     }
 
-    let team = await Team.findOne({ teamLead: employeeid });
-    if (!team) {
-      team = new Team({
-        teamLead: employeeid,
-        employees: employeeIds,
-      });
-    } else {
-      team.employees = [...new Set([...team.employees, ...employeeIds])];
-    }
+    teamLead.team = [...new Set([...teamLead.team, ...employeeIds])];
+    await teamLead.save();
 
-    await team.save();
     await Employees.updateMany(
       { _id: { $in: employeeIds } },
-      { team: team._id }
+      { $set: { teamLead: teamLeadId } }
     );
-    await Employees.findByIdAndUpdate(employeeid, { team: team._id });
-    const populatedTeam = await Team.findById(team._id).populate("employees");
+
+    // Fetch the updated team lead with their team for response
+    const updatedTeamLead = await Employees.findById(teamLeadId).populate(
+      "team"
+    );
+
     return res.status(200).json({
-      message: "Employees assigned to Team Lead successfully",
-      team: populatedTeam,
+      message: "Employees successfully assigned to the Team Lead",
+      teamLead: updatedTeamLead,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).send({
+    console.error(error);
+    return res.status(500).json({
       error: "An error occurred while assigning employees to the Team Lead",
     });
   }
 });
 
-
 // Unassign employee from a Team Lead's team list
 router.post("/unassign-from-teamlead/:id", async (req, res) => {
   try {
-    const teamLeadId = req.params.id;
+    const teamLeadId = req.params.id; // Team Lead ID
     const { employeeId } = req.body; // Single employee ID to unassign
 
-    // Find the team for the team lead
-    const team = await Team.findOne({ teamLead: teamLeadId });
-    if (!team) {
-      return res.status(404).send({ error: "Team not found for the specified Team Lead" });
+    // Validate IDs
+    if (!mongoose.Types.ObjectId.isValid(teamLeadId) || !mongoose.Types.ObjectId.isValid(employeeId)) {
+      return res.status(400).json({ error: "Invalid Team Lead ID or Employee ID" });
     }
 
-    // Check if the employee is part of the team
-    if (!team.employees.includes(employeeId)) {
-      return res.status(400).send({ error: "Employee is not assigned to this team" });
+    // Find the team lead
+    const teamLead = await Employees.findById(teamLeadId);
+    if (!teamLead || !teamLead.isTeamLead) {
+      return res.status(404).json({ error: "Team Lead not found or not a valid team lead" });
     }
 
-    // Remove the employee from the team
-    team.employees = team.employees.filter(empId => empId.toString() !== employeeId);
-    await team.save();
+    // Check if the employee is part of the team lead's team
+    if (!teamLead.team.includes(employeeId)) {
+      return res.status(400).json({ error: "Employee not assigned to this team lead" });
+    }
 
-    // Clear the team field for the employee
-    await Employees.findByIdAndUpdate(employeeId, { team: null });
+    // Remove the employee from the team lead's `team` array
+    teamLead.team = teamLead.team.filter((empId) => empId.toString() !== employeeId);
+    await teamLead.save();
+
+    // Clear the `teamLeadId` field for the employee
+    const employee = await Employees.findById(employeeId);
+    if (employee) {
+      employee.teamLeadId = null;
+      await employee.save();
+    }
 
     return res.status(200).json({
       message: "Employee unassigned from Team Lead successfully",
-      team,
+      teamLead,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).send({
+    console.error("Error unassigning employee from Team Lead:", error);
+    return res.status(500).json({
       error: "An error occurred while unassigning the employee from the Team Lead",
     });
   }
 });
-
 
 //get team by team lead id
 
 router.get("/get-team/:id", async (req, res) => {
   const { id } = req.params;
 
-  // Validate the ID format
-
+  // Validate the ID
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ message: "Invalid team ID" });
+    return res.status(400).json({ message: "Invalid employee ID" });
   }
 
   try {
-    // Find the team by its ID and populate the related fields
-    const team = await Team.findById(id)
-      .populate("teamLead", "name email profilePic empType") // Populate teamLead with selected fields
-      .populate("employees", "name email profilePic empType"); // Populate employees with selected fields
+    // Find the employee by ID
+    const teamLead = await Employees.findById(id)
+      .populate("team", "name email profilePic empType") // Populate team with selected fields
+      .select("name email profilePic empType team isTeamLead"); // Fetch specific fields for the team lead
 
-    if (!team) {
-      return res.status(404).json({ message: "Team not found" });
+    if (!teamLead || !teamLead.isTeamLead) {
+      return res.status(404).json({ message: "Team lead not found or not a valid team lead" });
     }
 
-    // Respond with the team lead and employees details
+    // Respond with the team lead and their team members
     res.status(200).json({
-      teamLead: team.teamLead,
-      employees: team.employees,
+      teamLead: {
+        id: teamLead._id,
+        name: teamLead.name,
+        email: teamLead.email,
+        profilePic: teamLead.profilePic,
+        empType: teamLead.empType,
+      },
+      team: teamLead.team, // Team members
     });
   } catch (error) {
     console.error("Error fetching team data:", error);
@@ -3910,10 +3925,9 @@ router.get("/get-team/:id", async (req, res) => {
   }
 });
 
-// for employeee 
+// for employeee
 
-// upload shorlisted sheet url 
-
+// upload shorlisted sheet url
 
 router.post("/upload-shortlisted-url", async (req, res) => {
   try {
@@ -3976,7 +3990,9 @@ router.post("/upload-shortlistedsheet/:id", async (req, res) => {
     const { shortlistedCandidates } = req.body;
 
     if (!shortlistedCandidates) {
-      return res.status(400).json({ message: "Shortlisted candidates URL is required" });
+      return res
+        .status(400)
+        .json({ message: "Shortlisted candidates URL is required" });
     }
 
     const employee = await Employees.findById(id);
@@ -3994,7 +4010,9 @@ router.post("/upload-shortlistedsheet/:id", async (req, res) => {
     });
   } catch (error) {
     console.log("Error:", error);
-    res.status(500).json({ message: "Internal server error.", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Internal server error.", error: error.message });
   }
 });
 export default router;

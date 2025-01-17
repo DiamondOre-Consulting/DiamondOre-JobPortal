@@ -96,11 +96,13 @@ const employeeSchema = new mongoose.Schema({
     default: false,
   },
 
-  team: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Team', 
-    default: null, 
-  },
+  team: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Employees",
+    },
+  ],
+
   activeStatus: {
     type: Boolean,
     default: true,
@@ -111,14 +113,14 @@ const employeeSchema = new mongoose.Schema({
   },
 });
 
-const teamSchema = new mongoose.Schema({
-  teamLead: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Employees",
-    required: true,
-  },
-  employees: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employees" }],
-} ,{timestamps : true});
+// const teamSchema = new mongoose.Schema({
+//   teamLead: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: "Employees",
+//     required: true,
+//   },
+//   employees: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employees" }],
+// } ,{timestamps : true});
 
 export default mongoose.model("Employees", employeeSchema);
-export const Team = mongoose.model("Team" , teamSchema);
+// export const Team = mongoose.model("Team" , teamSchema);

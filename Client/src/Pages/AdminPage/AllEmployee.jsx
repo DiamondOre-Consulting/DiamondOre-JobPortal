@@ -205,7 +205,7 @@ const AllEmployee = () => {
 
     try {
       const response = await axios.post(
-        `https://api.diamondore.in/api/admin-confi/asign-to-teamlead/${selectedEmployeeId}`,
+        `https://api.diamondore.in/api/admin-confi/assign-to-teamlead/${selectedEmployeeId}`,
         { employeeIds }
       );
 

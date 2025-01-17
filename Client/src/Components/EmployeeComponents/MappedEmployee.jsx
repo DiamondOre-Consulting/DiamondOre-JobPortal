@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 
 const MappedEmployee = ({ userData }) => {
     console.log("userdata",userData)
-  const teamId = userData?.team;
+  const teamId = userData?.id
+  console.log(teamId)
   const [mappedEmployee, setMappedEmployee] = useState([]);
   const [popup, setPopup] = useState(false);
   const [goalSheetData, setGoalSheetData] = useState([]);
@@ -19,8 +20,8 @@ const MappedEmployee = ({ userData }) => {
             `https://api.diamondore.in/api/admin-confi/get-team/${teamId}`
           );
           if (response.status === 200) {
-            setMappedEmployee(response.data);
-            console.log("Team data:", response.data);
+            setMappedEmployee(response?.data?.team);
+            console.log("Team data: is this ", response.data);
           }
         }
       } catch (error) {
@@ -52,6 +53,7 @@ const MappedEmployee = ({ userData }) => {
             }
           );
           if (response.status === 200) {
+           
             setGoalSheetData(response.data);
             console.log("Goal Sheet Data:", response.data);
           }
@@ -73,7 +75,7 @@ const MappedEmployee = ({ userData }) => {
       <div>
         <p className="text-center text-xl font-bold mb-4">All Mapped Employees</p>
         <div className="grid grid-cols-3 gap-10">
-          {mappedEmployee.employees?.map((emp) => (
+          {mappedEmployee?.map((emp) => (
             <div
               onClick={() => handleClick(emp?._id)}
               className="relative flex justify-between p-5 overflow-hidden transition-all duration-500 transform bg-white shadow-xl cursor-pointer hover:shadow-2xl group rounded-xl"

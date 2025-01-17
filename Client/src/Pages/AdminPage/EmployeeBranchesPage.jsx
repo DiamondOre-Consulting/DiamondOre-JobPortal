@@ -46,8 +46,8 @@ const EmployeeBranchesPage = () => {
   const employeename = employee?.name;
 
   //get team
-  const teamId = employee?.team;
-  console.log(teamId);
+  const teamId = employee?._id;
+  console.log( "Team Id", teamId);
 
   const [mappedemp, setMappedemp] = useState([]);
 
@@ -61,10 +61,12 @@ const EmployeeBranchesPage = () => {
         );
 
         if (response.status === 200) {
-          setMappedemp(response.data);
+          setMappedemp(response.data.team);
           console.log("team data is", response.data);
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log(error)
+      }
     };
 
     getTeamMembers();
@@ -205,7 +207,7 @@ const EmployeeBranchesPage = () => {
         <p className="text-center text-2xl underline ">Mapped Employee</p>
 
         <div className="grid grid-cols-4 gap-y-6 text-white  gap-x-10 mt-10 ">
-          {mappedemp?.employees?.map((emp) => (
+          {mappedemp?.map((emp) => (
             <>
               <div className="text-center ">
                 <div className="bg-blue-900 p-4">
