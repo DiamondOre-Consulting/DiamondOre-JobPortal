@@ -58,24 +58,24 @@ const FreeConsultation = () => {
                                 img: 'https://www.svgrepo.com/show/382105/male-avatar-boy-face-man-user-5.svg',
                                 link: 'https://meetpro.club/Amaan'
                             },
-                            {
-                                name: 'Sooraj',
-                                services: ['Bank'],
-                                img: 'https://www.svgrepo.com/show/382105/male-avatar-boy-face-man-user-5.svg',
-                                link: 'https://meetpro.club/Surajsamrat'
-                            },
+                            // {
+                            //     name: 'Sooraj',
+                            //     services: ['Bank'],
+                            //     img: 'https://www.svgrepo.com/show/382105/male-avatar-boy-face-man-user-5.svg',
+                            //     link: 'https://meetpro.club/Surajsamrat'
+                            // },
                             {
                                 name: 'Swati',
                                 services: ['Variable Agency/Partner channel', 'non sales', 'senior positions'],
                                 img: 'https://w7.pngwing.com/pngs/4/736/png-transparent-female-avatar-girl-face-woman-user-flat-classy-users-icon.png',
                                 link: 'https://meetpro.club/swatichauhan'
                             },
-                            {
-                                name: 'Sakshi Singh',
-                                services: ['NBFC'],
-                                img: 'https://w7.pngwing.com/pngs/4/736/png-transparent-female-avatar-girl-face-woman-user-flat-classy-users-icon.png',
-                                link: 'https://meetpro.club/SakshiSingh'
-                            }
+                            // {
+                            //     name: 'Sakshi Singh',
+                            //     services: ['NBFC'],
+                            //     img: 'https://w7.pngwing.com/pngs/4/736/png-transparent-female-avatar-girl-face-woman-user-flat-classy-users-icon.png',
+                            //     link: 'https://meetpro.club/SakshiSingh'
+                            // }
                         ].map((consultant, index) => (
                             <li key={index} className="md:col-span-1 col-span-2 divide-y divide-gray-200 rounded-lg bg-white shadow-md flex flex-col">
                                 <div className="flex w-full items-center justify-between space-x-6 p-6 flex-grow">
