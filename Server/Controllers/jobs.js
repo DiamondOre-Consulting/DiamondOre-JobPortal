@@ -217,12 +217,15 @@ router.post("/upload-job-excel", AdminAuthenticateToken, async (req, res) => {
         },
         (err, data) => {
           if (err) {
+            console.log("are yr",+1)
             return reject(err);
           }
           resolve(data);
         }
       );
     });
+
+    
 
     let jobsAdded = [];
     let jobsUpdated = [];
@@ -238,16 +241,25 @@ router.post("/upload-job-excel", AdminAuthenticateToken, async (req, res) => {
         State,
         JobStatus,
         DateAdded,
+        MinExperience,
+        MaxSalary
       } = job;
 
       const [day, month, year] = DateAdded.split("/");
       const formattedDateAdded = new Date(`${year}-${month}-${day}`);
-
       const existingJob = await Jobs.findOne({
         JobTitle: JobTitle,
         City: City,
         DateAdded: formattedDateAdded,
+        Company,
+        Industry,
+        Channel,
+        Zone,
+        State,
+        MinExperience,
+        MaxSalary
       });
+
 
       if (existingJob) {
         if (existingJob.JobStatus !== (JobStatus === "Active")) {
@@ -261,18 +273,14 @@ router.post("/upload-job-excel", AdminAuthenticateToken, async (req, res) => {
           JobStatus: JobStatus === "Active",
           DateAdded: formattedDateAdded,
         });
+
         await newJob.save();
+
         jobsAdded.push(newJob);
       }
     }
 
 
-    const jobsLength = await Jobs.countDocuments();
-
-    console.log(jobsLength)
-
-
-    // Respond with success
     return res.status(200).json({
       jobsAdded: jobsAdded.length,
       jobsUpdated: jobsUpdated.length,
