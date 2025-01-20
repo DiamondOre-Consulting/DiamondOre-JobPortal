@@ -125,7 +125,7 @@ const Contact = () => {
                             </p>
 
                             <div className="mt-8">
-                                <a href="" className="text-xl font-bold text-gray-600">+91 9773693017</a><br></br>
+                                <a href="" className="text-xl font-bold text-gray-600">+91 7838738916</a><br></br>
                                 <a href="" className="text-xl font-bold text-gray-600">hr@diamondore.in</a>
                                 <address className="mt-2 not-italic">B-127, Second Floor, B Block, Sector 63, Noida, Uttar Pradesh 201301</address>
                                 <div className='flex my-3'>
