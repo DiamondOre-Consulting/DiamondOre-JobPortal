@@ -149,7 +149,7 @@ const Prompt = () => {
   };
 
   const handlesendbulkjobs = async (e) => {
-    console.log(toDate, fromDate);
+    // console.log(toDate, fromDate);
     e.preventDefault();
     setLoading(true);
     const formattedFromDate = formatDate(fromDate);
@@ -170,7 +170,7 @@ const Prompt = () => {
       );
 
       if (response.status === 200) {
-        console.log(response.data);
+        // console.log(response.data);
         setLoading(false);
         alert("Emails have been sent successfully!");
         setSendBulkJobsPopup(false)
@@ -204,7 +204,7 @@ const Prompt = () => {
           //   console.log("DSR DATA",dsrdata);
         }
       } catch (error) {
-        console.log(erorr);
+        console.log(error);
       }
     };
     getDSR();

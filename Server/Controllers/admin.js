@@ -1786,30 +1786,24 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
 
 router.get("/find-bulk-jobs", async (req, res) => {
   try {
-    const {
-      recruiterName,
-      fromDate,
-      toDate,
-      location,
-      ctcStart,
-      ctcEnd,
-      role,
-    } = req.query; // Taking input from query params
-
+    const { recruiterName, fromDate, toDate, location, ctcStart, ctcEnd } =
+      req.query; // Taking input from query params
+    // console.log(1);
+    // console.log(req.query);
     if (!fromDate || !toDate) {
       return res.status(400).send("Please provide fromDate and toDate");
     }
 
+    console.log(2);
     // Convert fromDate and toDate into Date objects
-    const from = new Date(fromDate);
-    const to = new Date(toDate);
-    // to.setHours(23, 59, 59, 999);
+    const from = fromDate;
+    const to = toDate;
+    // console.log("to", to);
 
-    // Build the query object based on whether recruiterName is provided
     const query = {
       currentDate: {
-        $gte: fromDate,
-        $lte: toDate,
+        $gte: from,
+        $lte: to,
       },
     };
 
@@ -1818,26 +1812,22 @@ router.get("/find-bulk-jobs", async (req, res) => {
     // }
 
     if (location) {
-      query.location = location;
-    }
-
-    if (role) {
-      query.role = role;
+      query.currentLocation = location;
     }
 
     if (ctcStart && ctcEnd) {
       query.currentCTC = {
-        $gte: ctcStart,
-        $lte: ctcEnd,
+        $gte: parseFloat(ctcStart),
+        $lte: parseFloat(ctcEnd),
       };
     }
 
-    console.log(query);
+    // console.log("query", query);
 
     // Fetch candidates matching the criteria
     const candidates = await DSR.find(query);
-
-    console.log(candidates.length);
+    // console.log("can", candidates);
+    // console.log("len", candidates.length);
 
     if (!candidates.length) {
       return res.status(404).send("No candidates found");
@@ -1855,12 +1845,14 @@ router.get("/find-bulk-jobs", async (req, res) => {
         },
       });
 
+      // console.log("suitable jobs", suitableJobs);
+
       recommendations.push({
         candidate: candidate,
         jobs: suitableJobs,
       });
 
-      console.log(recommendations);
+      // console.log(recommendations);
 
       if (suitableJobs.length > 0) {
         const findRec = await RecruitersAndKAMs.findOne({
@@ -1874,6 +1866,22 @@ router.get("/find-bulk-jobs", async (req, res) => {
     res.status(200).json(recommendations);
   } catch (error) {
     res.status(500).send(error.message);
+  }
+});
+
+// getting DSR data
+
+router.get("/get-dsr-data", async (req, res) => {
+  try {
+    const dsrData = await DSR.find({}, "recruiterName");
+    const uniqueRecruiters = [
+      ...new Set(dsrData.map((item) => item.recruiterName)),
+    ];
+    // console.log(uniqueRecruiters);
+    res.status(200).json(uniqueRecruiters);
+  } catch (error) {
+    console.error("Error fetching DSR data:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
@@ -3848,23 +3856,34 @@ router.post("/unassign-from-teamlead/:id", async (req, res) => {
     const { employeeId } = req.body; // Single employee ID to unassign
 
     // Validate IDs
-    if (!mongoose.Types.ObjectId.isValid(teamLeadId) || !mongoose.Types.ObjectId.isValid(employeeId)) {
-      return res.status(400).json({ error: "Invalid Team Lead ID or Employee ID" });
+    if (
+      !mongoose.Types.ObjectId.isValid(teamLeadId) ||
+      !mongoose.Types.ObjectId.isValid(employeeId)
+    ) {
+      return res
+        .status(400)
+        .json({ error: "Invalid Team Lead ID or Employee ID" });
     }
 
     // Find the team lead
     const teamLead = await Employees.findById(teamLeadId);
     if (!teamLead || !teamLead.isTeamLead) {
-      return res.status(404).json({ error: "Team Lead not found or not a valid team lead" });
+      return res
+        .status(404)
+        .json({ error: "Team Lead not found or not a valid team lead" });
     }
 
     // Check if the employee is part of the team lead's team
     if (!teamLead.team.includes(employeeId)) {
-      return res.status(400).json({ error: "Employee not assigned to this team lead" });
+      return res
+        .status(400)
+        .json({ error: "Employee not assigned to this team lead" });
     }
 
     // Remove the employee from the team lead's `team` array
-    teamLead.team = teamLead.team.filter((empId) => empId.toString() !== employeeId);
+    teamLead.team = teamLead.team.filter(
+      (empId) => empId.toString() !== employeeId
+    );
     await teamLead.save();
 
     // Clear the `teamLeadId` field for the employee
@@ -3881,7 +3900,8 @@ router.post("/unassign-from-teamlead/:id", async (req, res) => {
   } catch (error) {
     console.error("Error unassigning employee from Team Lead:", error);
     return res.status(500).json({
-      error: "An error occurred while unassigning the employee from the Team Lead",
+      error:
+        "An error occurred while unassigning the employee from the Team Lead",
     });
   }
 });
@@ -3903,7 +3923,9 @@ router.get("/get-team/:id", async (req, res) => {
       .select("name email profilePic empType team isTeamLead"); // Fetch specific fields for the team lead
 
     if (!teamLead || !teamLead.isTeamLead) {
-      return res.status(404).json({ message: "Team lead not found or not a valid team lead" });
+      return res
+        .status(404)
+        .json({ message: "Team lead not found or not a valid team lead" });
     }
 
     // Respond with the team lead and their team members
