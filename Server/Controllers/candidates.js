@@ -398,7 +398,7 @@ router.get("/user-data", CandidateAuthenticateToken, async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
+ 
 // FETCHING ALL JOBS
 router.get("/all-jobs", async (req, res) => {
   try {
