@@ -3550,6 +3550,9 @@ router.post("/get-policy-url", async (req, res) => {
         Bucket: "profilepics",
         Key: uniqueFileName, // Use the unique filename for the S3 object key
         Body: fileBuffer, // Provide the file buffer as the Body
+        ContentType: "application/pdf",
+        ACL: "public-read",
+        ContentDisposition: "inline",
       })
     );
 

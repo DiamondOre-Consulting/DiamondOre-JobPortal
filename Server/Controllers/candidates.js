@@ -404,7 +404,7 @@ router.get("/all-jobs", async (req, res) => {
   try {
     const allJobs = await Jobs.find({});
 
-    console.log(allJobs);
+   
 
     return res.status(200).json(allJobs);
   } catch (error) {
