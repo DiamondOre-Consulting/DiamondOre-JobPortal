@@ -38,7 +38,7 @@ const AdminEmployeeAttendence = () => {
 
                 // Fetch associates data from the backend
                 const response = await axios.get(
-                    "https://api.diamondore.in/api/admin-confi/all-employees",
+                    `${import.meta.env.VITE_BASE_URL}/admin-confi/all-employees`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`
@@ -69,7 +69,7 @@ const AdminEmployeeAttendence = () => {
                 if (selectedEmployee) {
 
                     const response = await axios.get(
-                        `https://api.diamondore.in/api/admin-confi/all-employees/${selectedEmployee._id}`,
+                        `${import.meta.env.VITE_BASE_URL}/admin-confi/all-employees/${selectedEmployee._id}`,
                         {
                             headers:
                             {
@@ -115,7 +115,7 @@ const AdminEmployeeAttendence = () => {
                 if (selectedEmployee) {
 
                     const response = await axios.get(
-                        `https://api.diamondore.in/api/admin-confi/leave-report/${selectedEmployee._id}`,
+                        `${import.meta.env.VITE_BASE_URL}/admin-confi/leave-report/${selectedEmployee._id}`,
                         {
                             headers:
                             {
@@ -160,7 +160,7 @@ const AdminEmployeeAttendence = () => {
                 if (selectedEmployee) {
 
                     const response = await axios.get(
-                        `https://api.diamondore.in/api/admin-confi/performance-report/${selectedEmployee._id}`,
+                        `${import.meta.env.VITE_BASE_URL}/admin-confi/performance-report/${selectedEmployee._id}`,
                         {
                             headers:
                             {

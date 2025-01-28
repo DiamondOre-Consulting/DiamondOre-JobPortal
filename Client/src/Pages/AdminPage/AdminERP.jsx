@@ -43,7 +43,7 @@ const AdminERP = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "https://api.diamondore.in/api/admin-confi/erp/all-erp-data",
+          `${import.meta.env.VITE_BASE_URL}/admin-confi/erp/all-erp-data`,
           {
             headers: {
               Authorization: `Bearer ${token}`

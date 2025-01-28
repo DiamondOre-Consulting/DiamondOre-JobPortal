@@ -39,7 +39,7 @@ const AddJobs = () => {
       const formData = new FormData();
       formData.append('myFile', sheet);
       const response = await axios.post(
-        'https://api.diamondore.in/api/jobs/upload-ops',
+        `${import.meta.env.VITE_BASE_URL}/jobs/upload-ops`,
         formData,
         {
           headers: {
@@ -70,7 +70,7 @@ const AddJobs = () => {
     try {
       setIsSubmitting(true);  // Start submission
       const response = await axios.post(
-        'https://api.diamondore.in/api/jobs/upload-job-excel',
+        `${import.meta.env.VITE_BASE_URL}/jobs/upload-job-excel`,
         { url: sheeturl },
         {
           headers: {

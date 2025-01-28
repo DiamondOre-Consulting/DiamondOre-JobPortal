@@ -40,7 +40,7 @@ const Prompt = () => {
       formData.append("myFile", sheet);
 
       const response = await axios.post(
-        "https://api.diamondore.in/api/admin-confi/upload-dsr",
+        `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-dsr`,
         formData
       );
 
@@ -60,7 +60,7 @@ const Prompt = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "https://api.diamondore.in/api/admin-confi/upload-dsr-excel",
+        `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-dsr-excel`,
         { url: sheeturl }
       );
 
@@ -83,7 +83,7 @@ const Prompt = () => {
     try {
       setShowLoader2(true);
       const response = await axios.get(
-        `https://api.diamondore.in/api/admin-confi/findJobs/${phone}`
+        `${import.meta.env.VITE_BASE_URL}/admin-confi/findJobs/${phone}`
       );
       // Log the response for debugging
       if (response.status === 201) {
@@ -113,7 +113,7 @@ const Prompt = () => {
   //     try {
 
   //         const response = await axios.get(
-  //             `https://api.diamondore.in/api/admin-confi/find-bulk-jobs`
+  //             `${import.meta.env.VITE_BASE_URL}/admin-confi/find-bulk-jobs`
   //         );
   //         if (response.status === 200) {
   //             console.log(response.data)
@@ -156,7 +156,7 @@ const Prompt = () => {
     const formattedToDate = formatDate(toDate);
     try {
       const response = await axios.get(
-        `https://api.diamondore.in/api/admin-confi/find-bulk-jobs`,
+        `${import.meta.env.VITE_BASE_URL}/admin-confi/find-bulk-jobs`,
         {
           params: {
             recruiterName,
@@ -197,7 +197,7 @@ const Prompt = () => {
     const getDSR = async () => {
       try {
         const response = await axios.get(
-          "https://api.diamondore.in/api/admin-confi/get-dsr-data"
+          `${import.meta.env.VITE_BASE_URL}/admin-confi/get-dsr-data`
         );
         if (response.status === 200) {
           setDSRData(response.data);

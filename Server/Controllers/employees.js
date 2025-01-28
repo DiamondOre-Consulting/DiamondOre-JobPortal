@@ -598,15 +598,54 @@ router.put("/accounts/change-owner/:currentOwner/:futureOwner/:updateId", async 
 router.get("/my-goalsheet", EmployeeAuthenticateToken, async (req, res) => {
   try {
     const { userId } = req.user;
+    const {year}= req.query
+    
+
+ 
+
+  
+    
+
 
     const allGoalSheets = await GoalSheet.find({ owner: userId });
-    if (allGoalSheets.length === 0) {
+
+    
+    if (allGoalSheets.length === 0){
       return res.status(402).json({ message: "No goal sheet found!!!" });
     }
+    const goalSheet = allGoalSheets[0].toObject();
+   
+    let minYear
+    let maxYear
+    if( goalSheet.goalSheetDetails[0].year)
+    minYear=goalSheet.goalSheetDetails[0].year
+     if(goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length-1].year) 
+      maxYear=goalSheet.goalSheetDetails[goalSheet.goalSheetDetails.length-1].year
+    if(minYear){
+      goalSheet.minYear = minYear
+    }
+    if(maxYear){
+      goalSheet.maxYear = maxYear
+    }
 
-    res.status(200).json(allGoalSheets);
+    let filteredGoalSheets = null;
+    if (year!="null" && year!="undefined") {
+      
+      filteredGoalSheets = goalSheet.goalSheetDetails.filter((detail) => detail.year === parseInt(year) )
+    }
+
+    if(filteredGoalSheets){
+      
+      goalSheet.goalSheetDetails = filteredGoalSheets
+    }
+
+    
+
+    
+
+    res.status(200).json(goalSheet);
   } catch (error) {
-    console.error(error.message);
+    console.error(error);
     res.status(500).json({ message: error.message });
   }
 });

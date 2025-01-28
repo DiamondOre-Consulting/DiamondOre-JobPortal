@@ -1,16 +1,25 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
+import { Label } from '../ui/label';
+import { Select,SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue, } from '../ui/select';
+
 const EmpGoalSheet = () => {
   const [selectedYear, setSelectedYear] = useState('');
   const [allGoalSheetData, setAllGoalSheetData] = useState([]);
   const [filteredGoalSheetData, setFilteredGoalSheetData] = useState([]);
+  const [minYear, setMinYear] = useState(0);
+  const [maxYear, setMaxYear] = useState(0);
+  const [year,setYear]= useState(null)
    const [tickermessage , setgetTickerMessage] = useState("");
   useEffect(() => {
     const handleGoalSheet = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('https://api.diamondore.in/api/employee/my-goalsheet', {
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/employee/my-goalsheet?year=${year}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -18,9 +27,11 @@ const EmpGoalSheet = () => {
 
         if (response.status === 200) {
           console.log("all goal sheet data",response.data)
-          setFilteredData(response.data);
-          const alldata = response.data?.[0].goalSheetDetails;
-          setgetTickerMessage(response.data[0].YTDLessTickerMessage);
+          setFilteredData([response.data]);
+          const alldata = response?.data?.goalSheetDetails;
+          // setgetTickerMessage(response.data[0].YTDLessTickerMessage);
+          setMinYear(response.data.minYear)
+          setMaxYear(response.data.maxYear)
           setAllGoalSheetData(alldata);
           setFilteredGoalSheetData(alldata); // Initialize with all data
         }
@@ -29,8 +40,9 @@ const EmpGoalSheet = () => {
       }
     };
 
-    handleGoalSheet();
-  }, []);
+    handleGoalSheet()
+   
+  }, [year]);
 
   // Handle year change and filter data
   const handleYearChange = (e) => {
@@ -62,8 +74,8 @@ const EmpGoalSheet = () => {
   };
 
    const [filteredData, setFilteredData] = useState([]);
-  const totals = filteredData
-  .flatMap((data) => data.goalSheetDetails) // Flatten all goalSheetDetails
+   
+   const totals = filteredData[0]?.goalSheetDetails // Flatten all goalSheetDetails
   .reduce(
     (acc, detail) => {
       acc.noOfJoinings += detail.noOfJoinings;
@@ -74,6 +86,8 @@ const EmpGoalSheet = () => {
     },
     { noOfJoinings: 0, revenue: 0, cost: 0, target: 0 }
   );
+
+  console.log(totals)
 
 
   return (
@@ -97,6 +111,20 @@ const EmpGoalSheet = () => {
       )}
         <h1 className='text-3xl font-bold md:text-4xl'>Goal Sheet</h1>
         <div className='w-20 h-0.5 bg-blue-900'></div>
+
+        <Select onValueChange={(value)=>{setYear(value)}}>
+        <SelectTrigger id={"year"}>
+          <SelectValue placeholder="Select Year" />
+        </SelectTrigger>
+        <SelectContent>
+
+          
+        {Array.from({ length: maxYear-minYear+1 }).map((_, i) => (
+        <SelectItem  key={i} value={`${minYear + i }`}>{minYear + i }</SelectItem>
+        ))}
+        </SelectContent>
+      </Select>
+
 
         <div className='col-span-2 mt-10'>
 
@@ -150,10 +178,10 @@ const EmpGoalSheet = () => {
                 <td colSpan="2" className="font-bold">
                   Grand Total
                 </td>
-                <td className="font-bold">{totals.noOfJoinings}</td>
-                <td className="font-bold">{totals.revenue}</td>
-                <td className="font-bold">{totals.cost}</td>
-                <td className="font-bold">{totals.target}</td>
+                <td className="font-bold">{totals?.noOfJoinings}</td>
+                <td className="font-bold">{totals?.revenue}</td>
+                <td className="font-bold">{totals?.cost}</td>
+                <td className="font-bold">{totals?.target}</td>
               </tr>
             </table>
           </div>

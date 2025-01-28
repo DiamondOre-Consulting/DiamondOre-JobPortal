@@ -24,7 +24,7 @@ const SearchJob = () => {
         try {
             setShowLoader2(true);
             const response = await axios.get(
-                `https://api.diamondore.in/api/admin-confi/findJobs/${phone}`
+                `${import.meta.env.VITE_BASE_URL}/admin-confi/findJobs/${phone}`
             );
             // Log the response for debugging
             if (response.status === 201) {
@@ -65,7 +65,7 @@ const SearchJob = () => {
         // const payload = { name, phone };
 
         try {
-            const response = await axios.post('https://api.diamondore.in/api/candidates/request-call', {
+            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/candidates/request-call`, {
                 name, phone
             });
 

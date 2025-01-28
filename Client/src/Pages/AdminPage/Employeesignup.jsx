@@ -40,7 +40,7 @@ const Employeesignup = () => {
         setAdded(null);
         try {
             const response = await axios.post(
-                "https://api.diamondore.in/api/employee/add-emp",
+                `${import.meta.env.VITE_BASE_URL}/employee/add-emp`,
                 {
                     name,
                     email,

@@ -26,7 +26,7 @@ const Services = () => {
     // const payload = { name, phone };
 
     try {
-      const response = await axios.post('https://api.diamondore.in/api/candidates/request-call', {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/candidates/request-call`, {
         name, phone
       });
 

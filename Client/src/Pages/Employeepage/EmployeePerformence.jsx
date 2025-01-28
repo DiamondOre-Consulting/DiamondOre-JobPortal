@@ -29,7 +29,7 @@ const EmployeePerformence = () => {
                 // Fetch leave report
 
                 const Response = await axios.get(
-                    `https://api.diamondore.in/api/employee/performance-report`,
+                    `${import.meta.env.VITE_BASE_URL}/employee/performance-report`,
 
                     {
                         headers: {

@@ -21,7 +21,7 @@ const Adminforgotpassword = () => {
 
         try {
 
-            const response = await axios.post("https://api.diamondore.in/api/admin-confi/forgot-password", {
+            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/admin-confi/forgot-password`, {
                 email
             })
 
@@ -47,7 +47,7 @@ const Adminforgotpassword = () => {
 
         try {
 
-            const response = await axios.put("https://api.diamondore.in/api/admin-confi/update-password",
+            const response = await axios.put(`${import.meta.env.VITE_BASE_URL}/admin-confi/update-password`,
                 {
                     otp,
                     password,

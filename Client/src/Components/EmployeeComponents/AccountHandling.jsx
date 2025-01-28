@@ -42,7 +42,7 @@ const AccountHandling = ({ userData }) => {
     const fetchData = async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.get(`https://api.diamondore.in/api/employee/accounts/${userData?.id}`);
+            const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/employee/accounts/${userData?.id}`);
 
             if (response.status === 200) {
                 setRows(response.data);
@@ -87,7 +87,7 @@ const AccountHandling = ({ userData }) => {
         setError('')
         console.log(form)
         try {
-            const response = await axios.post('https://api.diamondore.in/api/employee/set-account-handling', form, {
+            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/employee/set-account-handling`, form, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -163,7 +163,7 @@ const AccountHandling = ({ userData }) => {
 
     const handleDelete = async (accountId) => {
         const response = await axios.delete(
-            `https://api.diamondore.in/api/employee/accounts/delete/${accountdetails?.findAccount?.owner}/${accountId}`,
+            `${import.meta.env.VITE_BASE_URL}/employee/accounts/delete/${accountdetails?.findAccount?.owner}/${accountId}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`

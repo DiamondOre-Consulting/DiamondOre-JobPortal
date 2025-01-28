@@ -48,7 +48,7 @@ const AdminAllJobsCards = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "https://api.diamondore.in/api/admin-confi/all-jobs"
+          `${import.meta.env.VITE_BASE_URL}/admin-confi/all-jobs`
         );
         if (response.status == 200) {
           const all = response.data;
@@ -71,7 +71,7 @@ const AdminAllJobsCards = () => {
   const deleteJob = async () => {
     try {
       const response = await axios.put(
-        `https://api.diamondore.in/api/admin-confi/remove-job/${jobToDelete}`,
+        `${import.meta.env.VITE_BASE_URL}/admin-confi/remove-job/${jobToDelete}`,
         null,
         {
           headers: {

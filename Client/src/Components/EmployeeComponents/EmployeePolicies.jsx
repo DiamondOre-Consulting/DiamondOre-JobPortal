@@ -15,7 +15,7 @@ const EmployeePolicies = () => {
         }
 
         const response = await axios.get(
-          "https://api.diamondore.in/api/employee/user-data",
+          `${import.meta.env.VITE_BASE_URL}/employee/user-data`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

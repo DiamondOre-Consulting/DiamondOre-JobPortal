@@ -17,7 +17,7 @@ const EmpAuthVerify = () => {
             }
 
             try {
-                const response = await axios.get('https://api.diamondore.in/api/employee/user-data', {
+                const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/employee/user-data`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 

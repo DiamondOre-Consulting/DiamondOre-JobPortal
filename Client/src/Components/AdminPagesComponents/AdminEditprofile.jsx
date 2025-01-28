@@ -24,7 +24,7 @@ const AdminEditprofile = () => {
         return;
       }
       try {
-        const response = await axios.get("https://api.diamondore.in/api/admin-confi/user-data", {
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/admin-confi/user-data`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -70,7 +70,7 @@ const AdminEditprofile = () => {
       const formData = new FormData();
       formData.append("myFileImage", profilePic);
       const response = await axios.post(
-        "https://api.diamondore.in/api/admin-confi/upload-profile-pic",
+        `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-profile-pic`,
         formData,
         {
           headers: {
@@ -101,7 +101,7 @@ const AdminEditprofile = () => {
 
       //   
       const token = localStorage.getItem("token");
-      await axios.put('https://api.diamondore.in/api/admin-confi/edit-profile', formData, {
+      await axios.put(`${import.meta.env.VITE_BASE_URL}/admin-confi/edit-profile`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',

@@ -41,7 +41,7 @@ const EachEmployeeGoalSheet = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `https://api.diamondore.in/api/admin-confi/all-employees/${id}`,
+          `${import.meta.env.VITE_BASE_URL}/admin-confi/all-employees/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -88,7 +88,7 @@ const EachEmployeeGoalSheet = () => {
       }
 
       const response = await axios.post(
-        "https://api.diamondore.in/api/admin-confi/set-goalsheet",
+        `${import.meta.env.VITE_BASE_URL}/admin-confi/set-goalsheet`,
         {
           empId: id,
           year,
@@ -157,7 +157,7 @@ const EachEmployeeGoalSheet = () => {
 
       // Send the updated goal sheet data to the server
       const response = await axios.put(
-        "https://api.diamondore.in/api/admin-confi/edit-goalSheet",
+        `${import.meta.env.VITE_BASE_URL}/admin-confi/edit-goalSheet`,
         {
           prevYear: prevYear,
           prevMonth: prevMonth,
@@ -201,7 +201,7 @@ const EachEmployeeGoalSheet = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `https://api.diamondore.in/api/admin-confi/goalsheet/${id}`,
+          `${import.meta.env.VITE_BASE_URL}/admin-confi/goalsheet/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -336,7 +336,7 @@ const EachEmployeeGoalSheet = () => {
       formData.append("myFileImage", file);
 
       const uploadResponse = await axios.post(
-        "https://api.diamondore.in/api/admin-confi/upload-excelsheet-url",
+        `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-excelsheet-url`,
         formData,
         {
           headers: {
@@ -349,7 +349,7 @@ const EachEmployeeGoalSheet = () => {
       console.log(excelUrl);
 
       const response = await axios.post(
-        `https://api.diamondore.in/api/admin-confi/upload-joiningsheet/${id}`,
+        `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-joiningsheet/${id}`,
         { joiningExcel: excelUrl }
       );
 
@@ -372,7 +372,7 @@ const EachEmployeeGoalSheet = () => {
   const fireTicker = async () => {
     try {
       const response = await axios.post(
-        `https://api.diamondore.in/api/admin-confi/fire-ticker/${id}`,
+        `${import.meta.env.VITE_BASE_URL}/admin-confi/fire-ticker/${id}`,
         {
           tickerMessage,
         }
@@ -403,7 +403,7 @@ const EachEmployeeGoalSheet = () => {
 
     try {
       const response = await axios.post(
-        `https://api.diamondore.in/api/admin-confi/send-mail/${id}`,
+        `${import.meta.env.VITE_BASE_URL}/admin-confi/send-mail/${id}`,
         {
           description,
           total_costs: totals.cost,

@@ -30,7 +30,7 @@ const AdminNav = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "https://api.diamondore.in/api/admin-confi/user-data",
+          `${import.meta.env.VITE_BASE_URL}/admin-confi/user-data`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -103,7 +103,7 @@ const AdminNav = () => {
     setShowLoader(true);
 
     try {
-      const response = await axios.post("https://api.diamondore.in/api/admin-confi/register-recruiter-kam", {
+      const response = await axios.post("${import.meta.env.VITE_BASE_URL}/admin-confi/register-recruiter-kam", {
         name,
         email,
       });

@@ -44,7 +44,7 @@ const Employeedashboard = () => {
     const fetchdata = async () => {
       try {
         const response = await axios.get(
-          "https://api.diamondore.in/api/employee/all-erp-data",
+          `${import.meta.env.VITE_BASE_URL}/employee/all-erp-data`,
           {
             headers: {
               Authorization: `Bearer ${token}`

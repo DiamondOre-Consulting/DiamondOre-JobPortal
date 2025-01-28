@@ -43,7 +43,7 @@ const EmployeeRnrBoard = () => {
       try {
         // const passcode= 123456;
         const response = await axios.get(
-          `https://api.diamondore.in/api/employee/rnr-leaderboraddetails/${passcode}`,
+          `${import.meta.env.VITE_BASE_URL}/employee/rnr-leaderboraddetails/${passcode}`,
 
         );
 

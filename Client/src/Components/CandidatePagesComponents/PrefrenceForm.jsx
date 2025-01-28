@@ -41,7 +41,7 @@ const PrefrenceForm = () => {
         }
         try {
             const response = await axios.post(
-                "https://api.diamondore.in/api/candidates/add-preference",
+                `${import.meta.env.VITE_BASE_URL}/candidates/add-preference`,
                 formData,
                 {
                     headers: {
@@ -88,7 +88,7 @@ const PrefrenceForm = () => {
 
                 // Fetch associates data from the backend
                 const response = await axios.get(
-                    "https://api.diamondore.in/api/candidates/all-jobs"
+                    `${import.meta.env.VITE_BASE_URL}/candidates/all-jobs`
                 );
 
 

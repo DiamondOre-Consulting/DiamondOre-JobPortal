@@ -17,7 +17,7 @@ const MappedEmployee = ({ userData }) => {
       try {
         if (teamId) {
           const response = await axios.get(
-            `https://api.diamondore.in/api/admin-confi/get-team/${teamId}`
+            `${import.meta.env.VITE_BASE_URL}/admin-confi/get-team/${teamId}`
           );
           if (response.status === 200) {
             setMappedEmployee(response?.data?.team);
@@ -45,7 +45,7 @@ const MappedEmployee = ({ userData }) => {
         if (empId) {
           const token = localStorage.getItem("token");
           const response = await axios.get(
-            `https://api.diamondore.in/api/employee/goalsheet/${empId}`,
+            `${import.meta.env.VITE_BASE_URL}/employee/goalsheet/${empId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

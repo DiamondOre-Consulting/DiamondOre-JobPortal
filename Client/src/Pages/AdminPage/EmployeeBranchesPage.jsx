@@ -17,7 +17,7 @@ const EmployeeBranchesPage = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `https://api.diamondore.in/api/admin-confi/all-employees/${id}`,
+          `${import.meta.env.VITE_BASE_URL}/admin-confi/all-employees/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -56,7 +56,7 @@ const EmployeeBranchesPage = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `https://api.diamondore.in/api/admin-confi/get-team/${teamId}`,
+          `${import.meta.env.VITE_BASE_URL}/admin-confi/get-team/${teamId}`,
           {}
         );
 
@@ -78,7 +78,7 @@ const EmployeeBranchesPage = () => {
     try {
       console.log("Unassigning employee with ID:", employeeId); // Debugging
       const response = await axios.post(
-        `https://api.diamondore.in/api/admin-confi/unassign-from-teamlead/${id}`, // Use the teamLeadId from URL
+        `${import.meta.env.VITE_BASE_URL}/admin-confi/unassign-from-teamlead/${id}`, // Use the teamLeadId from URL
         { employeeId } // Pass the employeeId in the request body
       );
       console.log("Response from server:", response.data); // Debugging

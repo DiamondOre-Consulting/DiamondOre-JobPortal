@@ -24,7 +24,7 @@ const Employeelogin = () => {
 
         try {
 
-            const response = await axios.post("https://api.diamondore.in/api/employee/login",
+            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/employee/login`,
                 {
                     email,
                     password
@@ -64,7 +64,7 @@ const Employeelogin = () => {
 
         try {
 
-            const response = await axios.get(`https://api.diamondore.in/api/employee/rnr-Leaderborad/${passcode}`)
+            const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/employee/rnr-Leaderborad/${passcode}`)
 
 
             navigate(`/employee-rnrboard/${passcode}`)

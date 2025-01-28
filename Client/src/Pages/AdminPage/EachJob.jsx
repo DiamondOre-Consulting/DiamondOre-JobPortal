@@ -50,7 +50,7 @@ const AdminEachJob = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          `https://api.diamondore.in/api/admin-confi/all-jobs/${id}`,
+          `${import.meta.env.VITE_BASE_URL}/admin-confi/all-jobs/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -73,7 +73,7 @@ const AdminEachJob = () => {
     const fetchJobsAppliedApplicants = async () => {
       try {
         const response = await axios.get(
-          `https://api.diamondore.in/api/admin-confi/applied-candidates/${id}`,
+          `${import.meta.env.VITE_BASE_URL}/admin-confi/applied-candidates/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

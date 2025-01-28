@@ -41,7 +41,7 @@ const CandidateAllAgencyJobsCards = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "https://api.diamondore.in/api/candidates/all-agency-jobs",
+          `${import.meta.env.VITE_BASE_URL}/candidates/all-agency-jobs`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

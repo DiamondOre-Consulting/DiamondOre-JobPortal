@@ -21,7 +21,7 @@ const AdminLogin = () => {
     setError(null);
     // Perform login logic here
     try {
-      const response = await axios.post("https://api.diamondore.in/api/admin-confi/login-admin",
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/admin-confi/login-admin`,
         {
           email,
           password

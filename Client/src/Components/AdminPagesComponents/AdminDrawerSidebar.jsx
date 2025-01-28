@@ -172,7 +172,7 @@ const AdminDrawerSidebar = () => {
                 }
 
                 const response = await axios.get(
-                    "https://api.diamondore.in/api/admin-confi/user-data",
+                    `${import.meta.env.VITE_BASE_URL}/admin-confi/user-data`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,

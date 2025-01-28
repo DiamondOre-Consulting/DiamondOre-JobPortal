@@ -35,7 +35,7 @@ const PostReview = () => {
         setLoader(true)
 
         try {
-            const response = await axios.post('https://api.diamondore.in/api/candidates/post-review',
+            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/candidates/post-review`,
                 {
                     name,
                     email,
@@ -79,7 +79,7 @@ const PostReview = () => {
     useEffect(() => {
         const fetchAllReviews = async () => {
             try {
-                const response = await axios.get('https://api.diamondore.in/api/candidates/all-reviews');
+                const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/candidates/all-reviews`);
                 if (response.status === 201) {
                     ;
                     setAllReviews(response.data)
@@ -111,7 +111,7 @@ const PostReview = () => {
         // const payload = { name, phone };
 
         try {
-            const response = await axios.post('https://api.diamondore.in/api/candidates/request-call', {
+            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/candidates/request-call`, {
                 name, phone
             });
 

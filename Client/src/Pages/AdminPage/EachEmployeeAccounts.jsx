@@ -22,7 +22,7 @@ const EachEmployeeAccounts = () => {
 
     const fetchData = async () => {
         try {
-            const response = await axios.get(`https://api.diamondore.in/api/employee/accounts/${id}`);
+            const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/employee/accounts/${id}`);
 
             if (response.status === 200) {
 console.log("accounts details  also",response.data)
@@ -65,7 +65,7 @@ console.log("accounts details  also",response.data)
                 }
 
                 const response = await axios.get(
-                    "https://api.diamondore.in/api/admin-confi/all-employees",
+                    `${import.meta.env.VITE_BASE_URL}/admin-confi/all-employees`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`
@@ -96,7 +96,7 @@ console.log("accounts details  also",response.data)
 
     const handleEdit = async () => {
         const response = await axios.put(
-            `https://api.diamondore.in/api/employee/accounts/change-owner/${id}/${listId}/${accountid}`,
+            `${import.meta.env.VITE_BASE_URL}/employee/accounts/change-owner/${id}/${listId}/${accountid}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -121,7 +121,7 @@ console.log("accounts details  also",response.data)
 
     const handleDelete = async () => {
         const response = await axios.delete(
-            `https://api.diamondore.in/api/employee/accounts/delete/${id}/${accountid}`,
+            `${import.meta.env.VITE_BASE_URL}/employee/accounts/delete/${id}/${accountid}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`

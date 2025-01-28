@@ -25,7 +25,7 @@ console.log(id)
       formData.append("myFileImage", file);
 
       const uploadResponse = await axios.post(
-        "https://api.diamondore.in/api/admin-confi/upload-shortlisted-url",
+        `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-shortlisted-url`,
         formData,
         {
           headers: {
@@ -38,7 +38,7 @@ console.log(id)
       console.log(excelUrl);
 
       const response = await axios.post(
-        `https://api.diamondore.in/api/admin-confi/upload-shortlistedsheet/${id}`,
+        `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-shortlistedsheet/${id}`,
         { shortlistedCandidates: excelUrl }
       );
 

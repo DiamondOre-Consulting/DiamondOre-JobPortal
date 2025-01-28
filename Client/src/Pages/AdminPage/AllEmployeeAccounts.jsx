@@ -14,7 +14,7 @@ const AllEmployeeAccounts = () => {
     useEffect(() => {
         const fetchAllAccount = async () => {
             try {
-                const response = await axios.get('https://api.diamondore.in/api/employee/accounts');
+                const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/employee/accounts`);
                 if (response.status === 200) {
                     setAllAccountsData(response.data);
 console.log(response.data)
@@ -57,7 +57,7 @@ console.log(response.data)
                 }
 
                 const response = await axios.get(
-                    "https://api.diamondore.in/api/admin-confi/all-employees",
+                    `${import.meta.env.VITE_BASE_URL}/admin-confi/all-employees`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`
@@ -104,7 +104,7 @@ console.log(response.data)
                 }
 
                 const response = await axios.get(
-                    "https://api.diamondore.in/api/admin-confi/duplicate-phone-requests",
+                    `${import.meta.env.VITE_BASE_URL}/admin-confi/duplicate-phone-requests`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`
@@ -174,7 +174,7 @@ const handleEditAccounthandling = async () => {
         };
 
         const response = await axios.put(
-            `https://api.diamondore.in/api/admin-confi/updateAccounts/${accountid}/${accountDetailsId}`,
+            `${import.meta.env.VITE_BASE_URL}/admin-confi/updateAccounts/${accountid}/${accountDetailsId}`,
             data,
             console.log(data),
             {

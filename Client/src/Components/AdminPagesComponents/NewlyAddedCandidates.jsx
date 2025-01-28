@@ -28,7 +28,7 @@ const NewlyAddedCandidates = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "https://api.diamondore.in/api/admin-confi/all-candidates",
+          `${import.meta.env.VITE_BASE_URL}/admin-confi/all-candidates`,
           {
             headers: {
               Authorization: `Bearer ${token}`

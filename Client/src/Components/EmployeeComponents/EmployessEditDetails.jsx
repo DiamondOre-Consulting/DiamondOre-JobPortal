@@ -51,7 +51,7 @@ const EmployessEditDetails = ({ id, handleEditEmployeeBack }) => {
         const getEmployeeData = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const response = await axios.get(`https://api.diamondore.in/api/admin-confi/all-employees/${id}`, {
+                const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/admin-confi/all-employees/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -94,7 +94,7 @@ const EmployessEditDetails = ({ id, handleEditEmployeeBack }) => {
             const id = employee._id; // Get the employee ID
 
             const response = await axios.put(
-                `https://api.diamondore.in/api/admin-confi/all-employees-edit/${id}`,  // Correct URL format
+                `${import.meta.env.VITE_BASE_URL}/admin-confi/all-employees-edit/${id}`,  // Correct URL format
                 editEmployee,  // Pass the editEmployee object directly (ensure it's structured correctly)
                 {
                     headers: {

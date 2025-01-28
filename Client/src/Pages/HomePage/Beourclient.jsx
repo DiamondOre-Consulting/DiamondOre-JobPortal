@@ -24,7 +24,7 @@ const Beourclient = () => {
         // const formData = { Name, Email, Message };
         try {
             const response = await axios.post(
-                'https://api.diamondore.in/api/admin-confi/client-form',
+                `${import.meta.env.VITE_BASE_URL}/admin-confi/client-form`,
                 {
                     name,
                     email,

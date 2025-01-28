@@ -14,7 +14,7 @@ const AddRecruiter = () => {
     setShowLoader(true);
 
     try {
-      const response = await axios.post("https://api.diamondore.in/api/admin-confi/register-recruiter-kam", {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/admin-confi/register-recruiter-kam`, {
         name,
         email,
       });

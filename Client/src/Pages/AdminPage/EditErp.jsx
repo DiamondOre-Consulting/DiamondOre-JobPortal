@@ -71,7 +71,7 @@ const EditErp = () => {
                 }
 
                 const response = await axios.get(
-                    "https://api.diamondore.in/api/admin-confi/all-employees",
+                    `${import.meta.env.VITE_BASE_URL}/admin-confi/all-employees`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -103,7 +103,7 @@ const EditErp = () => {
     const handleFormSubmit = async () => {
         try {
             const response = await axios.post(
-                "https://api.diamondore.in/api/admin-confi/erp/add-erp-data",
+                `${import.meta.env.VITE_BASE_URL}/admin-confi/erp/add-erp-data`,
                 formData,
                 {
                     headers: {
@@ -143,7 +143,7 @@ const EditErp = () => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(
-                    `https://api.diamondore.in/api/admin-confi/erp/erp-data/${erpId}`,
+                    `${import.meta.env.VITE_BASE_URL}/admin-confi/erp/erp-data/${erpId}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`
@@ -211,7 +211,7 @@ const EditErp = () => {
             const formData = new FormData();
             formData.append("myFileImage", profilePic);
             const response = await axios.post(
-                "https://api.diamondore.in/api/admin-confi/upload-profile-pic",
+                `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-profile-pic`,
                 formData,
                 {
                     headers: {

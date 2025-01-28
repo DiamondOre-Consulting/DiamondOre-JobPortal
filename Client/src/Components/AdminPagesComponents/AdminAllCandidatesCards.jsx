@@ -76,7 +76,7 @@ const AdminAllCandidatesCards = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          "https://api.diamondore.in/api/admin-confi/all-candidates",
+          `${import.meta.env.VITE_BASE_URL}/admin-confi/all-candidates`,
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -119,7 +119,7 @@ const AdminAllCandidatesCards = () => {
       const token = localStorage.getItem("token");
       setLoading(true);
 
-      const response = await axios.post('https://api.diamondore.in/api/admin-confi/download-excel', {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/admin-confi/download-excel`, {
         startDate,
         endDate
       }, {

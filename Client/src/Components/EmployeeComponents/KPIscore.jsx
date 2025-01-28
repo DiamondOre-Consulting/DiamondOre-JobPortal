@@ -19,7 +19,7 @@ const KPIscore = () => {
         const getkpidata = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const response = await axios.get(`https://api.diamondore.in/api/employee/my-kpi`, {
+                const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/employee/my-kpi`, {
 
                     headers: {
                         Authorization: `Bearer ${token}`

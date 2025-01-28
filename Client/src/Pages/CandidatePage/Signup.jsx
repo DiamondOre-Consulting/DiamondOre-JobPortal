@@ -30,7 +30,7 @@ const Signup = ({ toggleForm }) => {
       const formData = new FormData();
       formData.append("myFileImage", profilePic);
       const response = await axios.post(
-        "https://api.diamondore.in/api/candidates/upload-profile-pic",
+        `${import.meta.env.VITE_BASE_URL}/candidates/upload-profile-pic`,
         formData,
         {
           headers: {
@@ -67,7 +67,7 @@ const Signup = ({ toggleForm }) => {
       const formData = new FormData();
       formData.append("myFileResume", resume);
       const response = await axios.post(
-        "https://api.diamondore.in/api/candidates/upload-resume",
+        `${import.meta.env.VITE_BASE_URL}/candidates/upload-resume`,
         formData,
         {
           headers: {
@@ -105,7 +105,7 @@ const Signup = ({ toggleForm }) => {
     try {
       // Simulate OTP sent successfully
       // For demonstration purposes, setting OTP sent to true after a delay
-      const response = await axios.post("https://api.diamondore.in/api/candidates/send-otp", {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/candidates/send-otp`, {
         email
       })
 
@@ -127,7 +127,7 @@ const Signup = ({ toggleForm }) => {
 
     try {
       const response = await axios.post(
-        "https://api.diamondore.in/api/candidates/signup",
+        `${import.meta.env.VITE_BASE_URL}/candidates/signup`,
         {
           name,
           email,

@@ -27,7 +27,7 @@ const AllEmployee = () => {
       }
 
       const response = await axios.get(
-        "https://api.diamondore.in/api/admin-confi/all-employees",
+        `${import.meta.env.VITE_BASE_URL}/admin-confi/all-employees`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -62,7 +62,7 @@ const AllEmployee = () => {
     const token = localStorage.getItem("token");
 
     const response = await axios.delete(
-      `https://api.diamondore.in/api/admin-confi/delete/employee/${cancelId}`,
+      `${import.meta.env.VITE_BASE_URL}/admin-confi/delete/employee/${cancelId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -82,7 +82,7 @@ const AllEmployee = () => {
     const token = localStorage.getItem("token");
 
     const response = await axios.put(
-      `https://api.diamondore.in/api/admin-confi/update-status/employee/${employeeId}`,
+      `${import.meta.env.VITE_BASE_URL}/admin-confi/update-status/employee/${employeeId}`,
       { status: status },
       {
         headers: {
@@ -123,7 +123,7 @@ const AllEmployee = () => {
 
     try {
       const response = await axios.post(
-        "https://api.diamondore.in/api/admin-confi/get-policy-url",
+        `${import.meta.env.VITE_BASE_URL}/admin-confi/get-policy-url`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -158,7 +158,7 @@ const AllEmployee = () => {
     try {
       // Send the policy data to update all employees
       const response = await axios.post(
-        "https://api.diamondore.in/api/admin-confi/upload-policies",
+        `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-policies`,
         policyData
       );
       alert(response.data.message);
@@ -177,7 +177,7 @@ const AllEmployee = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `https://api.diamondore.in/api/admin-confi/make-teamlead/${selectedEmployeeId}`
+        `${import.meta.env.VITE_BASE_URL}/admin-confi/make-teamlead/${selectedEmployeeId}`
       );
       if (response.status === 200) {
         alert("Team Lead status updated successfully");
@@ -205,7 +205,7 @@ const AllEmployee = () => {
 
     try {
       const response = await axios.post(
-        `https://api.diamondore.in/api/admin-confi/assign-to-teamlead/${selectedEmployeeId}`,
+        `${import.meta.env.VITE_BASE_URL}/admin-confi/assign-to-teamlead/${selectedEmployeeId}`,
         { employeeIds }
       );
 
