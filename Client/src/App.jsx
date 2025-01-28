@@ -61,7 +61,7 @@ import AllEmployee from "./Pages/AdminPage/AllEmployee";
 import EachEmployeeGoalSheet from "./Pages/AdminPage/EachEmployeeGoalSheet";
 import AdminDrawerSidebar from "./Components/AdminPagesComponents/AdminDrawerSidebar";
 import EmployeeRnrBoard from '../src/Pages/Employeepage/EmployeeRnrBoard'
-import Snowfall from 'react-snowfall'
+
 import AuthVerify from "./Pages/AdminPage/AuthVerify";
 import EmpAuthVerify from "./Pages/Employeepage/EmpAuthVerify";
 
@@ -100,9 +100,7 @@ function App() {
         </>
          :
       <Router>
-          <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none" , zIndex:"10000000" }}>
-            <Snowfall />
-          </div>
+          
         <Routes>
       
               

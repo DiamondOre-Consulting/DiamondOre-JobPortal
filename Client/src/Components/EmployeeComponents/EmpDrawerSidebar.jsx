@@ -147,7 +147,7 @@ export default function EmpDrawerSidebar() {
         if (response.status === 200) {
           const lastData = response.data.allData;
           const empdata = response.data.findEmp;
-
+          
           setEmployee(empdata);
           setlatestnews(lastData.BreakingNews || []);
           sethrname(lastData.Top5HRs || []);
@@ -170,8 +170,12 @@ export default function EmpDrawerSidebar() {
   }, [decodedToken, token, navigate]);
 
 
+  
+  
+  
   // profile
   const [userData, setUserData] = useState(null);
+  console.log("avd",userData?.isTeamLead)
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -195,7 +199,7 @@ export default function EmpDrawerSidebar() {
           }
         );
         if (response.status == 200) {
-console.log(response.data)
+          console.log("userData",response.data)
           setUserData(response.data);
         } else {
 
@@ -283,8 +287,11 @@ console.log(response.data)
             { text: 'Account Handling', icon: <AccountCircleIcon sx={{ fontSize: 30 }} />, path: '/acount-handling' },
             { text: 'All Accounts', icon: <ManageAccountsIcon sx={{ fontSize: 30 }} />, path: '/all-accounts' },
             { text: 'Policies', icon: <ManageAccountsIcon sx={{ fontSize: 30 }} />, path: '/all-policies' },
-            { text: 'Mapped Employee', icon: <ManageAccountsIcon sx={{ fontSize: 30 }} />, path: '/mapped-emp' },
+            ...(userData?.isTeamLead ? [
+              { text: 'Mapped Employee', icon: <ManageAccountsIcon sx={{ fontSize: 30 }} />, path: '/mapped-emp' }
+            ] : []),
             { text: 'Shortlisted Candidate', icon: <ManageAccountsIcon sx={{ fontSize: 30 }} />, path: '/shortlisted' },
+            
 
           ].map((item) => (
             <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
