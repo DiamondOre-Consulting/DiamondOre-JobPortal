@@ -13,7 +13,7 @@ import PerformanceReport from "../Models/PerformanceReport.js";
 import AccountHandling from "../Models/AccountHandling.js";
 import GoalSheet from "../Models/GoalSheet.js";
 import KPI from "../Models/KPI.js";
-import mongoose from 'mongoose';
+import {z} from 'zod'
 
 dotenv.config();
 
@@ -81,11 +81,25 @@ router.post("/add-emp", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
+const EmployeeLoginSchema = z.object({
+  email: z.string().email(),
+  password: z.string(),
+})
+
 // EMPLOYEE LOGIN
 router.post("/login", async (req, res) => {
   try {
+     
+    
+
+
     const { email, password } = req.body;
-    console.log(email, password);
+
+    const parsedData = EmployeeLoginSchema.safeParse(req.body);
+    if (!parsedData.success) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+ 
     // Find the user in the database
     const user = await Employees.findOne({ email });
     if (!user) {
@@ -668,12 +682,19 @@ router.get("/my-kpi", EmployeeAuthenticateToken, async (req, res) => {
   }
 })
 
-
+const RnrPasscodeSchema = z.object({
+  passcode: z.string(),
+})
 
 router.get('/rnr-Leaderborad/:passcode', async (req, res) => {
 
   try {
     const { passcode } = req.params;
+    
+    const {success,error} = RnrPasscodeSchema.safeParse({passcode})
+    if (!success) {
+      return res.status(403).json({ "message": "Invalid passcode" })
+    }
 
     const employee = await Admin.findOne({ passcode })
 

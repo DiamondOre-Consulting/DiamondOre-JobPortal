@@ -4,6 +4,17 @@ import Footer from '../HomePage/Footer'
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import simg from '../../assets/loginimg.svg';
+import {z} from 'zod'
+
+
+const passcodeSchema = z.object({
+    passcode:z.string()
+})
+
+const loginSchema = z.object({
+    email:z.string().email(),
+    password:z.string()
+})
 
 
 
@@ -19,6 +30,20 @@ const Employeelogin = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+
+        if(!email || !password){
+            alert("Please fill all the fields")
+            return
+        }
+
+        const {success,error} = loginSchema.safeParse({password,email})
+           if (!success) {
+              error.errors.forEach((err) => {
+                alert(err.message);
+              });
+              return;
+          }
+        
         setLoading(true);
         setError(null);
 
@@ -57,6 +82,19 @@ const Employeelogin = () => {
     };
 
     const handleLoginWithPasscode = async () => {
+
+        if(!passcode){
+            alert("Please fill passcode field")
+            return
+        }
+
+        const {success} = passcodeSchema.safeParse({passcode})
+
+        if(!success){
+            alert('Please enter a valid passcode')
+            return 
+        }
+        
         if (!passcode) {
             alert("please enter the passcode")
             return
@@ -85,7 +123,8 @@ const Employeelogin = () => {
     const handlesetPasscode = (e) => {
         setPasscode(e.target.value)
     }
-
+     
+    
 
 
 
@@ -100,7 +139,7 @@ const Employeelogin = () => {
             <div className="grid w-full max-w-screen-xl grid-cols-1 px-4 py-16 m-8 bg-white rounded-md shadow-lg sm:max-w-screen-lg md:max-w-screen-md lg:max-w-screen-xl sm:px-6 lg:px-8 md:grid-cols-2 sm:w-full lg:min-w-screen ">
                 <div className="space-y-4 ">
 
-                    <form onSubmit={handleLogin} className="max-w-md mx-auto mt-8 mb-0 space-y-4">
+                    <form onSubmit={handleLogin} noValidate className="max-w-md mx-auto mt-8 mb-0 space-y-4">
 
                         <h1 className="text-2xl font-bold  sm:text-3xl text-blue-950">
                             Employee Login
@@ -114,7 +153,10 @@ const Employeelogin = () => {
                                     className="w-full p-4 text-sm rounded-lg border-1 pe-12"
                                     placeholder="Enter email"
                                     value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    onChange={(e) =>{
+                                        
+                                        setEmail(e.target.value)
+                                    }}
                                 />
 
                                 <span className="absolute inset-y-0 grid px-4 end-0 place-content-center">
@@ -145,7 +187,10 @@ const Employeelogin = () => {
                                     className="w-full p-4 text-sm rounded-lg border-1 pe-12"
                                     placeholder="Enter password"
                                     value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    onChange={(e) => {
+                                        
+                                        setPassword(e.target.value)
+                                    }}
                                 />
 
                                 <span className="absolute inset-y-0 grid px-4 end-0 place-content-center">
