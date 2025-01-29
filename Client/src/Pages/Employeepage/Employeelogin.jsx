@@ -82,14 +82,14 @@ const Employeelogin = () => {
     };
 
     const handleLoginWithPasscode = async () => {
-
+     
         if(!passcode){
             alert("Please fill passcode field")
             return
         }
 
         const {success} = passcodeSchema.safeParse({passcode})
-
+     
         if(!success){
             alert('Please enter a valid passcode')
             return 
@@ -112,7 +112,7 @@ const Employeelogin = () => {
         catch (err) {
 
             if (err?.response?.data?.message === "passcode is incorrect") {
-                alert("Please enter a valid password");
+                alert("Please enter a correct password");
             }
         }
 
