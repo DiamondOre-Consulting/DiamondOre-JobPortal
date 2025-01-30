@@ -2,6 +2,12 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import simg from '../../assets/loginimg.svg';
+import {z} from 'zod'
+
+const adminLoginSchema = z.object({
+  email:z.string().email(),
+  password:z.string()
+})
 
 const AdminLogin = () => {
 
@@ -17,6 +23,15 @@ const AdminLogin = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    const {success,error} = adminLoginSchema.safeParse({password,email})
+       if (!success) {
+          error.errors.forEach((err) => {
+            alert(err.message);
+          });
+          return;
+      }
+
     setLoading(true);
     setError(null);
     // Perform login logic here
@@ -63,6 +78,7 @@ const AdminLogin = () => {
         <div className="space-y-4 ">
 
           <form
+            noValidate
             onSubmit={handleLogin}
             className="mb-0 mt-6 space-y-4 rounded-lg p-4 sm:p-6 lg:p-8 "
           >

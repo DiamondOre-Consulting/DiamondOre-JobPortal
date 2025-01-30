@@ -97,7 +97,7 @@ router.post("/login", async (req, res) => {
 
     const parsedData = EmployeeLoginSchema.safeParse(req.body);
     if (!parsedData.success) {
-      return res.status(400).json({ message: "Invalid email or password" });
+      return res.status(400).json({ message: "Invalid credentials" });
     }
  
     // Find the user in the database

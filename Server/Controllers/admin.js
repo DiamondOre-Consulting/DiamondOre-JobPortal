@@ -38,6 +38,7 @@ import ClientReviews from "../Models/ClientReviews.js";
 import GoalSheet from "../Models/GoalSheet.js";
 import AccountHandling from "../Models/AccountHandling.js";
 import KPI from "../Models/KPI.js";
+import {z} from 'zod'
 
 dotenv.config();
 
@@ -242,9 +243,20 @@ router.post("/signup-admin", async (req, res) => {
   // }
 });
 
+const adminLoginSchema = z.object({
+  email: z.string().email(),
+  password: z.string(),
+});
+
 // LOGIN AS ADMIN
 router.post("/login-admin", async (req, res) => {
+
   const { email, password } = req.body;
+   
+  const {success,error} = adminLoginSchema.safeParse({email,password})
+    if (!success) {
+        return res.status(400).json({message: "Invalid credentials"});
+    }
 
   try {
     // Find the user in the database

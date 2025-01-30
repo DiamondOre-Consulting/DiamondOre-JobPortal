@@ -52,15 +52,14 @@ const EmployeeRnrBoard = () => {
         if (response.status === 200) {
           const lastData = response.data.allData;
           const empdata = response.data.findEmp;
-          setEmployee(empdata);
-
+          setEmployee(empdata);          
           setLatestNews(lastData.BreakingNews || []);
           setHrName(lastData.Top5HRs || []);
           setClient(lastData.Top5Clients || []);
           setRnRInterns(lastData.RnRInterns || []);
           setRnRRecruiter(lastData.RnRRecruiters || []);
           setJoinings(lastData.JoningsForWeek || []);
-          setEmpOfMonthDesc(lastData.EmpOfMonthDesc || ""); // Set EmpOfMonthDesc
+          setEmpOfMonthDesc(lastData.EmpOfMonthDesc || ""); 
           setRecognitionType(lastData.recognitionType || "");
           setProfilePicUrl(lastData.profilePic || "");
         } else {
