@@ -3,6 +3,14 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import simg from '../../assets/loginimg.svg';
 import PropagateLoader from "react-spinners/PropagateLoader";
+import {z} from 'zod'
+
+const candidateLoginSchema = z.object({
+  email:z.string().email(),
+  password:z.string()
+})
+
+
 
 
 const Login = () => {
@@ -17,6 +25,17 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    if(!email || !password){
+        alert("Please fill all the fields")
+        return
+    }
+    const {success,error} = candidateLoginSchema.safeParse({password,email})
+       if (!success) {
+          error.errors.forEach((err) => {
+            alert(err.message);
+          });
+          return;
+      }
     setLoading(true);
     setError(null);
     // Perform login logic here
@@ -69,6 +88,7 @@ const Login = () => {
       <div className="max-w-screen-xl sm:max-w-screen-lg md:max-w-screen-md lg:max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 shadow-lg bg-white rounded-md  w-full sm:w-full lg:min-w-screen m-8">
         <div className="space-y-4 ">
           <form
+            noValidate
             onSubmit={handleLogin}
             className="mb-0 mt-6 space-y-4 rounded-lg p-4  sm:p-6 lg:p-8 "
           >

@@ -26,6 +26,7 @@ import Docxtemplater from "docxtemplater";
 import PizZip from "pizzip";
 import ResumeTemp from "../Models/ResumeTemp.js";
 import ClientReviews from "../Models/ClientReviews.js";
+import {z} from 'zod'
 
 
 dotenv.config();
@@ -235,16 +236,27 @@ router.post("/upload-resume", async (req, res) => {
   }
 });
 
+
+const candidateSignupSchema = z.object({
+  name: z.string(),
+  email: z.string().email(),
+  phone: z.string().min(10).max(10),
+  password: z.string().min(8),
+  otp: z.string(),
+  profilePic: z.string().url(),
+  resume: z.string().url(),
+})
+
+
 // SIGNUP AS CANDIDATE
 router.post("/signup", async (req, res) => {
   const { name, email, phone, password, otp, profilePic, resume } = req.body;
+  
+  const {success,error} = candidateSignupSchema.safeParse({name,email,phone,password,otp,profilePic,resume})
+    if (!success) {
+        return res.status(400).json({message: "Invalid credentials"});
+    }
 
-  console.log(profilePic);
-  console.log(resume);
-
-  console.log("Signup Email:", email);
-  console.log("Entered OTP:", otp);
-  console.log("Stored OTP:", otpStore[email]);
   // const isValidOTP = verifyOTP(otpStore, otp); //TESTING OTP
   // if (isValidOTP) {
   // TESTING OTP
@@ -320,9 +332,23 @@ router.post("/signup", async (req, res) => {
   // }
 });
 
+const candidateLoginSchema = z.object({
+  email:z.string().email(),
+  password:z.string()
+})
+
 // LOGIN AS CANDIDATE
+
 router.post("/login", async (req, res) => {
+
+
   const { email, password } = req.body;
+
+  const {success,error} = candidateLoginSchema.safeParse(req.body)
+
+  if(!success){
+    return res.status(400).json({message : "invalid Credentials"})
+  }
 
   try {
     // Find the user in the database
@@ -1120,11 +1146,22 @@ router.post("/forgot-password", async (req, res) => {
   }
 });
 
+
+const updatePasswordSchema = z.object({
+  email: z.string().email(),
+  otp: z.string(),
+  password: z.string().min(8),
+})
+
 // VERIFY AND UPDATE PASSWORD
 router.put("/update-password", async (req, res) => {
   const { email, otp, password } = req.body;
 
-  console.log(otpStore[email]);
+  const {success, error} = updatePasswordSchema.safeParse({email, otp, password});
+  if (!success) {
+    return res.status(400).json({ error: "fields sent were errounous"});
+  }
+  
 
   try {
     // const { id } = req.params;

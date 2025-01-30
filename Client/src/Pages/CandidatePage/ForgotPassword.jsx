@@ -2,6 +2,17 @@ import React, { useState } from 'react'
 import axios from "axios";
 import simg from '../../assets/signupimg.svg';
 import { Link } from "react-router-dom";
+import {z} from 'zod'
+
+const forgotPasswordSchema = z.object({
+    email:z.string().email(),
+    otp:z.string(),
+    password:z.string()
+})
+
+const sendOtpSchema = z.object({
+    email:z.string().email()
+})
 
 
 const ForgotPassword = () => {
@@ -17,6 +28,15 @@ const ForgotPassword = () => {
         if (!email) {
             alert("enter you Email id")
             return;
+        }
+
+        const {success,error} = sendOtpSchema.safeParse({email})    
+
+        if(!success){
+            error.errors.forEach((err)=>{
+                alert(err.message)
+            })
+            return 
         }
 
         try {
@@ -43,6 +63,15 @@ const ForgotPassword = () => {
         if (!password || !otp || !email) {
             alert("Filling all the feild are compulsory")
             return;
+        }
+
+        const {success,error} = forgotPasswordSchema.safeParse({email,otp,password})    
+
+        if(!success){
+            error.errors.forEach((err)=>{
+                alert(err.message)
+            })
+            return 
         }
 
         try {
@@ -135,7 +164,7 @@ const ForgotPassword = () => {
                                 <div className="relative">
                                     <input
                                         className="w-full bg-white rounded-lg border-gray-500 border-2 p-4 pe-12 text-sm shadow-sm"
-                                        type="opt"
+                                        type="text"
                                         placeholder=" Enter OTP"
                                         value={otp}
                                         onChange={(e) => setOtp(e.target.value)}

@@ -2,6 +2,58 @@ import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import simg from '../../assets/signupimg.svg';
+import { z } from "zod";
+
+const PROFILEIMAGE_MAX_SIZE = 0.5 * 1024 * 1024;
+const RESUMEFILE_MAX_SIZE = 2 * 1024 * 1024;
+
+const ACCEPTED_IMAGE_TYPES = [
+  'image/jpeg', // .jpg, .jpeg
+  'image/png',  // .png
+  'image/webp', // .webp
+];
+
+const ACCEPTED_RESUME_TYPES = [
+  'application/pdf', // .pdf
+  'application/msword', // .doc
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+  'text/plain', // .txt
+  'application/vnd.oasis.opendocument.text', // .odt
+];
+
+
+const resumeUploadSchema = z.object({
+  resume:z.instanceof(File)
+  .refine((file)=> file.size <= RESUMEFILE_MAX_SIZE, "File size should be less than 5MB")
+  .refine((file) => ACCEPTED_RESUME_TYPES.includes(file?.type),
+  "Only .pdf, .doc, .docx, .txt, and .odt formats are supported."
+ )
+})
+
+const profilePicUploadSchema = z.object({
+  profilePic:z.instanceof(File)
+  .refine((file)=> file.size<= PROFILEIMAGE_MAX_SIZE, "File size should be less than 500kb")
+  .refine((file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+  "Only .jpg, .jpeg, .png and .webp formats are supported.")
+})
+
+const candidateSignupSchema = z.object({
+   name:  z.string(),
+   email: z.string().email(),
+   password: z.string(),
+   phone: z.string(),
+   otp: z.string(),
+   profilePic:z.instanceof(File)
+   .refine((file)=> file.size<= PROFILEIMAGE_MAX_SIZE, "File size should be less than 500kb")
+   .refine((file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+   "Only .jpg, .jpeg, .png and .webp formats are supported.")
+  ,
+   resume:z.instanceof(File)
+   .refine((file)=> file.size <= RESUMEFILE_MAX_SIZE, "File size should be less than 5MB")
+   .refine((file) => ACCEPTED_RESUME_TYPES.includes(file?.type),
+   "Only .pdf, .doc, .docx, .txt, and .odt formats are supported."
+  )
+})
 
 const Signup = ({ toggleForm }) => {
   let [loading, setLoading] = useState(true);
@@ -24,8 +76,27 @@ const Signup = ({ toggleForm }) => {
 
   const handleUploadImage = async (e) => {
     try {
-      setShowLoader(true);
+      
+      
       e.preventDefault();
+
+      if(!resume){
+        setError("Please Upload Profile Picture")
+        return
+      }
+
+      const {success,error} = profilePicUploadSchema.safeParse({
+        profilePic
+      })
+      
+      if(!success){
+        error.errors.forEach((err) => {
+          alert(err.message);
+        });
+        return;
+      }
+      
+      setShowLoader(true);
       setError(null);
       const formData = new FormData();
       formData.append("myFileImage", profilePic);
@@ -60,8 +131,26 @@ const Signup = ({ toggleForm }) => {
 
   const handleUploadResume = async (e) => {
     try {
-      setShowLoaderResume(true);
+      
       e.preventDefault();
+      
+      if(!resume){
+        setError("Please Upload your resume")
+        return
+      }
+
+      const {success,error} = resumeUploadSchema.safeParse({
+        resume
+      })
+      
+      if(!success){
+        error.errors.forEach((err) => {
+          alert(err.message);
+        });
+        
+        return;
+      }
+      setShowLoaderResume(true);
       setError(null);
 
       const formData = new FormData();
@@ -123,6 +212,65 @@ const Signup = ({ toggleForm }) => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
+
+    if(!otp){
+      setError("Otp is missing")
+      return    
+    }
+
+    if(!name){
+      setError("name is missing")
+      return 
+    }
+
+    if(!email){
+      setError("email is missing")
+      return 
+    }
+    if(!password){
+      setError("password is missing")
+      return 
+    }
+
+    if(!phone){
+      setError("phone is missing")
+      return 
+    }
+     
+
+    if(!resume){
+      setError("resume is missing")
+      return 
+    }
+
+    if(!profilePic){
+      setError("Profile picture is missing")
+      return 
+    }
+
+
+
+
+
+
+
+    const {success,error} = candidateSignupSchema.safeParse({
+      name,
+      email,
+      password,
+      phone,
+      otp,
+      resume,
+      profilePic
+    })
+
+    if(!success){
+      error.errors.forEach((err) => {
+        alert(err.message);
+      });
+      return;
+    }
+
     setError(null);
 
     try {
@@ -168,7 +316,9 @@ const Signup = ({ toggleForm }) => {
       <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 bg-white rounded-md ">
         <div className="grid grid-cols-1 md:grid-cols-2">
           <div className="p-6 space-y-4">
-            <form onSubmit=
+            <form
+            noValidate 
+            onSubmit=
               {handleSignup}
               className="space-y-4"
 
@@ -409,6 +559,7 @@ const Signup = ({ toggleForm }) => {
                   <input
                     className="w-full rounded-lg border-gray-200 pe-12 text-sm shadow-sm"
                     type="file"
+                    
                     name="resume"
                     onChange={(e) => setResume(e.target.files[0])}
                   />
