@@ -26,7 +26,7 @@ const ForgotPassword = () => {
     const handleSendOtp = async (e) => {
         e.preventDefault();
         if (!email) {
-            alert("enter you Email id")
+            setError("enter you Email id")
             return;
         }
 
@@ -34,7 +34,7 @@ const ForgotPassword = () => {
 
         if(!success){
             error.errors.forEach((err)=>{
-                alert(err.message)
+                setError(err.message)
             })
             return 
         }
@@ -61,7 +61,7 @@ const ForgotPassword = () => {
 
         e.preventDefault();
         if (!password || !otp || !email) {
-            alert("Filling all the feild are compulsory")
+            setError("Filling all the feild are compulsory")
             return;
         }
 
@@ -69,7 +69,7 @@ const ForgotPassword = () => {
 
         if(!success){
             error.errors.forEach((err)=>{
-                alert(err.message)
+                setError(err.message)
             })
             return 
         }
@@ -85,7 +85,7 @@ const ForgotPassword = () => {
 
 
             if (response.status === 200) {
-                alert("Password has been Updated Sucessfully...");
+                setError("Password has been Updated Sucessfully...");
 
                 setEmail("");
                 setPassword("");
@@ -97,12 +97,12 @@ const ForgotPassword = () => {
             if (error.response) {
                 const status = error.response.status;
                 if (status === 404) {
-                    alert("User not found");
+                    setError("User not found");
                 } else {
-                    alert("An error occurred while in updating password. Please try again later.");
+                    setError("An error occurred while in updating password. Please try again later.");
                 }
             } else {
-                alert("An error occurred while updating password.");
+                setError("An error occurred while updating password.");
             }
         }
 

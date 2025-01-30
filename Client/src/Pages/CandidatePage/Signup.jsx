@@ -91,7 +91,7 @@ const Signup = ({ toggleForm }) => {
       
       if(!success){
         error.errors.forEach((err) => {
-          alert(err.message);
+          setError(err.message);
         });
         return;
       }
@@ -145,7 +145,7 @@ const Signup = ({ toggleForm }) => {
       
       if(!success){
         error.errors.forEach((err) => {
-          alert(err.message);
+          setError(err.message);
         });
         
         return;
@@ -266,7 +266,7 @@ const Signup = ({ toggleForm }) => {
 
     if(!success){
       error.errors.forEach((err) => {
-        alert(err.message);
+        setError(err.message);
       });
       return;
     }

@@ -26,13 +26,13 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     if(!email || !password){
-        alert("Please fill all the fields")
+        setError("Please fill all the fields")
         return
     }
     const {success,error} = candidateLoginSchema.safeParse({password,email})
        if (!success) {
           error.errors.forEach((err) => {
-            alert(err.message);
+            setError(err.message);
           });
           return;
       }
