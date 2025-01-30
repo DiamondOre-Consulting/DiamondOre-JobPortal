@@ -4,6 +4,14 @@ import Footer from './Footer'
 import logo from '../../assets/Logo.png'
 import axios from 'axios';
 import React, { useEffect, useState, useRef } from 'react';
+import {z} from 'zod'
+
+const phoneNumberSchema = z.object({
+    phone:z.string().regex(
+        /^[6-9]\d{9}$/,
+        "Phone number must be a valid 10-digit Indian number"
+      )
+})
 
 
 const SearchJob = () => {
@@ -21,7 +29,18 @@ const SearchJob = () => {
             setError('Invalid phone number. Please enter at least 10 digits.');
             return;
         }
+        
+        const {success,error} = phoneNumberSchema.safeParse({phone})
+        console.log(success)
+        if(!success){
+            error.errors.forEach((err) => {
+                setError(err.message);
+            });
+            return;
+        }
+
         try {
+            
             setShowLoader2(true);
             const response = await axios.get(
                 `${import.meta.env.VITE_BASE_URL}/admin-confi/findJobs/${phone}`
@@ -60,6 +79,7 @@ const SearchJob = () => {
 
     const submitCallReq = async (e) => {
         e.preventDefault();
+
         setShowSubmitLoader(true);
 
         // const payload = { name, phone };
