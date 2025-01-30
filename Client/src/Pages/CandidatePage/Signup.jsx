@@ -80,7 +80,7 @@ const Signup = ({ toggleForm }) => {
       
       e.preventDefault();
 
-      if(!resume){
+      if(!profilePic){
         setError("Please Upload Profile Picture")
         return
       }
