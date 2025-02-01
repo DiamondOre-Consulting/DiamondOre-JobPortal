@@ -21,19 +21,24 @@ const CandidateAllJobsCards = () => {
   const [channels, setChannels] = useState([]);
   const [selectedCtcRange, setSelectedCtcRange] = useState(null);
   const [showselectedctc, setShowSelectedctc] = useState("Select");
-  const [ctcRanges, setCtcRanges] = useState([]);
+  const [ctcRanges, setCtcRanges] = useState(["1-5", "6-10", "11-15", "16-20"]);
   const { decodedToken } = useJwt(localStorage.getItem("token"));
+  const [searchButtonToggle, setSearchButtonToggle] = useState(false);
+  const [data,setData] = useState()
 
   const [pageNumber, setPageNumber] = useState(0);
   const jobsPerPage = 20;
 
   const pagesVisited = pageNumber * jobsPerPage;
 
-  const pageCount = Math.ceil(latestJobs.length / jobsPerPage);
+ 
 
   const changePage = ({ selected }) => {
+    
     setPageNumber(selected);
   };
+
+  
 
   const override = {
     display: "flex",
@@ -44,36 +49,52 @@ const CandidateAllJobsCards = () => {
   useEffect(() => {
     const fetchAllJobs = async () => {
       try {
+
+        const query = new URLSearchParams();
+
+        if(selectedCity){
+          query.append("City", selectedCity);
+        }
+
+        if(selectedChannel){
+          query.append("Channel", selectedChannel);
+        }
+
+        if(selectedCtcRange){
+          query.append("minCTC", selectedCtcRange?.split("-")[0]);
+          query.append("maxCTC", selectedCtcRange?.split("-")[1]);
+        }
+        if(pageNumber){
+          query.append("page", pageNumber);
+        }
+
+        if(jobsPerPage){
+          query.append("limit", jobsPerPage);
+        }
+
         const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/candidates/all-jobs`
+          `${import.meta.env.VITE_BASE_URL}/candidates/all-jobs?${query.toString()}`
         );
 
-        const uniquicities = [
-          ...new Set(response.data.map((job) => job.City)),
-        ];
-        const uniquiChannels = [
-          ...new Set(response.data.map((job) => job.Channel)),
-        ];
-        const uniquictc = [
-          ...new Set(response.data.map((job) => job.MaxSalary)),
-        ];
-        setCities(uniquicities);
-        setChannels(uniquiChannels);
-        setCtcRanges(["1-5", "6-10", "11-15", "16-20"]);
+       
         if (response.status === 200) {
-          const all = response.data;
-          const filteredJobs = all.filter((job) => job.JobStatus === "true");
-          setAllJobs(filteredJobs);
-          setLatestJobs(filteredJobs.reverse());
+          // const all = response.data.allJobs;
+          
+          setData(response.data)
+          // setAllJobs(filteredJobs);
+          setLatestJobs(response.data.allJobs);
+          setCities(response.data.uniqueCities);
+          setChannels(response.data.uniqueChannels);
           setLoading(false);
         }
       } catch (error) {
+        console.log("error",error)
         console.error("Error fetching associates:", error);
       }
     };
 
     fetchAllJobs();
-  }, []);
+  }, [searchButtonToggle, pageNumber]);
 
   const toggleDropdownCity = () => {
     setIsOpenCity(!isOpenCity);
@@ -87,29 +108,37 @@ const CandidateAllJobsCards = () => {
     setIsOpenCtc(!isOpenCtc);
   };
 
-  const filterJobs = () => {
-    let filteredJobs = [...allJobs];
-    if (selectedCity) {
-      filteredJobs = filteredJobs.filter((job) => job.City === selectedCity);
-    }
-    if (selectedChannel) {
-      filteredJobs = filteredJobs.filter(
-        (job) => job.Channel === selectedChannel
-      );
-    }
-    if (selectedCtcRange) {
-      const [minCtc, maxCtc] = selectedCtcRange.split("-");
-      filteredJobs = filteredJobs.filter((job) => {
-        const ctc = parseFloat(job.MaxSalary);
-        return ctc >= parseFloat(minCtc) && ctc <= parseFloat(maxCtc);
-      });
-    }
-    return filteredJobs;
-  };
+  // const filterJobs = () => {
+  //   let filteredJobs = [...allJobs];
+  //   if (selectedCity) {
+  //     filteredJobs = filteredJobs.filter((job) => job.City === selectedCity);
+  //   }
+  //   if (selectedChannel) {
+  //     filteredJobs = filteredJobs.filter(
+  //       (job) => job.Channel === selectedChannel
+  //     );
+  //   }
+  //   if (selectedCtcRange) {
+  //     const [minCtc, maxCtc] = selectedCtcRange.split("-");
+  //     filteredJobs = filteredJobs.filter((job) => {
+  //       const ctc = parseFloat(job.MaxSalary);
+  //       return ctc >= parseFloat(minCtc) && ctc <= parseFloat(maxCtc);
+  //     });
+  //   }
+  //   return filteredJobs;
+  // };
 
   const handleSearch = () => {
-    const filteredJobs = filterJobs();
-    setLatestJobs(filteredJobs);
+
+    if(selectedCity||selectedChannel||selectedCtcRange){
+      setSearchButtonToggle(prev=>!prev)
+    }
+    else{
+      alert("Please select at least one filter")
+      return
+    }
+    
+
   };
 
   const handleClearFilters = () => {
@@ -118,7 +147,8 @@ const CandidateAllJobsCards = () => {
     setShowSelectedcity("City");
     setShowSelectedChannel("Channel");
     setSelectedCtcRange(null);
-    setLatestJobs(allJobs);
+    setSearchButtonToggle(prev=>!prev)
+    
   };
 
   return (
@@ -250,11 +280,10 @@ const CandidateAllJobsCards = () => {
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
             {latestJobs
-              .slice(pagesVisited, pagesVisited + jobsPerPage)
               .map((latestJob) => (
                 <div
                   key={latestJob._id}
-                  className="flex flex-col justify-between h-64 overflow-hidden rounded-lg bg-white shadow-lg shadow-2xl-gray-200 p-4 shadow-lg hover:shadow-2xl "
+                  className="flex flex-col justify-between h-64 overflow-hidden rounded-lg bg-white shadow-2xl-gray-200 p-4 shadow-lg hover:shadow-2xl "
                 >
                   <h3 className="text-xl text-blue-950 font-bold">
                     {latestJob?.JobTitle}
@@ -296,7 +325,7 @@ const CandidateAllJobsCards = () => {
           <ReactPaginate
             previousLabel={"Previous"}
             nextLabel={"Next"}
-            pageCount={pageCount}
+            pageCount={data?.totalPages}
             onPageChange={changePage}
             containerClassName={"pagination flex justify-center mt-8  gap-0 md:gap-2 shadow-lg px-10 py-4 "}
             previousLinkClassName={"pagination__link border border-gray-300 bg-gray-400 text-black rounded-l px-2 py-1 md:px-4 md:py-2  "}

@@ -27,6 +27,7 @@ import PizZip from "pizzip";
 import ResumeTemp from "../Models/ResumeTemp.js";
 import ClientReviews from "../Models/ClientReviews.js";
 import {z} from 'zod'
+import { skipMiddlewareFunction } from "mongoose";
 
 
 dotenv.config();
@@ -428,11 +429,65 @@ router.get("/user-data", CandidateAuthenticateToken, async (req, res) => {
 // FETCHING ALL JOBS
 router.get("/all-jobs", async (req, res) => {
   try {
-    const allJobs = await Jobs.find({});
+    const {Channel} = req.query
+    const {City} = req.query
+    const {MaxSalary} = req.query
+    const {minCTC} = req.query
+    const {maxCTC} = req.query
+    
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    console.log(page)
+    console.log(limit)
+    
+    console.log(req.query)
+  
+    
+    const skip = (page) * limit;
+    console.log(skip)
+    let data;
+    let totalCount;
+    if(Channel||City||MaxSalary){
+        
 
-   
+      const query = {
+        $and :[
+          {JobStatus:true}],
+        $or: [
+            Channel ? {Channel } : null,
+            City ? {City} : null,
+            MaxSalary ? {MaxSalary : {
+              $gte : minCTC,
+              $lte : maxCTC
+            }} : null
+        ].filter(Boolean)
+      }
 
-    return res.status(200).json(allJobs);
+     
+      totalCount = await Jobs.countDocuments(query);
+       data = await Jobs.find(query).skip(skip).limit(limit);
+
+    }
+    else{
+      totalCount = await Jobs.countDocuments();
+      data = await Jobs.find({}).skip(skip).limit(limit);
+      
+    }
+
+    
+
+    const uniqueCities = await Jobs.distinct("City");
+    const uniqueChannels = await Jobs.distinct("Channel");
+
+    return res.status(200).json({
+      allJobs:data.reverse(),
+      currentPage: page,
+      totalPages: Math.ceil(totalCount / limit),
+      uniqueCities,
+      uniqueChannels
+    });
+
+
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Something went wrong!!!" });
@@ -476,7 +531,7 @@ router.get(
       } else {
         const allJobs = await Jobs.find({});
 
-        console.log(allJobs);
+        
 
         return res.status(200).json(allJobs);
       }
