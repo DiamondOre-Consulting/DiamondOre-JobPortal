@@ -35,6 +35,17 @@ const EachEmployeeGoalSheet = () => {
   const [filteredGoalSheetData, setFilteredGoalSheetData] = useState([]);
   const [trigger, setTrigger] = useState(0);
 
+  const [open, setOpen] = useState(false);
+  const [selectedColor, setSelectedColor] = useState(null);
+
+  const colors = [
+    { name: "Grey", code: "#A0A0A0" },
+    { name: "Orange", code: "#FFA500" },
+    { name: "Green", code: "#008000" },
+  ];
+
+
+
   const [employee, setEmployee] = useState();
   useEffect(() => {
     const getEmployeeData = async () => {
@@ -170,6 +181,7 @@ const EachEmployeeGoalSheet = () => {
           sheetId: goalListId,
           incentive: editIncentive,
           leakage: editleakage,
+          selectedColor:selectedColor
         },
         {
           headers: {
@@ -424,7 +436,38 @@ const EachEmployeeGoalSheet = () => {
 
   return (
     <>
-      {/* <AdminNav /> */}
+     
+      
+       {/* Popup Modal */}
+       {open && (
+        <div className="fixed z-[18888] inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl text-center w-80">
+            <h2 className="text-lg font-semibold mb-4">Choose a Color</h2>
+
+            {/* Color Options */}
+            <div className="flex gap-4 justify-center">
+              {colors.map((color) => (
+                <div
+                  key={color.name}
+                  className={`w-16 h-16 rounded-full cursor-pointer border-4 transition-all ${
+                    selectedColor === color.code ? "border-black scale-110" : "border-transparent"
+                  }`}
+                  style={{ backgroundColor: color.code }}
+                  onClick={() => setSelectedColor(color.code)}
+                ></div>
+              ))}
+            </div>
+
+            {/* Close Button */}
+            <button 
+              onClick={() => setOpen(false)} 
+              className="mt-4 bg-gray-300 px-4 py-2 rounded-lg"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
 
       {tickermessage && (
         <>
@@ -723,7 +766,11 @@ const EachEmployeeGoalSheet = () => {
                             {detail.achYTD}
                           </td>
                           <td className="px-4 py-2 border">{detail.achMTD}</td>
-                          <td className="px-4 py-2 border">
+                          <td 
+                         
+                          className={`px-4 py-2 border`}
+                          style={{ backgroundColor: detail?.incentiveStatusColor }}
+                          >
                             {detail.incentive ?? "N/A"}
                           </td>
                           <td className="px-4 py-2 border">
@@ -901,6 +948,12 @@ const EachEmployeeGoalSheet = () => {
                 />
               </div>
 
+              <div  
+              onClick={() =>{setOpen(prev=>!prev)}} 
+              className="border-gray-600 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" >
+                Set incentive status
+              </div>
+
               <button
                 type="submit"
                 className="w-full p-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
@@ -1032,5 +1085,8 @@ const EachEmployeeGoalSheet = () => {
     </>
   );
 };
+
+
+
 
 export default EachEmployeeGoalSheet;

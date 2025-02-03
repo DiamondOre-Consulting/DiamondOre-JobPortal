@@ -105,7 +105,7 @@ const Employeelogin = () => {
             const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/employee/rnr-Leaderborad/${passcode}`)
 
 
-            navigate(`/employee-rnrboard/${passcode}`)
+            navigate(`/Intern-rnrboard/${passcode}`)
 
 
         }

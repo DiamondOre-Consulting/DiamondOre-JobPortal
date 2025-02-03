@@ -162,7 +162,9 @@ const EmpGoalSheet = () => {
                       <td className='px-4 py-2 border'>{data.cumulativeRevenue}</td>
                       <td className='px-4 py-2 border'>{data.achYTD}</td>
                       <td className='px-4 py-2 border'>{data.achMTD}</td>
-                      <td className='px-4 py-2 border'>{data.incentive}</td>
+                      <td className='px-4 py-2 border'
+                       style={{ backgroundColor: data?.incentiveStatusColor }}
+                      >{data.incentive}</td>
                       <td className='px-4 py-2 border'>{data?.leakage || "NA"}</td>
                     </tr>
                   ))

@@ -14,10 +14,15 @@ const AllEmployeeAccounts = () => {
     useEffect(() => {
         const fetchAllAccount = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/employee/accounts`);
+                const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/admin-confi/accounts`,{
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    }
+                });
+                console.log(response)
                 if (response.status === 200) {
                     setAllAccountsData(response.data);
-console.log(response.data)
+                    
                     setLoading(false)
                 }
             } catch (error) {
@@ -36,6 +41,8 @@ console.log(response.data)
         acc[ownerName].push(account);
         return acc;
     }, {});
+
+    console.log("groupedData", groupedData)
 
 
 

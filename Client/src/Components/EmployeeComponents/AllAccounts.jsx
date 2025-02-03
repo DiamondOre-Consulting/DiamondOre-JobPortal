@@ -1,7 +1,7 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import PropagateLoader from "react-spinners/PropagateLoader";
-
+ 
 const AllAccounts = () => {
     const [allAccountsData, setAllAccountsData] = useState([]);
     let [loading, setLoading] = useState(true);
@@ -9,8 +9,13 @@ const AllAccounts = () => {
     useEffect(() => {
         const fetchAllAccount = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/employee/accounts`);
+                const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/employee/accounts`,{
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    }
+                });
                 if (response.status === 200) {
+                    
                     setAllAccountsData(response.data);
                     setLoading(false)
                 }
@@ -23,13 +28,20 @@ const AllAccounts = () => {
     }, []);
 
     const groupedData = allAccountsData.reduce((acc, account) => {
+        if(account.activeStatus === false){
+            return acc
+        }
         const ownerName = account.ownerName;
         if (!acc[ownerName]) {
             acc[ownerName] = [];
         }
         acc[ownerName].push(account);
+        
         return acc;
     }, {});
+    
+
+    
 
 
     const override = {
@@ -62,26 +74,27 @@ const AllAccounts = () => {
                                 <div key={ownerName}>
                                     <h2 className='mt-8 text-2xl font-bold text-center'> Account Holder : {ownerName}</h2>
 
-                                    <div className='overflow-x-auto md:w-full w-72'>
+                                    <div className='overflow-x-auto md:w-full '>
                                         <table id="example" className="w-full mt-4 table-auto ">
                                             <thead className='sticky top-0 text-xs text-gray-100 bg-blue-900 shadow'>
                                                 <tr>
                                                     <th className="px-4 py-2">HR Name</th>
                                                     <th className="px-4 py-2">Client Name</th>
-                                                    <th className="px-4 py-2">Phone</th>
+                                                    <th className="px-4 py-2">Channel</th>
                                                     <th className="px-4 py-2">Zone</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {groupedData[ownerName].flatMap(account =>
-                                                    account.accountDetails.map((detail, index) => (
-                                                        <tr key={`${account._id}-${index}`} className='text-center'>
-                                                            <td className="px-4 py-2 border">{detail?.detail?.hrName}</td>
-                                                            <td className="px-4 py-2 border">{detail?.detail?.clientName}</td>
-                                                            <td className="px-4 py-2 border">{detail?.detail?.phone}</td>
-                                                            <td className="px-4 py-2 border">{detail?.detail?.zone}</td>
+                                              {groupedData[ownerName][0]?.accountDetails.map((account,index) =>
+                                                  
+                                                        <tr key={index} className='text-center'>
+                                                            <td className="px-4 py-2 border">{account?.channels[0]?.hrDetails[0]?.hrName}</td>
+                                                            <td className="px-4 py-2 border">{account?.clientName}</td>
+                                                            <td className="px-4 py-2 border">{account?.channels[0]?.channelName}</td>
+                                                            <td className="px-4 py-2 border">{account?.zoneName}</td>
+                                                            
                                                         </tr>
-                                                    ))
+                                                    
                                                 )}
                                             </tbody>
                                         </table>

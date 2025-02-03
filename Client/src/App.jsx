@@ -60,7 +60,7 @@ import EmpDrawerSidebar from "./Components/EmployeeComponents/EmpDrawerSidebar";
 import AllEmployee from "./Pages/AdminPage/AllEmployee";
 import EachEmployeeGoalSheet from "./Pages/AdminPage/EachEmployeeGoalSheet";
 import AdminDrawerSidebar from "./Components/AdminPagesComponents/AdminDrawerSidebar";
-import EmployeeRnrBoard from '../src/Pages/Employeepage/EmployeeRnrBoard'
+import InternRnrBoard from '../src/Pages/Employeepage/InternRnrBoard'
 
 import AuthVerify from "./Pages/AdminPage/AuthVerify";
 import EmpAuthVerify from "./Pages/Employeepage/EmpAuthVerify";
@@ -171,7 +171,9 @@ function App() {
             </Route>
 
             <Route path ='*' element ={<ErrorPage/>}/>
-            <Route path='/employee-rnrboard/:passcode' element={<EmployeeRnrBoard />} />
+            
+            <Route path='/intern-rnrboard/:passcode' element={<InternRnrBoard />} />
+
         </Routes>
       </Router>
 }

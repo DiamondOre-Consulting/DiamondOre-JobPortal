@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+
 const goalSheetSchema = new mongoose.Schema({
   owner: {
     type: mongoose.Schema.Types.ObjectId,
@@ -53,6 +54,9 @@ const goalSheetSchema = new mongoose.Schema({
           // UM INCENTIVE   variable insentive will change to leakage
           leakage: { 
             type: Number
+          },
+          incentiveStatusColor: {
+             type: String
           }
       },
     ],

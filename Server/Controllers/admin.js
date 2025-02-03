@@ -2735,13 +2735,11 @@ router.put("/edit-goalSheet", async (req, res) => {
     revenue,
     incentive,
     leakage,
+    selectedColor,
   } = req.body;
 
-  console.log(req.body);
+  console.log("body",req.body)
 
-  console.log(month);
-
-  console.log(typeof year);
 
   try {
     // Find the employee by empId
@@ -2851,6 +2849,11 @@ router.put("/edit-goalSheet", async (req, res) => {
     if (leakage !== undefined) {
       goalDetail.leakage = leakage;
     }
+
+    if(selectedColor !== null){
+         goalDetail.incentiveStatusColor = selectedColor
+    }
+
 
     if (goalSheet.length > 1) {
       for (let i = goalDetailIndex + 1; i < goalSheet.length; i++) {
@@ -4052,4 +4055,36 @@ router.post("/upload-shortlistedsheet/:id", async (req, res) => {
       .json({ message: "Internal server error.", error: error.message });
   }
 });
+
+
+router.get('/accounts',AdminAuthenticateToken,async(req, res)=>{
+      try {
+          const allAccounts = await AccountHandling.find();
+          if (!allAccounts) {
+            return res.status(402).json({ message: "No account found!!!" });
+          }
+      
+        
+          const empAccounts = [];
+          for (let i = 0; i < allAccounts.length; i++) {
+            const empName = await Employees.findById(allAccounts[i].owner).select('name activeStatus');
+           
+            if (empName) {
+              
+              empAccounts.push({ ...allAccounts[i]._doc, ownerName: empName.name, activeStatus: empName.activeStatus });
+            }
+      
+          }
+      
+         
+      
+          res.status(200).json(empAccounts);
+        } catch (error) {
+          console.error(error.message);
+          res.status(500).json({ message: error.message });
+        }
+})
+
+
+
 export default router;

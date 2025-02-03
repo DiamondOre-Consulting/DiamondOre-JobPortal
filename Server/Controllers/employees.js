@@ -486,7 +486,7 @@ router.post(
 
 
 
-router.get("/accounts", async (req, res) => {
+router.get("/accounts",EmployeeAuthenticateToken, async (req, res) => {
   try {
     const allAccounts = await AccountHandling.find();
     if (!allAccounts) {
@@ -496,11 +496,49 @@ router.get("/accounts", async (req, res) => {
     const empNames = [];
     const empAccounts = [];
     for (let i = 0; i < allAccounts.length; i++) {
-      const empName = await Employees.findById(allAccounts[i].owner).select('name');
+      const empName = await Employees.findById(allAccounts[i].owner).select('name activeStatus');
+     
       if (empName) {
         empNames.push(empName);
-        empAccounts.push({ ...allAccounts[i]._doc, ownerName: empName.name });
+        empAccounts.push({ ...allAccounts[i]._doc, ownerName: empName.name, activeStatus: empName.activeStatus });
       }
+
+    }
+
+    console.log(empNames);
+    // console.log(empAccounts);
+
+    res.status(200).json(empAccounts);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.get("/all-AccountsforIntern/:passcode", async (req, res) => {
+  try {
+    const {passcode}=req.params
+
+    const admin = await Admin.findOne({passcode})
+    if (!admin) {
+      return res.status(402).json({ message: "No account found!!!" });
+    }
+
+    const allAccounts = await AccountHandling.find();
+    if (!allAccounts) {
+      return res.status(402).json({ message: "No account found!!!" });
+    }
+
+    const empNames = [];
+    const empAccounts = [];
+    for (let i = 0; i < allAccounts.length; i++) {
+      const empName = await Employees.findById(allAccounts[i].owner).select('name activeStatus');
+     
+      if (empName) {
+        empNames.push(empName);
+        empAccounts.push({ ...allAccounts[i]._doc, ownerName: empName.name, activeStatus: empName.activeStatus });
+      }
+
     }
 
     console.log(empNames);

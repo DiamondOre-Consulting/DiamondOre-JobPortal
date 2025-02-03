@@ -26,6 +26,7 @@ const EmployeeRnrBoard = () => {
   const { decodedToken } = useJwt(token);
   const navigate = useNavigate();
   const { passcode } = useParams();
+  
 
 
 
@@ -96,6 +97,7 @@ const EmployeeRnrBoard = () => {
       <ERPTop5s hrname={hrname} client={client} />
       <RnRLeaderboard RnRinterns={RnRinterns} RnRRecruiter={RnRRecruiter} />
       <JoiningsForWeek Joinings={joinings} />
+
     </div>
   );
 };
