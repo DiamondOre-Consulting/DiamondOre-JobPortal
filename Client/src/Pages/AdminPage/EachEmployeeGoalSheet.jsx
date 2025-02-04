@@ -39,7 +39,6 @@ const EachEmployeeGoalSheet = () => {
   const [selectedColor, setSelectedColor] = useState(null);
 
   const colors = [
-    { name: "Grey", code: "#A0A0A0" },
     { name: "Orange", code: "#FFA500" },
     { name: "Green", code: "#008000" },
   ];
@@ -380,7 +379,7 @@ const EachEmployeeGoalSheet = () => {
   const [updateTicker, setUpdateTicker] = useState(false);
   const [tickerMessage, setTickerMessage] = useState("");
 
-  console.log(tickerMessage);
+  
   const fireTicker = async () => {
     try {
       const response = await axios.post(
@@ -391,7 +390,7 @@ const EachEmployeeGoalSheet = () => {
       );
 
       if (response.status === 200) {
-        console.log("Ticker Triggered Successfully", response.data);
+        
         alert(response.data.message);
         window.location.reload();
       }

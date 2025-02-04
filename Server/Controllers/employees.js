@@ -796,14 +796,14 @@ router.get('/incentive-tree-Data',EmployeeAuthenticateToken, async(req,res) =>{
 
       const colors = 
         { 
-         Grey: "#A0A0A0",
+        
          Orange: "#FFA500",
          Green: "#008000" 
         }
 
      
 
-      let grey =0;
+      let white =0;
       let orange=0;
       let green=0;
 
@@ -815,13 +815,11 @@ router.get('/incentive-tree-Data',EmployeeAuthenticateToken, async(req,res) =>{
             if (colorCode === colors.Grey) {
               grey += goalsheet.incentive || 0;
             }
-
-            if (colorCode === colors.Orange) {
+            else if (colorCode === colors.Orange) {
               orange += goalsheet.incentive || 0;
             }
-
-            if (colorCode === colors.Green) {
-              green += goalsheet.incentive || 0;
+            else{
+              white += goalsheet.incentive || 0
             }
   }
       })
@@ -831,7 +829,7 @@ router.get('/incentive-tree-Data',EmployeeAuthenticateToken, async(req,res) =>{
       return res.status(200).json({
         success: true,
         message: "Incentive tree data",
-          grey,
+          white,
           orange,
           green
       });

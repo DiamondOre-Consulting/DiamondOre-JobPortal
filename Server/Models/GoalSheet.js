@@ -56,7 +56,8 @@ const goalSheetSchema = new mongoose.Schema({
             type: Number
           },
           incentiveStatusColor: {
-             type: String
+             type: String,
+             default: "#ffffff"
           }
       },
     ],

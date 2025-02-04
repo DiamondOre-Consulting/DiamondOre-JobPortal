@@ -4105,15 +4105,15 @@ router.get('/incentive-tree-Data',AdminAuthenticateToken, async(req,res) =>{
     
     const goalsheet = await GoalSheet.findOne({ owner: userId });
 
-    const colors = 
-      { Grey: "#A0A0A0",
+   const colors = 
+{
       Orange: "#FFA500",
       Green: "#008000" }
     
 
-   console.log(",ahsdb",goalsheet.goalSheetDetails)
+   
 
-    let grey =0;
+    let white =0;
     let orange=0;
     let green=0;
 
@@ -4121,20 +4121,17 @@ router.get('/incentive-tree-Data',AdminAuthenticateToken, async(req,res) =>{
        if(goalsheet.incentiveStatusColor){
 
          const colorCode = goalsheet.incentiveStatusColor;
-           console.log(colorCode)
-           console.log(colors.Grey)
-           console.log(colors.Green)
-           console.log(colors.Orange)
-          if (colorCode == colors.Grey) {
-            grey += goalsheet.incentive || 0;
-          }
+          
+
 
           if (colorCode == colors.Orange) {
             orange += goalsheet.incentive || 0;
           }
-
-          if (colorCode == colors.Green) {
+          else if (colorCode == colors.Green) {
             green += goalsheet.incentive || 0;
+          }
+          else{
+            white += goalsheet.incentive || 0
           }
 }
     })
@@ -4144,7 +4141,7 @@ router.get('/incentive-tree-Data',AdminAuthenticateToken, async(req,res) =>{
     return res.status(200).json({
       success: true,
       message: "Incentive tree data",
-        grey,
+        white,
         orange,
         green
     });

@@ -43,7 +43,7 @@ const AdminIncentiveForEmployee = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
   const [incentiveData,setIncentiveData] = useState()
 
-  console.log(incentiveData)
+  console.log("ijn",incentiveData)
 
   useEffect(() => {
     // Update isMobile state on window resize
@@ -112,7 +112,7 @@ const AdminIncentiveForEmployee = () => {
           <div className='flex justify-center items-end'>
             <div className='border border-1 border-black w-32 h-32'>
               <p className='bg-white border border-b-gray-500  text-gray-700 text-xs text-center uppercase py-2'>Yet to raise</p>
-              <span>{incentiveData && incentiveData?.grey}</span>
+              <span>{incentiveData && incentiveData?.white}</span>
             </div>
             <div className='border border-1 border-black ml-6  w-32 h-32 '>
               <p className='bg-orange-600 text-gray-200 text-xs text-center uppercase py-2'>Invoice raised</p>
