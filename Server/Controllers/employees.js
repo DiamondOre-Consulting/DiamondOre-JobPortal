@@ -794,11 +794,12 @@ router.get('/incentive-tree-Data',EmployeeAuthenticateToken, async(req,res) =>{
       
       const goalsheet = await GoalSheet.findOne({ owner: userId });
 
-      const colors = [
-        { Grey: "#A0A0A0"},
-        { Orange: "#FFA500"},
-        { Green: "#008000" },
-      ];
+      const colors = 
+        { 
+         Grey: "#A0A0A0",
+         Orange: "#FFA500",
+         Green: "#008000" 
+        }
 
      
 
@@ -809,7 +810,7 @@ router.get('/incentive-tree-Data',EmployeeAuthenticateToken, async(req,res) =>{
       goalsheet.goalSheetDetails.forEach((goalsheet)=>{
          if(goalsheet.incentiveStatusColor){
 
-           const colorCode = goalsheet.incentiveStatusColor.code;
+           const colorCode = goalsheet.incentiveStatusColor;
 
             if (colorCode === colors.Grey) {
               grey += goalsheet.incentive || 0;

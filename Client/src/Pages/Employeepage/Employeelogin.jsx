@@ -65,7 +65,7 @@ const Employeelogin = () => {
                 // Redirect to dashboard page
                 setTimeout(() => {
                     navigate("/employee-dashboard");
-                }, 1000);
+                }, 500);
             } else {
 
                 setError("Login Details Are Wrong!!");

@@ -37,7 +37,7 @@ localStorage.setItem('incentive', JSON.stringify([
   { "month": "Dec", "param1": "3", "param2": "5", "param3": "7" },
 ]));
 
-const Incentive = () => {
+const AdminIncentiveForEmployee = () => {
   const { id } = useParams();
   const [apples, setApples] = useState([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
@@ -57,7 +57,7 @@ const Incentive = () => {
             const handleIncentiveData = async () => {
               
                   try{
-                    const baseURL=`${import.meta.env.VITE_BASE_URL}/employee/incentive-tree-Data`
+                    const baseURL=`${import.meta.env.VITE_BASE_URL}/admin-confi/incentive-tree-Data`
                     console.log("token",localStorage.getItem("token"))
                     const params = new URLSearchParams();
                     if(id){
@@ -176,4 +176,4 @@ const Incentive = () => {
   );
 };
 
-export default Incentive;
+export default AdminIncentiveForEmployee;
