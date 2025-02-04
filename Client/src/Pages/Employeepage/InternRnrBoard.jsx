@@ -9,6 +9,7 @@ import ERPTop5s from "../../Components/AdminPagesComponents/ERP/ERPTop5s";
 import RnRLeaderboard from "../../Components/AdminPagesComponents/ERP/RnRLeaderboard";
 import JoiningsForWeek from "../../Components/AdminPagesComponents/ERP/JoiningsForWeek";
 import Confetti from 'react-confetti';
+import PropagateLoader from "react-spinners/PropagateLoader";
 
 const InternRnrBoard = () => {
   const [employee, setEmployee] = useState(null);
@@ -115,6 +116,15 @@ const InternRnrBoard = () => {
 
     return () => clearTimeout(timer);
   }, []);
+
+
+  const override = {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+
+};
+
 
 
   return (

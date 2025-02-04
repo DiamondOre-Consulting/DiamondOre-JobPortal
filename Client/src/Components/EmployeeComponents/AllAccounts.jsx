@@ -85,7 +85,7 @@ const AllAccounts = () => {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                              {groupedData[ownerName][0]?.accountDetails.map((account,index) =>
+                                              {groupedData[ownerName][0]?.accountDetails?.map((account,index) =>
                                                   
                                                         <tr key={index} className='text-center'>
                                                             <td className="px-4 py-2 border">{account?.channels[0]?.hrDetails[0]?.hrName}</td>

@@ -80,7 +80,7 @@ const Incentive = () => {
 
           <div className='flex justify-center items-end'>
             <div className='border border-1 border-black w-32 h-32'>
-              <p className='bg-yellow-600 text-gray-200 text-xs text-center uppercase py-2'>Yet to raise</p>
+              <p className='bg-white border border-b-gray-500  text-gray-700 text-xs text-center uppercase py-2'>Yet to raise</p>
               {/* <div className='flex justify-center items-end'>
               <img src={star} className='w-10 h-10' alt="" />
               </div> */}
