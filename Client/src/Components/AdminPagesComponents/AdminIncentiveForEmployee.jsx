@@ -125,34 +125,7 @@ const AdminIncentiveForEmployee = () => {
           <div className='flex justify-center items-center  relative'>
             <img src={tree} alt="Tree" className='w-full md:w-72 mt-0 md:-mt-14' />
             <div className="flex flex-col items-start md:items-center">
-              {apples.length > 0 ? apples.map((apple, index) => (
-                <div
-                  key={index}
-                  className='absolute fruit flex flex-col items-center'
-                  style={{
-                    top: isMobile ? initialPositions[index].topMobile : initialPositions[index].top,
-                    left: isMobile ? initialPositions[index].leftMobile : initialPositions[index].left,
-                    transform: 'translate(-50%, -50%)',
-                  }}
-                >
-                  <div className='relative'>
-                    <img src={star} className='w-10 h-10 cursor-pointer' alt="" />
-                  </div>
-                  <div className='flex flex-col items-center group relative'>
-                    <span className='text-xs text-gray-50 -mt-6'>{apple.month}</span>
-                    <div className='z-50'>
-                      <span className='group-hover:opacity-100 transition-opacity bg-gray-800 px-2 text-sm text-gray-100 rounded-t-lg rounded-bl-lg absolute left-1/2 -translate-x-50 -translate-y-full opacity-0 mt-2 mx-auto'>
-                        <div className='w-full text-xs py-2' style={{ width: "90px" }}>
-                          <p>{apple.param1} : Monthly</p>
-                          <p>{apple.param2} : Variable</p>
-                          <p>{apple.param3} : KAM</p>
-                        </div>
-                      </span>
-                    </div>
-                  </div>
-
-                </div>
-              )) : <div>No data found.</div>}
+          
             </div>
           </div>
         </div>

@@ -44,7 +44,6 @@ const AdminLogin = () => {
 
       if (response.status === 200) {
 
-        console.log("data",response.data)
         const token = response.data.token;
         // Store the token in local storage
         localStorage.setItem("token", token);

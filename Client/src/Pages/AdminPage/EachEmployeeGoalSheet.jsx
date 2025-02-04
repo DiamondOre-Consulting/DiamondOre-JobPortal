@@ -453,7 +453,10 @@ const EachEmployeeGoalSheet = () => {
                     selectedColor === color.code ? "border-black scale-110" : "border-transparent"
                   }`}
                   style={{ backgroundColor: color.code }}
-                  onClick={() => setSelectedColor(color.code)}
+                  onClick={() => 
+                    {setSelectedColor(color.code)
+                    setOpen(false)}
+                  }
                 ></div>
               ))}
             </div>
