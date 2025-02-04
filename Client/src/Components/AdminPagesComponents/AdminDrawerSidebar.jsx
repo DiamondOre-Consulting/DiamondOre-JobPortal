@@ -63,6 +63,7 @@ import AllDuplicatePhoneRequest from '../../Pages/AdminPage/AllDuplicatePhoneReq
 import EachEmployeeKPIScore from '../../Pages/AdminPage/EachEmployeeKPIScore';
 import loader from '../../assets/loader.svg';
 import EditErp from '../../Pages/AdminPage/EditErp';
+import Incentive from '../EmployeeComponents/Incentive';
 
 
 const drawerWidth = 240;
@@ -331,6 +332,7 @@ const AdminDrawerSidebar = () => {
                     <Route path='/edit-profile' element={<AdminEditprofile />} />
                     <Route path='/all-accounts' element={<AllEmployeeAccounts />} />
                     <Route path='/all-duplicate-phone/request' element={<AllDuplicatePhoneRequest />} />
+                    <Route path='/incetive-tree/:id' element={<Incentive />} />
                 </Routes>
                 <AdminFooter />
             </Box>

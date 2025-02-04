@@ -44,6 +44,8 @@ dotenv.config();
 
 const secretKey = process.env.JWT_SECRET_ADMIN;
 
+
+
 const router = express.Router();
 
 // Generate a random OTP
@@ -250,7 +252,7 @@ const adminLoginSchema = z.object({
 
 // LOGIN AS ADMIN
 router.post("/login-admin", async (req, res) => {
-
+  console.log("login-route enter")
   const { email, password } = req.body;
    
   const {success,error} = adminLoginSchema.safeParse({email,password})
@@ -271,14 +273,25 @@ router.post("/login-admin", async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
+    console.log("login",secretKey)
+
     // Generate JWT token
-    const token = jwt.sign(
-      { userId: user._id, name: user.name, email: user.email, role: "admin" },
-      secretKey,
-      {
-        expiresIn: "10h",
+
+    function signJwt(payload,secretKey,expiresIn = '10h'){
+      try{
+             return jwt.sign(payload,secretKey,{expiresIn})
       }
+      catch(err){
+        console.log("enter")
+        console.log(err) 
+      }
+            
+    }
+    const token = signJwt(
+      { userId: user._id, name: user.name, email: user.email, role: "admin" },
+      secretKey
     );
+    
 
     return res.status(200).json({ token });
   } catch (error) {
@@ -4083,6 +4096,65 @@ router.get('/accounts',AdminAuthenticateToken,async(req, res)=>{
           console.error(error.message);
           res.status(500).json({ message: error.message });
         }
+})
+
+router.get('/incentive-tree-Data',AdminAuthenticateToken, async(req,res) =>{
+  try{
+    const { userId } =req.query;
+    console.log(req.query)
+    
+    const goalsheet = await GoalSheet.findOne({ owner: userId });
+
+    const colors = 
+      { Grey: "#A0A0A0",
+      Orange: "#FFA500",
+      Green: "#008000" }
+    
+
+   console.log(",ahsdb",goalsheet.goalSheetDetails)
+
+    let grey =0;
+    let orange=0;
+    let green=0;
+
+    goalsheet.goalSheetDetails.forEach((goalsheet)=>{
+       if(goalsheet.incentiveStatusColor){
+
+         const colorCode = goalsheet.incentiveStatusColor;
+           console.log(colorCode)
+           console.log(colors.Grey)
+           console.log(colors.Green)
+           console.log(colors.Orange)
+          if (colorCode == colors.Grey) {
+            grey += goalsheet.incentive || 0;
+          }
+
+          if (colorCode == colors.Orange) {
+            orange += goalsheet.incentive || 0;
+          }
+
+          if (colorCode == colors.Green) {
+            green += goalsheet.incentive || 0;
+          }
+}
+    })
+
+  
+   
+    return res.status(200).json({
+      success: true,
+      message: "Incentive tree data",
+        grey,
+        orange,
+        green
+    });
+
+  }
+  catch(err){
+       console.log(err)
+       return res.status(500).json({ message: "Internal server error" });
+  }
+
 })
 
 

@@ -196,7 +196,10 @@ const EmployeeBranchesPage = () => {
             <p className="relative z-10 text-xl">Goal Sheet</p>
           </Link>
 
-          <Link className="relative flex items-center justify-center overflow-hidden text-white transition-all bg-blue-900 rounded-md shadow-2xl h-60 before:absolute before:h-0 before:w-0 before:rounded-full before:bg-blue-950 before:duration-500 before:ease-out hover:shadow-blue-950 hover:before:h-96 hover:before:w-96">
+          <Link
+           to={`/admin-dashboard/incetive-tree/${id}`}
+           className="relative flex items-center justify-center overflow-hidden text-white transition-all bg-blue-900 rounded-md shadow-2xl h-60 before:absolute before:h-0 before:w-0 before:rounded-full before:bg-blue-950 before:duration-500 before:ease-out hover:shadow-blue-950 hover:before:h-96 hover:before:w-96">
+
             <p className="relative z-10 text-xl">Incentive</p>
           </Link>
         </div>

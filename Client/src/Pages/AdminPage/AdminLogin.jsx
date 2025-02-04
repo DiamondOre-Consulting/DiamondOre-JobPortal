@@ -23,7 +23,7 @@ const AdminLogin = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+    console.log("handel")
     const {success,error} = adminLoginSchema.safeParse({password,email})
        if (!success) {
           error.errors.forEach((err) => {
@@ -43,6 +43,8 @@ const AdminLogin = () => {
         });
 
       if (response.status === 200) {
+
+        console.log("data",response.data)
         const token = response.data.token;
         // Store the token in local storage
         localStorage.setItem("token", token);

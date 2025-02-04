@@ -788,6 +788,62 @@ router.get('/rnr-leaderboraddetails/:passcode', async (req, res) => {
 })
 
 
+router.get('/incentive-tree-Data',EmployeeAuthenticateToken, async(req,res) =>{
+    try{
+      const { userId } = req.user;
+      
+      const goalsheet = await GoalSheet.findOne({ owner: userId });
+
+      const colors = [
+        { Grey: "#A0A0A0"},
+        { Orange: "#FFA500"},
+        { Green: "#008000" },
+      ];
+
+     
+
+      let grey =0;
+      let orange=0;
+      let green=0;
+
+      goalsheet.goalSheetDetails.forEach((goalsheet)=>{
+         if(goalsheet.incentiveStatusColor){
+
+           const colorCode = goalsheet.incentiveStatusColor.code;
+
+            if (colorCode === colors.Grey) {
+              grey += goalsheet.incentive || 0;
+            }
+
+            if (colorCode === colors.Orange) {
+              orange += goalsheet.incentive || 0;
+            }
+
+            if (colorCode === colors.Green) {
+              green += goalsheet.incentive || 0;
+            }
+  }
+      })
+
+    
+     
+      return res.status(200).json({
+        success: true,
+        message: "Incentive tree data",
+          grey,
+          orange,
+          green
+      });
+
+    }
+    catch(err){
+         console.log(err)
+         return res.status(500).json({ message: "Internal server error" });
+    }
+
+})
+
+
 
 
 // get goal sheet 

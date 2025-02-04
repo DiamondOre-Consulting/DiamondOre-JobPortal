@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import tree from '../../assets/tree2.png';
 import star from '../../assets/star.svg';
 import basket from '../../assets/basket.png'
+import axios from 'axios'
+import { useParams } from 'react-router-dom';
+
 
 // Define positions for both desktop and mobile
 const initialPositions = [
@@ -35,8 +38,12 @@ localStorage.setItem('incentive', JSON.stringify([
 ]));
 
 const Incentive = () => {
+  const { id } = useParams();
   const [apples, setApples] = useState([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
+  const [incentiveData,setIncentiveData] = useState()
+
+  console.log(incentiveData)
 
   useEffect(() => {
     // Update isMobile state on window resize
@@ -45,18 +52,42 @@ const Incentive = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  useEffect(() => {
-    // Retrieve data from local storage
-    const storedData = localStorage.getItem('incentive');
-    if (storedData) {
-      try {
-        const parsedData = JSON.parse(storedData);
-        setApples(parsedData);
-      } catch (error) {
-        console.error('Error parsing JSON from local storage:', error);
-      }
-    }
-  }, []);
+    useEffect(()=>{
+
+            const handleIncentiveData = async () => {
+              
+                  try{
+                    const baseURL=`${import.meta.env.VITE_BASE_URL}/admin-confi/incentive-tree-Data`
+                    console.log("token",localStorage.getItem("token"))
+                    const params = new URLSearchParams();
+                    if(id){
+                      params.append('userId', id);
+                    }
+
+                    const url = `${baseURL}?${params.toString()}`;
+
+                   
+                      
+                    const response = await axios.get(url,{
+                      headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                      }
+                    });
+
+                    setIncentiveData(response.data)
+
+                  }
+                  catch(err){
+                  console.log(err)
+                  
+                  return 
+                  }
+
+            }  
+
+            handleIncentiveData()
+        
+    },[])
 
   return (
     <div className=''>
@@ -81,12 +112,11 @@ const Incentive = () => {
           <div className='flex justify-center items-end'>
             <div className='border border-1 border-black w-32 h-32'>
               <p className='bg-white border border-b-gray-500  text-gray-700 text-xs text-center uppercase py-2'>Yet to raise</p>
-              {/* <div className='flex justify-center items-end'>
-              <img src={star} className='w-10 h-10' alt="" />
-              </div> */}
+              <span>{incentiveData && incentiveData?.grey}</span>
             </div>
             <div className='border border-1 border-black ml-6  w-32 h-32 '>
-              <p className='bg-orange-600 text-gray-200 text-xs text-center uppercase py-2'>Developed</p>
+              <p className='bg-orange-600 text-gray-200 text-xs text-center uppercase py-2'>Invoice raised</p>
+              <span>{incentiveData && incentiveData?.orange}</span>
             </div>
           </div>
 
@@ -133,6 +163,7 @@ const Incentive = () => {
           <div className='flex justify-center items-end'>
             <div className='border border-1 border-black w-32 h-32'>
               <p className='bg-green-700 text-gray-200 text-xs text-center uppercase py-2'>paid</p>
+              <span className=' w-full block text-lg'>{incentiveData && incentiveData?.green}</span>
             </div>
 
           </div>
