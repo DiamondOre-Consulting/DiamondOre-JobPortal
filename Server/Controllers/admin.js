@@ -334,7 +334,7 @@ router.get("/all-jobs", async (req, res) => {
   try {
     const allJobs = await Jobs.find({});
 
-    console.log(allJobs);
+    
 
     return res.status(200).json(allJobs);
   } catch (error) {
@@ -355,7 +355,7 @@ router.get("/all-jobs/:id", AdminAuthenticateToken, async (req, res) => {
     }
 
     const oneJob = await Jobs.findById({ _id: id });
-    console.log(oneJob);
+   
 
     return res.status(201).json(oneJob);
   } catch (error) {
@@ -3210,8 +3210,42 @@ router.put(
   }
 );
 
+const kpiScoreSchema = z.object({
+  owner:z.string(),
+  month:z.string(),
+  year:z.coerce.number(),
+  costVsRevenue:z.object({
+      target:z.coerce.number(),
+      actual:z.coerce.number()
+  }),
+  successfulDrives:z.object({
+      target:z.coerce.number(),
+      actual:z.coerce.number()
+  }),
+  accounts:z.object({
+      target:z.coerce.number(),
+      actual:z.coerce.number()
+  }),
+  mentorship:z.object({
+      target:z.coerce.number(),
+      actual:z.coerce.number()
+  }),
+  processAdherence:z.object({
+      target:z.coerce.number(),
+      actual:z.coerce.number()
+  }),
+  leakage:z.object({
+      target:z.coerce.number(),
+      actual:z.coerce.number()
+  }),
+  noOfJoining:z.object({
+      target:z.coerce.number(),
+      actual:z.coerce.number()
+  })
+})
+
 // SET KPI SCORE
-router.post("/set-kpi-score", async (req, res) => {
+router.post("/set-kpi-score", async(req, res) => {
   try {
     const {
       owner,
@@ -3226,10 +3260,20 @@ router.post("/set-kpi-score", async (req, res) => {
       noOfJoining,
     } = req.body;
 
+    const {success, error} = kpiScoreSchema.safeParse(req.body)
+
+    if(error){
+      return res.status(422).json({message:"Validation failed of input fields"})
+    }
+
+   
+
+    console.log(req.body);
+
     // Find the KPI document for the owner
     let kpi = await KPI.findOne({ owner: owner });
 
-    if (!kpi) {
+    if(!kpi){
       // If no KPI document exists, create a new one
       kpi = new KPI({ owner: owner, kpis: [] });
     }
@@ -3284,54 +3328,57 @@ router.post("/set-kpi-score", async (req, res) => {
     const newKpiMonth = {
       kpiMonth: {
         month: month,
-        year: year,
+        year: (year),
         costVsRevenue: {
-          target: costVsRevenue.target,
-          actual: costVsRevenue.actual,
-          weight: costVsRevenueScore.weight,
-          kpiScore: costVsRevenueScore.kpiScore,
+          target:   (costVsRevenue.target),
+          actual:   (costVsRevenue.actual),
+          weight:   (costVsRevenueScore.weight),
+          kpiScore: (costVsRevenueScore.kpiScore),
         },
         successfulDrives: {
-          target: successfulDrives.target,
-          actual: successfulDrives.actual,
-          weight: successfulDrivesScore.weight,
-          kpiScore: successfulDrivesScore.kpiScore,
+          target:   (successfulDrives.target),
+          actual:   (successfulDrives.actual),
+          weight:   (successfulDrivesScore.weight),
+          kpiScore: (successfulDrivesScore.kpiScore),
         },
         accounts: {
-          target: accounts.target,
-          actual: accounts.actual,
-          weight: accountsScore.weight,
-          kpiScore: accountsScore.kpiScore,
+          target:   (accounts.target),
+          actual:   (accounts.actual),
+          weight:   (accountsScore.weight),
+          kpiScore: (accountsScore.kpiScore),
         },
         mentorship: {
-          target: mentorship.target,
-          actual: mentorship.actual,
-          weight: mentorshipScore.weight,
-          kpiScore: mentorshipScore.kpiScore,
+          target:   (mentorship.target),
+          actual:   (mentorship.actual),
+          weight:   (mentorshipScore.weight),
+          kpiScore: (mentorshipScore.kpiScore),
         },
-        processAdherence: {
-          target: processAdherence.target,
-          actual: processAdherence.actual,
-          weight: processAdherenceScore.weight,
-          kpiScore: processAdherenceScore.kpiScore,
+
+        processAdherence:{
+          target:   (processAdherence.target),
+          actual:   (processAdherence.actual),
+          weight:   (processAdherenceScore.weight),
+          kpiScore: (processAdherenceScore.kpiScore),
         },
         leakage: {
-          target: leakage.target,
-          actual: leakage.actual,
-          weight: leakageScore.weight,
-          kpiScore: leakageScore.kpiScore,
+          target:   (leakage.target),
+          actual:   (leakage.actual),
+          weight:   (leakageScore.weight),
+          kpiScore: (leakageScore.kpiScore),
         },
         noOfJoining: {
-          target: noOfJoining.target,
-          actual: noOfJoining.actual,
-          weight: noOfJoiningScore.weight,
-          kpiScore: noOfJoiningScore.kpiScore,
+          target:   (noOfJoining.target),
+          actual:   (noOfJoining.actual),
+          weight:   (noOfJoiningScore.weight),
+          kpiScore: (noOfJoiningScore.kpiScore),
         },
-        totalKPIScore: totalKPIScore,
+        totalKPIScore: (totalKPIScore),
       },
     };
 
-    // Push the new KPI month information to the kpis array
+    console.log(newKpiMonth)
+
+    // Push the new KPI month information to the kpis array 
     kpi.kpis.push(newKpiMonth);
 
     // Save the KPI document

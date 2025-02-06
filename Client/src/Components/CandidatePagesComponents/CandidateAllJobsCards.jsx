@@ -5,6 +5,9 @@ import axios from "axios";
 import PropagateLoader from "react-spinners/PropagateLoader";
 import ReactPaginate from "react-paginate";
 
+
+
+
 const CandidateAllJobsCards = () => {
   const navigate = useNavigate();
   let [loading, setLoading] = useState(true);
@@ -31,7 +34,7 @@ const CandidateAllJobsCards = () => {
 
   const pagesVisited = pageNumber * jobsPerPage;
 
- 
+
 
   const changePage = ({ selected }) => {
     
@@ -48,7 +51,8 @@ const CandidateAllJobsCards = () => {
 
   useEffect(() => {
     const fetchAllJobs = async () => {
-      try {
+      try{
+       
 
         const query = new URLSearchParams();
 
@@ -64,13 +68,10 @@ const CandidateAllJobsCards = () => {
           query.append("minCTC", selectedCtcRange?.split("-")[0]);
           query.append("maxCTC", selectedCtcRange?.split("-")[1]);
         }
-        if(pageNumber){
-          query.append("page", pageNumber);
-        }
-
-        if(jobsPerPage){
+        
+          query.append("page", pageNumber);       
           query.append("limit", jobsPerPage);
-        }
+        
 
         const response = await axios.get(
           `${import.meta.env.VITE_BASE_URL}/candidates/all-jobs?${query.toString()}`

@@ -4,6 +4,41 @@ import { useParams } from 'react-router-dom';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import PropagateLoader from "react-spinners/PropagateLoader";
+import {z} from 'zod'
+
+const kpiScoreSchema = z.object({
+    owner:z.string(),
+    month:z.string(),
+    year:z.coerce.number(),
+    costVsRevenue:z.object({
+        target:z.coerce.number(),
+        actual:z.coerce.number()
+    }),
+    successfulDrives:z.object({
+        target:z.coerce.number(),
+        actual:z.coerce.number()
+    }),
+    accounts:z.object({
+        target:z.coerce.number(),
+        actual:z.coerce.number()
+    }),
+    mentorship:z.object({
+        target:z.coerce.number(),
+        actual:z.coerce.number()
+    }),
+    processAdherence:z.object({
+        target:z.coerce.number(),
+        actual:z.coerce.number()
+    }),
+    leakage:z.object({
+        target:z.coerce.number(),
+        actual:z.coerce.number()
+    }),
+    noOfJoining:z.object({
+        target:z.coerce.number(),
+        actual:z.coerce.number()
+    })
+})
 
 const EachEmployeeKPIScore = () => {
     const { id } = useParams();
@@ -25,16 +60,21 @@ const EachEmployeeKPIScore = () => {
         noOfJoining: { target: '', actual: '' },
     });
 
+    console.log(formData)
+    
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         const [category, field] = name.split('.');
 
-        if (field) {
+        if(field){
+           
             setFormData((prevData) => ({
                 ...prevData,
-                [category]: { ...prevData[category], [field]: value },
+                [category] : { ...prevData[category], [field]: value },
             }));
         } else {
+            
             setFormData((prevData) => ({
                 ...prevData,
                 [name]: value,
@@ -44,9 +84,35 @@ const EachEmployeeKPIScore = () => {
 
     const handleSubmitKpiScore = async (e) => {
         e.preventDefault();
+
+        if(!formData.month ){
+            alert("Filling month is compulsory.")
+            return 
+        }
+
+        if(!formData.year){
+            alert("Filling year is compulsory.")
+            return
+        }
+
+        const {success,error, data} = kpiScoreSchema.safeParse(formData)
+
+        if (!success) {
+            error.errors.forEach((err) => {
+              console.log("enter");
+              alert(`Field: ${err.path.join(' -> ')} - Error: ${err.message}`);
+            });
+            return;
+          }
+          
+
+          
+        
+
+
         setShowSubmitLoader(true)
         try {
-            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/admin-confi/set-kpi-score`, formData);
+            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/admin-confi/set-kpi-score`, data);
             ;
             setShowSubmitLoader(false);
             setPopUpForm(false)
@@ -146,10 +212,10 @@ const EachEmployeeKPIScore = () => {
 
                             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                                 <div className="bg-gray-50 mb-10 border border-1 p-8 rounded-md overflow-y-auto h-96 md:ml-0 ml-20  md:mx-0  mx-10">
-                                    <div class="flex justify-end p-2 -mt-8 -mr-6">
+                                    <div className="flex justify-end p-2 -mt-8 -mr-6">
                                         <button onClick={() => setPopUpForm(false)}
-                                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center">
-                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center">
+                                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                                 <path fill-rule="evenodd"
                                                     d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
                                                     clip-rule="evenodd"></path>

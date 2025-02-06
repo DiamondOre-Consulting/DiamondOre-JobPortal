@@ -426,28 +426,38 @@ router.get("/user-data", CandidateAuthenticateToken, async (req, res) => {
   }
 });
  
+
+const jobSchema = z.object({
+  Channel:z.string().optional(),
+  City:z.string().optional(),
+  minCTC:z.string().optional(),
+  maxCTC:z.string().optional(), 
+  page:z.coerce.number(),
+  limit:z.coerce.number()
+})
+
 // FETCHING ALL JOBS
 router.get("/all-jobs", async (req, res) => {
   try {
-    const {Channel} = req.query
-    const {City} = req.query
-    const {MaxSalary} = req.query
-    const {minCTC} = req.query
-    const {maxCTC} = req.query
+      
+    const {success, data , error }  = jobSchema.safeParse(req.query)
     
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 20;
-    console.log(page)
-    console.log(limit)
+    if(!success){
+      return res.status(422).json({message : "invalid Credentials"})
+    }
     
-    console.log(req.query)
-  
+    const {Channel,City,minCTC,maxCTC} = data
+    
+    const page  = data.page || 1;
+    const limit = data.limit || 20;
+
+    
     
     const skip = (page) * limit;
-    console.log(skip)
-    let data;
+  
+    let queryData;
     let totalCount;
-    if(Channel||City||MaxSalary){
+    if(Channel||City){
         
 
       const query = {
@@ -465,12 +475,12 @@ router.get("/all-jobs", async (req, res) => {
 
      
       totalCount = await Jobs.countDocuments(query);
-       data = await Jobs.find(query).skip(skip).limit(limit);
+       queryData = await Jobs.find(query).skip(skip).limit(limit);
 
     }
     else{
       totalCount = await Jobs.countDocuments();
-      data = await Jobs.find({}).skip(skip).limit(limit);
+      queryData = await Jobs.find({}).skip(skip).limit(limit);
       
     }
 
@@ -480,7 +490,7 @@ router.get("/all-jobs", async (req, res) => {
     const uniqueChannels = await Jobs.distinct("Channel");
 
     return res.status(200).json({
-      allJobs:data.reverse(),
+      allJobs:queryData.reverse(),
       currentPage: page,
       totalPages: Math.ceil(totalCount / limit),
       uniqueCities,

@@ -46,7 +46,7 @@ const CandidateAllJobs = () => {
   }, [decodedToken, navigate, location]);
 
 
-  // popup 
+  
 
 
   const [showPopup, setShowPopup] = useState(false);
@@ -101,10 +101,11 @@ const CandidateAllJobs = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+
+   },[]);
 
 
-  // auto popup 
+  
 
 
 
