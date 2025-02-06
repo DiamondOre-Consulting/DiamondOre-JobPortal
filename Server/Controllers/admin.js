@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import nodemailer from "nodemailer";
 import { otpStore, storeOtp } from "../server.js";
 // import forgotOtp from "../server.js";
-import { S3Client } from "@aws-sdk/client-s3";
+import { InventoryConfigurationFilterSensitiveLog, S3Client } from "@aws-sdk/client-s3";
 import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import mongoose from "mongoose";
@@ -329,14 +329,37 @@ router.get("/user-data", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
+const allJobsSchema = z.object({
+    page:z.coerce.number(),
+    limit:z.coerce.number()
+})
+
 // FETCHING ALL JOBS
 router.get("/all-jobs", async (req, res) => {
   try {
-    const allJobs = await Jobs.find({});
+    console.log(req.query)
+    const {success,error,data} = allJobsSchema.safeParse(req.query)
+    if (!success) {
+        return res.status(400).json({message: "Invalid credentials"});
+    }
 
+    const page  = data.page || 1;
+    const limit = data.limit || 20;
+
+
+    const skip = (page) * limit;
+
+    const allJobsCount = await Jobs.countDocuments({JobStatus:true});
+
+    const allJobs = await Jobs.find({JobStatus:true}).limit(limit).skip(skip);
     
 
-    return res.status(200).json(allJobs);
+    return res.status(200).json({
+        totalPages: Math.ceil(allJobsCount/limit),
+        allJobs:allJobs,
+        currentPage: page
+      });
+
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Something went wrong!!!" });
@@ -382,7 +405,7 @@ router.put("/remove-job/:id", AdminAuthenticateToken, async (req, res) => {
       }
     );
 
-    res.status(201).json({ message: "Job has been removed from list!!!" });
+    res.status(200).json({ message: "Job has been removed from list!!!" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Something went wrong!!!" });

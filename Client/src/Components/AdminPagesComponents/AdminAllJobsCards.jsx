@@ -20,6 +20,7 @@ const AdminAllJobsCards = () => {
   const pageCount = Math.ceil(latestJobs.length / jobsPerPage);
   const [popup, setPopUP] = useState(false)
   const [jobToDelete, setJobToDelete] = useState(null);
+  const [fetchJobs,setFetchJobs] = useState(false);
 
   const changePage = ({ selected }) => {
     setPageNumber(selected);
@@ -32,44 +33,11 @@ const AdminAllJobsCards = () => {
     alignItems: "center",
 
   };
-
-
-  useEffect(() => {
-    const fetchAllJobs = async () => {
-      try {
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-          // Token not found in local storage, handle the error or redirect to the login page
-          console.error("No token found");
-          navigate("/admin-login");
-          return;
-        }
-
-        // Fetch associates data from the backend
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/admin-confi/all-jobs`
-        );
-        if (response.status == 200) {
-          const all = response.data;
-
-          const filteredJobs = all.filter(job => job.JobStatus === "true");
-
-          setLatestJobs(filteredJobs.reverse());
-          setLoading(false)
-        }
-      } catch (error) {
-        console.error("Error fetching associates:", error);
-        // Handle error and show appropriate message
-      }
-    };
-
-    fetchAllJobs();
-  }, []);
-
-
+   
   const deleteJob = async () => {
+    
     try {
+      setLoading(true)
       const response = await axios.put(
         `${import.meta.env.VITE_BASE_URL}/admin-confi/remove-job/${jobToDelete}`,
         null,
@@ -79,19 +47,66 @@ const AdminAllJobsCards = () => {
           },
         }
       );
-      if (response.status === 201) {
-        setPopUP(false);
-        setLatestJobs(latestJobs.filter((job) => job._id !== jobToDelete));
-      }
+      setPopUP(false)
+      setFetchJobs(prev=>!prev)
     } catch (error) {
-
+        console.log(error)
+    }
+    finally{
+      setLoading(false)
     }
   };
 
+
+  useEffect(() => {
+    const fetchAllJobs = async () => {
+      try {
+        setLoading(true)
+        const token = localStorage.getItem("token");
+         
+        if (!token) {
+          // Token not found in local storage, handle the error or redirect to the login page
+          console.error("No token found");
+          navigate("/admin-login");
+          return;
+        }
+
+        const query = new URLSearchParams();
+
+          console.log("ad",pageNumber)
+          query.append("limit",jobsPerPage)
+          query.append("page",pageNumber)
+        
+
+        // Fetch associates data from the backend
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/admin-confi/all-jobs/?${query.toString()}`
+        );
+        if (response.status == 200) {
+          console.log("ad",response.data);
+          setLatestJobs(response.data);        
+        }
+      } catch (error) {
+        console.error("Error fetching associates:", error);
+        // Handle error and show appropriate message
+      }
+      finally{
+        setLoading(false)
+      }
+    };
+
+    fetchAllJobs();
+  }, [pageNumber,fetchJobs]);
+
+
+ 
   const handleDeleteClick = (id) => {
     setJobToDelete(id);
     setPopUP(true)
   };
+
+  console.log(latestJobs)
+
   return (
     <div className="bg-white py-4 sm:py-8 lg:py-10">
       <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
@@ -110,7 +125,7 @@ const AdminAllJobsCards = () => {
               />
             </div> :
             <div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
-              {latestJobs.slice(pagesVisited, pagesVisited + jobsPerPage).map((latestJob) => (
+              {latestJobs?.allJobs?.map((latestJob) => (
                 <div
                   key={latestJob?._id}
                   className="flex flex-col justify-between h-64 overflow-hidden rounded-lg bg-white shadow-lg shadow-2xl-gray-200 p-4 shadow-lg hover:shadow-2xl "
@@ -153,7 +168,7 @@ const AdminAllJobsCards = () => {
           <ReactPaginate
             previousLabel={"Previous"}
             nextLabel={"Next"}
-            pageCount={pageCount}
+            pageCount={latestJobs?.totalPages}
             onPageChange={changePage}
             containerClassName={"pagination flex justify-center mt-8  gap-0 md:gap-2 shadow-lg px-10 py-4 "}
             previousLinkClassName={"pagination__link border border-gray-300 bg-gray-400 text-black rounded-l px-2 py-1 md:px-4 md:py-2  "}

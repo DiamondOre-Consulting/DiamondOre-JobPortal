@@ -10,7 +10,7 @@ const AdminAllJobs = () => {
 
 
 
-  
+
   const { decodedToken } = useJwt(localStorage.getItem("token"));
   const token = localStorage.getItem("token");
   if (!token) {
