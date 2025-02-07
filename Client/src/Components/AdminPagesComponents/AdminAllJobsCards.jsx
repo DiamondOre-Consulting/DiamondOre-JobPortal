@@ -73,7 +73,7 @@ const AdminAllJobsCards = () => {
 
         const query = new URLSearchParams();
 
-          console.log("ad",pageNumber)
+         
           query.append("limit",jobsPerPage)
           query.append("page",pageNumber)
         

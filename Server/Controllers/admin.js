@@ -337,7 +337,7 @@ const allJobsSchema = z.object({
 // FETCHING ALL JOBS
 router.get("/all-jobs", async (req, res) => {
   try {
-    console.log(req.query)
+    
     const {success,error,data} = allJobsSchema.safeParse(req.query)
     if (!success) {
         return res.status(400).json({message: "Invalid credentials"});
@@ -360,7 +360,7 @@ router.get("/all-jobs", async (req, res) => {
         currentPage: page
       });
 
-  } catch (error) {
+  }catch(error){
     console.log(error);
     return res.status(500).json({ message: "Something went wrong!!!" });
   }
@@ -426,22 +426,41 @@ router.get("/jobs-high", async (req, res) => {
     return res.status(500).json({ message: "Something went wrong!!!" });
   }
 });
+const allCandidatesSchema = z.object({
+  page:z.coerce.number(),
+  limit:z.coerce.number()
+})
 
 // FETCHING ALL CANDIDATES
 router.get("/all-candidates", AdminAuthenticateToken, async (req, res) => {
   try {
     const { email } = req.user;
 
+    const {success,error,data} = allCandidatesSchema.safeParse(req.query)
+    if (!success) {
+        return res.status(400).json({message: "Invalid credentials"});
+    }
+
+
     const user = await Admin.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const allCandidates = await Candidates.find({}, { password: 0 });
+    const page= data.page || 1;
+    const limit = data.limit || 20;
 
-    console.log(allCandidates);
+    const skip = page * limit;
+    const totalPages = await Candidates.countDocuments();
+    const allCandidates = await Candidates.find().skip(skip).limit(limit);
+  
 
-    return res.status(200).json(allCandidates);
+    return res.status(200).json({
+      allCandidates:allCandidates.reverse(),
+      totalPages: Math.ceil(totalPages/limit),
+      currentPage: page
+    }
+    );
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Something went wrong!!!" });

@@ -160,7 +160,7 @@ const EmpGoalSheet = () => {
                       <td className='px-4 py-2 border'>{data.target}</td>
                       <td className='px-4 py-2 border'>{data.cumulativeCost}</td>
                       <td className='px-4 py-2 border'>{data.cumulativeRevenue}</td>
-                      <td className='px-4 py-2 border'>{data.achYTD}</td>
+                      <td className={`px-4 py-2 border ${data.achYTD < 2.5 ? "bg-red-400" : "bg-white"}`}>{data.achYTD}</td>
                       <td className='px-4 py-2 border'>{data.achMTD}</td>
                       <td className='px-4 py-2 border'
                        style={{ backgroundColor: data?.incentiveStatusColor }}

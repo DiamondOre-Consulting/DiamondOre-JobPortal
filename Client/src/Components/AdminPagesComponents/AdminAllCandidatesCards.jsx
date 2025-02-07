@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useJwt } from "react-jwt";
 import axios from "axios";
 import PropagateLoader from "react-spinners/PropagateLoader";
+import ReactPaginate from "react-paginate";
 
 
 
@@ -14,9 +15,13 @@ const AdminAllCandidatesCards = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
+  const [pageNumber, setPageNumber] = useState(0);
+  const jobsPerPage = 20;
 
 
-
+  const changePage = ({ selected }) => {
+    setPageNumber(selected);
+  };
 
   const override = {
     display: "flex",
@@ -65,6 +70,7 @@ const AdminAllCandidatesCards = () => {
   useEffect(() => {
     const fetchAllJobs = async () => {
       try {
+        setLoading(true)
         const token = localStorage.getItem("token");
 
         if (!token) {
@@ -74,9 +80,14 @@ const AdminAllCandidatesCards = () => {
           return;
         }
 
+        const query = new URLSearchParams();
+
+        query.append("page", pageNumber)
+        query.append("limit", jobsPerPage)
+
         // Fetch associates data from the backend
         const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/admin-confi/all-candidates`,
+          `${import.meta.env.VITE_BASE_URL}/admin-confi/all-candidates/?${query.toString()}`,
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -84,28 +95,27 @@ const AdminAllCandidatesCards = () => {
           }
         );
         if (response.status == 200) {
-          ;
-          const all = response.data;
-          // 
-          setLatestCandidates(all.reverse());
 
-          setLoading(false)
+
+          console.log("candidate Data",response.data)
+           
+          setLatestCandidates(response.data);
+          
         }
       } catch (error) {
         console.error("Error fetching associates:", error);
         // Handle error and show appropriate message
       }
+      finally{
+        setLoading(false)
+      }
     };
 
     fetchAllJobs();
-  }, []);
+  }, [pageNumber]);
 
 
-  // filter 
-  const filteredCandidates = latestCandidates.filter((candidate) =>
-    candidate.name.toLowerCase().startsWith(searchQuery.toLowerCase()) ||
-    candidate.phone.startsWith(searchQuery)
-  );
+  
 
 
   // Handle search input change
@@ -215,7 +225,7 @@ const AdminAllCandidatesCards = () => {
               />
             </div> :
             <div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-3">
-              {filteredCandidates.map((latestCandidate) => (
+              {latestCandidates?.allCandidates?.map((latestCandidate) => (
                 <div key={latestCandidate._id}>
                   <div
                     href="#"
@@ -239,6 +249,18 @@ const AdminAllCandidatesCards = () => {
               ))}
             </div>
         }
+         <ReactPaginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            pageCount={latestCandidates?.totalPages}
+            onPageChange={changePage}
+            containerClassName={"pagination flex justify-center mt-8  gap-0 md:gap-2 shadow-lg px-10 py-4 "}
+            previousLinkClassName={"pagination__link border border-gray-300 bg-gray-400 text-black rounded-l px-2 py-1 md:px-4 md:py-2  "}
+            nextLinkClassName={"pagination__link  rounded-r bg-blue-950 text-white px-2 py-1 md:px-4 md:py-2 "}
+            disabledClassName={"pagination__link--disabled opacity-50"}
+            activeClassName={"pagination__link--active bg-blue-500 text-white"}
+            pageLinkClassName={"pagination__link border border-gray-300  px-1 py-1 md:px-3 md:py-1"}
+          />
       </div>
     </div>
   );
