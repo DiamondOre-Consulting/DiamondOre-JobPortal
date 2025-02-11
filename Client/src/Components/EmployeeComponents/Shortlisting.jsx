@@ -3,7 +3,7 @@ import axios from "axios";
 
 const Shortlisting = ({ userData }) => {
   const id = userData?.id;
-console.log(id)
+  console.log(id);
   // for uploading joining Excel
   const [file, setFile] = useState(null); // Selected file
   const [loading, setLoading] = useState(false); // Loader state
@@ -38,7 +38,9 @@ console.log(id)
       console.log(excelUrl);
 
       const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-shortlistedsheet/${id}`,
+        `${
+          import.meta.env.VITE_BASE_URL
+        }/admin-confi/upload-shortlistedsheet/${id}`,
         { shortlistedCandidates: excelUrl }
       );
 
@@ -57,7 +59,7 @@ console.log(id)
 
   return (
     <>
-    <p className="text-3xl text-center mb-4 ">Upload Shorlisted Candidates</p>
+      <p className="text-3xl text-center mb-4 ">Upload Shorlisted Candidates</p>
       <input
         className="border border-1 w-full"
         onChange={handleFileChange}
@@ -70,9 +72,14 @@ console.log(id)
       >
         {loading ? "uploading..." : "Upload Shorlisted Candidates"}
       </p>
-
-
-      <p className="bg-green-400 mt-4 p-4  text-center text-xl text-white cursor-pointer "><a href={userData?.shortlistedCandidates} target="_blank">View File</a></p>
+      <a
+        target="_blank"
+        href={userData?.shortlistedCandidates}
+        rel="noopener noreferrer"
+        className="w-full bg-green-400 text-lg cursor-pointer flex text-center justify-center py-2 mt-4  items-center"
+      >
+        View File
+      </a>
     </>
   );
 };

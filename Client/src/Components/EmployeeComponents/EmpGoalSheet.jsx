@@ -110,11 +110,11 @@ const EmpGoalSheet = () => {
         </>
       )}
         <h1 className='text-3xl font-bold md:text-4xl'>Goal Sheet</h1>
-        <div className='w-20 h-0.5 bg-blue-900'></div>
+        <div className='w-20 h-0.5 bg-blue-900 mb-6'></div>
 
-        <Select onValueChange={(value)=>{setYear(value)}}>
-        <SelectTrigger id={"year"}>
-          <SelectValue placeholder="Select Year" />
+        <Select onValueChange={(value)=>{setYear(value)}} >
+        <SelectTrigger id={"year"} className="w-40">
+          <SelectValue placeholder="Select Year"  />
         </SelectTrigger>
         <SelectContent>
 
@@ -126,10 +126,8 @@ const EmpGoalSheet = () => {
       </Select>
 
 
-        <div className='col-span-2 mt-10'>
-
-
-          <div className='container relative mx-auto overflow-x-auto h-96 md:w-full w-72'>
+        <div className='col-span-2 mt-8'>
+          <div className='container relative mx-auto overflow-x-auto h-96 md:w-full md:w-72'>
             <table className='w-full table-auto'>
               <thead className='sticky top-0 text-xs text-gray-100 bg-blue-900 shadow'>
                 <tr>

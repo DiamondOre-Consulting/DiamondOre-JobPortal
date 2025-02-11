@@ -92,7 +92,7 @@ const Incentive = () => {
   return (
     <div className=''>
       <div className='flex justify-end'>
-        <select className='p-2'>
+        {/* <select className='p-2'>
           <option>Select Year</option>
           <option>2024</option>
           <option>2025</option>
@@ -101,7 +101,7 @@ const Incentive = () => {
           <option>2028</option>
           <option>2029</option>
           <option>2030</option>
-        </select>
+        </select> */}
       </div>
 
       <div className='grid  grid-cols-1 md:grid-cols-3 gap-2 mt-4 md:mt-0'>
@@ -110,13 +110,13 @@ const Incentive = () => {
         <div className=' px-10 flex justify-center'>
 
           <div className='flex justify-center items-end'>
-            <div className='border border-1 border-black w-32 h-32'>
+            <div className='border  fl border-1 border-black w-32 h-32'>
               <p className='bg-white border border-b-gray-500  text-gray-700 text-xs text-center uppercase py-2'>Yet to raise</p>
-              <span>{incentiveData && incentiveData?.white}</span>
+              <span className='text-center   w-full flex h-full items-center justify-center'>{incentiveData && incentiveData?.white}</span>
             </div>
             <div className='border border-1 border-black ml-6  w-32 h-32 '>
               <p className='bg-orange-600 text-gray-200 text-xs text-center uppercase py-2'>Invoice raised</p>
-              <span>{incentiveData && incentiveData?.orange}</span>
+              <span  className='text-center   w-full flex h-full items-center justify-center'>{incentiveData && incentiveData?.orange}</span>
             </div>
           </div>
 
@@ -136,7 +136,7 @@ const Incentive = () => {
           <div className='flex justify-center items-end'>
             <div className='border border-1 border-black w-32 h-32'>
               <p className='bg-green-700 text-gray-200 text-xs text-center uppercase py-2'>paid</p>
-              <span className=' w-full block text-lg'>{incentiveData && incentiveData?.green}</span>
+              <span  className='text-center   w-full flex h-full items-center justify-center'>{incentiveData && incentiveData?.green}</span>
             </div>
 
           </div>
