@@ -1856,7 +1856,7 @@ router.get("/find-bulk-jobs", async (req, res) => {
     const { recruiterName, fromDate, toDate, location, ctcStart, ctcEnd } =
       req.query; // Taking input from query params
     // console.log(1);
-    // console.log(req.query);
+    console.log(req.query);
     if (!fromDate || !toDate) {
       return res.status(400).send("Please provide fromDate and toDate");
     }
@@ -1865,8 +1865,8 @@ router.get("/find-bulk-jobs", async (req, res) => {
     // Convert fromDate and toDate into Date objects
     const from = fromDate;
     const to = toDate;
-    // console.log("to", to);
-
+    console.log("to", to);
+    
     const query = {
       currentDate: {
         $gte: from,
@@ -1874,15 +1874,21 @@ router.get("/find-bulk-jobs", async (req, res) => {
       },
     };
 
+    console.log("gd",query)
+
+
     // if (recruiterName) {
     //   query.recruiterName = recruiterName;
     // }
+    
+    console.log(location)
 
     if (location) {
       query.currentLocation = location;
     }
-
-    if (ctcStart && ctcEnd) {
+    console.log(ctcStart)
+    console.log(ctcEnd)
+    if (ctcStart && ctcEnd){
       query.currentCTC = {
         $gte: parseFloat(ctcStart),
         $lte: parseFloat(ctcEnd),
@@ -1890,11 +1896,12 @@ router.get("/find-bulk-jobs", async (req, res) => {
     }
 
     // console.log("query", query);
-
+     console.log("jhfd",query)
     // Fetch candidates matching the criteria
     const candidates = await DSR.find(query);
-    // console.log("can", candidates);
-    // console.log("len", candidates.length);
+
+    console.log("c",candidates)
+   
 
     if (!candidates.length) {
       return res.status(404).send("No candidates found");
@@ -1929,6 +1936,8 @@ router.get("/find-bulk-jobs", async (req, res) => {
         await sendJobsToRecByEmail(eMailIdRec, candidate, suitableJobs);
       }
     }
+
+   
 
     res.status(200).json(recommendations);
   } catch (error) {
