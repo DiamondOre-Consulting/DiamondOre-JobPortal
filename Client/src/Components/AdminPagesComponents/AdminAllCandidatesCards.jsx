@@ -237,7 +237,7 @@ const AdminAllCandidatesCards = () => {
         link.click();
         document.body.removeChild(link);
       } else {
-        console.error('Expected a Blob, but got', response.data);
+        console.error('Expected a Blob, but got ', response.data);
       }
 
     }
