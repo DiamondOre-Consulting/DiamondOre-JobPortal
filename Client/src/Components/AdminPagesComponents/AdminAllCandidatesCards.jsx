@@ -22,8 +22,7 @@ const AdminAllCandidatesCards = () => {
   const [searchedCandidatePageNumber,setSearchedCandidatePageNumber] = useState(0)
 
   
-  console.log(totalPages)
-  console.log(totalPagesForSearched)
+ 
 
   const changePage = ({ selected }) => {
     if(!searchQuery){
@@ -104,7 +103,7 @@ const AdminAllCandidatesCards = () => {
           if (response.status == 200) {
   
             
-            console.log(response.data)
+           
             
             setTotalPagesForSearched(null)
             setLatestCandidates(response.data.allCandidates);
