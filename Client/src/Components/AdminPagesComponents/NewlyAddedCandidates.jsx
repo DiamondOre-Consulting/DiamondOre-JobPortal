@@ -10,7 +10,7 @@ const NewlyAddedCandidates = () => {
   const { decodedToken } = useJwt(localStorage.getItem("token"));
   const token = localStorage.getItem("token");
   if (!token) {
-    navigate("/admin-login"); // Redirect to login page if not authenticated
+    navigate("/admin-login"); 
     return;
   }
 

@@ -343,7 +343,7 @@ router.get("/all-jobs", async (req, res) => {
         return res.status(400).json({message: "Invalid credentials"});
     }
 
-    const page  = data.page || 1;
+    const page  = data.page || 0;
     const limit = data.limit || 20;
 
 
@@ -435,10 +435,10 @@ const allCandidatesSchema = z.object({
 router.get("/all-candidates", AdminAuthenticateToken, async (req, res) => {
   try {
     const { email } = req.user;
-
+  
     const {success,error,data} = allCandidatesSchema.safeParse(req.query)
     if (!success) {
-        return res.status(400).json({message: "Invalid credentials"});
+        return res.status(400).json({message: "erronous data"});
     }
 
 
@@ -447,7 +447,7 @@ router.get("/all-candidates", AdminAuthenticateToken, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const page= data.page || 1;
+    const page= data.page || 0;
     const limit = data.limit || 20;
 
     const skip = page * limit;
@@ -482,7 +482,7 @@ router.get("/all-candidates/:id", AdminAuthenticateToken, async (req, res) => {
       { _id: id },
       { password: 0 }
     );
-    console.log(oneCandidate);
+    
 
     return res.status(201).json(oneCandidate);
   } catch (error) {
@@ -490,6 +490,97 @@ router.get("/all-candidates/:id", AdminAuthenticateToken, async (req, res) => {
     return res.status(500).json({ message: "Something went wrong!!!" });
   }
 });
+
+const singleCandidateSchema= z.object({
+  searchTerm:z.string(),
+  page:z.coerce.number().optional(),
+  limit:z.coerce.number().optional()
+})
+
+router.get("/single-candidate"  , AdminAuthenticateToken , async(req,res)=>{
+  
+  try{
+    const {data,success} = singleCandidateSchema.safeParse(req.query)
+    
+
+    if(!success){
+      return res.status(422).json({message: "erroneous data"})
+    }
+
+  const { email } = req.user;
+
+  const page= data.page || 0;
+  const limit = data.limit || 6;
+  const skip = page * limit;
+  
+  const user = await Admin.findOne({ email });
+  
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+ 
+  const candidates = await Candidates.aggregate([
+    {
+      $search:{
+        index: "candidates_search_index",
+        text:{
+          query: data.searchTerm, 
+          path: "name",    
+          fuzzy: { maxEdits: 2 } 
+        }
+      }},
+      {
+        $addFields: { score: { $meta: "textScore" }} 
+      },
+      {
+        $sort: { score: -1, _id: 1 }
+      },
+      { $skip: skip },
+      { $limit: limit },   
+  ])
+
+  const totalCandidates = await Candidates.aggregate([
+    {
+      $search: {
+        index: "candidates_search_index",
+        text: {
+          query: data.searchTerm,
+          path: "name",
+          fuzzy: { maxEdits: 2 },
+        },
+      },
+    },
+    { $count: "total" }, // Count total matching documents
+  ]);
+
+  // const candidates = await Candidates.find({
+  //    name :{ $regex:data.searchTerm, $options:"i"}
+  // })
+
+  const totalResults = totalCandidates.length > 0 ? totalCandidates[0].total : 0;
+  
+  
+
+  res.status(200).json({
+    success:true,
+    searchedCandidate:candidates,
+    totalPages :Math.ceil(totalResults/limit),
+    currentPage:page
+  })
+
+  }
+  catch(err){
+    console.log(err)
+    res.status(500).json({
+      success:false,
+      error:err
+    })
+
+  }
+
+ 
+})
 
 // FETCHING ALL APPLIED JOBS BY A CANDIDATE
 router.get(

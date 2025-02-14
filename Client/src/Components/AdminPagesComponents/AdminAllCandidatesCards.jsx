@@ -10,17 +10,28 @@ import ReactPaginate from "react-paginate";
 const AdminAllCandidatesCards = () => {
   const navigate = useNavigate();
   const [latestCandidates, setLatestCandidates] = useState([]);
-  let [loading, setLoading] = useState(true);
+  let   [loading, setLoading] = useState(true);
   const { decodedToken } = useJwt(localStorage.getItem("token"));
   const [searchQuery, setSearchQuery] = useState('');
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
   const [pageNumber, setPageNumber] = useState(0);
   const jobsPerPage = 20;
+  const [totalPages,setTotalPages] = useState(null)
+  const [totalPagesForSearcherd,setTotalPagesForSearched] = useState(null)
+  const [searchedCandidatePageNumber,setSearchedCandidatePageNumber] = useState(0)
 
+  
+
+  
 
   const changePage = ({ selected }) => {
-    setPageNumber(selected);
+    if(!searchQuery){
+      setPageNumber(selected);
+    }
+    if(searchQuery){
+      setSearchedCandidatePageNumber(selected);
+    }
   };
 
   const override = {
@@ -68,54 +79,129 @@ const AdminAllCandidatesCards = () => {
 
 
   useEffect(() => {
-    const fetchAllJobs = async () => {
-      try {
-        setLoading(true)
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-          // Token not found in local storage, handle the error or redirect to the login page
-          console.error("No token found");
-          navigate("/admin-login");
-          return;
-        }
-
-        const query = new URLSearchParams();
-
-        query.append("page", pageNumber)
-        query.append("limit", jobsPerPage)
-
-        // Fetch associates data from the backend
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/admin-confi/all-candidates/?${query.toString()}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
+    
+    if(searchQuery==""){
+      const fetchAllJobs = async () => {
+        try {
+          setLoading(true)
+          const token = localStorage.getItem("token");
+  
+          if (!token) {
+            // Token not found in local storage, handle the error or redirect to the login page
+            
+            navigate("/admin-login");
+            return;
           }
-        );
-        if (response.status == 200) {
-
-
-          console.log("candidate Data",response.data)
-           
-          setLatestCandidates(response.data);
-          
+  
+          const query = new URLSearchParams();
+  
+          query.append("page", pageNumber)
+          query.append("limit", jobsPerPage)
+  
+          // Fetch associates data from the backend
+          const response = await axios.get(
+            `${import.meta.env.VITE_BASE_URL}/admin-confi/all-candidates/?${query.toString()}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            }
+          );
+          if (response.status == 200) {
+  
+  
+            
+             
+            setLatestCandidates(response.data.allCandidates);
+            setTotalPages(response.data.totalPages)
+            
+          }
+        } catch (error) {
+          console.error("Error fetching associates:", error);
+          // Handle error and show appropriate message
         }
-      } catch (error) {
-        console.error("Error fetching associates:", error);
-        // Handle error and show appropriate message
+        finally{
+          setLoading(false)
+        }
+      };
+  
+      fetchAllJobs();
+    }
+
+   
+  }, [pageNumber,searchQuery]);
+ 
+
+
+
+  function useDebounce(query,delay){
+      const [debouncedQuery, setDebouncedQuery] = useState(query);
+      
+      useEffect(()=>{
+        const handler = setTimeout(()=>{
+          setDebouncedQuery(query)
+        },delay);                                                       
+        return ()=>clearTimeout(handler);
+      },[query,delay])
+      
+      return debouncedQuery;
+       
+  }
+
+  const debouncedQuery = useDebounce(searchQuery,500);
+  
+  useEffect(() => {
+    if (debouncedQuery) { 
+          try{
+               setLoading(true)
+                const searchCall = async()=>{
+
+                  const token = localStorage.getItem("token");
+               
+                  if (!token) {
+                    console.error("No token found");
+                    navigate("/admin-login");
+                    return;
+                  }
+
+                const query = new URLSearchParams()
+
+                query.append("searchTerm", searchQuery);
+                query.append("page",searchedCandidatePageNumber)
+                query.append("limit",6)
+              
+                const response = await axios.get(
+                  `${import.meta.env.VITE_BASE_URL}/admin-confi/single-candidate?${query.toString()}`,
+                  {
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                    },
+                  }
+                );
+               
+                 
+                if(response.data.success==true){
+                  setTotalPagesForSearched(response.data.totalPages)
+                  setLatestCandidates(response.data.searchedCandidate)
+                  
+                }
+
+
+            }
+
+        searchCall();
+      }
+      catch(err){
+
       }
       finally{
         setLoading(false)
       }
-    };
 
-    fetchAllJobs();
-  }, [pageNumber]);
+    
 
-
-  
+    }
+  }, [debouncedQuery,searchedCandidatePageNumber]);
 
 
   // Handle search input change
@@ -147,8 +233,6 @@ const AdminAllCandidatesCards = () => {
         const link = document.createElement('a');
         link.href = URL.createObjectURL(response.data);
         link.download = 'candidates.xlsx';
-
-
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -166,6 +250,7 @@ const AdminAllCandidatesCards = () => {
 
 
   }
+
 
 
   return (
@@ -225,7 +310,7 @@ const AdminAllCandidatesCards = () => {
               />
             </div> :
             <div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-3">
-              {latestCandidates?.allCandidates?.map((latestCandidate) => (
+              {latestCandidates?.map((latestCandidate) => (
                 <div key={latestCandidate._id}>
                   <div
                     href="#"
@@ -249,10 +334,11 @@ const AdminAllCandidatesCards = () => {
               ))}
             </div>
         }
-         <ReactPaginate
+         {latestCandidates.length===0&&<div className="mx-auto w-fit">No candidates found</div>}
+         {latestCandidates.length!==0&&<ReactPaginate
             previousLabel={"Previous"}
             nextLabel={"Next"}
-            pageCount={latestCandidates?.totalPages}
+            pageCount={totalPagesForSearcherd|| totalPages ||1}
             onPageChange={changePage}
             containerClassName={"pagination flex justify-center mt-8  gap-0 md:gap-2 shadow-lg px-10 py-4 "}
             previousLinkClassName={"pagination__link border border-gray-300 bg-gray-400 text-black rounded-l px-2 py-1 md:px-4 md:py-2  "}
@@ -260,7 +346,7 @@ const AdminAllCandidatesCards = () => {
             disabledClassName={"pagination__link--disabled opacity-50"}
             activeClassName={"pagination__link--active bg-blue-500 text-white"}
             pageLinkClassName={"pagination__link border border-gray-300  px-1 py-1 md:px-3 md:py-1"}
-          />
+          />}
       </div>
     </div>
   );
