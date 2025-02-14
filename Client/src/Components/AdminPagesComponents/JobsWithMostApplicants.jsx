@@ -32,26 +32,20 @@ const JobsWithMostApplicants = () => {
           navigate("/admin-login");
           return;
         }
-
         // Fetch associates data from the backend
         const response = await axios.get(
           `${import.meta.env.VITE_BASE_URL}/admin-confi/jobs-high`
-        );
-        ;
-        const all = response.data;
-        const filteredJobs = all.filter(job => job.jobStatus === "true");
-        const latest = filteredJobs;
-        // ;
-        setLatestJobs(latest);
-        setLoading(false)
-
+        );        
+        setLatestJobs(response.data);
 
       } catch (error) {
-        console.error("Error fetching jobs:", error);
-        // Handle error and show appropriate message
+            console.error("Error fetching jobs:", error);
+       
+      }
+      finally{
+            setLoading(false)
       }
     };
-
     fetchJobsHighApplicants();
   }, []);
 
@@ -74,8 +68,8 @@ const JobsWithMostApplicants = () => {
             </div> :
 
             <div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
-              {latestJobs.map((latestJob) => (
-                <div>
+              {latestJobs.map((latestJob,index) => (
+                <div key={index}>
                   <div
                     href="#"
                     className="flex flex-col justify-between h-64 overflow-hidden rounded-lg bg-white shadow-lg shadow-2xl-gray-200 p-4 shadow-lg hover:shadow-2xl "

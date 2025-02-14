@@ -28,7 +28,7 @@ const NewlyAddedCandidates = () => {
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/admin-confi/all-candidates`,
+          `${import.meta.env.VITE_BASE_URL}/admin-confi//newly-added-candidates`,
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -36,14 +36,12 @@ const NewlyAddedCandidates = () => {
           }
         );
         ;
-        const all = response.data;
-        const latest = all.slice(-7);
-        // 
-        setlatestCandidates(latest.reverse());
+       
+        setlatestCandidates(response.data.newlyAddedCandidates);
         ;
       } catch (error) {
         console.error("Error fetching jobs:", error);
-        // Handle error and show appropriate message
+       
       }
     };
 
@@ -58,8 +56,8 @@ const NewlyAddedCandidates = () => {
         </h2>
 
         <div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
-          {latestCandidates.map((latestCandidate) => (
-            <div>
+          {latestCandidates?.map((latestCandidate,index) => (
+            <div key={index}>
               <div
                 href="#"
                 className="flex flex-col justify-between h-48 overflow-hidden rounded-lg bg-white shadow-lg shadow-2xl-gray-200 p-4 shadow-lg hover:shadow-2xl "

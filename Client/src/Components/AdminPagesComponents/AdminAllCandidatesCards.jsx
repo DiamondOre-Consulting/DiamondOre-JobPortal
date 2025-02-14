@@ -81,6 +81,7 @@ const AdminAllCandidatesCards = () => {
   useEffect(() => {
     
     if(searchQuery==""){
+      console.log("enter")
       const fetchAllJobs = async () => {
         try {
           setLoading(true)
@@ -109,7 +110,8 @@ const AdminAllCandidatesCards = () => {
           );
           if (response.status == 200) {
   
-  
+            
+            console.log(response.data)
             
              
             setLatestCandidates(response.data.allCandidates);
@@ -171,7 +173,7 @@ const AdminAllCandidatesCards = () => {
                 query.append("limit",6)
               
                 const response = await axios.get(
-                  `${import.meta.env.VITE_BASE_URL}/admin-confi/single-candidate?${query.toString()}`,
+                  `${import.meta.env.VITE_BASE_URL}/admin-confi/search-candidate?${query.toString()}`,
                   {
                     headers: {
                       Authorization: `Bearer ${token}`,

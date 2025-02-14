@@ -886,10 +886,7 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
 });
 
 // STATUS OF A JOB
-router.get(
-  "/status/:id1/:id2",
-  CandidateAuthenticateToken,
-  async (req, res) => {
+router.get("/status/:id1/:id2",CandidateAuthenticateToken, async (req, res) => {
     try {
       const { userId, email } = req.user;
       const { id1, id2 } = req.params;

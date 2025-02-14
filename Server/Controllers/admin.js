@@ -416,10 +416,20 @@ router.put("/remove-job/:id", AdminAuthenticateToken, async (req, res) => {
 router.get("/jobs-high", async (req, res) => {
   try {
     // Find the 6 jobs with the highest number of applicants
-    const topJobs = await Jobs.find({})
-      .sort({ appliedApplicants: -1 }) // Sort in descending order based on totalapplicants
-      .limit(8); // Limit the result to 6 jobs
-
+    const topJobs = await Jobs.aggregate([
+      {
+        $addFields: {
+          applicantsCount: { $size: "$appliedApplicants" } 
+        }
+      },
+      {
+        $sort: { applicantsCount: -1 } 
+      },
+      {
+        $limit: 6 
+      }
+    ]);
+    
     return res.status(200).json(topJobs);
   } catch (error) {
     console.log(error);
@@ -452,7 +462,8 @@ router.get("/all-candidates", AdminAuthenticateToken, async (req, res) => {
 
     const skip = page * limit;
     const totalPages = await Candidates.countDocuments();
-    const allCandidates = await Candidates.find().skip(skip).limit(limit);
+    const allCandidates = await Candidates.find().skip(skip).limit(limit).select({password:0});
+
   
 
     return res.status(200).json({
@@ -497,7 +508,7 @@ const singleCandidateSchema= z.object({
   limit:z.coerce.number().optional()
 })
 
-router.get("/single-candidate"  , AdminAuthenticateToken , async(req,res)=>{
+router.get("/search-candidate", AdminAuthenticateToken , async(req,res)=>{
   
   try{
     const {data,success} = singleCandidateSchema.safeParse(req.query)
@@ -538,6 +549,11 @@ router.get("/single-candidate"  , AdminAuthenticateToken , async(req,res)=>{
       },
       { $skip: skip },
       { $limit: limit },   
+      {
+        $project: {
+          password: 0 
+        }
+      }
   ])
 
   const totalCandidates = await Candidates.aggregate([
@@ -551,7 +567,8 @@ router.get("/single-candidate"  , AdminAuthenticateToken , async(req,res)=>{
         },
       },
     },
-    { $count: "total" }, // Count total matching documents
+    { $count: "total" },
+     
   ]);
 
   // const candidates = await Candidates.find({
@@ -582,11 +599,27 @@ router.get("/single-candidate"  , AdminAuthenticateToken , async(req,res)=>{
  
 })
 
+
+router.get("/newly-added-candidates", AdminAuthenticateToken , async(req,res)=>{ 
+      try{
+          const limit = 10;
+          const newlyAddedCandidates = await Candidates.find().sort({createdAt: -1}).limit(limit).select({password:0})        
+          res.status(200).json({
+            newlyAddedCandidates:newlyAddedCandidates
+          })      
+      }
+      catch(err){
+         console.log(err)
+         res.status(500).json({
+          success:false,
+          error:err
+         })
+      }
+
+})
+
 // FETCHING ALL APPLIED JOBS BY A CANDIDATE
-router.get(
-  "/all-applied-jobs/:id",
-  AdminAuthenticateToken,
-  async (req, res) => {
+router.get("/all-applied-jobs/:id",AdminAuthenticateToken,async (req, res) => {
     try {
       // Get the user's email from the decoded token
       const { email } = req.user;
