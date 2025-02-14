@@ -52,9 +52,8 @@ const NewlyAddedCandidates = () => {
     <div className="bg-white py-6 sm:py-8 lg:py-20">
       <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
         <h2 className="mb-8 text-center text-2xl font-bold text-gray-800 md:mb-12 lg:text-3xl">
-          Newly Added Candidates
+            Newly Added Candidates
         </h2>
-
         <div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
           {latestCandidates?.map((latestCandidate,index) => (
             <div key={index}>

@@ -18,12 +18,12 @@ const AdminAllCandidatesCards = () => {
   const [pageNumber, setPageNumber] = useState(0);
   const jobsPerPage = 20;
   const [totalPages,setTotalPages] = useState(null)
-  const [totalPagesForSearcherd,setTotalPagesForSearched] = useState(null)
+  const [totalPagesForSearched,setTotalPagesForSearched] = useState(null)
   const [searchedCandidatePageNumber,setSearchedCandidatePageNumber] = useState(0)
 
   
-
-  
+  console.log(totalPages)
+  console.log(totalPagesForSearched)
 
   const changePage = ({ selected }) => {
     if(!searchQuery){
@@ -71,13 +71,6 @@ const AdminAllCandidatesCards = () => {
 
 
 
-
-
-
-
-
-
-
   useEffect(() => {
     
     if(searchQuery==""){
@@ -113,7 +106,7 @@ const AdminAllCandidatesCards = () => {
             
             console.log(response.data)
             
-             
+            setTotalPagesForSearched(null)
             setLatestCandidates(response.data.allCandidates);
             setTotalPages(response.data.totalPages)
             
@@ -184,6 +177,7 @@ const AdminAllCandidatesCards = () => {
                  
                 if(response.data.success==true){
                   setTotalPagesForSearched(response.data.totalPages)
+                  setTotalPages(null)
                   setLatestCandidates(response.data.searchedCandidate)
                   
                 }
@@ -340,7 +334,7 @@ const AdminAllCandidatesCards = () => {
          {latestCandidates.length!==0&&<ReactPaginate
             previousLabel={"Previous"}
             nextLabel={"Next"}
-            pageCount={totalPagesForSearcherd|| totalPages ||1}
+            pageCount={totalPagesForSearched|| totalPages}
             onPageChange={changePage}
             containerClassName={"pagination flex justify-center mt-8  gap-0 md:gap-2 shadow-lg px-10 py-4 "}
             previousLinkClassName={"pagination__link border border-gray-300 bg-gray-400 text-black rounded-l px-2 py-1 md:px-4 md:py-2  "}
