@@ -243,10 +243,9 @@ router.post("/upload-job-excel", AdminAuthenticateToken, async (req, res) => {
         DateAdded,
         MinExperience,
         MaxSalary
-      } = job;
-
-      const [day, month, year] = DateAdded.split("/");
-      const formattedDateAdded = new Date(`${year}-${month}-${day}`);
+      } = job;          
+          
+      const formattedDateAdded = new Date(DateAdded);
       const existingJob = await Jobs.findOne({
         JobTitle: JobTitle,
         City: City,
@@ -261,13 +260,13 @@ router.post("/upload-job-excel", AdminAuthenticateToken, async (req, res) => {
       });
 
 
-      if (existingJob) {
-        if (existingJob.JobStatus !== (JobStatus === "Active")) {
+      if (existingJob){
+        if(existingJob.JobStatus !== (JobStatus === "Active")){
           existingJob.JobStatus = JobStatus === "Active";
           await existingJob.save();
           jobsUpdated.push(existingJob);
         }
-      } else {
+      }else{
         const newJob = new Jobs({
           ...job,
           JobStatus: JobStatus === "Active",
@@ -287,6 +286,7 @@ router.post("/upload-job-excel", AdminAuthenticateToken, async (req, res) => {
       message: "Jobs processed successfully & sent emails",
     });
   } catch (err) {
+    console.log(err)
     return res
       .status(500)
       .json({ message: "Something went wrong!!!", error: err.message });
@@ -309,14 +309,14 @@ router.post("/add-job", AdminAuthenticateToken, async (req, res) => {
       Vacancies,
       Zone,
       City,
-      State,
+      State, 
       MinExperience,
       MaxSalary,
     } = req.body;
-    console.log(1)
-    const { email } = req.user;
+    
+    const { email } = req.user;    
 
-    // Find the user in the database
+    // Find the user in the database                                   
     const user = await Admin.findOne({ email });
     if (!user) {
       return res

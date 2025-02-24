@@ -180,8 +180,6 @@ const AdminAllCandidatesCards = () => {
                   setLatestCandidates(response.data.searchedCandidate)
                   
                 }
-
-
             }
 
         searchCall();
@@ -224,7 +222,6 @@ const AdminAllCandidatesCards = () => {
 
 
       if (response.data instanceof Blob) {
-
         const link = document.createElement('a');
         link.href = URL.createObjectURL(response.data);
         link.download = 'candidates.xlsx';
@@ -233,8 +230,7 @@ const AdminAllCandidatesCards = () => {
         document.body.removeChild(link);
       } else {
         console.error('Expected a Blob, but got ', response.data);
-      }
-
+      }                  
     }
     catch (error) {
 

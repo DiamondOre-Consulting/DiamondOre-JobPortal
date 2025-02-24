@@ -5,9 +5,8 @@ const dsrSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  email: {
-    type: String,
-    required: true
+  email :{
+    type: String,  
   },
   phone: {
     type: String,
@@ -15,11 +14,10 @@ const dsrSchema = new mongoose.Schema({
   },
   currentCompany: {
     type: String,
-    required: true
   },
   currentChannel: {
     type: String,
-    required: true
+
   },
   currentCTC: {
     type: Number,
@@ -38,7 +36,7 @@ const dsrSchema = new mongoose.Schema({
     required: true
   },
   currentDate: {
-    type: String,
+    type: Date,
     required: true
   }
 });

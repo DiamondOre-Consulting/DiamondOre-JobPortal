@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AdminNav from "../../Components/AdminPagesComponents/AdminNav";
 import axios from "axios";
 import { useJwt } from "react-jwt";
 import { useNavigate } from "react-router-dom";
 import AdminFooter from "../../Components/AdminPagesComponents/AdminFooter";
 import { Select } from "@mui/material";
+
+
 
 const Prompt = () => {
   const [sheet, setSheet] = useState(null);
@@ -15,6 +17,8 @@ const Prompt = () => {
   const [profile, setProfile] = useState(null);
   const [error, setError] = useState("");
   const [sendbulkjobspopup, setSendBulkJobsPopup] = useState(false);
+  const fileInputRef = useRef(null);
+  
 
   const { decodedToken } = useJwt(localStorage.getItem("token"));
   const navigate = useNavigate();
@@ -34,6 +38,9 @@ const Prompt = () => {
 
   const handleUploadsheet = async (e) => {
     e.preventDefault();
+    if(!sheet){
+        alert("File not selected")
+    }
     try {
       setShowLoader(true);
       const formData = new FormData();
@@ -45,33 +52,41 @@ const Prompt = () => {
       );
 
       if (response.status === 200) {
-        setsheeturl(response.data); // Assuming the response contains a URL
-      } else {
+        setsheeturl(response.data); 
+      }else {
         console.error("Failed to upload file:", response.data);
       }
-    } catch (error) {
+    }catch (error) {
       console.error("Error uploading file:", error);
-    } finally {
+    }finally {
       setShowLoader(false);
     }
   };
-
+     
   const handlesubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-dsr-excel`,
         { url: sheeturl }
       );
 
-      if (response.status === 200) {
+      if (response.status === 200) {        
+        setsheeturl("");
+        setSheet(null); 
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
         alert("DSR added successfully");
-        setsheeturl(null); // Reset the sheet URL after successful submission
       } else {
         console.error("Failed to submit DSR:", response.data);
       }
     } catch (error) {
       console.error("Error submitting DSR:", error);
+    }
+    finally{
+      setLoading(false);
     }
   };
 
@@ -108,58 +123,35 @@ const Prompt = () => {
     }
   };
 
-  // const handlesendbulkjobs = async (e) => {
-  //     e.preventDefault();
-  //     try {
 
-  //         const response = await axios.get(
-  //             `${import.meta.env.VITE_BASE_URL}/admin-confi/find-bulk-jobs`
-  //         );
-  //         if (response.status === 200) {
-  //             console.log(response.data)
-  //             alert("email has been Sent successfully")
-  //         }
-
-  //     } catch (error) {
-  //             console.log(error)
-  //         if (error.response) {
-  //             const status = error.response.status;
-  //             if (status === 404) {
-  //                 alert('No Candidate Found')
-
-  //             }
-  //         }
-
-  //     }
-  // }
-
-  const [recruiterName, setRecruiterName] = useState("");
+  // const [recruiterName, setRecruiterName] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [location, setLocation] = useState("");
   const [ctcStart, setCtcStart] = useState("");
   const [ctcEnd, setCtcEnd] = useState("");
-
   const [loading, setLoading] = useState(false);
+  const [ recipientEmail ,setRecipientEmail] = useState("")
 
-  const formatDate = (date) => {
-    if (!date) return "";
-    const [year, month, day] = date.split("-");
-    return `${day}/${month}/${year}`;
-  };
+
+
 
   const handlesendbulkjobs = async (e) => {
-    // console.log(toDate, fromDate);
+    
     e.preventDefault();
+    if( !recipientEmail || !fromDate || !toDate || !location || !ctcStart || !ctcEnd){
+      alert("Please fill al the fields")
+      return 
+    }
     setLoading(true);
-    const formattedFromDate = formatDate(fromDate);
-    const formattedToDate = formatDate(toDate);
+    const formattedFromDate = fromDate;
+    const formattedToDate = toDate;
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/admin-confi/find-bulk-jobs`,
         {
           params: {
-            recruiterName,
+            recipientEmail,
             fromDate: formattedFromDate,
             toDate: formattedToDate,
             location,
@@ -170,10 +162,15 @@ const Prompt = () => {
       );
 
       if (response.status === 200) {
-        // console.log(response.data);
         setLoading(false);
         alert("Emails have been sent successfully!");
         setSendBulkJobsPopup(false)
+        setFromDate("")
+        setToDate("")
+        setLocation("")
+        setCtcStart("")
+        setCtcEnd("")
+        setRecipientEmail("")
       }
     } catch (error) {
       console.error(error);
@@ -193,15 +190,16 @@ const Prompt = () => {
 
   //   getting the DSR data
   const [dsrdata, setDSRData] = useState([]);
+  const [locationData,setLocationData] = useState([])
   useEffect(() => {
     const getDSR = async () => {
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_BASE_URL}/admin-confi/get-dsr-data`
         );
-        if (response.status === 200) {
-          setDSRData(response.data);
-          //   console.log("DSR DATA",dsrdata);
+        if (response.status === 200){
+          setDSRData(response.data.recruiters);
+          setLocationData(response.data.cities)
         }
       } catch (error) {
         console.log(error);
@@ -215,6 +213,7 @@ const Prompt = () => {
     setRecruiterName(e.target.value);
   };
 
+  
   return (
     <>
       {/* <AdminNav /> */}
@@ -231,6 +230,7 @@ const Prompt = () => {
 
       <div className="md:flex justify-center align-center  items-center mt-10 px-4">
         <input
+        ref={fileInputRef}
           type="file"
           id="myFile"
           name="myFile"
@@ -271,11 +271,32 @@ const Prompt = () => {
         {sheeturl && (
           <div className="flex justify-center align-center items-center ml-2">
             <button
+              disabled={loading}
               type="submit"
               className="bg-green-500 text-white p-2 px-12 flex items-center justify-center rounded-md"
               onClick={handlesubmit}
             >
-              Submit DSR
+              { loading ? (
+                     <svg
+                     aria-hidden="true"
+                     className="inline w-4 h-4 text-gray-200 animate-spin fill-blue-600"
+                     viewBox="0 0 100 101"
+                     fill="none"
+                     xmlns="http://www.w3.org/2000/svg"
+                   >
+                     <path
+                       d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                       fill="currentColor"
+                     />
+                     <path
+                       d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                       fill="currentFill"
+                     />
+                   </svg>
+              ) : (
+                <span className = "relative z-10" > Submit DSR</span>
+              )}
+            
             </button>
           </div>
         )}
@@ -384,26 +405,34 @@ const Prompt = () => {
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
             <h2 className="text-xl font-semibold mb-4">Bulk Jobs Form</h2>
             <div className="space-y-4">
-              <div>
+              {/* <div>
                 <label className="block text-sm font-medium">
                   Recruiter Name
                 </label>
-                <Select
-                  className="w-full"
-                  value={recruiterName}
-                  onClick={handleSelect}
-                >
-                  {dsrdata?.map((data, index) => (
-                    <option
-                      className="p-1 cursor-pointer border "
-                      key={index}
-                      value={data}
-                    >
-                      {data}
-                    </option>
-                  ))}
-                </Select>
-              </div>
+                <select
+                    className="w-full min-w-[12rem] p-2 rounded-md"
+                    defaultValue=""
+                    onChange={handleSelect}
+                  >
+                    <option value="">Select Value</option>
+                    {dsrdata?.map((data, index) => (
+                      <option key={index} value={data}>
+                        {data}
+                      </option>
+                    ))}
+                </select>
+
+              </div> */}
+
+                <div className=" font-medium space-y-2">
+                  <label className="block" htmlFor="recipientEmail">Recipient's email</label>
+                  <input 
+                   className="rounded-md block w-full"
+                   type="email" id="recipientEmail" 
+                   name="recipientEmail" 
+                   onChange={(e)=>{setRecipientEmail(e.target.value)}}
+                   />
+                </div>
 
               <div className="flex justify-between">
                 <div>
@@ -428,13 +457,21 @@ const Prompt = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium">Location</label>
-                <input
-                  type="text"
-                  className="border p-2 rounded-md w-full"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                />
+              <select
+                    className="w-full min-w-[12rem] p-2 rounded-md"
+                    defaultValue=""
+                    onChange={(e)=>{
+                      console.log(e.target.value)
+                      setLocation(e.target.value)
+                    }}
+                  >
+                    <option value="">Select Value</option>
+                    {locationData?.map((data, index) => (
+                      <option key={index} value={data}>
+                        {data}
+                      </option>
+                    ))}
+                </select>
               </div>
 
               <div className="flex gap-x-2 ">
@@ -473,7 +510,7 @@ const Prompt = () => {
                 disabled={loading}
               >
                 {loading ? (
-                  <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg aria-hidden="true" className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
                   <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
               </svg>

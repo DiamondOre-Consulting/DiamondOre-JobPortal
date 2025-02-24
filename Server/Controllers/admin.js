@@ -39,12 +39,10 @@ import GoalSheet from "../Models/GoalSheet.js";
 import AccountHandling from "../Models/AccountHandling.js";
 import KPI from "../Models/KPI.js";
 import {z} from 'zod'
-
+import upload from "../Middlewares/multer.middleware.js";
 dotenv.config();
 
 const secretKey = process.env.JWT_SECRET_ADMIN;
-
-
 
 const router = express.Router();
 
@@ -647,10 +645,7 @@ router.get("/all-applied-jobs/:id",AdminAuthenticateToken,async (req, res) => {
 );
 
 // FETCHING ALL CANDIDATES APPLIED FOR A PARTICULAR JOB
-router.get(
-  "/applied-candidates/:id",
-  AdminAuthenticateToken,
-  async (req, res) => {
+router.get("/applied-candidates/:id",AdminAuthenticateToken,async (req, res) => {
     try {
       const { id } = req.params;
       const { email } = req.user;
@@ -677,10 +672,7 @@ router.get(
 );
 
 // GET STATUS OF A CANDIDATE FOR A PARTICULAR JOB
-router.get(
-  "/get-status/:id1/:id2",
-  AdminAuthenticateToken,
-  async (req, res) => {
+router.get("/get-status/:id1/:id2",AdminAuthenticateToken, async (req, res) => {
     try {
       const { id1, id2 } = req.params;
       const { email } = req.user;
@@ -702,10 +694,7 @@ router.get(
 );
 
 // UPDATE CV SHORTLISTED
-router.put(
-  "/update-cv-shortlisted/:id1/:id2",
-  AdminAuthenticateToken,
-  async (req, res) => {
+router.put("/update-cv-shortlisted/:id1/:id2", AdminAuthenticateToken, async (req, res) => {
     try {
       const { id1, id2 } = req.params;
       console.log(id1, id2);
@@ -802,10 +791,7 @@ router.put(
 );
 
 // UPDATE Screening
-router.put(
-  "/update-screening/:id1/:id2",
-  AdminAuthenticateToken,
-  async (req, res) => {
+router.put("/update-screening/:id1/:id2",AdminAuthenticateToken,async (req, res) => {
     try {
       const { email } = req.user;
       const { id1, id2 } = req.params;
@@ -893,10 +879,7 @@ router.put(
 );
 
 // UPDATE Interview Scheduled
-router.put(
-  "/update-interviewscheduled/:id1/:id2",
-  AdminAuthenticateToken,
-  async (req, res) => {
+router.put("/update-interviewscheduled/:id1/:id2",AdminAuthenticateToken,async (req, res) => {
     try {
       const { email } = req.user;
       const { id1, id2 } = req.params;
@@ -992,10 +975,7 @@ router.put(
 );
 
 // UPDATE Interviewed
-router.put(
-  "/update-interviewed/:id1/:id2",
-  AdminAuthenticateToken,
-  async (req, res) => {
+router.put("/update-interviewed/:id1/:id2",AdminAuthenticateToken,async (req, res) => {
     try {
       const { email } = req.user;
       const { id1, id2 } = req.params;
@@ -1040,10 +1020,7 @@ router.put(
 );
 
 // UPDATE Shortlisted
-router.put(
-  "/update-shortlisted/:id1/:id2",
-  AdminAuthenticateToken,
-  async (req, res) => {
+router.put("/update-shortlisted/:id1/:id2",AdminAuthenticateToken,async (req, res) => {
     try {
       const { email } = req.user;
       const { id1, id2 } = req.params;
@@ -1134,10 +1111,7 @@ router.put(
 );
 
 // UPDATE Joined
-router.put(
-  "/update-joined/:id1/:id2",
-  AdminAuthenticateToken,
-  async (req, res) => {
+router.put("/update-joined/:id1/:id2",AdminAuthenticateToken,async (req, res) => {
     try {
       const { email } = req.user;
       const { id1, id2 } = req.params;
@@ -1522,10 +1496,14 @@ const s3ClientResumes = new S3Client({
   region: "global",
 });
 
-router.post("/upload-dsr", async (req, res) => {
+router.post("/upload-dsr",  async(req, res) => {
   try {
-    const file = req.files && req.files.myFile; // Change 'myFile' to match the key name in Postman
+    
+    // console.log(req.file)
+    // console.log(req.files)
 
+    const file = req.files && req.files.myFile; // Change 'myFile' to match the key name in Postman
+    console.log("adf",file)
     if (!file) {
       return res.status(400).send("No file uploaded");
     }
@@ -1593,111 +1571,71 @@ const downloadFile = async (url, outputFilePath) => {
   });
 };
 
-// router.post("/upload-dsr-excel", async (req, res) => {
-//   const { url } = req.body;
-//   const outputFilePath = path.join(__dirname, "dsrFile.xlsx");
-//   try {
-//     console.log(url);
-//     await downloadFile(url, outputFilePath);
-//     node_xj(
-//       {
-//         input: outputFilePath,
-//         output: null,
-//         lowerCaseHeaders: true,
-//         allowEmptyKey: false,
-//       },
-//       async (err, result) => {
-//         if (err) {
-//           return res
-//             .status(500)
-//             .json({ error: "Error converting Excel to JSON", message: err.message });
-//         }
-//         console.log(result);
 
-//         // Assuming the result is an array of job objects
-//         const dsrAdd = await DSR.insertMany(result);
-//         console.log(dsrAdd);
-//         if (dsrAdd) {
-//           return res.status(200).json({ message: "DSR Added successfully!!!" });
-//         } else {
-//           return res.status(500).json({ message: "Something went wrong!!", err });
-//         }
-//       }
-//     );
-//   } catch (err) {
-//     return res.status(400).json({ message: err.message });
-//   } finally {
-//     // Clean up: Delete the temporary file
-//     fs.unlinkSync(outputFilePath);
-//   }
-// });
 
 router.post("/upload-dsr-excel", async (req, res) => {
   const { url } = req.body;
-  const outputFilePath = path.join(__dirname, "dsrFile.xlsx");
-  let errorArray = []; // To store errors
+  if (!url) return res.status(400).json({ error: "No URL provided"});
 
   try {
-    console.log(url);
-    await downloadFile(url, outputFilePath);
 
-    node_xj(
-      {
-        input: outputFilePath,
-        output: null,
-        lowerCaseHeaders: true,
-        allowEmptyKey: false,
-      },
-      async (err, result) => {
-        if (err) {
-          return res.status(500).json({
-            error: "Error converting Excel to JSON",
-            message: err.message,
-          });
-        }
+    const response = await axios({
+      url,
+      responseType: "arraybuffer",
+    });
+    
+    
+    const workbook = xlsx.read(response.data, { type: "buffer" });
+    const sheetName = workbook.SheetNames[0]; 
+    const result = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
-        console.log(result);
-
-        // Iterate through each entry and try to insert
-        const insertionPromises = result.map(async (entry, index) => {
-          try {
-            // Attempt to insert the entry
-            const dsrAdd = await DSR.create(entry);
-            return dsrAdd;
-          } catch (insertError) {
-            // Catch any insertion errors, push the error and entry details to errorArray
-            errorArray.push({
-              entry,
-              error: insertError.message,
-              index,
-            });
-            console.error(
-              `Error adding entry at index ${index}: ${insertError.message}`
-            );
-          }
-        });
-
-        // Wait for all insertions to complete
-        await Promise.all(insertionPromises);
-
-        if (errorArray.length > 0) {
-          // Send the error array via email to the admin
-          await sendErrorEmailToAdmin(errorArray);
-        }
-
-        return res.status(200).json({
-          message: "DSR upload process completed!",
-          errors: errorArray.length > 0 ? errorArray : null, // Return error details if any
-        });
-      }
-    );
-  } catch (err) {
-    return res.status(400).json({ message: err.message });
-  } finally {
-    if (fs.existsSync(outputFilePath)) {
-      fs.unlinkSync(outputFilePath);
+    if(!result.length){
+     return res.status(400).json({ error: "Empty file or invalid format" });
     }
+
+    let errorArray = [];
+    
+    const excelSerialToJSDate = (serial) => {
+      const excelEpoch = new Date(1899, 11, 30); 
+      return new Date(excelEpoch.getTime() + serial * 86400000);
+    };
+
+    const formattedData = result.map((entry) => {
+       
+      if (entry.currentDate && !isNaN(entry.currentDate)) {        
+        entry.currentDate = excelSerialToJSDate(entry.currentDate);    
+      }        
+      return entry;
+    });
+    
+    // console.log(formattedData)
+    // Bulk insert to reduce DB operations
+    try {
+
+      const bulkOps = [
+               {deleteMany : { filter : {} }},
+               ...formattedData.map((doc)=> ({insertOne : {document:doc}}))
+               
+      ]
+
+      await DSR.bulkWrite(bulkOps);
+    } catch (insertError) {
+      errorArray.push({ error: insertError.message });
+      console.error("Database insertion error:", insertError.message);
+    }
+
+    if (errorArray.length > 0) {
+      await sendErrorEmailToAdmin(errorArray);
+    }
+
+    return res.status(200).json({
+      message: "DSR upload process completed!",
+      errors: errorArray.length ? errorArray : null,
+    });
   }
+   catch (err) {
+    return res.status(400).json({ message: err.message });
+  } 
 });
 
 // Function to send error email to admin
@@ -1977,94 +1915,202 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
 
 router.get("/find-bulk-jobs", async (req, res) => {
   try {
-    const { recruiterName, fromDate, toDate, location, ctcStart, ctcEnd } =
-      req.query; // Taking input from query params
-    // console.log(1);
-    console.log(req.query);
+    const { recipientEmail, fromDate, toDate, location, ctcStart, ctcEnd } =
+      req.query; 
+   
     if (!fromDate || !toDate) {
       return res.status(400).send("Please provide fromDate and toDate");
     }
 
-    console.log(2);
-    // Convert fromDate and toDate into Date objects
-    const from = fromDate;
-    const to = toDate;
-    console.log("to", to);
+    const can = await DSR.find()
     
-    const query = {
-      currentDate: {
-        $gte: from,
-        $lte: to,
-      },
-    };
-
-    console.log("gd",query)
-
-
-    // if (recruiterName) {
-    //   query.recruiterName = recruiterName;
-    // }
-    
-    console.log(location)
-
-    if (location) {
-      query.currentLocation = location;
-    }
-    console.log(ctcStart)
-    console.log(ctcEnd)
-    if (ctcStart && ctcEnd){
-      query.currentCTC = {
-        $gte: parseFloat(ctcStart),
-        $lte: parseFloat(ctcEnd),
-      };
-    }
-
-    // console.log("query", query);
-     console.log("jhfd",query)
-    // Fetch candidates matching the criteria
-    const candidates = await DSR.find(query);
-
-    console.log("c",candidates)
-   
+    const candidates = await DSR.aggregate(
+      [
+        {
+          $match:{
+             currentLocation: location,
+             currentCTC: { 
+                           $gte: parseFloat(ctcStart), 
+                           $lte : parseFloat(ctcEnd)
+                         },
+             currentDate : {
+               $gte : new Date(fromDate),
+               $lte : new Date(toDate),
+             }            
+          }
+        }
+      ]
+    );
 
     if (!candidates.length) {
       return res.status(404).send("No candidates found");
     }
+    
 
+    // console.log(candidates)
+    
+
+    const citiesOfCandidates    = []
+    const channelsOfCandidates  = []
+    
+
+    candidates.forEach((candidate) => {      
+      citiesOfCandidates.push(candidate.currentLocation)
+      channelsOfCandidates.push(candidate.currentChannel)
+    })
+
+    const allJobs = await Jobs.find({
+      $or: [
+        { City: { $in: citiesOfCandidates } }, 
+        { State: { $in: citiesOfCandidates } }
+      ],
+      Channel: { $in: channelsOfCandidates } 
+    });
+
+    console.log(allJobs)
+ 
     const recommendations = [];
 
-    for (const candidate of candidates) {
-      const suitableJobs = await Jobs.find({
-        City: candidate.currentLocation,
-        Channel: candidate.currentChannel,
-        MaxSalary: {
-          $gt: candidate.currentCTC,
-          $lte: candidate.currentCTC * 1.5, // Not more than 50% of current CTC
-        },
+
+    for (const candidate of candidates){
+
+      const suitableJobs = allJobs.filter((job)=>{
+        return (
+             job.JobStatus == "true" &&
+             (job.City===candidate.currentLocation || job.State===candidate.currentLocation) &&
+             job.Channel === candidate.currentChannel &&
+             (job.MaxSalary >= candidate.currentCTC &&
+             job.MaxSalary <= candidate.currentCTC * 1.5)
+        )
       });
 
-      // console.log("suitable jobs", suitableJobs);
-
+      
+      
       recommendations.push({
         candidate: candidate,
         jobs: suitableJobs,
-      });
-
-      // console.log(recommendations);
-
-      if (suitableJobs.length > 0) {
-        const findRec = await RecruitersAndKAMs.findOne({
-          name: recruiterName,
-        });
-        const eMailIdRec = findRec.email;
-        await sendJobsToRecByEmail(eMailIdRec, candidate, suitableJobs);
-      }
+      });      
+    }
+    
+    console.log(recommendations.length)
+    if(recommendations.length==0){
+       res.status(200).json({
+        success:false,
+        message:'No jobs found for candidates of this region'
+       })
     }
 
-   
 
-    res.status(200).json(recommendations);
+    async function generateExcelFile(jobs){
+      const workbook = new Exceljs.Workbook()
+      const worksheet = workbook.addWorksheet('Jobs');
+
+      
+      worksheet.columns = [
+        { header: 'Candidate Name', key: 'candidateName', width: 30 },
+        { header: 'Candidate Phone no.', key: 'candidatePhoneNumber', width: 30 },
+        { header: 'Candidate Current CTC(LPA)', key: 'candidateCTC' , width:10},
+        { header: 'Company', key:'company', width: 25 },
+        { header: 'Job Title', key: 'title', width: 45 },
+        { header: 'City', key: 'city', width: 20 },
+        { header: 'Channel', key: 'channel', width: 20 },
+        { header: 'Job CTC(LPA)', key: 'jobCTC', width: 15 },
+        { header: 'Industry', key: 'industry', width:20},
+        { header: 'Zone' , key: 'zone' , width:15},
+        { header: 'State', key: 'state', width:15 }
+
+      ];
+
+      
+
+
+      jobs?.forEach((data)=>{
+
+           data?.jobs.forEach((job)=>{
+                worksheet.addRow({
+                  candidateName: data.candidate.candidateName,
+                  candidatePhoneNumber:data.candidate.phone,
+                  candidateCTC: data.candidate.currentCTC,
+                  company: job.Company,
+                  title: job.JobTitle,
+                  city: job.City,
+                  channel: job.Channel,
+                  jobCTC: job.MaxSalary,
+                  industry : job.Industry,
+                  zone: job.Zone,
+                  state: job.State
+                });
+           })
+
+      })
+
+
+      worksheet.eachRow((row, rowNumber) => {
+        row.eachCell((cell) => {
+          cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+        });
+      });
+
+
+      const filePath = path.join(__dirname, 'suitableJobs.xlsx');
+      console.log(filePath)
+      await workbook.xlsx.writeFile(filePath);
+      return filePath; 
+    }
+
+
+    async function sendEmailWithAttachment(recipient, filePath) {
+      const transporter = nodemailer.createTransport({
+        service: 'gmail', 
+        auth: {
+          user : "tech@diamondore.in",
+          pass : "zlnbcvnhzdddzrqn", 
+        },
+      });
+    
+      const mailOptions = {
+        from: 'tech@diamondore.in',
+        to: recipient,
+        subject: 'Suitable Jobs for Candidates',
+        text: 'Find attached the suitable jobs for candidates.',
+        attachments: [
+          {
+            filename: 'suitableJobs.xlsx',
+            path: filePath,
+            contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          },
+        ],
+      };
+
+
+      try {
+        await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully');
+      } catch (error) {
+        console.error('Error sending email:', error);
+      } finally {
+        fs.unlinkSync(filePath);
+      }
+     
+   }
+
+     
+    const recruiterMail = [];
+    
+
+                             
+    const filePath = await generateExcelFile(recommendations);
+    await sendEmailWithAttachment(recipientEmail, filePath);
+    
+
+    res.status(200).json({
+      success:true,
+      message:'E-Mail Sent successFully'
+    });
+
+
   } catch (error) {
+    console.log(error)
     res.status(500).send(error.message);
   }
 });
@@ -2073,12 +2119,27 @@ router.get("/find-bulk-jobs", async (req, res) => {
 
 router.get("/get-dsr-data", async (req, res) => {
   try {
-    const dsrData = await DSR.find({}, "recruiterName");
-    const uniqueRecruiters = [
-      ...new Set(dsrData.map((item) => item.recruiterName)),
-    ];
-    // console.log(uniqueRecruiters);
-    res.status(200).json(uniqueRecruiters);
+
+    const uniqueData = await DSR.aggregate([
+      {
+        $group: {
+          _id: null,
+          uniqueRecruiters: { $addToSet: "$recruiterName" },
+          uniqueCities: { $addToSet: "$currentLocation" }
+        }
+      }
+    ]);
+
+    if (uniqueData.length > 0) {
+      res.status(200).json({
+        recruiters: uniqueData[0].uniqueRecruiters,
+        cities: uniqueData[0].uniqueCities
+      });
+    } else {
+      res.status(200).json({ recruiters: [], cities: [] });
+    }
+
+
   } catch (error) {
     console.error("Error fetching DSR data:", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -2121,10 +2182,7 @@ router.post("/register-recruiter-kam", async (req, res) => {
 });
 
 // DELETE A REVIEW
-router.delete(
-  "/delete-review/:id",
-  AdminAuthenticateToken,
-  async (req, res) => {
+router.delete("/delete-review/:id", AdminAuthenticateToken, async (req, res) => {
     try {
       const { id } = req.params;
 
@@ -2141,7 +2199,6 @@ router.delete(
   }
 );
 
-// --------------------------------------------------------------------------------
 
 // EMPLOYEE SECTION
 
@@ -2199,10 +2256,7 @@ router.get("/all-employees/:id", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
-router.delete(
-  "/delete/employee/:id",
-  AdminAuthenticateToken,
-  async (req, res, next) => {
+router.delete("/delete/employee/:id",AdminAuthenticateToken,async (req, res, next) => {
     try {
       const { id } = req.params;
       console.log(id);
@@ -2220,10 +2274,7 @@ router.delete(
   }
 );
 
-router.put(
-  "/update-status/employee/:id",
-  AdminAuthenticateToken,
-  async (req, res, next) => {
+router.put("/update-status/employee/:id",AdminAuthenticateToken,async (req, res, next) => {
     try {
       const { id } = req.params;
       const { status } = req.body;
@@ -2285,10 +2336,7 @@ const SendMailWhenEditEmployee = async (email, updatedFields) => {
   }
 };
 
-router.put(
-  "/all-employees-edit/:id",
-  AdminAuthenticateToken,
-  async (req, res) => {
+router.put("/all-employees-edit/:id",AdminAuthenticateToken,async (req, res) => {
     // console.log("request-accepted")
     try {
       const { id } = req.params;
@@ -2502,10 +2550,7 @@ router.get("/leave-report/:id", AdminAuthenticateToken, async (req, res) => {
 });
 
 // GET PERFORMANCE REPORT OF AN EMPLOYEE
-router.get(
-  "/performance-report/:id",
-  AdminAuthenticateToken,
-  async (req, res) => {
+router.get("/performance-report/:id",AdminAuthenticateToken,async (req, res) => {
     try {
       const { id } = req.params;
       const { email } = req.user;
@@ -2533,10 +2578,7 @@ router.get(
 );
 
 // CREATE A GOAL SHEET OF AN EMPLOYEE
-router.post(
-  "/create-goalsheet/:id",
-  AdminAuthenticateToken,
-  async (req, res) => {
+router.post("/create-goalsheet/:id",AdminAuthenticateToken,async (req, res) => {
     try {
       const { id } = req.params;
       const { year } = req.body;
@@ -3071,10 +3113,7 @@ router.put("/edit-goalSheet", async (req, res) => {
 });
 
 // GET ALL THE DUPLICATE PHONE NUMBER REQUESTS
-router.get(
-  "/duplicate-phone-requests",
-  AdminAuthenticateToken,
-  async (req, res) => {
+router.get("/duplicate-phone-requests",AdminAuthenticateToken,async (req, res) => {
     try {
       // Find all AccountHandling documents with non-empty requests
       const duplicatePhoneRequests = await AccountHandling.find({
@@ -3215,10 +3254,7 @@ const transporter = nodemailer.createTransport({
 //   }
 // );
 
-router.put(
-  "/account-handling/:id",
-  AdminAuthenticateToken,
-  async (req, res) => {
+router.put("/account-handling/:id",AdminAuthenticateToken,async (req, res) => {
     try {
       const { id } = req.params;
       const { status } = req.body;
@@ -3567,10 +3603,7 @@ router.post("/set-kpi-score", async(req, res) => {
 });
 
 // EMPLOYEE'S KPI SCORE
-router.get(
-  "/employee-kpi-score/:id",
-  AdminAuthenticateToken,
-  async (req, res) => {
+router.get("/employee-kpi-score/:id",AdminAuthenticateToken,async (req, res) => {
     try {
       const { id } = req.params;
 
