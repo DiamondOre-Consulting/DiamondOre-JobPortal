@@ -42,7 +42,7 @@ const SearchJob = () => {
             const response = await axios.get(
                 `${import.meta.env.VITE_BASE_URL}/admin-confi/findJobs/${phone}`
             );
-            // Log the response for debugging
+            // Log the response for  debugging
             if (response.status === 201) {
                 setProfile(response.data);
                 setError('');
