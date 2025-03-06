@@ -43,8 +43,9 @@ const SearchJob = () => {
                 `${import.meta.env.VITE_BASE_URL}/admin-confi/findJobs/${phone}`
             );
             // Log the response for  debugging
-            if (response.status === 201) {
-                setProfile(response.data);
+            
+            if (response.data.success) {
+                setProfile(response.data.suitableJobs);
                 setError('');
             } else {
                 setError('No data found');
