@@ -553,10 +553,7 @@ router.get(
 );
 
 // FETCHING ALL APPLIED JOBS
-router.get(
-  "/all-applied-jobs",
-  CandidateAuthenticateToken,
-  async (req, res) => {
+router.get("/all-applied-jobs",CandidateAuthenticateToken,async (req, res) => {
     try {
       // Get the user's email from the decoded token
       const { email } = req.user;
@@ -580,10 +577,7 @@ router.get(
 );
 
 // FETCHING ALL SHORTLISTED JOBS
-router.get(
-  "/all-shortlisted-jobs",
-  CandidateAuthenticateToken,
-  async (req, res) => {
+router.get("/all-shortlisted-jobs",CandidateAuthenticateToken,async (req, res) => {
     try {
       // Get the user's email from the decoded token
       const { email } = req.user;
