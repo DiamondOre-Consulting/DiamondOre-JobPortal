@@ -43,7 +43,7 @@ const SearchJob = () => {
                 `${import.meta.env.VITE_BASE_URL}/admin-confi/findJobs/${phone}`
             );
             // Log the response for  debugging
-            
+
             if (response.data.success) {
                 setProfile(response.data.suitableJobs);
                 setError('');
@@ -184,7 +184,7 @@ const SearchJob = () => {
                                         </tr>
                                     </thead>
                                     <tbody className=''>
-                                        {profile.suitableJobs.map((job, index) => (
+                                        {profile.map((job, index) => (
                                             <tr key={index} className="bg-white border-b   ">
                                                 <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">{job.Company}</td>
                                                 <td className="px-6 py-4">{job.JobTitle}</td>
