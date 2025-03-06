@@ -336,33 +336,27 @@ const EachEmployeeGoalSheet = () => {
 
   const hanndleUpload = async () => {
     if (!file) {
-      alert("Please Upload File.");
+      alert("Please attach File.");
       return;
     }
-
     try {
       setLoading(true);
 
       const formData = new FormData();
       formData.append("myFileImage", file);
 
-      const uploadResponse = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-excelsheet-url`,
+      
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-joiningsheet/${id}`,
         formData,
         {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers:{
+             Authorization : `Bearer ${localStorage.getItem("token")}`
+          }
         }
       );
 
-      const excelUrl = uploadResponse.data;
-      console.log(excelUrl);
-
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-joiningsheet/${id}`,
-        { joiningExcel: excelUrl }
-      );
+      console.log(response.data)
 
       if (response.status === 200) {
         setLoading(false);

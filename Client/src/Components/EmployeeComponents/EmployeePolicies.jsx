@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 const EmployeePolicies = () => {
   const [userData, setUserData] = useState();
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchPolicyData = async () => {
       try {
         const token = localStorage.getItem("token");
 
@@ -15,7 +15,7 @@ const EmployeePolicies = () => {
         }
 
         const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/employee/user-data`,
+          `${import.meta.env.VITE_BASE_URL}/employee/policies`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -23,9 +23,7 @@ const EmployeePolicies = () => {
           }
         );
         if (response.status == 200) {
-         
-          setUserData(response.data.Policies[0]);
-          console.log("myuserdata",response.data.Policies[0]);
+          setUserData(response.data.Policies.Policies);
         } else {
           setUserData("Did not get any response!!!");
         }
@@ -34,10 +32,10 @@ const EmployeePolicies = () => {
       }
     };
 
-    fetchUserData();
+    fetchPolicyData();
   }, []);
 
-  console.log(userData)
+
   return (
     <div>
       <p className="text-3xl text-center uppercase ">All Policies</p>

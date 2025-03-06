@@ -28,19 +28,16 @@ const SearchJob = () => {
         if (phone.length < 10) {
             setError('Invalid phone number. Please enter at least 10 digits.');
             return;
-        }
-        
+        }       
         const {success,error} = phoneNumberSchema.safeParse({phone})
         console.log(success)
         if(!success){
             error.errors.forEach((err) => {
                 setError(err.message);
             });
-            return;
+            return
         }
-
-        try {
-            
+        try {           
             setShowLoader2(true);
             const response = await axios.get(
                 `${import.meta.env.VITE_BASE_URL}/admin-confi/findJobs/${phone}`

@@ -1,17 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import AdminNav from "../../Components/AdminPagesComponents/AdminNav";
 import axios from "axios";
 import { useJwt } from "react-jwt";
 import { useNavigate } from "react-router-dom";
-import AdminFooter from "../../Components/AdminPagesComponents/AdminFooter";
-import { Select } from "@mui/material";
+
 
 
 
 const Prompt = () => {
   const [sheet, setSheet] = useState(null);
   const [sheeturl, setsheeturl] = useState(null);
-  const [showLoader, setShowLoader] = useState(false);
   const [showLoader2, setShowLoader2] = useState(false);
   const [phone, setPhone] = useState("");
   const [profile, setProfile] = useState(null);
@@ -36,40 +33,42 @@ const Prompt = () => {
     }
   }, [decodedToken, navigate]);
 
-  const handleUploadsheet = async (e) => {
-    e.preventDefault();
-    if(!sheet){
-        alert("File not selected")
-    }
-    try {
-      setShowLoader(true);
-      const formData = new FormData();
-      formData.append("myFile", sheet);
+  // const handleUploadsheet = async (e) => {
+  //   e.preventDefault();
+  //   if(!sheet){
+  //       alert("File not selected")
+  //   }
+  //   try {
+  //     setShowLoader(true);
+  //     const formData = new FormData();
+  //     formData.append("myFile", sheet);
 
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-dsr`,
-        formData
-      );
+  //     const response = await axios.post(
+  //       `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-dsr`,
+  //       formData
+  //     );
 
-      if (response.status === 200) {
-        setsheeturl(response.data); 
-      }else {
-        console.error("Failed to upload file:", response.data);
-      }
-    }catch (error) {
-      console.error("Error uploading file:", error);
-    }finally {
-      setShowLoader(false);
-    }
-  };
+  //     if (response.status === 200) {
+  //       setsheeturl(response.data); 
+  //     }else {
+  //       console.error("Failed to upload file:", response.data);
+  //     }
+  //   }catch (error) {
+  //     console.error("Error uploading file:", error);
+  //   }finally {
+  //     setShowLoader(false);
+  //   }
+  // };
      
   const handlesubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
+      const formData = new FormData();
+      formData.append("myFile", sheet);
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-dsr-excel`,
-        { url: sheeturl }
+        formData
       );
 
       if (response.status === 200) {        
@@ -91,7 +90,8 @@ const Prompt = () => {
   };
 
   const handleSearch = async () => {
-    if (phone.length < 10) {
+    console.log("enter")
+    if(phone.length < 10){
       setError("Invalid phone number. Please enter at least 10 digits.");
       return;
     }
@@ -101,10 +101,11 @@ const Prompt = () => {
         `${import.meta.env.VITE_BASE_URL}/admin-confi/findJobs/${phone}`
       );
       // Log the response for debugging
-      if (response.status === 201) {
+      if(response.data.success) {
+        console.log(response.data);
         setProfile(response.data);
         setError("");
-      } else {
+      }else{
         setError("No data found");
         setProfile(null);
       }
@@ -124,7 +125,7 @@ const Prompt = () => {
   };
 
 
-  // const [recruiterName, setRecruiterName] = useState("");
+
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [location, setLocation] = useState("");
@@ -208,10 +209,7 @@ const Prompt = () => {
     getDSR();
   }, []);
 
-  const handleSelect = (e) => {
-    e.preventDefault();
-    setRecruiterName(e.target.value);
-  };
+
 
   
   return (
@@ -237,17 +235,17 @@ const Prompt = () => {
           accept=".pdf,.doc,.docx,.xlsx"
           className="border border-1"
           onChange={(e) => setSheet(e.target.files[0])}
-          disabled={!!sheeturl}
+          disabled={loading}
         />
         <button
           type="button"
           className={`bg-blue-950 ml-2 text-white p-2 px-12 flex items-center mt-2 md:mt-0 justify-center rounded-md ${
             sheeturl ? "opacity-50 cursor-not-allowed" : ""
           }`}
-          onClick={handleUploadsheet}
-          disabled={!!sheeturl}
+          onClick={handlesubmit}
+          disabled={loading}
         >
-          {showLoader ? (
+          {loading ? (
             <svg
               aria-hidden="true"
               className="inline w-4 h-4 text-gray-200 animate-spin fill-blue-600"
@@ -268,38 +266,7 @@ const Prompt = () => {
             <span className="relative z-10">Upload</span>
           )}
         </button>
-        {sheeturl && (
-          <div className="flex justify-center align-center items-center ml-2">
-            <button
-              disabled={loading}
-              type="submit"
-              className="bg-green-500 text-white p-2 px-12 flex items-center justify-center rounded-md"
-              onClick={handlesubmit}
-            >
-              { loading ? (
-                     <svg
-                     aria-hidden="true"
-                     className="inline w-4 h-4 text-gray-200 animate-spin fill-blue-600"
-                     viewBox="0 0 100 101"
-                     fill="none"
-                     xmlns="http://www.w3.org/2000/svg"
-                   >
-                     <path
-                       d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                       fill="currentColor"
-                     />
-                     <path
-                       d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                       fill="currentFill"
-                     />
-                   </svg>
-              ) : (
-                <span className = "relative z-10" > Submit DSR</span>
-              )}
-            
-            </button>
-          </div>
-        )}
+       
       </div>
 
       <div className="relative pt-2">

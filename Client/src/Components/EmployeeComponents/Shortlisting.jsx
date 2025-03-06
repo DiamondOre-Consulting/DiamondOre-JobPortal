@@ -22,27 +22,20 @@ const Shortlisting = ({ userData }) => {
       setLoading(true);
 
       const formData = new FormData();
-      formData.append("myFileImage", file);
+      formData.append("ShortlistedCandidatesExcel", file);
 
-      const uploadResponse = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-shortlisted-url`,
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/employee/upload-shortlistedsheet/${id}`,
         formData,
         {
           headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
             "Content-Type": "multipart/form-data",
           },
         }
       );
 
-      const excelUrl = uploadResponse.data;
-      console.log(excelUrl);
-
-      const response = await axios.post(
-        `${
-          import.meta.env.VITE_BASE_URL
-        }/admin-confi/upload-shortlistedsheet/${id}`,
-        { shortlistedCandidates: excelUrl }
-      );
+      
 
       if (response.status === 200) {
         setLoading(false);

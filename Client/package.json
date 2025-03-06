@@ -48,6 +48,7 @@
     "react-spinners": "^0.13.8",
     "react-treebeard": "^3.2.4",
     "slick-carousel": "^1.8.1",
+    "sonner": "^2.0.1",
     "styled-components": "^6.1.11",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",

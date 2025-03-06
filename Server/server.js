@@ -3,13 +3,14 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors";
 import fileUpload from 'express-fileupload';
+import { multerErrorHandler } from "./Middlewares/error.multer.middleware.js"
 
 const app = express();
 dotenv.config();
 
 // Use express-fileupload middleware for handling file uploads
 app.use(cors());
-app.use(fileUpload());
+// app.use(fileUpload());
 
 app.use(express.json());
 
@@ -49,6 +50,8 @@ app.use('/api/employee', empController);
 const otpStore = {};
 const forgotOtp = {};
 
+app.use(multerErrorHandler);
+
 app.get("/", (req, res) => {
   res.send("Hello Diamondore");
 });
@@ -63,7 +66,7 @@ app.listen(PORT, () => {
 });
 
 function storeOtp(email, otp) {
-  otpStore[email] = { otp, expires: Date.now() + 5 * 60 * 1000 }
+  otpStore[email] = { otp, expires: Date.now() + 10 * 60 * 1000 }
 }
 
 export { otpStore, storeOtp };

@@ -17,7 +17,8 @@ const jobsSchema = new mongoose.Schema({
   },
   Channel: {
     type: String,
-    default: "N/A"
+    default: "N/A",
+    lowercase:true
     // required: true,
     // unique: true,
   },
@@ -28,20 +29,23 @@ const jobsSchema = new mongoose.Schema({
   Zone: {
     type: String,
     // required: true,
+    lowercase:true
   },
   City: {
     type: String,
+    lowercase:true
   },
   State: {
     type: String,
     required: true,
+    lowercase:true
   },
   MinExperience: {
     type: String,
     // required: true,
   },
   MaxSalary: {
-    type: String,
+    type: Number,
     // required: true,
   },
   JobStatus: {

@@ -74,23 +74,7 @@ const employeeSchema = new mongoose.Schema({
     type : String
   },
 
-  Policies: {
-    type: [
-      {
-        leave: {
-          type: String,
-        },
-        performanceMenegement: {
-          type: String,
-        },
-        holidayCalendar: {
-          type: String,
-        },
-      },
-    ],
-    default: [],
-  },
-
+ 
   isTeamLead: {
     type: Boolean,
     default: false,

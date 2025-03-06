@@ -12,11 +12,12 @@ const dsrSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  currentCompany: {
+  currentCompany:{
     type: String,
   },
   currentChannel: {
     type: String,
+    lowercase:true,
 
   },
   currentCTC: {
@@ -25,7 +26,8 @@ const dsrSchema = new mongoose.Schema({
   },
   currentLocation: {
     type: String,
-    required: true
+    required: true,
+    lowercase:true
   },
   recruiterName: {
     type: String,

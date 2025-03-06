@@ -4,6 +4,7 @@ import axios from 'axios';
 import simg from '../../assets/4.svg';
 import { useEffect } from "react";
 import loader from '../../assets/loader.svg'
+import {toast} from "sonner" 
 
 const AdminSignup = ({ toggleForm }) => {
   const [name, setName] = useState("");
@@ -25,29 +26,29 @@ const AdminSignup = ({ toggleForm }) => {
 
 
 
-  const handleUploadImage = async (e) => {
-    try {
-      e.preventDefault();
+  // const handleUploadImage = async (e) => {
+  //   try {
+  //     e.preventDefault();
 
-      const formData = new FormData();
-      formData.append("myFileImage", profilePic);
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-profile-pic`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+  //     const formData = new FormData();
+  //     formData.append("myFileImage", profilePic);
+  //     const response = await axios.post(
+  //       `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-profile-pic`,
+  //       formData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
 
-      if (response.status === 200) {
-        setProfilePicUrl(response.data);
-      }
-    } catch (error) {
-      console.log("")
-    }
-  };
+  //     if (response.status === 200) {
+  //       setProfilePicUrl(response.data);
+  //     }
+  //   } catch (error) {
+  //     console.log("")
+  //   }
+  // };
 
   const handleSendOtp = async (e) => {
     e.preventDefault();
@@ -81,36 +82,39 @@ const AdminSignup = ({ toggleForm }) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
-
+      
 
     try {
-      console.log(adminType)
+      const formData = new FormData();
+      formData.append("myFileImage", profilePic);
+      formData.append('name', name);
+      formData.append('email', email);
+      formData.append('password', password);
+      formData.append('adminType', adminType);
+      formData.append('otp', otp);
+
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/admin-confi/signup-admin`,
-        {
-          name,
-          email,
-          password,
-          otp,
-          adminType,
-          profilePic: profilePicUrl,
-        }
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
       );
 
 
 
       if (response.status === 201) {
-
+        
+        toast.success("Admin Registered Successfully");
 
       } else {
-
         setError("Some details are wrong!!");
-        // Handle signup error
       }
-    } catch (error) {
-      console.error("Error signing up:", error);
-      setError("Some details are wrong!!");
-      // Handle error
+    } catch(error){
+      toast.error(error?.response?.data?.message);
+      return
     }
     finally {
       setLoading(false)
@@ -235,6 +239,7 @@ const AdminSignup = ({ toggleForm }) => {
                       onChange={(e) => setOtp(e.target.value)}
                     />
                   </div>
+                  <div className="text-green-600">Otp sent! valid for 10 mins. only</div>
                 </div>
               )}
 
@@ -356,13 +361,13 @@ const AdminSignup = ({ toggleForm }) => {
                     onChange={(e) => setProfilePic(e.target.files[0])}
                   />
                 </div>
-
+{/* 
                 <button
                   onClick={handleUploadImage}
                   className="w-1/2 px-1 py-2 text-sm font-medium text-white rounded-md bg-blue-950 hover:bg-blue-950 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                   Upload Image
-                </button>
+                </button> */}
               </div>
 
               {/* Profile image upload feild ends  */}

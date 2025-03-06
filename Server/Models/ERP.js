@@ -5,7 +5,6 @@ const erpSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Employees",
   },
-
   recognitionType: {
     type: String,
   },

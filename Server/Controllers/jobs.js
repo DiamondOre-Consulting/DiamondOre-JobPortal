@@ -14,6 +14,8 @@ import AdminAuthenticateToken from "../Middlewares/AdminAuthenticateToken.js";
 import Jobs from "../Models/Jobs.js";
 import Candidates from "../Models/Candidates.js";
 import nodemailer from "nodemailer";
+import {excelUpload} from "../Middlewares/multer.middleware.js";
+import xlsx from "xlsx";
 
 dotenv.config();
 
@@ -76,60 +78,7 @@ const addedJobsMailToAllTheCandidates = async (candidateEmail, candidateName) =>
 };
 
 
-// Handle Resume file upload
-router.post('/upload-ops', async (req, res) => {
-  try {
-    const file = req.files && req.files.myFile; // Change 'myFile' to match the key name in Postman
 
-    if (!file) {
-      return res.status(400).send('No file uploaded');
-    }
-
-    // Generate a unique identifier
-    const uniqueIdentifier = uuidv4();
-
-    // Get the file extension from the original file name
-    const fileExtension = file.name.split('.').pop();
-
-    // Create a unique filename by appending the unique identifier to the original filename
-    const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
-
-    // Convert file to base64
-    const base64Data = file.data.toString('base64');
-
-    // Create a buffer from the base64 data
-    const fileBuffer = Buffer.from(base64Data, 'base64');
-
-    const uploadData = await s3ClientResumes.send(
-      new PutObjectCommand({
-        Bucket: "resumes",
-        Key: uniqueFileName, // Use the unique filename for the S3 object key
-        Body: fileBuffer // Provide the file buffer as the Body
-      })
-    );
-
-    // Generate a public URL for the uploaded file
-    const getObjectCommand = new GetObjectCommand({
-      Bucket: "resumes",
-      Key: uniqueFileName
-    });
-
-    const signedUrl = await getSignedUrl(s3ClientResumes, getObjectCommand); // Generate URL valid for 1 hour
-
-    // Parse the signed URL to extract the base URL
-    const parsedUrl = new URL(signedUrl);
-    const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
-
-    // Send the URL as a response
-    res.status(200).send(baseUrl);
-
-    // Log the URL in the console
-    console.log("File uploaded. URL:", baseUrl);
-  } catch (error) {
-    console.error("Error uploading file:", error);
-    return res.status(500).send('Error uploading file');
-  }
-});
 
 const downloadFile = async (url, outputFilePath) => {
   const writer = fs.createWriteStream(outputFilePath);
@@ -195,106 +144,96 @@ const downloadFile = async (url, outputFilePath) => {
 //   }
 // });
 
-router.post("/upload-job-excel", AdminAuthenticateToken, async (req, res) => {
-  const { url } = req.body;
-  const outputFilePath = path.join(__dirname, "tempFile.xlsx");
+router.post("/upload-job-excel", AdminAuthenticateToken, excelUpload.single('myFile') , async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
+  const filePath = req.file.path;
+ 
 
   try {
-    // Download the Excel file
-    await downloadFile(url, outputFilePath);
+     
+     const fileBuffer = fs.readFileSync(filePath)
+     const workbook = xlsx.read(fileBuffer, { type: "buffer" });   
+     const sheetName = workbook.SheetNames[0];  
+     const result = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
+     
+     if(!result.length){
+      return res.status(400).json({ error: "Empty file or invalid format" });
+     }
+ 
+     let errorArray = [];
 
-    const job = await Jobs.countDocuments()
-    console.log(job)
-
-    // Convert Excel to JSON
-    const result = await new Promise((resolve, reject) => {
-      node_xj(
-        {
-          input: outputFilePath,
-          output: null,
-          lowerCaseHeaders: true,
-          allowEmptyKey: false,
-        },
-        (err, data) => {
-          if (err) {
-            console.log("are yr",+1)
-            return reject(err);
-          }
-          resolve(data);
-        }
-      );
-    });
-
-    
-
-    let jobsAdded = [];
-    let jobsUpdated = [];
-
-    for (const job of result) {
-      const {
-        Company,
-        JobTitle,
-        Industry,
-        Channel,
-        Zone,
-        City,
-        State,
-        JobStatus,
-        DateAdded,
-        MinExperience,
-        MaxSalary
-      } = job;          
+    // for (const job of result) {
+    //   const {
+    //     Company,
+    //     JobTitle,
+    //     Industry,
+    //     Channel,
+    //     Zone,
+    //     City,
+    //     State,
+    //     JobStatus,
+    //     DateAdded,
+    //     MinExperience,
+    //     MaxSalary
+    //   } = job;          
           
-      const formattedDateAdded = new Date(DateAdded);
-      const existingJob = await Jobs.findOne({
-        JobTitle: JobTitle,
-        City: City,
-        DateAdded: formattedDateAdded,
-        Company,
-        Industry,
-        Channel,
-        Zone,
-        State,
-        MinExperience,
-        MaxSalary
-      });
+    //   const formattedDateAdded = new Date(DateAdded);
+    //   const existingJob = await Jobs.findOne({
+    //     JobTitle: JobTitle,
+    //     City: City,
+    //     DateAdded: formattedDateAdded,
+    //     Company,
+    //     Industry,
+    //     Channel,
+    //     Zone,
+    //     State,
+    //     MinExperience,
+    //     MaxSalary
+    //   });
 
 
-      if (existingJob){
-        if(existingJob.JobStatus !== (JobStatus === "Active")){
-          existingJob.JobStatus = JobStatus === "Active";
-          await existingJob.save();
-          jobsUpdated.push(existingJob);
-        }
-      }else{
-        const newJob = new Jobs({
-          ...job,
-          JobStatus: JobStatus === "Active",
-          DateAdded: formattedDateAdded,
-        });
+    //   if (existingJob){
+    //     if(existingJob.JobStatus !== (JobStatus === "Active")){
+    //       existingJob.JobStatus = JobStatus === "Active";
+    //       await existingJob.save();
+    //       jobsUpdated.push(existingJob);
+    //     }
+    //   }else{
+    //     const newJob = new Jobs({
+    //       ...job,
+    //       JobStatus: JobStatus === "Active",
+    //       DateAdded: formattedDateAdded,
+    //     });
 
-        await newJob.save();
+    //     await newJob.save();
 
-        jobsAdded.push(newJob);
-      }
+    //     jobsAdded.push(newJob);
+    //   }
+    // }
+
+    try{
+      const bulkOps = [
+          {deleteMany : {filter : {}}},
+          ...result.map((doc)=> ( { insertOne : {document:doc}}))
+      ]
+       await Jobs.bulkWrite(bulkOps)
+
     }
-
+    catch(err){
+      errorArray.push({ error: err.message });
+      console.error("Database insertion error:", err.message);
+    }
 
     return res.status(200).json({
-      jobsAdded: jobsAdded.length,
-      jobsUpdated: jobsUpdated.length,
-      message: "Jobs processed successfully & sent emails",
+      message: "OPS uploaded successfully",
     });
-  } catch (err) {
-    console.log(err)
-    return res
-      .status(500)
-      .json({ message: "Something went wrong!!!", error: err.message });
+  } catch(err){
+    console.log({message: err.message})
+    return res.status(400).json({message : "Internal server error"});
   } finally {
-    // Clean up: Delete the temporary file
-    if (fs.existsSync(outputFilePath)) {
-      fs.unlinkSync(outputFilePath);
-    }
+      fs.unlinkSync(filePath);
   }
 });
 

@@ -10,7 +10,7 @@ const AddERPForm = () => {
   const [profilePic, setProfilePic] = useState(null);
   const [preview, setPreview] = useState("");
 
-  const initialFormData = {
+  const initialerpData = {
     EmpOfMonth: "",
     recognitionType: "",
     EmpOfMonthDesc: "",
@@ -20,12 +20,11 @@ const AddERPForm = () => {
     RnRRecruiters: [{ title: "", name: "", count: 0, percentage: 0 }],
     BreakingNews: [{ news: "" }],
     JoningsForWeek: [{ names: "", noOfJoinings: 0 }],
-    profilePicUrl: "",
   };
 
 
-  const [formData, setFormData] = useState(initialFormData);
-  console.log(formData)
+  const [erpData, seterpData] = useState(initialerpData);
+  console.log(erpData)
   const { decodedToken } = useJwt(localStorage.getItem("token"));
   const token = localStorage.getItem("token");
   if (!token) {
@@ -60,39 +59,43 @@ const AddERPForm = () => {
   }, [decodedToken, navigate]);
 
   const handleInputChange = (field, value) => {
-    setFormData({
-      ...formData,
+    seterpData({
+      ...erpData,
       [field]: value,
     });
   };
 
   const handleAddItem = (field) => {
     console.log(field)
-    setFormData({
-      ...formData,
-      [field]: [...formData[field], {}],
+    seterpData({
+      ...erpData,
+      [field]: [...erpData[field], {}],
     });
   };
 
   const handleRemoveItem = (field, index) => {
-    const updatedItems = [...formData[field]];
+    const updatedItems = [...erpData[field]];
     updatedItems.splice(index, 1);
-    setFormData({
-      ...formData,
+    seterpData({
+      ...erpData,
       [field]: updatedItems,
     });
   };
 
   const handleItemInputChange = (field, index, key, value) => {
-    const updatedItems = [...formData[field]];
+    const updatedItems = [...erpData[field]];
     updatedItems[index][key] = value;
-    setFormData({
-      ...formData,
+    seterpData({
+      ...erpData,
       [field]: updatedItems,
     });
   };
 
   const handleFormSubmit = async () => {
+    const formData = new FormData();
+    formData.append("profilePic",profilePic)
+    
+    formData.append("erpData", JSON.stringify(erpData)); 
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/admin-confi/erp/add-erp-data`,
@@ -110,7 +113,7 @@ const AddERPForm = () => {
       }
 
       // Reset the form after successful submission
-      setFormData(initialFormData);
+      seterpData(initialerpData);
     } catch (error) {
       console.error("Error adding ERP data:", error.message);
       // Handle error, e.g., show an error message
@@ -151,34 +154,7 @@ const AddERPForm = () => {
   }, [navigate, token]);
 
 
-  const handleUploadImage = async (e) => {
-    try {
-      e.preventDefault();
-
-      const formData = new FormData();
-      formData.append("myFileImage", profilePic);
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-profile-pic`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      console.log(response.data)
-
-      if (response.status === 200) {
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          profilePicUrl: response.data,
-        }));
-      }
-    } catch (error) {
-      console.log("")
-    }
-  };
+  
 
   return (
     <div className="">
@@ -202,7 +178,7 @@ const AddERPForm = () => {
           <br />
           <select
             className="w-full px-2 py-2"
-            value={formData.EmpOfMonth}
+            value={erpData.EmpOfMonth}
             onChange={(e) => handleInputChange("EmpOfMonth", e.target.value)}
           >
             <option value="">Select Employee</option>
@@ -242,13 +218,7 @@ const AddERPForm = () => {
           </div>
 
           {/* Upload Button */}
-          <button
-            type="button"
-            onClick={handleUploadImage}
-            className="px-4 py-2 mt-4 text-sm font-medium text-white rounded-md shadow-md bg-blue-950 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            Upload Image
-          </button>
+          
         </div>
         <div className="w-full col-span-2">
           <label
@@ -262,7 +232,7 @@ const AddERPForm = () => {
             id="recognitionType" // Add an id for better accessibility
             type="text"
             className="w-full px-2 py-2 border rounded-md"
-            value={formData.recognitionType}
+            value={erpData.recognitionType}
             onChange={(e) => handleInputChange("recognitionType", e.target.value)}
           />
         </div>
@@ -281,7 +251,7 @@ const AddERPForm = () => {
             rows="4"
             type="text"
             className="w-full px-2 py-2 border rounded-md" // Ensure consistent styling
-            value={formData.EmpOfMonthDesc} // Ensure this is bound to the state
+            value={erpData.EmpOfMonthDesc} // Ensure this is bound to the state
             onChange={(e) =>
               handleInputChange("EmpOfMonthDesc", e.target.value)
             }
@@ -296,7 +266,7 @@ const AddERPForm = () => {
           >
             Top 5 HRs*
           </label>
-          {formData?.Top5HRs?.map((hr, index) => (
+          {erpData?.Top5HRs?.map((hr, index) => (
             <div key={index} className="flex items-center">
               <input
                 type="text"
@@ -337,7 +307,7 @@ const AddERPForm = () => {
           >
             Top 5 Clients*
           </label>
-          {formData?.Top5Clients?.map((client, index) => (
+          {erpData?.Top5Clients?.map((client, index) => (
             <div key={index} className="flex items-center">
               <input
                 type="text"
@@ -378,7 +348,7 @@ const AddERPForm = () => {
           >
             RnR Interns*
           </label>
-          {formData?.RnRInterns?.map((intern, index) => (
+          {erpData?.RnRInterns?.map((intern, index) => (
             <div key={index} className="flex items-center">
               <input
                 type="text"
@@ -462,7 +432,7 @@ const AddERPForm = () => {
           >
             RnR Recruiters*
           </label>
-          {formData?.RnRRecruiters?.map((recruiter, index) => (
+          {erpData?.RnRRecruiters?.map((recruiter, index) => (
             <div key={index} className="flex items-center">
               <input
                 type="text"
@@ -546,7 +516,7 @@ const AddERPForm = () => {
           >
             Breaking News*
           </label>
-          {formData?.BreakingNews?.map((newsItem, index) => (
+          {erpData?.BreakingNews?.map((newsItem, index) => (
             <div key={index} className="flex items-center">
               <input
                 type="text"
@@ -587,7 +557,7 @@ const AddERPForm = () => {
           >
             Jonings for the Week*
           </label>
-          {formData?.JoningsForWeek?.map((joining, index) => (
+          {erpData?.JoningsForWeek?.map((joining, index) => (
             <div
               key={index}
               className="flex flex-col items-center my-2 space-y-2 md:flex-row"

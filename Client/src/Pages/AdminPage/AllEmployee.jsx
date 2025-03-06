@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import { useJwt } from "react-jwt";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -14,6 +14,10 @@ const AllEmployee = () => {
   const [inactiveEmployees, setInactiveEmployees] = useState([]);
   let [loading, setLoading] = useState(true);
   const [deleteActive, setDeleteActive] = useState(false);
+  const holidayFileRef = useRef()
+  const performanceManagementFileRef = useRef()
+  const leavePoliciesFileRef = useRef()
+
 
   const navigate = useNavigate();
   const fetchAllEmployee = async () => {
@@ -36,7 +40,7 @@ const AllEmployee = () => {
       );
 
       if (response.status === 200) {
-        console.log(response.data);
+      
         setActiveEmployees(response.data.activeEmployees);
         setInactiveEmployees(response.data.inactiveEmployees);
         setLoading(false);
@@ -99,80 +103,79 @@ const AllEmployee = () => {
   };
 
   const [policypopup, setPolicyPopup] = useState(false);
-  const [files, setFiles] = useState({
-    leave: null,
-    performanceMenegement: null,
-    holidayCalendar: null,
-  });
-  const [urls, setUrls] = useState({
-    leave: "",
-    performanceMenegement: "",
-    holidayCalendar: "",
-  });
+  const [files, setFiles] = useState([]);
+  // const [urls, setUrls] = useState({
+  //   leave: "",
+  //   performanceMenegement: "",
+  //   holidayCalendar: "",
+  // });
 
-  const handleFileChange = (e, field) => {
-    setFiles({
-      ...files,
-      [field]: e.target.files[0],
+  
+
+  const handleFileChange = (file,index) => {
+    
+    setFiles(prevFiles => {
+      const newFiles = [...prevFiles]; 
+      newFiles[index] = file; 
+      return newFiles; 
     });
+    console.log(files)
+   
   };
 
-  const getFileUrl = async (file, field) => {
-    const formData = new FormData();
-    formData.append("myFileImage", file);
+  // const getFileUrl = async (file, field) => {
+  //   const formData = new FormData();
+  //   formData.append("myFileImage", file);
 
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/admin-confi/get-policy-url`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-      setUrls((prevUrls) => ({
-        ...prevUrls,
-        [field]: response.data, // Set the URL in the state for the corresponding field
-      }));
-    } catch (error) {
-      console.error("Error fetching URL for file:", error);
-    }
-  };
+  //   try {
+  //     const response = await axios.post(
+  //       `${import.meta.env.VITE_BASE_URL}/admin-confi/get-policy-url`,
+  //       formData,
+  //       {
+  //         headers: { "Content-Type": "multipart/form-data" },
+  //       }
+  //     );
+  //     setUrls((prevUrls) => ({
+  //       ...prevUrls,
+  //       [field]: response.data, // Set the URL in the state for the corresponding field
+  //     }));
+  //   } catch (error) {
+  //     console.error("Error fetching URL for file:", error);
+  //   }
+  // };
 
-  console.log(activeEmployees);
+ 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     // Ensure URLs are ready for all fields before proceeding
-    if (!urls.leave || !urls.performanceMenegement || !urls.holidayCalendar) {
-      alert("Please upload all the policies.");
-      return;
-    }
-
-    const policyData = {
-      leave: urls.leave,
-      performanceMenegement: urls.performanceMenegement,
-      holidayCalendar: urls.holidayCalendar,
-    };
+     const formData = new FormData()
+     for(let file of files){
+      formData.append("policies",file)
+     }
 
     try {
       // Send the policy data to update all employees
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-policies`,
-        policyData
+        formData,{
+          headers: {
+            Authorization : `Bearer ${localStorage.getItem('token')}`
+          }
+        }
       );
-      alert(response.data.message);
+      alert("files uploaded successfully");
       setPolicyPopup(false); // Close modal on success
     } catch (error) {
-      alert("Error uploading policies.");
       console.error(error);
+      alert("Error uploading policies.");
     }
   };
 
   const [maketlpopup, setMAkeTLPopUp] = useState(false);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   // const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
-  console.log(selectedEmployeeId);
+  
   const makeTeamLead = async (e) => {
     e.preventDefault();
     try {
@@ -211,7 +214,7 @@ const AllEmployee = () => {
 
       if (response.status === 200) {
         alert("mapped successfully");
-        console.log("Employees assigned successfully:", response.data);
+      
         setAssignPeoplePopup(false);
         setEmployeeIds([]); // Reset selected employees
       }
@@ -222,6 +225,13 @@ const AllEmployee = () => {
       setLoading(false);
     }
   };
+
+
+  const handleRemove = (index)=>{
+      setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+      console.log(files)
+
+  }
 
 
 
@@ -525,43 +535,65 @@ const AllEmployee = () => {
                 Upload policies
               </p>
               <div className="mx-auto bg-blue-900 h-1 w-20"></div>
-              <div>
+              <div className="">
                 <label className="block text-gray-800  mb-1">
                   Leave Report
                 </label>
+                <div className="relative">
                 <input
+                  ref={leavePoliciesFileRef}
                   type="file"
                   onChange={(e) => {
-                    handleFileChange(e, "leave");
-                    getFileUrl(e.target.files[0], "leave");
+                    handleFileChange(e.target.files[0],0);
                   }}
                 />
+                <button type="button" onClick={(e)=>{
+                  handleRemove(0)
+                  if (leavePoliciesFileRef.current) {
+                    leavePoliciesFileRef.current.value = "";
+                  }
+                  }} className="absolute top-0 right-0">X</button>
+                </div>
               </div>
 
               <div>
                 <label className="block text-gray-800  mb-1">
                   Performance Management
                 </label>
+                <div className="relative">
                 <input
+                ref={performanceManagementFileRef}
                   type="file"
                   onChange={(e) => {
-                    handleFileChange(e, "performanceMenegement");
-                    getFileUrl(e.target.files[0], "performanceMenegement");
+                    handleFileChange(e.target.files[0],1);
                   }}
                 />
+                <button type="button" onClick={(e)=>{handleRemove(1)
+                  if (performanceManagementFileRef.current) {
+                    performanceManagementFileRef.current.value = "";
+                  }
+                }} className="absolute top-0 right-0">X</button>
+                </div>
               </div>
 
               <div>
                 <label className="block text-gray-800  mb-1">
                   Holiday Calendar
                 </label>
+                <div className="relative">
                 <input
+                ref={holidayFileRef}
                   type="file"
                   onChange={(e) => {
-                    handleFileChange(e, "holidayCalendar");
-                    getFileUrl(e.target.files[0], "holidayCalendar");
+                    handleFileChange(e.target.files[0],2);
                   }}
                 />
+                 <button type="button" onClick={(e)=>{handleRemove(2)
+                  if (holidayFileRef.current) {
+                    holidayFileRef.current.value = "";
+                  }
+                 }} className="absolute top-0 right-0">X</button>
+                 </div>
               </div>
               <button
                 type="submit"

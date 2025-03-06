@@ -3,9 +3,11 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { useJwt } from "react-jwt";
 import { FaCamera } from "react-icons/fa";
+import {toast} from "sonner" 
+
 
 const EditErp = () => {
-    const [formData, setFormData] = useState({
+    const [erpData, setErpData] = useState({
         EmpOfMonth: "",
         recognitionType: "",
         EmpOfMonthDesc: "",
@@ -15,7 +17,7 @@ const EditErp = () => {
         RnRRecruiters: [{ title: "", name: "", count: 0, percentage: 0 }],
         BreakingNews: [{ news: "" }],
         JoningsForWeek: [{ names: "", noOfJoinings: 0 }],
-        profilePicUrl: "",
+       
     });
     const [employees, setEmployees] = useState([]);
 
@@ -29,13 +31,14 @@ const EditErp = () => {
     const [loading, setLoading] = useState(true);
 
     const handleInputChange = (field, value) => {
-        setFormData({
-            ...formData,
+        setErpData({
+            ...erpData,
             [field]: value,
         });
     };
 
     const handleImageChange = (e) => {
+       
         const file = e.target.files[0];
         if (file) {
             setProfilePic(file);
@@ -44,22 +47,23 @@ const EditErp = () => {
     };
 
     const handleAddItem = (field) => {
-        console.log(field)
-        setFormData({
-            ...formData,
-            [field]: [...formData[field], {}],
+        
+        setErpData({
+            ...erpData,
+            [field]: [...erpData[field], {}],
         });
     };
 
     const handleRemoveItem = (field, index) => {
-        const updatedItems = [...formData[field]];
+        const updatedItems = [...erpData[field]];
         updatedItems.splice(index, 1);
-        setFormData({
-            ...formData,
+        setErpData({
+            ...erpData,
             [field]: updatedItems,
         });
     };
-
+    
+  
     // Fetch all employees on component mount
     useEffect(() => {
         const fetchAllEmployee = async () => {
@@ -92,35 +96,41 @@ const EditErp = () => {
     }, [navigate, token]);
 
     const handleItemInputChange = (field, index, key, value) => {
-        const updatedItems = [...formData[field]];
+        const updatedItems = [...erpData[field]];
         updatedItems[index][key] = value;
-        setFormData({
-            ...formData,
+        setErpData({
+            ...erpData,
             [field]: updatedItems,
         });
     };
-
+    const formData = new FormData();
+    
     const handleFormSubmit = async () => {
+       
         try {
-            const response = await axios.post(
-                `${import.meta.env.VITE_BASE_URL}/admin-confi/erp/add-erp-data`,
-                formData,
-                {
+            formData.append('profilePic',profilePic)
+            formData.append("erpData", JSON.stringify(erpData)); 
+
+            const response = await axios.put(
+                `${import.meta.env.VITE_BASE_URL}/admin-confi/erp/edit-erp-data/${erpId}`,
+                formData,              
+                {         
                     headers: {
                         Authorization: `Bearer ${token}`,
+
                     },
                 }
             );
             // Handle success, e.g., show a success message or redirect to another page
-            if (response.status === 201) {
-
+            if (response.status === 201){
                 navigate("/admin-dashboard/erp-dashboard");
             }
 
             // Reset the form after successful submission
-            setFormData(initialFormData);
+            // setErpData(initialFormData);
         } catch (error) {
-            console.error("Error adding ERP data:", error.message);
+            return toast.error(error?.response?.data?.message)
+            // console.error("Error adding ERP data:", error?.response?.data?.message);
             // Handle error, e.g., show an error message
         }
     };
@@ -156,7 +166,7 @@ const EditErp = () => {
                     // const empdata = response.data.findEmp;
                     // setEmployee(empdata);
                     setPreview(lastData.profilePic || "");
-                    setFormData({
+                    setErpData({
                         EmpOfMonth: lastData.EmpOfMonth || "",
                         recognitionType: lastData.recognitionType || "",
                         EmpOfMonthDesc: lastData.EmpOfMonthDesc || "",
@@ -169,7 +179,7 @@ const EditErp = () => {
                         profilePicUrl: lastData.profilePic || "",
                     });
                 } else {
-                    console.log("")
+                    
                 }
             } catch (e) {
                 console.log(e)
@@ -184,7 +194,7 @@ const EditErp = () => {
 
     // Handle array input changes (Top5HRs and Top5Clients)
     const handleArrayChange = (arrayName, index, value) => {
-        setFormData((prev) => {
+        setErpData((prev) => {
             const updatedArray = [...prev[arrayName]];
             updatedArray[index] = value;
             return { ...prev, [arrayName]: updatedArray };
@@ -194,44 +204,17 @@ const EditErp = () => {
 
 
     // Handle form submission
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await axios.put(`/api/erp/${erpId}`, formData); // Replace with your API endpoint
-            alert("ERP updated successfully!");
-        } catch (error) {
-            console.error("Error updating ERP:", error);
-        }
-    };
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     try {
+    //         await axios.put(`/api/erp/${erpId}`, erpData); // Replace with your API endpoint
+    //         alert("ERP updated successfully!");
+    //     } catch (error) {
+    //         console.error("Error updating ERP:", error);
+    //     }
+    // };
 
-    const handleUploadImage = async (e) => {
-        try {
-            e.preventDefault();
-
-            const formData = new FormData();
-            formData.append("myFileImage", profilePic);
-            const response = await axios.post(
-                `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-profile-pic`,
-                formData,
-                {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                }
-            );
-
-            console.log(response.data)
-
-            if (response.status === 200) {
-                setFormData((prevFormData) => ({
-                    ...prevFormData,
-                    profilePicUrl: response.data,
-                }));
-            }
-        } catch (error) {
-            console.log("")
-        }
-    };
+    
 
     return (
         <div className="">
@@ -255,7 +238,7 @@ const EditErp = () => {
                     <br />
                     <select
                         className="w-full px-2 py-2"
-                        value={formData.EmpOfMonth}
+                        value={erpData.EmpOfMonth}
                         onChange={(e) => handleInputChange("EmpOfMonth", e.target.value)}
                     >
                         <option value="">Select Employee</option>
@@ -295,13 +278,7 @@ const EditErp = () => {
                     </div>
 
                     {/* Upload Button */}
-                    <button
-                        type="button"
-                        onClick={handleUploadImage}
-                        className="px-4 py-2 mt-4 text-sm font-medium text-white rounded-md shadow-md bg-blue-950 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                    >
-                        Upload Image
-                    </button>
+                    
                 </div>
                 <div className="w-full col-span-2">
                     <label
@@ -315,7 +292,7 @@ const EditErp = () => {
                         id="recognitionType" // Add an id for better accessibility
                         type="text"
                         className="w-full px-2 py-2 border rounded-md"
-                        value={formData.recognitionType}
+                        value={erpData.recognitionType}
                         onChange={(e) => handleInputChange("recognitionType", e.target.value)}
                     />
                 </div>
@@ -334,7 +311,7 @@ const EditErp = () => {
                         rows="4"
                         type="text"
                         className="w-full px-2 py-2 border rounded-md" // Ensure consistent styling
-                        value={formData.EmpOfMonthDesc} // Ensure this is bound to the state
+                        value={erpData.EmpOfMonthDesc} // Ensure this is bound to the state
                         onChange={(e) =>
                             handleInputChange("EmpOfMonthDesc", e.target.value)
                         }
@@ -349,7 +326,7 @@ const EditErp = () => {
                     >
                         Top 5 HRs*
                     </label>
-                    {formData?.Top5HRs?.map((hr, index) => (
+                    {erpData?.Top5HRs?.map((hr, index) => (
                         <div key={index} className="flex items-center">
                             <input
                                 type="text"
@@ -390,7 +367,7 @@ const EditErp = () => {
                     >
                         Top 5 Clients*
                     </label>
-                    {formData?.Top5Clients?.map((client, index) => (
+                    {erpData?.Top5Clients?.map((client, index) => (
                         <div key={index} className="flex items-center">
                             <input
                                 type="text"
@@ -431,7 +408,7 @@ const EditErp = () => {
                     >
                         RnR Interns*
                     </label>
-                    {formData?.RnRInterns?.map((intern, index) => (
+                    {erpData?.RnRInterns?.map((intern, index) => (
                         <div key={index} className="flex items-center">
                             <input
                                 type="text"
@@ -515,7 +492,7 @@ const EditErp = () => {
                     >
                         RnR Recruiters*
                     </label>
-                    {formData?.RnRRecruiters?.map((recruiter, index) => (
+                    {erpData?.RnRRecruiters?.map((recruiter, index) => (
                         <div key={index} className="flex items-center">
                             <input
                                 type="text"
@@ -599,7 +576,7 @@ const EditErp = () => {
                     >
                         Breaking News*
                     </label>
-                    {formData?.BreakingNews?.map((newsItem, index) => (
+                    {erpData?.BreakingNews?.map((newsItem, index) => (
                         <div key={index} className="flex items-center">
                             <input
                                 type="text"
@@ -640,7 +617,7 @@ const EditErp = () => {
                     >
                         Jonings for the Week*
                     </label>
-                    {formData?.JoningsForWeek?.map((joining, index) => (
+                    {erpData?.JoningsForWeek?.map((joining, index) => (
                         <div
                             key={index}
                             className="flex flex-col items-center my-2 space-y-2 md:flex-row"

@@ -14,6 +14,11 @@ import AccountHandling from "../Models/AccountHandling.js";
 import GoalSheet from "../Models/GoalSheet.js";
 import KPI from "../Models/KPI.js";
 import {z} from 'zod'
+import Policies from "../Models/Policies.js";
+import { excelUpload } from "../Middlewares/multer.middleware.js";
+import { uploadFile } from "../utils/fileUpload.utils.js";
+import {deleteFile} from '../utils/fileUpload.utils.js';
+import fs from "fs/promises";
 
 dotenv.config();
 
@@ -863,6 +868,80 @@ router.get("/goalsheet/:id", EmployeeAuthenticateToken, async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+
+router.get('/policies', EmployeeAuthenticateToken, async (req, res) => {
+  try {
+    const existingPolicies = await Policies.findOne();
+
+    if (!existingPolicies) {
+      return res.status(404).json({ success: false,
+         message: "No policies found" });
+    }
+
+    return res.status(200).json({ success: true,
+       Policies: existingPolicies });
+  } catch (err) {
+    console.error("Error fetching policies:", err);
+    return res.status(500).json({ success:false,
+      message:"Internal server error" });
+  }
+});
+
+router.post("/upload-shortlistedsheet/:id",EmployeeAuthenticateToken ,excelUpload.single('ShortlistedCandidatesExcel'), async (req, res) => {
+  try {
+
+    console.log(req.file)
+    
+    const { id } = req.params;
+
+    const employee = await Employees.findById(id);
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found." });
+    }
+
+    if(employee.shortlistedCandidates){
+      const upload= await deleteFile(employee.shortlistedCandidates,"profilepics");
+      console.log(upload)
+    }
+
+    let shortlistedCandidatesExcel = null;
+    try{
+          shortlistedCandidatesExcel = await uploadFile(req.file, "profilepics");   
+          console.log(shortlistedCandidatesExcel)       
+    }
+    catch(err){
+        console.log(err)
+        return
+    }
+
+
+    if(shortlistedCandidatesExcel){
+      employee.shortlistedCandidates = shortlistedCandidatesExcel;
+    }
+
+    await employee.save();
+
+    res.status(200).json({
+      message: "Shortlisted candidates excel uploaded Successfully",
+      employeeId: employee._id,
+      shortlistedCandidatesExcel: employee.shortlistedCandidates,
+    });
+
+  } catch (error) {
+    console.log("Error:", error);
+    res
+      .status(500)
+      .json({ message: "Internal server error.", error: error.message });
+  }
+  finally{
+    if (req.file && req.file.path) {
+      await fs.unlink(req.file.path); 
+      console.log(`Deleted local file: ${req.file.path}`);
+    }
+  }
+});
+
 
 
 

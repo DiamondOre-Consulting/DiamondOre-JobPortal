@@ -11,6 +11,8 @@ import { S3Client } from "@aws-sdk/client-s3";
 import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { v4 as uuidv4 } from "uuid";
+import {uploadImage} from '../Middlewares/multer.middleware.js'
+import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 
 const router = express.Router();
 
@@ -26,63 +28,9 @@ const s3Client = new S3Client({
   region: "global",
 });
 
-// Handle Image file upload
-router.post("/upload-profile-pic", async (req, res) => {
-  try {
-    const file = req.files && req.files.myFileImage; // Change 'myFile' to match the key name in Postman
-
-    if (!file) {
-      return res.status(400).send("No file uploaded");
-    }
-
-    // Generate a unique identifier
-    const uniqueIdentifier = uuidv4();
-
-    // Get the file extension from the original file name
-    const fileExtension = file.name.split(".").pop();
-
-    // Create a unique filename by appending the unique identifier to the original filename
-    const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
-
-    // Convert file to base64
-    const base64Data = file.data.toString("base64");
-
-    // Create a buffer from the base64 data
-    const fileBuffer = Buffer.from(base64Data, "base64");
-
-    const uploadData = await s3Client.send(
-      new PutObjectCommand({
-        Bucket: "profilepics",
-        Key: uniqueFileName, // Use the unique filename for the S3 object key
-        Body: fileBuffer, // Provide the file buffer as the Body
-      })
-    );
-
-    // Generate a public URL for the uploaded file
-    const getObjectCommand = new GetObjectCommand({
-      Bucket: "profilepics",
-      Key: uniqueFileName,
-    });
-
-    const signedUrl = await getSignedUrl(s3Client, getObjectCommand); // Generate URL valid for 1 hour
-
-    // Parse the signed URL to extract the base URL
-    const parsedUrl = new URL(signedUrl);
-    const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
-
-    // Send the URL as a response
-    res.status(200).send(baseUrl);
-
-    // Log the URL in the console
-    console.log("File uploaded. URL:", baseUrl);
-  } catch (error) {
-    console.error("Error uploading file:", error);
-    return res.status(500).send("Error uploading file");
-  }
-});
 
 // ADD A NEW ERP DATA
-router.post("/add-erp-data", AdminAuthenticateToken, async (req, res) => {
+router.post("/add-erp-data", AdminAuthenticateToken, uploadImage.single('profilePic'), async (req, res) => {
   try {
     const { email } = req.user;
 
@@ -96,18 +44,31 @@ router.post("/add-erp-data", AdminAuthenticateToken, async (req, res) => {
       RnRRecruiters,
       BreakingNews,
       JoningsForWeek,
-      profilePicUrl
-    } = req.body;
+      
+    } =JSON.parse(req.body.erpData);
 
-    console.log("object")
-    console.log(profilePicUrl)
-    // console.log("Received data:", req.body);
-
+    
+   
+    
     // Find the user in the database
     const user = await Admin.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+    
+    let profilePicUrl= null;
+    
+    if(req.file){
+      const uniqueFileName = `${uuidv4()}.${req.file.originalname.split(".").pop()}`;
+      await s3Client.send(new PutObjectCommand({
+        Bucket: "profilepics",
+        Key: uniqueFileName,
+        Body: req.file.buffer,
+      }));
+      profilePicUrl = `https://s3.tebi.io/profilepics/${uniqueFileName}`;
+    }
+    
+    console.log(profilePicUrl)
 
     const newERPData = new ERP({
       EmpOfMonth,
@@ -132,7 +93,8 @@ router.post("/add-erp-data", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
-router.put("/edit-erp-data/:id", AdminAuthenticateToken, async (req, res) => {
+router.put("/edit-erp-data/:id", AdminAuthenticateToken, uploadImage.single('profilePic'), async (req, res) => {
+ 
   try {
     const { email } = req.user;
     const { id } = req.params;
@@ -146,12 +108,10 @@ router.put("/edit-erp-data/:id", AdminAuthenticateToken, async (req, res) => {
       RnRRecruiters,
       BreakingNews,
       JoningsForWeek,
-      profilePicUrl
-    } = req.body;
+    } = JSON.parse(req.body.erpData);;
 
-    console.log("object")
-    console.log(profilePicUrl)
-    // console.log("Received data:", req.body);
+   
+  
 
     // Find the user in the database
     const user = await Admin.findOne({ email });
@@ -160,6 +120,32 @@ router.put("/edit-erp-data/:id", AdminAuthenticateToken, async (req, res) => {
     }
 
     const singleERP = await ERP.findById({ _id: id });
+   
+    if (singleERP.profilePic) {
+      const oldKey = new URL(singleERP.profilePic).pathname.substring(1);
+     
+      await s3Client.send(new DeleteObjectCommand({
+          Bucket : "profilepics",
+          Key : oldKey,
+      }));
+      console.log(`Deleted old image: ${oldKey}`);
+  }
+
+    let profilePicUrl= null;
+
+    if(req.file){
+      const uniqueFileName = `${uuidv4()}.${req.file.originalname.split(".").pop()}`;
+      const status= await s3Client.send(new PutObjectCommand({
+        Bucket: "profilepics",
+        Key: uniqueFileName,
+        Body: req.file.buffer,
+      }));
+      
+      profilePicUrl = `https://s3.tebi.io/profilepics/${uniqueFileName}`;
+    }
+    
+
+    
 
     singleERP.EmpOfMonth = EmpOfMonth;
     singleERP.EmpOfMonthDesc = EmpOfMonthDesc;
@@ -183,7 +169,9 @@ router.put("/edit-erp-data/:id", AdminAuthenticateToken, async (req, res) => {
 
 // GET ALL ERP DATA
 router.get("/all-erp-data", AdminAuthenticateToken, async (req, res) => {
+
   try {
+    
     const { email } = req.user;
 
     // Find the user in the database
@@ -192,14 +180,16 @@ router.get("/all-erp-data", AdminAuthenticateToken, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    console.log("object")
+  
 
-    const allData = await ERP.findOne().sort({ _id: -1 });
+    const allData = await ERP.findOne().sort({ createdAt: -1 });
 
     const findEmp = await Employees.findById({ _id: allData.EmpOfMonth });
 
-    console.log("alash", findEmp)
+   
+  
     // console.log(findEmp)
+
     res.status(200).json({ allData, findEmp });
   } catch (error) {
     console.log(error, "Something went wrong!!!");
