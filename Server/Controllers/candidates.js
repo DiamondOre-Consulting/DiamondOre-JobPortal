@@ -27,7 +27,10 @@ import PizZip from "pizzip";
 import ResumeTemp from "../Models/ResumeTemp.js";
 import ClientReviews from "../Models/ClientReviews.js";
 import {z} from 'zod'
+import { uploadImage } from '../Middlewares/multer.middleware.js'
 import { skipMiddlewareFunction } from "mongoose";
+import { uploadFile } from "../utils/fileUpload.utils.js";
+import {deleteFile} from "../utils/fileUpload.utils.js"
 
 
 dotenv.config();
@@ -126,116 +129,7 @@ const s3ClientResumes = new S3Client({
   region: "global",
 });
 
-// Handle Image file upload
-router.post("/upload-profile-pic", async (req, res) => {
-  try {
-    const file = req.files && req.files.myFileImage; // Change 'myFile' to match the key name in Postman
 
-    if (!file) {
-      return res.status(400).send("No file uploaded");
-    }
-
-    // Generate a unique identifier
-    const uniqueIdentifier = uuidv4();
-
-    // Get the file extension from the original file name
-    const fileExtension = file.name.split(".").pop();
-
-    // Create a unique filename by appending the unique identifier to the original filename
-    const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
-
-    // Convert file to base64
-    const base64Data = file.data.toString("base64");
-
-    // Create a buffer from the base64 data
-    const fileBuffer = Buffer.from(base64Data, "base64");
-
-    const uploadData = await s3Client.send(
-      new PutObjectCommand({
-        Bucket: "profilepics",
-        Key: uniqueFileName, // Use the unique filename for the S3 object key
-        Body: fileBuffer, // Provide the file buffer as the Body
-      })
-    );
-
-    // Generate a public URL for the uploaded file
-    const getObjectCommand = new GetObjectCommand({
-      Bucket: "profilepics",
-      Key: uniqueFileName,
-    });
-
-    const signedUrl = await getSignedUrl(s3Client, getObjectCommand); // Generate URL valid for 1 hour
-
-    // Parse the signed URL to extract the base URL
-    const parsedUrl = new URL(signedUrl);
-    const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
-
-    // Send the URL as a response
-    res.status(200).json(baseUrl);
-
-    // Log the URL in the console
-    console.log("File uploaded. URL:", baseUrl);
-  } catch (error) {
-    console.error("Error uploading file:", error);
-    return res.status(500).send("Error uploading file");
-  }
-});
-
-// Handle Resume file upload
-router.post("/upload-resume", async (req, res) => {
-  try {
-    const file = req.files && req.files.myFileResume; // Change 'myFile' to match the key name in Postman
-
-    if (!file) {
-      return res.status(400).send("No file uploaded");
-    }
-
-    // Generate a unique identifier
-    const uniqueIdentifier = uuidv4();
-
-    // Get the file extension from the original file name
-    const fileExtension = file.name.split(".").pop();
-
-    // Create a unique filename by appending the unique identifier to the original filename
-    const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
-
-    // Convert file to base64
-    const base64Data = file.data.toString("base64");
-
-    // Create a buffer from the base64 data
-    const fileBuffer = Buffer.from(base64Data, "base64");
-
-    const uploadData = await s3ClientResumes.send(
-      new PutObjectCommand({
-        Bucket: "resumes",
-        Key: uniqueFileName, // Use the unique filename for the S3 object key
-        Body: fileBuffer, // Provide the file buffer as the Body
-      })
-    );
-
-    // Generate a public URL for the uploaded file
-    const getObjectCommand = new GetObjectCommand({
-      Bucket: "resumes",
-      Key: uniqueFileName,
-    });
-
-    const signedUrl = await getSignedUrl(s3Client, getObjectCommand); // Generate URL valid for 1 hour
-
-    // Parse the signed URL to extract the base URL
-    const parsedUrl = new URL(signedUrl);
-    const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
-
-    // Send the URL as a response
-    console.log(baseUrl);
-    res.status(200).json(baseUrl);
-
-    // Log the URL in the console
-    console.log("File uploaded. URL:", baseUrl);
-  } catch (error) {
-    console.error("Error uploading file:", error);
-    return res.status(500).send("Error uploading file");
-  }
-});
 
 
 const candidateSignupSchema = z.object({
@@ -244,23 +138,31 @@ const candidateSignupSchema = z.object({
   phone: z.string().min(10).max(10),
   password: z.string().min(8),
   otp: z.string(),
-  profilePic: z.string().url(),
-  resume: z.string().url(),
+  profilePic: z.instanceof(Object), 
+  resume: z.instanceof(Object),
 })
 
 
 // SIGNUP AS CANDIDATE
-router.post("/signup", async (req, res) => {
-  const { name, email, phone, password, otp, profilePic, resume } = req.body;
+router.post("/signup", uploadImage.fields([{name:"myFileImage", maxCount:1},{name:"myFileResume",maxCount:1}]),  
+  async (req, res) => {
+  const { name, email, phone, password, otp } = req.body;
+  
+  const profilePic = req.files.myFileImage[0]
+  const resume = req.files.myFileResume[0]
+  // const resume = req.resume
+
+ 
+  
+
+
   
   const {success,error} = candidateSignupSchema.safeParse({name,email,phone,password,otp,profilePic,resume})
-    if (!success) {
+    if (!success){
         return res.status(400).json({message: "Invalid credentials"});
     }
 
-  // const isValidOTP = verifyOTP(otpStore, otp); //TESTING OTP
-  // if (isValidOTP) {
-  // TESTING OTP
+  
   try {
     // Verify OTP
     if (otpStore[email] == otp) {
@@ -268,6 +170,10 @@ router.post("/signup", async (req, res) => {
       if (userExists) {
         return res.status(409).json({ message: "User already exists" });
       }
+
+      const uploadProfilePic = await uploadFile(profilePic, "profilepics");
+      const uploadResume = await uploadFile(resume, "profilepics");
+
 
       // Hash the password
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -279,12 +185,25 @@ router.post("/signup", async (req, res) => {
         phone,
         otp: null,
         password: hashedPassword,
-        profilePic,
-        resume,
+        profilePic:uploadProfilePic,
+        resume:uploadResume,
       });
 
       // Save the user to the database
       await newUser.save();
+
+      const token = jwt.sign(
+        {
+          userId: newUser._id,
+          name: newUser.name,
+          email: newUser.email,
+          role: "candidate",
+        },
+        secretKey,
+        {
+          expiresIn: "7d",
+        }
+      );
 
       delete otpStore[email];
 
@@ -318,10 +237,10 @@ router.post("/signup", async (req, res) => {
       };
       await sendConfirmationByEmail(email);
       return res
-        .status(201)
-        .json({ message: "Candidate User created successfully" });
+        .status(200)
+        .json({success: true, message: "Candidate User created successfully", token });
     } else {
-      return res.status(400).json({ message: "Something went wrong!!!" });
+      return res.status(400).json({ message: "user already exists" });
     }
     // Check if user already exists
   } catch (error) {
@@ -374,7 +293,7 @@ router.post("/login", async (req, res) => {
       },
       secretKey,
       {
-        expiresIn: "1h",
+        expiresIn: "7d",
       }
     );
 
@@ -925,42 +844,69 @@ router.post("/help-contact", async (req, res) => {
 });
 
 // EDIT PROFILE (Let Aayush know how this is gonna work)
-router.put("/edit-profile", CandidateAuthenticateToken, async (req, res) => {
+router.put("/edit-profile", CandidateAuthenticateToken,uploadImage.fields([{name:"myFileImage", maxCount:1},{name:"myFileResume",maxCount:1}]) ,async (req, res) =>{
   try {
-    const { name, phone, password, resume, profilePic } = req.body;
+    const { name, phone, password, } = req.body;
     const { email } = req.user;
+
+    const profilePic = req.files?.myFileImage?.[0] || null;
+    const resume = req.files?.myFileResume?.[0] || null;
+
+
 
     const user = await Candidates.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+    
+
+    
+  
+     
+    let uploadProfilePic = null; 
+
+    if(profilePic){
+
+      if(user.profilePic){
+          const deleteProfilePic = await deleteFile(user.profilePic, "profilepics")
+      }
+
+      uploadProfilePic = await uploadFile(profilePic, "profilepics");
+   
+      user.profilePic=uploadProfilePic
+    }
+
+    let uploadResume = null;
+    if(resume){
+      if(user.resume){
+        const deleteProfilePic = await deleteFile(user.resume, "profilepics")
+      }
+      uploadResume = await uploadFile(resume, "profilepics");
+     
+      user.resume=uploadResume     
+    }
+
 
     if (name) {
       user.name = name;
-      await user.save();
+      
     }
 
     if (phone) {
       user.phone = phone;
-      await user.save();
+     
     }
 
     if (password) {
       const hashedPassword = await bcrypt.hash(password, 10);
       user.password = hashedPassword;
 
-      await user.save();
+     
     }
 
-    if (resume) {
-      user.resume = resume;
-      await user.save();
-    }
+  
 
-    if (profilePic) {
-      user.profilePic = profilePic;
-      await user.save();
-    }
+    await user.save();
 
     res.status(201).json({ message: "Edit profile successful!!!", user });
   } catch (error) {

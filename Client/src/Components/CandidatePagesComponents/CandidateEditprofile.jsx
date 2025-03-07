@@ -53,68 +53,19 @@ const CandidateEditprofile = () => {
 
 
 
-  const handleUploadImage = async (e) => {
-    try {
-      e.preventDefault();
-
-      const formData = new FormData();
-      formData.append("myFileImage", profilePic);
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/candidates/upload-profile-pic`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        ;
-        setProfilePicUrl(response.data);
-      }
-    } catch (error) {
-
-    }
-  };
-
-  const handleUploadResume = async (e) => {
-    try {
-      e.preventDefault();
-
-      const formData = new FormData();
-      formData.append("myFileResume", resume);
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/candidates/upload-resume`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        // ;
-        setResumeUrl(response.data);
-        ;
-      }
-    } catch (error) {
-
-    }
-  };
+  
 
 
   const handleSubmit = async (e) => {
     setError(null)
     e.preventDefault();
+   
     try {
       const formData = new FormData();
-      formData.append("name", userData.name);
-      formData.append("email", userData.email);
+      formData.append("name", userData.name);    
       formData.append("phone", userData.phone);
-      formData.append("resume", resumeUrl);
-      formData.append("profilePic", profilePicUrl);
+      formData.append("myFileResume", resume);
+      formData.append("myFileImage", profilePic);
 
       const token = localStorage.getItem("token");
       const response = await axios.put(`${import.meta.env.VITE_BASE_URL}/candidates/edit-profile`,
@@ -156,7 +107,7 @@ const CandidateEditprofile = () => {
       <div className='py-6  px-4'>
         <h2 className='text-center text-2xl font-bold '>Edit Profile image</h2>
         <div className='w-28 h-1 bg-blue-950 mx-auto'></div>
-        <form className="max-w-md mx-auto  p-8 shadow-lg shadow-gray-500 my-2 bg-white border border-md">
+        <form onSubmit={handleSubmit} className="max-w-md mx-auto  p-8 shadow-lg shadow-gray-500 my-2 bg-white border border-md">
           <div className="grid md:grid-cols-2 md:gap-6 mb-2">
             <div className="relative z-0 w-full mb-5 group">
               <input
@@ -189,8 +140,7 @@ const CandidateEditprofile = () => {
           <div className="grid md:grid-cols-2 md:gap-6">
             <div className="relative z-0 w-full mb-5 group">
               <input
-                type="tel"
-                pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                type="number"               
                 name="phone"
                 className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none    focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
@@ -205,7 +155,7 @@ const CandidateEditprofile = () => {
             </div>
           </div>
           <div className="relative z-0 w-full mb-5 group">
-            <span className='font-bold '> Reupload resume:-</span><input
+            <span className='font-bold '> Upload resume:-</span><input
               type="file"
               id="resume"
               name="resume"
@@ -213,9 +163,11 @@ const CandidateEditprofile = () => {
               onChange={(e) => setResume(e.target.files[0])}
               className="p-2"
             />
-            <button type='submit' onClick={handleUploadResume} className="text-white bg-blue-950 hover:bg-blue-950 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center   ">upload Resume</button>
+            {/* <button type='submit' onClick={()=>{
+
+            }} className="text-white bg-blue-950 hover:bg-blue-950 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center   ">upload Resume</button> */}
             <br></br>
-            <span className='font-bold '> Reupload Profile picture:-</span>
+            <span className='font-bold '>Upload Profile picture:-</span>
             <input
               type="file"
               id="profilePic"
@@ -224,10 +176,12 @@ const CandidateEditprofile = () => {
               onChange={(e) => setProfilePic(e.target.files[0])}
               className="p-2"
             />
-            <button type='submit' onClick={handleUploadImage} className="text-white bg-blue-950 hover:bg-blue-950 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center   ">upload image</button>
+            {/* <button type='submit' onClick={()=>{
+
+            }} className="text-white bg-blue-950 hover:bg-blue-950 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center   ">upload image</button> */}
 
           </div>
-          <button type="submit" onClick={handleSubmit} className="flex items-center juctify-center w-full text-white bg-blue-950 hover:bg-blue-950 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center    ">Submit</button>
+          <button type="submit"  className="flex items-center juctify-center w-full text-white bg-blue-950 hover:bg-blue-950 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center    ">Submit</button>
         </form>
 
         {error && (

@@ -3,8 +3,9 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import simg from '../../assets/signupimg.svg';
 import { z } from "zod";
+import {toast} from  "sonner"
 
-const PROFILEIMAGE_MAX_SIZE = 0.5 * 1024 * 1024;
+const PROFILEIMAGE_MAX_SIZE = 2 * 1024 * 1024;
 const RESUMEFILE_MAX_SIZE = 2 * 1024 * 1024;
 
 const ACCEPTED_IMAGE_TYPES = [
@@ -43,16 +44,6 @@ const candidateSignupSchema = z.object({
    password: z.string(),
    phone: z.string(),
    otp: z.string(),
-   profilePic:z.instanceof(File)
-   .refine((file)=> file.size<= PROFILEIMAGE_MAX_SIZE, "File size should be less than 500kb")
-   .refine((file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-   "Only .jpg, .jpeg, .png and .webp formats are supported.")
-  ,
-   resume:z.instanceof(File)
-   .refine((file)=> file.size <= RESUMEFILE_MAX_SIZE, "File size should be less than 5MB")
-   .refine((file) => ACCEPTED_RESUME_TYPES.includes(file?.type),
-   "Only .pdf, .doc, .docx, .txt, and .odt formats are supported."
-  )
 })
 
 const Signup = ({ toggleForm }) => {
@@ -74,117 +65,117 @@ const Signup = ({ toggleForm }) => {
   const [showLoaderResume, setShowLoaderResume] = useState(false);
 
 
-  const handleUploadImage = async (e) => {
-    try {
+  // const handleUploadImage = async (e) => {
+  //   try {
       
       
-      e.preventDefault();
+  //     e.preventDefault();
 
-      if(!profilePic){
-        setError("Please Upload Profile Picture")
-        return
-      }
+  //     if(!profilePic){
+  //       setError("Please Upload Profile Picture")
+  //       return
+  //     }
 
-      const {success,error} = profilePicUploadSchema.safeParse({
-        profilePic
-      })
+  //     const {success,error} = profilePicUploadSchema.safeParse({
+  //       profilePic
+  //     })
       
-      if(!success){
-        error.errors.forEach((err) => {
-          setError(err.message);
-        });
-        return;
-      }
+  //     if(!success){
+  //       error.errors.forEach((err) => {
+  //         setError(err.message);
+  //       });
+  //       return;
+  //     }
       
-      setShowLoader(true);
-      setError(null);
-      const formData = new FormData();
-      formData.append("myFileImage", profilePic);
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/candidates/upload-profile-pic`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+  //     setShowLoader(true);
+  //     setError(null);
+  //     const formData = new FormData();
+  //     formData.append("myFileImage", profilePic);
+  //     const response = await axios.post(
+  //       `${import.meta.env.VITE_BASE_URL}/candidates/upload-profile-pic`,
+  //       formData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
 
-      if (response.status === 200) {
-        ;
-        setProfilePicUrl(response.data);
-        setShowLoader(false);
-      }
-      else if (response.status === 500) {
-        setError("Please Upload your profile image Correctly")
-        setShowLoader(false);
-      }
-      else {
+  //     if (response.status === 200) {
+  //       ;
+  //       setProfilePicUrl(response.data);
+  //       setShowLoader(false);
+  //     }
+  //     else if (response.status === 500) {
+  //       setError("Please Upload your profile image Correctly")
+  //       setShowLoader(false);
+  //     }
+  //     else {
 
 
 
-      }
-    } catch (error) {
+  //     }
+  //   } catch (error) {
 
-    }
-  };
+  //   }
+  // };
 
-  const handleUploadResume = async (e) => {
-    try {
+  // const handleUploadResume = async (e) => {
+  //   try {
       
-      e.preventDefault();
+  //     e.preventDefault();
       
-      if(!resume){
-        setError("Please Upload your resume")
-        return
-      }
+  //     if(!resume){
+  //       setError("Please Upload your resume")
+  //       return
+  //     }
 
-      const {success,error} = resumeUploadSchema.safeParse({
-        resume
-      })
+  //     const {success,error} = resumeUploadSchema.safeParse({
+  //       resume
+  //     })
       
-      if(!success){
-        error.errors.forEach((err) => {
-          setError(err.message);
-        });
+  //     if(!success){
+  //       error.errors.forEach((err) => {
+  //         setError(err.message);
+  //       });
         
-        return;
-      }
-      setShowLoaderResume(true);
-      setError(null);
+  //       return;
+  //     }
+  //     setShowLoaderResume(true);
+  //     setError(null);
 
-      const formData = new FormData();
-      formData.append("myFileResume", resume);
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/candidates/upload-resume`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+  //     const formData = new FormData();
+  //     formData.append("myFileResume", resume);
+  //     const response = await axios.post(
+  //       `${import.meta.env.VITE_BASE_URL}/candidates/upload-resume`,
+  //       formData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
 
-      if (response.status === 200) {
-        // ;
-        setResumeUrl(response.data);
-        ;
-        setShowLoaderResume(false);
-      }
-      else if (response.status === 500) {
-        setError("Please Upload your resume Correctly")
-        setShowLoaderResume(false);
-      }
-      else {
+  //     if (response.status === 200) {
+  //       // ;
+  //       setResumeUrl(response.data);
+  //       ;
+  //       setShowLoaderResume(false);
+  //     }
+  //     else if (response.status === 500) {
+  //       setError("Please Upload your resume Correctly")
+  //       setShowLoaderResume(false);
+  //     }
+  //     else {
 
 
 
-        setShowLoaderResume(false);
-      }
-    } catch (error) {
+  //       setShowLoaderResume(false);
+  //     }
+  //   } catch (error) {
 
-    }
-  };
+  //   }
+  // };
 
   const handleSendOtp = async (e) => {
     e.preventDefault();
@@ -238,21 +229,23 @@ const Signup = ({ toggleForm }) => {
     }
      
 
-    if(!resume){
-      setError("resume is missing")
-      return 
-    }
+    // if(!resume){
+    //   setError("resume is missing")
+    //   return 
+    // }
 
-    if(!profilePic){
-      setError("Profile picture is missing")
-      return 
-    }
+    // if(!profilePic){
+    //   setError("Profile picture is missing")
+    //   return 
+    // }
 
-
-
-
-
-
+   
+    const { profilePicSuccess, profilePicError } = profilePicUploadSchema.safeParse({
+      profilePicUploadSchema
+    });
+    const { resumeUploadSuccess, resumeUploadError } = resumeUploadSchema.safeParse({
+      resumeUploadSchema
+    });
 
     const {success,error} = candidateSignupSchema.safeParse({
       name,
@@ -260,9 +253,22 @@ const Signup = ({ toggleForm }) => {
       password,
       phone,
       otp,
-      resume,
-      profilePic
     })
+
+    if(resumeUploadError){
+      resumeUploadError.errors.forEach((err) => {
+        setError(err.message);
+      });
+      return;
+    }
+
+    
+    if(profilePicError){
+      profilePicError.errors.forEach((err) => {
+        setError(err.message);
+      });
+      return;
+    }
 
     if(!success){
       error.errors.forEach((err) => {
@@ -272,24 +278,35 @@ const Signup = ({ toggleForm }) => {
     }
 
     setError(null);
+    const formData = new FormData();
+    formData.append("myFileImage",  profilePic);
+    formData.append("myFileResume", resume);
+    formData.append('name',name)
+    formData.append('email',email)
+    formData.append('password',password)
+    formData.append('phone',phone)  
+    formData.append('otp',otp)
 
+     
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/candidates/signup`,
-        {
-          name,
-          email,
-          password,
-          otp,
-          phone,
-          resume: resumeUrl,
-          profilePic: profilePicUrl,
-        }
+         formData, 
+         {
+           headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+           }                 
+         }
       );
 
-      if (response.status === 201) {
-
+      if (response.data.success) {
+        toast.success(`${name} registered successfully`)
+        localStorage.setItem("token",response.data.token)
         navigate('/dashboard')
+      }
+      else if(response.data.message == "user already exists"){
+        toast.error("User already exists")
+        return
       }
 
     } catch (error) {
@@ -528,14 +545,14 @@ const Signup = ({ toggleForm }) => {
                 <label className="block mb-2 text-md font-medium text-gray-900  font-bold text-2xl mb-4" for="file_input">Upload File</label>
                 <div className="flex mb-8">
                   <input
-                    className="w-full rounded-md border-0 pe-12 text-sm shadow-sm "
+                    className="w-[60%] rounded-md border-0 pe-12 text-sm shadow-sm "
                     type="file"
                     name="profilePic"
                     onChange={(e) => setProfilePic(e.target.files[0])}
                   />
 
-                  <button
-                    onClick={handleUploadImage}
+                  {/* <button
+                    onClick={()=>{}}
                     className=" w-1/2 bg-blue-900 hover:bg-blue-950 text-white rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 "
                   >  {showLoader ? (
                     <svg aria-hidden="true" class="inline w-4 h-4 text-gray-200 animate-spin  fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -544,7 +561,8 @@ const Signup = ({ toggleForm }) => {
                     </svg>
                   ) : (
                     <span>{profilePicUrl ? "Uploaded" : "Upload Image"}</span>)}
-                  </button>
+                  </button> */}
+                  <div className=" my-auto">Upload Profile Image</div>
                 </div>
 
 
@@ -557,14 +575,14 @@ const Signup = ({ toggleForm }) => {
               <div className="mt-1">
                 <div className=" flex ">
                   <input
-                    className="w-full rounded-lg border-gray-200 pe-12 text-sm shadow-sm"
+                    className="w-[60%] rounded-lg border-gray-200 pe-12 text-sm shadow-sm"
                     type="file"
                     
                     name="resume"
                     onChange={(e) => setResume(e.target.files[0])}
                   />
 
-                  <button
+                  {/* <button
                     onClick={handleUploadResume}
                     className=" w-1/2 bg-blue-900 hover:bg-blue-950 text-white rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   >
@@ -575,7 +593,8 @@ const Signup = ({ toggleForm }) => {
                       </svg>
                     ) : (
                       <span>{resumeUrl ? 'Uploaded' : 'Upload Resume'}</span>)}
-                  </button>
+                  </button> */}
+                  <div className=" my-auto">Upload Resume/CV</div>
                 </div>
 
 

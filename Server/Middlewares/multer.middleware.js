@@ -24,7 +24,11 @@ const excelFilter = (req, file, cb) => {
 };
 
 const pdfAllowedMimeTypes = [
-    "application/pdf", 
+    "application/pdf",  // PDF
+    "application/msword",  // DOC (Older Word format)
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",  // DOCX (Newer Word format)
+    "application/rtf",  // RTF (Rich Text Format)
+    "text/plain"  // TXT (Plain text) 
 ];
 
 export const pdfUpload = multer({ 
@@ -45,12 +49,30 @@ export const excelUpload = multer({
     excelFilter
  })
 
+ const allowedImageMimeTypes = [
+    "image/jpeg",  // JPG, JPEG
+    "image/png",   // PNG
+    "image/gif",   // GIF
+    "image/webp",  // WEBP
+    "image/tiff",  // TIFF
+    "image/bmp",   // BMP
+    "image/svg+xml", // SVG
+    "application/pdf",  // PDF
+    "application/pdf",  // PDF
+    "application/msword",  // DOC (Older Word format)
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",  // DOCX (Newer Word format)
+    "application/rtf",  // RTF (Rich Text Format)
+    "text/plain"  // TXT (Plain text) 
+  ];
+
 
  export const uploadImage = multer({
       storage : imageStorage,
-      limits: { fileSize: 2 * 1024 * 1024 },
+      limits: { fileSize: 5 * 1024 * 1024 },
       fileFilter: (req, file, cb) => {
-        if (!file.mimetype.startsWith("image/")) {
+        console.log("sfa")
+        if (!allowedImageMimeTypes.includes(file.mimetype)) {
+            console.log("ajsdfhk")
             return cb(new Error("Only image files are allowed"));
         }
         cb(null, true);
