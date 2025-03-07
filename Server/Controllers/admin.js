@@ -1466,59 +1466,7 @@ const s3ClientResumes = new S3Client({
 
     
 
-//     // console.log(req.files)
 
-//     const file = req.files && req.files.myFile; // Change 'myFile' to match the key name in Postman
-//     console.log("adf",file)
-//     if (!file) {
-//       return res.status(400).send("No file uploaded");
-//     }
-
-//     // Generate a unique identifier
-//     const uniqueIdentifier = uuidv4();
-
-//     // Get the file extension from the original file name
-//     const fileExtension = file.name.split(".").pop();
-
-//     // Create a unique filename by appending the unique identifier to the original filename
-//     const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
-
-//     // Convert file to base64
-//     const base64Data = file.data.toString("base64");
-
-//     // Create a buffer from the base64 data
-//     const fileBuffer = Buffer.from(base64Data, "base64");
-
-//     const uploadData = await s3ClientResumes.send(
-//       new PutObjectCommand({
-//         Bucket: "resumes",
-//         Key: uniqueFileName, // Use the unique filename for the S3 object key
-//         Body: fileBuffer, // Provide the file buffer as the Body
-//       })
-//     );
-
-//     // Generate a public URL for the uploaded file
-//     const getObjectCommand = new GetObjectCommand({
-//       Bucket: "resumes",
-//       Key: uniqueFileName,
-//     });
-
-//     const signedUrl = await getSignedUrl(s3ClientResumes, getObjectCommand); // Generate URL valid for 1 hour
-
-//     // Parse the signed URL to extract the base URL
-//     const parsedUrl = new URL(signedUrl);
-//     const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
-
-//     // Send the URL as a response
-//     res.status(200).send(baseUrl);
-
-//     // Log the URL in the console
-//     console.log("File uploaded. URL:", baseUrl);
-//   } catch (error) {
-//     console.error("Error uploading file:", error);
-//     return res.status(500).send("Error uploading file");
-//   }
-// });
 
 const downloadFile = async (url, outputFilePath) => {
   const writer = fs.createWriteStream(outputFilePath);
@@ -3648,59 +3596,6 @@ router.post("/download-excel", AdminAuthenticateToken, async (req, res) => {
 
 
 
-//   try {
-//     const file = req.files && req.files.myFileImage; // Change 'myFile' to match the key name in Postman
-
-//     if (!file) {
-//       return res.status(400).send("No file uploaded");
-//     }
-
-//     // Generate a unique identifier
-//     const uniqueIdentifier = uuidv4();
-
-//     // Get the file extension from the original file name
-//     const fileExtension = file.name.split(".").pop();
-
-//     // Create a unique filename by appending the unique identifier to the original filename
-//     const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
-
-//     // Convert file to base64
-//     const base64Data = file.data.toString("base64");
-
-//     // Create a buffer from the base64 data
-//     const fileBuffer = Buffer.from(base64Data, "base64");
-
-//     const uploadData = await s3Client.send(
-//       new PutObjectCommand({
-//         Bucket: "profilepics",
-//         Key: uniqueFileName, // Use the unique filename for the S3 object key
-//         Body: fileBuffer, // Provide the file buffer as the Body
-//       })
-//     );
-
-//     // Generate a public URL for the uploaded file
-//     const getObjectCommand = new GetObjectCommand({
-//       Bucket: "profilepics",
-//       Key: uniqueFileName,
-//     });
-
-//     const signedUrl = await getSignedUrl(s3Client, getObjectCommand); // Generate URL valid for 1 hour
-
-//     // Parse the signed URL to extract the base URL
-//     const parsedUrl = new URL(signedUrl);
-//     const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
-
-//     // Send the URL as a response
-//     res.status(200).send(baseUrl);
-
-//     // Log the URL in the console
-//     console.log("File uploaded. URL:", baseUrl);
-//   } catch (error) {
-//     console.error("Error uploading file:", error);
-//     return res.status(500).send("Error uploading file");
-//   }
-// });
-// upload excel sheet data
 
 router.post("/upload-joiningsheet/:id",AdminAuthenticateToken ,excelUpload.single('myFileImage') , async (req, res) => {
   try{
@@ -3793,7 +3688,7 @@ router.post("/fire-ticker/:id", async (req, res) => {
 
 
 router.post("/upload-policies",AdminAuthenticateToken, pdfUpload.array("policies",3) , async (req, res) => {
-  //  let uploadedFiles = req.files.map(file => file.path);
+  
   try {
 
     const existingPolicies  = await Policies.findOne()
@@ -3835,18 +3730,6 @@ router.post("/upload-policies",AdminAuthenticateToken, pdfUpload.array("policies
     res.status(500).send("Internal server error.");
   }
   finally{
-    // if (uploadedFiles?.length) {
-    //   await Promise.allSettled(
-    //     uploadedFiles.map(async (filePath) => {
-    //       try {
-    //         await fsPromises.unlink(filePath); 
-    //         console.log(`Deleted: ${filePath}`);
-    //       } catch (err) {
-    //         console.error(`Failed to delete: ${filePath}`, err);
-    //       }
-    //     })
-    //   );
-    // }
   }
 });
 
@@ -4195,60 +4078,6 @@ router.get("/get-team/:id", async (req, res) => {
 
 
 
-// router.post("/upload-shortlisted-url", async (req, res) => {
-//   try {
-//     const file = req.files && req.files.myFileImage; // Change 'myFile' to match the key name in Postman
-
-//     if (!file) {
-//       return res.status(400).send("No file uploaded");
-//     }
-
-//     // Generate a unique identifier
-//     const uniqueIdentifier = uuidv4();
-
-//     // Get the file extension from the original file name
-//     const fileExtension = file.name.split(".").pop();
-
-//     // Create a unique filename by appending the unique identifier to the original filename
-//     const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
-
-//     // Convert file to base64
-//     const base64Data = file.data.toString("base64");
-
-//     // Create a buffer from the base64 data
-//     const fileBuffer = Buffer.from(base64Data, "base64");
-
-//     const uploadData = await s3Client.send(
-//       new PutObjectCommand({
-//         Bucket: "profilepics",
-//         Key: uniqueFileName, // Use the unique filename for the S3 object key
-//         Body: fileBuffer, // Provide the file buffer as the Body
-//       })
-//     );
-
-//     // Generate a public URL for the uploaded file
-//     const getObjectCommand = new GetObjectCommand({
-//       Bucket: "profilepics",
-//       Key: uniqueFileName,
-//     });
-
-//     const signedUrl = await getSignedUrl(s3Client, getObjectCommand); // Generate URL valid for 1 hour
-
-//     // Parse the signed URL to extract the base URL
-//     const parsedUrl = new URL(signedUrl);
-//     const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
-
-//     // Send the URL as a response
-//     res.status(200).send(baseUrl);
-
-//     // Log the URL in the console
-//     console.log("File uploaded. URL:", baseUrl);
-//   } catch (error) {
-//     console.error("Error uploading file:", error);
-//     return res.status(500).send("Error uploading file");
-//   }
-// });
-// upload excel sheet data
 
 
 

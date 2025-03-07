@@ -372,25 +372,7 @@ const Prompt = () => {
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
             <h2 className="text-xl font-semibold mb-4">Bulk Jobs Form</h2>
             <div className="space-y-4">
-              {/* <div>
-                <label className="block text-sm font-medium">
-                  Recruiter Name
-                </label>
-                <select
-                    className="w-full min-w-[12rem] p-2 rounded-md"
-                    defaultValue=""
-                    onChange={handleSelect}
-                  >
-                    <option value="">Select Value</option>
-                    {dsrdata?.map((data, index) => (
-                      <option key={index} value={data}>
-                        {data}
-                      </option>
-                    ))}
-                </select>
-
-              </div> */}
-
+             
                 <div className=" font-medium space-y-2">
                   <label className="block" htmlFor="recipientEmail">Recipient's email</label>
                   <input 
