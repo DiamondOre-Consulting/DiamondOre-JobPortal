@@ -1462,10 +1462,10 @@ const s3ClientResumes = new S3Client({
   region: "global",
 });
 
-// router.post("/upload-dsr",  async(req, res) => {
-//   try {
+
+
     
-//     // console.log(req.file)
+
 //     // console.log(req.files)
 
 //     const file = req.files && req.files.myFile; // Change 'myFile' to match the key name in Postman
@@ -3645,9 +3645,9 @@ router.post("/download-excel", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
-// getting url of excel sheet
 
-// router.post("/upload-excelsheet-url", async (req, res) => {
+
+
 //   try {
 //     const file = req.files && req.files.myFileImage; // Change 'myFile' to match the key name in Postman
 
@@ -3790,63 +3790,7 @@ router.post("/fire-ticker/:id", async (req, res) => {
   }
 });
 
-// policies uploading for employee URL
-// router.post("/get-policy-url", async (req, res) => {
-//   try {    
-//     const file = req.files && req.files.myFileImage; // Change 'myFile' to match the key name in Postman
 
-//     if (!file) {
-//       return res.status(400).send("No file uploaded");
-//     }
-
-//     // Generate a unique identifier
-//     const uniqueIdentifier = uuidv4();
-
-//     // Get the file extension from the original file name
-//     const fileExtension = file.name.split(".").pop();
-
-//     // Create a unique filename by appending the unique identifier to the original filename
-//     const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
-
-//     // Convert file to base64
-//     const base64Data = file.data.toString("base64");
-
-//     // Create a buffer from the base64 data
-//     const fileBuffer = Buffer.from(base64Data, "base64");
-
-//     const uploadData = await s3Client.send(
-//       new PutObjectCommand({
-//         Bucket: "profilepics",
-//         Key: uniqueFileName, // Use the unique filename for the S3 object key
-//         Body: fileBuffer, // Provide the file buffer as the Body
-//         ContentType: "application/pdf",
-//         ACL: "public-read",
-//         ContentDisposition: "inline",
-//       })
-//     );
-
-//     // Generate a public URL for the uploaded file
-//     const getObjectCommand = new GetObjectCommand({
-//       Bucket: "profilepics",
-//       Key: uniqueFileName,
-//     });
-
-//     const signedUrl = await getSignedUrl(s3Client, getObjectCommand); // Generate URL valid for 1 hour
-
-//     // Parse the signed URL to extract the base URL
-//     const parsedUrl = new URL(signedUrl);
-//     const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
-
-//     // Send the URL as a response
-//     res.status(200).send(baseUrl);
-
-//     // Log the URL in the console
-//     console.log("File uploaded. URL:", baseUrl);
-//   } catch (error) {
-//     console.error("Error uploading file:", error);
-//     return res.status(500).send("Error uploading file");
-//   }
-// });
 
 router.post("/upload-policies",AdminAuthenticateToken, pdfUpload.array("policies",3) , async (req, res) => {
   //  let uploadedFiles = req.files.map(file => file.path);
@@ -4247,9 +4191,9 @@ router.get("/get-team/:id", async (req, res) => {
   }
 });
 
-// for employeee
 
-// upload shorlisted sheet url
+
+
 
 // router.post("/upload-shortlisted-url", async (req, res) => {
 //   try {
