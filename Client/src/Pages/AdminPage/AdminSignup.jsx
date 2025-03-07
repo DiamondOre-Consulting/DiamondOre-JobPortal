@@ -26,29 +26,7 @@ const AdminSignup = ({ toggleForm }) => {
 
 
 
-  // const handleUploadImage = async (e) => {
-  //   try {
-  //     e.preventDefault();
 
-  //     const formData = new FormData();
-  //     formData.append("myFileImage", profilePic);
-  //     const response = await axios.post(
-  //       `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-profile-pic`,
-  //       formData,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       }
-  //     );
-
-  //     if (response.status === 200) {
-  //       setProfilePicUrl(response.data);
-  //     }
-  //   } catch (error) {
-  //     console.log("")
-  //   }
-  // };
 
   const handleSendOtp = async (e) => {
     e.preventDefault();

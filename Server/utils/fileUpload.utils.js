@@ -14,9 +14,9 @@ const s3Client = new S3Client({
 // Upload file function
 export const uploadFile = async (file, bucketName) => {
   if (!file) return null;
-
+  console.log(file)
   const fileName = `${uuidv4()}.${file.originalname.split(".").pop()}`;
-  const fileBuffer = file.buffer || await fs.readFileSync(file.path);
+  const fileBuffer = file.buffer || await fs.createReadStream(file.path);
   try {
     await s3Client.send(
       new PutObjectCommand({
@@ -26,7 +26,7 @@ export const uploadFile = async (file, bucketName) => {
         ContentType: file.mimetype,
       })
     );
-
+    console.log(fileName)
     return `https://s3.tebi.io/${bucketName}/${fileName}`;
   } catch (error) {
     console.error("Upload failed:", error);

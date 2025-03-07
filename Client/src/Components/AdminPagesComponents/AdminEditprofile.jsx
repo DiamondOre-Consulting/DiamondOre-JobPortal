@@ -5,7 +5,7 @@ import axios from "axios";
 
 const AdminEditprofile = () => {
   const [profilePic, setProfilePic] = useState(null);
-  const [profilePicUrl, setProfilePicUrl] = useState("");
+  
   const [adminData, setAdminData] = useState({
     name: "",
     email: "",
@@ -13,6 +13,8 @@ const AdminEditprofile = () => {
     passcode: ""
   });
   const navigate = useNavigate();
+
+  console.log(adminData)
 
 
   useEffect(() => {
@@ -30,6 +32,7 @@ const AdminEditprofile = () => {
           },
         });
         if (response.status === 200) {
+          console.log(response.data)
           setAdminData(response.data);
         }
       } catch (error) {
@@ -63,31 +66,31 @@ const AdminEditprofile = () => {
 
 
 
-  const handleUploadImage = async (e) => {
-    try {
-      e.preventDefault();
+  // const handleUploadImage = async (e) => {
+  //   try {
+  //     e.preventDefault();
 
-      const formData = new FormData();
-      formData.append("myFileImage", profilePic);
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-profile-pic`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+  //     const formData = new FormData();
+      
+  //     const response = await axios.post(
+  //       `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-profile-pic`,
+  //       formData,
+  //       {
+  //         headers :{
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
 
-      if (response.status === 200) {
-        ;
+  //     if (response.status === 200) {
+  //       ;
 
-        setProfilePicUrl(response.data);
-      }
-    } catch (error) {
+  //       setProfilePicUrl(response.data);
+  //     }
+  //   } catch (error) {
 
-    }
-  };
+  //   }
+  // };
 
 
   const handleSubmit = async (e) => {
@@ -96,17 +99,22 @@ const AdminEditprofile = () => {
       const formData = new FormData();
       formData.append("name", adminData.name);
       formData.append("email", adminData.email);
-      formData.append("profilePic", profilePicUrl);
       formData.append("passcode", adminData.passcode);
-
-      //   
+      formData.append("profilePic", profilePic);
+      console.log(adminData.name)
+      console.log(adminData)
+      console.log(profilePic)
+     
       const token = localStorage.getItem("token");
-      await axios.put(`${import.meta.env.VITE_BASE_URL}/admin-confi/edit-profile`, formData, {
+      const response =await axios.put(`${import.meta.env.VITE_BASE_URL}/admin-confi/edit-profile`,
+         formData, 
+         {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
         },
       });
+       console.log(response.data)
       alert('Profile updated successfully!');
       navigate('/admin-dashboard');
     } catch (error) {
@@ -119,7 +127,7 @@ const AdminEditprofile = () => {
       <h2 className='text-center text-2xl font-bold '>Edit Profile image</h2>
       <div className='w-28 h-1 bg-blue-950 mx-auto'></div>
 
-      <form className="max-w-md mx-auto  p-8 shadow-lg shadow-gray-500 my-2 bg-white border border-md">
+      <form onSubmit={handleSubmit} className="max-w-md mx-auto  p-8 shadow-lg shadow-gray-500 my-2 bg-white border border-md">
         <div className="relative z-0  h-60 w-full mb-5 group sm:h-48 md:h-60" style={{ backgroundImage: `url("${adminData.profilePic}")`, backgroundPosition: "center", backgroundSize: "cover" }}>
         </div>
         <div className="grid md:grid-cols-2 md:gap-6 mb-2">
@@ -171,10 +179,12 @@ const AdminEditprofile = () => {
             className="p-2"
           />
 
-          <button type='submit' onClick={handleUploadImage} className="text-white bg-blue-950 hover:bg-blue-950 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center   ">upload image</button>
+          {/* <button onClick={()=>{
+
+          }} className="text-white bg-blue-950 hover:bg-blue-950 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center   ">upload image</button> */}
 
         </div>
-        <button type="submit" onClick={handleSubmit} className="flex items-center juctify-center w-full text-white bg-blue-950 hover:bg-blue-950 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ">Submit</button>
+        <button type="submit"  className="flex items-center juctify-center w-full text-white bg-blue-950 hover:bg-blue-950 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  sm:w-auto px-5 py-2.5 text-center ">Submit</button>
       </form>
     </div>
   )

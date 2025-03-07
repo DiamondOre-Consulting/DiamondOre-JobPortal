@@ -129,61 +129,7 @@ const s3Client = new S3Client({
   region: "global",
 });
 
-// Handle Image file upload
-// router.post("/upload-profile-pic", async (req, res) => {
-//   try {
-  
-//     const file = req.files && req.files.myFileImage; // Change 'myFile' to match the key name in Postman
-//     console.log(req.file)
-//     if (!file) {
-//       return res.status(400).send("No file uploaded");
-//     }
 
-//     // Generate a unique identifier
-//     const uniqueIdentifier = uuidv4();
-
-//     // Get the file extension from the original file name
-//     const fileExtension = file.name.split(".").pop();
-
-//     // Create a unique filename by appending the unique identifier to the original filename
-//     const uniqueFileName = `${uniqueIdentifier}.${fileExtension}`;
-
-//     // Convert file to base64
-//     const base64Data = file.data.toString("base64");
-
-//     // Create a buffer from the base64 data
-//     const fileBuffer = Buffer.from(base64Data, "base64");
-
-//     const uploadData = await s3Client.send(
-//       new PutObjectCommand({
-//         Bucket: "profilepics",
-//         Key: uniqueFileName, // Use the unique filename for the S3 object key
-//         Body: fileBuffer, // Provide the file buffer as the Body
-//       })
-//     );
-
-//     // Generate a public URL for the uploaded file
-//     const getObjectCommand = new GetObjectCommand({
-//       Bucket: "profilepics",
-//       Key: uniqueFileName,
-//     });
-
-//     const signedUrl = await getSignedUrl(s3Client, getObjectCommand); // Generate URL valid for 1 hour
-
-//     // Parse the signed URL to extract the base URL
-//     const parsedUrl = new URL(signedUrl);
-//     const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${parsedUrl.pathname}`;
-
-//     // Send the URL as a response
-//     res.status(200).send(baseUrl);
-
-//     // Log the URL in the console
-//     console.log("File uploaded. URL:", baseUrl);
-//   } catch (error) {
-//     console.error("Error uploading file:", error);
-//     return res.status(500).send("Error uploading file");
-//   }
-// });
 
 // SIGNUP AS ADMIN
 router.post("/signup-admin",AdminAuthenticateToken ,uploadImage.single('myFileImage'), async (req, res) => {
@@ -1256,15 +1202,29 @@ router.get("/all-messages/:id", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
-router.put("/edit-profile", AdminAuthenticateToken, async (req, res) => {
+router.put("/edit-profile", AdminAuthenticateToken,uploadImage.single('profilePic') ,async (req, res) => {
   try {
-    const { name, password, profilePic, passcode } = req.body;
+    const { name ,password,profilePic, passcode } = req.body;
     const { email } = req.user;
+    
+    console.log(req.body)
+    console.log(req.file)
+
+   
 
     const user = await Admin.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+
+    if(req.file){
+        const deleteProfilePic = await deleteFile(user.profilePic,"profilepics");
+        const uploadProfilePic = await uploadFile(req.file, "profilepics");
+        user.profilePic = uploadProfilePic
+        console.log("asdf",uploadProfilePic)
+    }
+
+
 
     if (name) {
       user.name = name;
