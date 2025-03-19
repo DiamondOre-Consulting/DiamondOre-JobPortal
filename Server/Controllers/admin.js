@@ -1742,88 +1742,6 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
   }
 };
 
-// router.get("/find-bulk-jobs", async (req, res) => {
-//   try {
-//     const { recruiterName, fromDate, toDate, location, ctcStart, ctcEnd, role } = req.query; // Taking input from query params
-
-//     if (!fromDate || !toDate) {
-//       return res.status(400).send("Please provide fromDate and toDate");
-//     }
-
-//     // Convert fromDate and toDate into Date objects
-//     const from = new Date(fromDate);
-//     const to = new Date(toDate);
-//     // to.setHours(23, 59, 59, 999);
-
-//     // Build the query object based on whether recruiterName is provided
-//     const query = {
-//       currentDate: {
-//         $gte: fromDate,
-//         $lte: toDate,
-//       },
-//     };
-
-//     // if (recruiterName) {
-//     //   query.recruiterName = recruiterName;
-//     // }
-
-//     if (location) {
-//       query.location = location;
-//     }
-
-//     if (role) {
-//       query.role = role;
-//     }
-
-//     if (ctcStart && ctcEnd) {
-//       query.currentCTC = {
-//         $gte: ctcStart,
-//         $lte: ctcEnd
-//       }
-//     }
-
-//     // Fetch candidates matching the criteria
-//     const candidates = await DSR.find(query);
-
-//     console.log(candidates.length);
-
-//     if (!candidates.length) {
-//       return res.status(404).send("No candidates found");
-//     }
-
-//     const recommendations = [];
-
-//     for (const candidate of candidates) {
-//       const suitableJobs = await Jobs.find({
-//         City: candidate.currentLocation,
-//         Channel: candidate.currentChannel,
-//         MaxSalary: {
-//           $gt: candidate.currentCTC,
-//           $lte: candidate.currentCTC * 1.5, // Not more than 50% of current CTC
-//         },
-//       });
-
-//       recommendations.push({
-//         candidate: candidate,
-//         jobs: suitableJobs,
-//       });
-
-//       if (suitableJobs.length > 0) {
-//         const findRec = await RecruitersAndKAMs.findOne({
-//           name: recruiterName,
-//         });
-//         const eMailIdRec = findRec.email;
-//         await sendJobsToRecByEmail(eMailIdRec, candidate, suitableJobs);
-//       }
-//     }
-
-//     res.status(200).json(recommendations);
-//   } catch (error) {
-//     res.status(500).send(error.message);
-//   }
-// });
-
-// REGISTER RECRUITER AND KAM
 
 router.get("/find-bulk-jobs", async (req, res) => {
   try {
@@ -1834,13 +1752,15 @@ router.get("/find-bulk-jobs", async (req, res) => {
       return res.status(400).send("Please provide fromDate and toDate");
     }
 
-    const can = await DSR.find()
-    
+    console.log(location)
+
+  
+ 
     const candidates = await DSR.aggregate(
       [
         {
           $match:{
-             currentLocation: location,
+             currentLocation: { $in: location },
              currentCTC: { 
                            $gte: parseFloat(ctcStart), 
                            $lte : parseFloat(ctcEnd)
@@ -1853,6 +1773,10 @@ router.get("/find-bulk-jobs", async (req, res) => {
         }
       ]
     );
+
+
+
+    
 
     if (!candidates.length) {
       return res.status(404).send("No candidates found");
@@ -2880,7 +2804,7 @@ router.put("/edit-goalSheet", async (req, res) => {
     selectedColor,
   } = req.body;
 
-  console.log("body",req.body)
+ 
 
 
   try {
@@ -2905,7 +2829,7 @@ router.put("/edit-goalSheet", async (req, res) => {
       }
     );
 
-    console.log(goalSheet);
+    
 
     const goalDetailIndex = goalSheet.findIndex(
       (data) => data?._id.toString() === sheetId.toString()
@@ -2943,7 +2867,7 @@ router.put("/edit-goalSheet", async (req, res) => {
 
       // let target;
 
-      console.log(employee.empType);
+      
 
       if (employee.empType === "Recruiter") {
         goalDetail.target = parseInt(cost) * 4;
@@ -2960,6 +2884,7 @@ router.put("/edit-goalSheet", async (req, res) => {
     }
 
     if (revenue !== goalDetail?.revenue) {
+    
       // Calculate cumulativeRevenue based on the new revenue value
       const updatedCumulativeRevenue =
         previousCumulativeRevenue + parseInt(revenue);
@@ -2967,6 +2892,8 @@ router.put("/edit-goalSheet", async (req, res) => {
       goalDetail.revenue = parseInt(revenue);
       goalDetail.cumulativeRevenue = updatedCumulativeRevenue;
 
+      console.log(updatedCumulativeRevenue / goalDetail.cumulativeCost)
+     
       // Update achMTD and achYTD if revenue is provided
       goalDetail.achMTD = cost
         ? (revenue / cost).toFixed(2)
@@ -2998,8 +2925,14 @@ router.put("/edit-goalSheet", async (req, res) => {
 
 
     if (goalSheet.length > 1) {
-      for (let i = goalDetailIndex + 1; i < goalSheet.length; i++) {
+      console.log("enter1")
+      for (let i = goalDetailIndex ; i < goalSheet.length; i++) {
         const detail = goalSheet[i];
+        console.log(detail.cumulativeRevenue)
+        console.log(detail.cumulativeCost)
+        console.log( (
+          detail.cumulativeRevenue / detail.cumulativeCost
+        ).toFixed(2))
         detail.cumulativeCost = goalSheet[i - 1].cumulativeCost + detail.cost;
         detail.cumulativeRevenue =
           goalSheet[i - 1].cumulativeRevenue + detail.revenue;
@@ -3009,6 +2942,8 @@ router.put("/edit-goalSheet", async (req, res) => {
         detail.achMTD = (detail.revenue / detail.cost).toFixed(2);
       }
     }
+
+    
 
     // Save the updated GoalSheet
     await goalSheetBeforeSort.save();
@@ -3054,117 +2989,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// STATUS UPDATE EMPLOYEE's ACCOUNT HANDLING DETAILS
-// router.put(
-//   "/account-handling/:id",
-//   AdminAuthenticateToken,
-//   async (req, res) => {
-//     try {
-//       const { id } = req.params;
-//       const { status } = req.body;
-
-//       const findAccount = await AccountHandling.findById({ _id: id });
-//       if (!findAccount) {
-//         return res
-//           .status(402)
-//           .json({ message: "No account found with this id!!!" });
-//       }
-
-//       if (status === "true") {
-//         const requestToUpdate = findAccount.requests.find(
-//           (req) => req.reqDetail.status === null
-//         );
-//         if (!requestToUpdate) {
-//           return res
-//             .status(400)
-//             .json({ message: "No pending request found to update!" });
-//         }
-
-//         const previousOwnerEmail = findAccount.owner.email;
-//         const newOwnerId = requestToUpdate.reqDetail.employee;
-
-//         // Fetch new owner's email
-//         const newOwner = await Employees.findById(newOwnerId);
-//         if (!newOwner) {
-//           return res.status(404).json({ message: "New owner not found!" });
-//         }
-//         const newOwnerEmail = newOwner.email;
-
-//         // Update request status to true
-//         requestToUpdate.reqDetail.status = true;
-
-//         // Update owner of the AccountHandling
-//         findAccount.owner = newOwnerId;
-
-//         // Save the updated AccountHandling document
-//         await findAccount.save();
-
-//         // Send email to the previous owner
-//         const previousOwnerMailOptions = {
-//           from: "tech@diamondore.in",
-//           to: previousOwnerEmail,
-//           subject: "Account Handling Ownership Update",
-//           text: `The AccountHandling with ID: ${id} has been removed from your list.`,
-//         };
-
-//         transporter.sendMail(previousOwnerMailOptions, (error, info) => {
-//           if (error) {
-//             console.error("Error sending email to previous owner:", error);
-//           } else {
-//             console.log("Email sent to previous owner:", info.response);
-//           }
-//         });
-
-//         // Send email to the new owner
-//         const newOwnerMailOptions = {
-//           from: "tech@diamondore.in",
-//           to: newOwnerEmail,
-//           subject: "New Account Handling Ownership",
-//           text: `You have been assigned the AccountHandling with ID: ${id}.`,
-//         };
-
-//         transporter.sendMail(newOwnerMailOptions, (error, info) => {
-//           if (error) {
-//             console.error("Error sending email to new owner:", error);
-//           } else {
-//             console.log("Email sent to new owner:", info.response);
-//           }
-//         });
-
-//         return res
-//           .status(200)
-//           .json({
-//             message: "AccountHandling updated successfully and emails sent.",
-//           });
-//       }
-
-//       if (status === "false") {
-//         const previousOwnerEmail = findAccount.owner.email;
-
-//         // Send email to the previous owner
-//         const previousOwnerMailOptions = {
-//           from: "tech@diamondore.in",
-//           to: previousOwnerEmail,
-//           subject: "Account Handling Ownership Update",
-//           text: `The AccountHandling with ID: ${id} access has been denied by the Admin.`,
-//         };
-
-//         transporter.sendMail(previousOwnerMailOptions, (error, info) => {
-//           if (error) {
-//             console.error("Error sending email to previous owner:", error);
-//           } else {
-//             console.log("Email sent to previous owner:", info.response);
-//           }
-//         });
-//       }
-
-//       res.status(400).json({ message: "Invalid status value provided." });
-//     } catch (error) {
-//       console.error(error.message);
-//       res.status(500).json({ message: error.message });
-//     }
-//   }
-// );
 
 router.put("/account-handling/:id",AdminAuthenticateToken,async (req, res) => {
     try {

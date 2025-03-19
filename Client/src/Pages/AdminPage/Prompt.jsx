@@ -128,11 +128,14 @@ const Prompt = () => {
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState([]);
   const [ctcStart, setCtcStart] = useState("");
   const [ctcEnd, setCtcEnd] = useState("");
   const [loading, setLoading] = useState(false);
   const [ recipientEmail ,setRecipientEmail] = useState("")
+
+
+  console.log("selected values",location)
 
 
 
@@ -407,20 +410,18 @@ const Prompt = () => {
 
               <div>
               <select
-                    className="w-full min-w-[12rem] p-2 rounded-md"
-                    defaultValue=""
-                    onChange={(e)=>{
-                      console.log(e.target.value)
-                      setLocation(e.target.value)
-                    }}
-                  >
-                    <option value="">Select Value</option>
-                    {locationData?.map((data, index) => (
-                      <option key={index} value={data}>
-                        {data}
-                      </option>
-                    ))}
-                </select>
+                  className="w-full min-w-[12rem] p-2 rounded-md"
+                  multiple
+                  value={location} 
+                  onChange={(e) => {
+                    const selectedValues = Array.from(e.target.selectedOptions, (option) => option.value);
+                    setLocation((prev) => [...new Set(selectedValues)]);
+                  }}
+                >
+                  {locationData?.map((data, index) => (
+                    <option key={index} value={data}>{data}</option>
+                  ))}
+              </select>
               </div>
 
               <div className="flex gap-x-2 ">
