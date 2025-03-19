@@ -1845,6 +1845,7 @@ router.get("/find-bulk-jobs", async (req, res) => {
       worksheet.columns = [
         { header: 'Candidate Name', key: 'candidateName', width: 30 },
         { header: 'Candidate Phone no.', key: 'candidatePhoneNumber', width: 30 },
+        { header: 'Candidate Location', key: 'candidateLocation', width: 30 },
         { header: 'Candidate Current CTC(LPA)', key: 'candidateCTC' , width:10},
         { header: 'Company', key:'company', width: 25 },
         { header: 'Job Title', key: 'title', width: 45 },
@@ -1866,6 +1867,7 @@ router.get("/find-bulk-jobs", async (req, res) => {
                 worksheet.addRow({
                   candidateName: data.candidate.candidateName,
                   candidatePhoneNumber:data.candidate.phone,
+                  candidateLocation:data.candidate.currentLocation,
                   candidateCTC: data.candidate.currentCTC,
                   company: job.Company,
                   title: job.JobTitle,
