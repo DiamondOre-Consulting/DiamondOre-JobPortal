@@ -146,6 +146,14 @@ const EmployessEditDetails = ({ id, handleEditEmployeeBack }) => {
             }))
     }
 
+    const handleKPIDesignationType = (e) => {
+        setEmployeeData(prevDetails => (
+            {
+                ...prevDetails,
+                kpiDesignation: e.target.value
+            }))
+    }
+
 
     const handleEditAccountHandler = (e) => {
         setEmployeeData(prevDetails => (
@@ -186,7 +194,7 @@ const EmployessEditDetails = ({ id, handleEditEmployeeBack }) => {
 
 
 
-
+   console.log("employee",editEmployee)
 
 
 
@@ -215,7 +223,7 @@ const EmployessEditDetails = ({ id, handleEditEmployeeBack }) => {
                             id="name"
                             name="name"
                             placeholder="Full Name"
-                            value={editEmployee.name}
+                            value={editEmployee?.name}
                             onChange={hadndleFullName}
                         />
                     </div>
@@ -256,6 +264,22 @@ const EmployessEditDetails = ({ id, handleEditEmployeeBack }) => {
                             <option value="HrConsultant6x">Hr Consultant 6x</option>
 
 
+                        </select>
+                    </div>
+
+                    <div>
+                        <label htmlFor="empType" className="block text-sm font-medium text-gray-700">
+                            KPI Designation
+                        </label>
+                        <select
+                            className="py-2 w-full px-2 rounded-md mt-1"
+                            value={editEmployee?.kpiDesignation}
+                            onChange={handleKPIDesignationType}
+                        >
+                            <option value="">Select KPI Designation</option>
+                            <option value="Recruiter/KAM/Mentor">Recruiter/KAM/Mentor</option>
+                            <option value="Sr. Consultant">Sr. Consultant</option>                            
+                            <option value="Recruiter">Recruiter</option>
                         </select>
                     </div>
 

@@ -6,6 +6,9 @@ const employeeSchema = new mongoose.Schema({
     type: String,
     default: "Recruiter",
   },
+  kpiDesignation:{
+    type:String
+  },
   name: {
     type: String,
     required: true,

@@ -28,7 +28,7 @@ const KPIscore = () => {
                 })
 
                 if (response.status === 200) {
-
+                     
                     setTableData(response.data);
                     setLoading(false)
 
@@ -77,11 +77,13 @@ const KPIscore = () => {
                                         <th rowSpan="2" className="border border-gray-500 px-4 py-2">Year</th>
                                         <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-200">Cost Vs Revenue</th>
                                         <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-200">Successful Drives</th>
-                                        <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-200">Accounts</th>
-                                        <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-200">Mentorship</th>
+                                        {(tableData?.owner?.kpiDesignation=="Recruiter/KAM/Mentor"||
+                                         tableData?.owner?.kpiDesignation=="Sr. Consultant")&&
+                                        <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-200">Accounts</th>}
+                                        {tableData?.owner?.kpiDesignation=="Recruiter/KAM/Mentor"&&<th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-200">Mentorship</th>}
                                         <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-200">Process Adherence</th>
                                         <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-200">Leakage</th>
-                                        <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-200">No. Of Joinings</th>
+                                        
                                         <th rowSpan="2" className="border border-gray-900 px-4 py-2 bg-gray-300">Total KPI Score</th>
 
 
@@ -94,10 +96,11 @@ const KPIscore = () => {
                                         {headers.map((header, idx) => (
                                             <th key={`drive-${idx}`} className="border border-gray-500 bg-blue-100 px-4 py-2">{header}</th>
                                         ))}
-                                        {headers.map((header, idx) => (
+                                        {(tableData?.owner?.kpiDesignation=="Recruiter/KAM/Mentor"||
+                                         tableData?.owner?.kpiDesignation=="Sr. Consultant")&&headers.map((header, idx) => (
                                             <th key={`accounts-${idx}`} className="border border-gray-500 bg-blue-100 px-4 py-2">{header}</th>
                                         ))}
-                                        {headers.map((header, idx) => (
+                                        {tableData?.owner?.kpiDesignation=="Recruiter/KAM/Mentor"&&headers.map((header, idx) => (
                                             <th key={`mentorship-${idx}`} className="border border-gray-500 bg-blue-100 px-4 py-2">{header}</th>
                                         ))}
                                         {headers.map((header, idx) => (
@@ -105,9 +108,6 @@ const KPIscore = () => {
                                         ))}
                                         {headers.map((header, idx) => (
                                             <th key={`leakage-${idx}`} className="border border-gray-500 bg-blue-100 px-4 py-2">{header}</th>
-                                        ))}
-                                        {headers.map((header, idx) => (
-                                            <th key={`joinings-${idx}`} className="border border-gray-500 bg-blue-100 px-4 py-2">{header}</th>
                                         ))}
                                     </tr>
                                 </thead>
@@ -130,17 +130,25 @@ const KPIscore = () => {
                                                 <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.successfulDrives?.weight}</td>
                                                 <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.successfulDrives?.kpiScore}</td>
 
-                                                {/* Accounts */}
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.accounts?.target}</td>
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.accounts?.actual}</td>
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.accounts?.weight}</td>
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.accounts?.kpiScore}</td>
+                                                {/* accounts */}
+                                                {(tableData?.owner?.kpiDesignation == "Recruiter/KAM/Mentor" || tableData?.owner?.kpiDesignation == "Sr. Consultant") && (
+                                                    <>
+                                                       <td className={`border ${(row?.kpiMonth?.accounts?.target<=0||row?.kpiMonth?.accounts?.target>0)?"":"text-blue-500"} border-gray-300 px-4 py-2`}>{row?.kpiMonth?.accounts?.target<=0?0:row?.kpiMonth?.accounts?.target>0?row?.kpiMonth?.accounts?.target:"N/A"}</td>
+                                                       <td className={`border ${(row?.kpiMonth?.accounts?.actual<=0||row?.kpiMonth?.accounts?.actual>0)?"":"text-blue-500"} border-gray-300 px-4 py-2`}>{row?.kpiMonth?.accounts?.actual<=0?0:row?.kpiMonth?.accounts?.actual>0?row?.kpiMonth?.accounts?.actual:"N/A"}</td>
+                                                       <td className={`border ${(row?.kpiMonth?.accounts?.weight<=0||row?.kpiMonth?.accounts?.weight>0)?"":"text-blue-500"} border-gray-300 px-4 py-2`}>{row?.kpiMonth?.accounts?.weight<=0?0:row?.kpiMonth?.accounts?.weight>0?row?.kpiMonth?.accounts?.weight:"N/A"}</td>
+                                                       <td className={`border ${(row?.kpiMonth?.accounts?.kpiScore<=0||row?.kpiMonth?.accounts?.kpiScore>0)?"":"text-blue-500"} border-gray-300 px-4 py-2`}>{row?.kpiMonth?.accounts?.kpiScore<=0?0:row?.kpiMonth?.accounts?.kpiScore>0?row?.kpiMonth?.accounts?.kpiScore:"N/A"}</td>
+                                                    </>
+                                                  )}
 
                                                 {/* Mentorship */}
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.mentorship?.target}</td>
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.mentorship?.actual}</td>
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.mentorship?.weight}</td>
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.mentorship?.kpiScore}</td>
+                                                    {tableData?.owner?.kpiDesignation === "Recruiter/KAM/Mentor" && (
+                                                    <>
+                                                       <td className={`border ${(row?.kpiMonth?.mentorship?.target<=0||row?.kpiMonth?.mentorship?.target)?"":"text-blue-500"} border-gray-300 px-4 py-2`}>{row?.kpiMonth?.mentorship?.target<=0?0:row?.kpiMonth?.mentorship?.target>0?row?.kpiMonth?.mentorship?.target:"N/A"}</td>
+                                                       <td className={`border ${(row?.kpiMonth?.mentorship?.actual<=0||row?.kpiMonth?.mentorship?.actual)?"":"text-blue-500"} border-gray-300 px-4 py-2`}>{row?.kpiMonth?.mentorship?.actual<=0?0:row?.kpiMonth?.mentorship?.actual>0?row?.kpiMonth?.mentorship?.actual:"N/A"}</td>
+                                                       <td className={`border ${(row?.kpiMonth?.mentorship?.weight<=0||row?.kpiMonth?.mentorship?.weight)?"":"text-blue-500"} border-gray-300 px-4 py-2`}>{row?.kpiMonth?.mentorship?.weight<=0?0:row?.kpiMonth?.mentorship?.weight>0?row?.kpiMonth?.mentorship?.weight:"N/A"}</td>
+                                                       <td className={`border ${(row?.kpiMonth?.mentorship?.kpiScore<=0||row?.kpiMonth?.mentorship?.weight)?"":"text-blue-500"} border-gray-300 px-4 py-2`}>{row?.kpiMonth?.mentorship?.kpiScore<=0?0:row?.kpiMonth?.mentorship?.kpiScore>0?row?.kpiMonth?.mentorship?.kpiScore:"N/A"}</td>
+                                                    </>
+                                                    )}
 
                                                 {/* Process Adherence */}
                                                 <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.processAdherence?.target}</td>
@@ -155,13 +163,7 @@ const KPIscore = () => {
                                                 <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.leakage?.kpiScore}</td>
 
 
-                                                {/* joinings */}
-
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.noOfJoining?.target}</td>
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.noOfJoining?.actual}</td>
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.noOfJoining?.weight}</td>
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.noOfJoining?.kpiScore}</td>
-
+                                        
 
                                                 <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.totalKPIScore}</td>
                                             </tr>

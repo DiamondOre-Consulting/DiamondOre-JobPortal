@@ -713,7 +713,7 @@ router.get("/my-kpi", EmployeeAuthenticateToken, async (req, res) => {
   try {
     const { userId } = req.user;
 
-    const myKPI = await KPI.findOne({ owner: userId });
+    const myKPI = await KPI.findOne({ owner: userId }).populate("owner");
     if (!myKPI) {
       return res.status(402).json({ message: "No KPI found!!!" });
     }

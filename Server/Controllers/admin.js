@@ -2179,9 +2179,7 @@ router.put("/all-employees-edit/:id",AdminAuthenticateToken,async (req, res) => 
     try {
       const { id } = req.params;
 
-      console.log(req.body);
-      console.log("check");
-      console.log(req.body.accountHandler);
+      
 
       const updatedFields = {};
 
@@ -2200,6 +2198,12 @@ router.put("/all-employees-edit/:id",AdminAuthenticateToken,async (req, res) => 
       if (req.body.doj) {
         updatedFields.doj = req.body.doj;
       }
+      if(req.body.kpiDesignation){
+        updatedFields.kpiDesignation = req.body.kpiDesignation
+      }
+
+  
+     
 
       updatedFields.accountHandler = req.body.accountHandler;
 
@@ -3206,7 +3210,6 @@ router.post("/set-kpi-score", async(req, res) => {
       mentorship,
       processAdherence,
       leakage,
-      noOfJoining,
     } = req.body;
 
     const {success, error} = kpiScoreSchema.safeParse(req.body)
@@ -3217,10 +3220,40 @@ router.post("/set-kpi-score", async(req, res) => {
 
    
 
-    console.log(req.body);
+   
 
     // Find the KPI document for the owner
-    let kpi = await KPI.findOne({ owner: owner });
+    let kpi = await KPI.findOne({ owner: owner }).populate("owner");
+
+    console.log(kpi.owner?.kpiDesignation)
+
+    if(!kpi.owner?.kpiDesignation){
+      return res.status(404).json({message:"Please first set the KPI designation of the employee"})
+    }
+
+    const weights = {
+      "Recruiter/KAM/Mentor": {
+        costVsRevenue: 25,
+        successfulDrives:15,
+        accounts:15,
+        mentorship:20,
+        processAdherence:10,
+        leakage:15
+      },
+      "Recruiter" : {
+        costVsRevenue: 60,
+        successfulDrives:15,
+        processAdherence:10,
+        leakage:15
+      },
+      "Sr. Consultant": {
+        costVsRevenue: 25,
+        successfulDrives:15,
+        accounts:15,
+        processAdherence:10,
+        leakage:15   
+      }
+    }
 
     if(!kpi){
       // If no KPI document exists, create a new one
@@ -3229,49 +3262,67 @@ router.post("/set-kpi-score", async(req, res) => {
 
     // Helper function to calculate weight and kpiScore
     const calculateScore = (target, actual, weightPercentage) => {
-      const weight = actual / target;
-      const kpiScore = (weightPercentage / 100) * weight;
+      if (target === 0||actual===0) return { weight: 0, kpiScore: 0 };
+      const weight = parseFloat((actual / target).toFixed(2));
+      const kpiScore = parseFloat(((weightPercentage / 100) * weight).toFixed(2));
+    
       return { weight, kpiScore };
     };
 
     const costVsRevenueScore = calculateScore(
       costVsRevenue.target,
       costVsRevenue.actual,
-      20
+      weights[kpi.owner?.kpiDesignation]?.costVsRevenue
     );
     const successfulDrivesScore = calculateScore(
       successfulDrives.target,
       successfulDrives.actual,
-      10
+      weights[kpi.owner?.kpiDesignation]?.successfulDrives
     );
-    const accountsScore = calculateScore(accounts.target, accounts.actual, 15);
-    const mentorshipScore = calculateScore(
+    let accountsScore= null
+    if(accounts&&kpi.owner?.kpiDesignation==="Recruiter/KAM/Mentor"||kpi.owner?.kpiDesignation==="Sr. Consultant"){
+   
+       accountsScore = calculateScore(
+        accounts.target,
+        accounts.actual, 
+        weights[kpi.owner?.kpiDesignation]?.accounts
+     );
+    }  
+    let mentorshipScore =null
+    if(mentorship&&kpi.owner?.kpiDesignation==="Recruiter/KAM/Mentor"){
+    
+     mentorshipScore = calculateScore(
       mentorship.target,
       mentorship.actual,
-      15
+      weights[kpi.owner?.kpiDesignation]?.mentorship
     );
+    }
     const processAdherenceScore = calculateScore(
       processAdherence.target,
       processAdherence.actual,
-      15
+      weights[kpi.owner?.kpiDesignation]?.processAdherence
     );
-    const leakageScore = calculateScore(leakage.target, leakage.actual, 15);
-    const noOfJoiningScore = calculateScore(
-      noOfJoining.target,
-      noOfJoining.actual,
-      10
+    const leakageScore = calculateScore(
+      leakage.target, 
+      leakage.actual, 
+      weights[kpi.owner?.kpiDesignation]?.leakage
     );
+    
+
 
     // Calculate total KPI score
-    const totalKPIScore =
-      (costVsRevenueScore.kpiScore +
-        successfulDrivesScore.kpiScore +
-        accountsScore.kpiScore +
-        mentorshipScore.kpiScore +
-        processAdherenceScore.kpiScore +
-        leakageScore.kpiScore +
-        noOfJoiningScore.kpiScore) *
-      100;
+    const totalKPIScore = parseFloat(
+      (
+        Number(costVsRevenueScore?.kpiScore) +
+        Number(successfulDrivesScore?.kpiScore) +
+        Number(accountsScore?.kpiScore || 0) +
+        Number(mentorshipScore?.kpiScore || 0) +
+        Number(processAdherenceScore?.kpiScore) +
+        Number(leakageScore?.kpiScore)
+      ) * 100
+    ).toFixed(3);
+
+      console.log(totalKPIScore)
 
     // Construct the new KPI month information
     const newKpiMonth = {
@@ -3290,19 +3341,7 @@ router.post("/set-kpi-score", async(req, res) => {
           weight:   (successfulDrivesScore.weight),
           kpiScore: (successfulDrivesScore.kpiScore),
         },
-        accounts: {
-          target:   (accounts.target),
-          actual:   (accounts.actual),
-          weight:   (accountsScore.weight),
-          kpiScore: (accountsScore.kpiScore),
-        },
-        mentorship: {
-          target:   (mentorship.target),
-          actual:   (mentorship.actual),
-          weight:   (mentorshipScore.weight),
-          kpiScore: (mentorshipScore.kpiScore),
-        },
-
+        
         processAdherence:{
           target:   (processAdherence.target),
           actual:   (processAdherence.actual),
@@ -3315,17 +3354,30 @@ router.post("/set-kpi-score", async(req, res) => {
           weight:   (leakageScore.weight),
           kpiScore: (leakageScore.kpiScore),
         },
-        noOfJoining: {
-          target:   (noOfJoining.target),
-          actual:   (noOfJoining.actual),
-          weight:   (noOfJoiningScore.weight),
-          kpiScore: (noOfJoiningScore.kpiScore),
-        },
+
         totalKPIScore: (totalKPIScore),
       },
     };
 
-    console.log(newKpiMonth)
+    if(accounts&&accountsScore){
+      newKpiMonth.kpiMonth.accounts = {
+        target:   (accounts.target),
+        actual:   (accounts.actual),
+        weight:   (accountsScore.weight),
+        kpiScore: (accountsScore.kpiScore),
+      }
+    }
+
+    if(mentorship&&mentorshipScore){
+      newKpiMonth.kpiMonth.mentorship = {
+        target:   (mentorship.target),
+        actual:   (mentorship.actual),
+        weight:   (mentorshipScore.weight),
+        kpiScore: (mentorshipScore.kpiScore),
+      }
+    } 
+
+    
 
     // Push the new KPI month information to the kpis array 
     kpi.kpis.push(newKpiMonth);
@@ -3345,7 +3397,7 @@ router.get("/employee-kpi-score/:id",AdminAuthenticateToken,async (req, res) => 
     try {
       const { id } = req.params;
 
-      const myKPI = await KPI.findOne({ owner: id });
+      const myKPI = await KPI.findOne({ owner: id }).populate("owner");
       if (!myKPI) {
         return res.status(402).json({ message: "No KPI found!!!" });
       }
