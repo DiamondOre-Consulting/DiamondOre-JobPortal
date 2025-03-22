@@ -189,13 +189,18 @@ const Signup = ({ toggleForm }) => {
         email
       })
 
-      setTimeout(() => {
+
+      
         if (response.status === 201) {
           setOtpSent(true);
 
         }
-      }, 1000);
+       
     } catch (error) {
+      if(error?.response?.data?.message=="User already exists"){
+        setError("User already exists")
+        return
+      }
       console.error("Error sending OTP:", error);
       setError("Error sending OTP. Please try again.");
     }

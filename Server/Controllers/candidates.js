@@ -349,8 +349,8 @@ router.get("/user-data", CandidateAuthenticateToken, async (req, res) => {
 const jobSchema = z.object({
   Channel:z.string().optional(),
   City:z.string().optional(),
-  minCTC:z.string().optional(),
-  maxCTC:z.string().optional(), 
+  minCTC:z.coerce.number().optional(),
+  maxCTC:z.coerce.number().optional(), 
   page:z.coerce.number(),
   limit:z.coerce.number()
 })
@@ -367,10 +367,9 @@ router.get("/all-jobs", async (req, res) => {
     
     const {Channel,City,minCTC,maxCTC} = data
     
-    const page  = data.page || 1;
+    const page  = data.page;
     const limit = data.limit || 20;
 
-    
     
     const skip = (page) * limit;
   
@@ -380,21 +379,20 @@ router.get("/all-jobs", async (req, res) => {
         
 
       const query = {
-        $and :[
-          {JobStatus:true}],
+        $and: [
+          { JobStatus: "Active" },
+          City ? { City } : null
+        ],
         $or: [
-            Channel ? {Channel } : null,
-            City ? {City} : null,
-            MaxSalary ? {MaxSalary : {
-              $gte : minCTC,
-              $lte : maxCTC
-            }} : null
+          ...(minCTC && maxCTC ? [{ MaxSalary: { $gte: minCTC, $lte: maxCTC } }] : []),
+          Channel ? { Channel } : null,
         ].filter(Boolean)
-      }
-
-     
+      };
+      
       totalCount = await Jobs.countDocuments(query);
-       queryData = await Jobs.find(query).skip(skip).limit(limit);
+      queryData = await Jobs.find(query).skip(skip).limit(limit);
+     
+      
 
     }
     else{

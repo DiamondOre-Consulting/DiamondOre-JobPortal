@@ -37,7 +37,6 @@ const CandidateAllJobsCards = () => {
 
 
   const changePage = ({ selected }) => {
-    
     setPageNumber(selected);
   };
 
@@ -76,6 +75,7 @@ const CandidateAllJobsCards = () => {
         const response = await axios.get(
           `${import.meta.env.VITE_BASE_URL}/candidates/all-jobs?${query.toString()}`
         );
+
 
        
         if (response.status === 200) {
@@ -128,6 +128,8 @@ const CandidateAllJobsCards = () => {
   //   }
   //   return filteredJobs;
   // };
+
+  
 
   const handleSearch = () => {
 
@@ -279,48 +281,48 @@ const CandidateAllJobsCards = () => {
             />
           </div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
-            {latestJobs
-              .map((latestJob) => (
-                <div
-                  key={latestJob._id}
-                  className="flex flex-col justify-between h-64 overflow-hidden rounded-lg bg-white shadow-2xl-gray-200 p-4 shadow-lg hover:shadow-2xl "
-                >
-                  <h3 className="text-xl text-blue-950 font-bold">
-                    {latestJob?.JobTitle}
-                  </h3>
-                  <div className="w-44 h-0.5 bg-blue-950 md:mb-6 "></div>
-                  <p className="text-sm text-gray-600 font-semibold">
-                    Industry -{" "}
-                    <span className="text-blue-950">{latestJob?.Industry}</span>
-                  </p>
-                  <p className="text-sm text-gray-600 font-semibold">
-                    Channel -{" "}
-                    <span className="text-blue-950">{latestJob?.Channel}</span>
-                  </p>
-                  <p className="text-sm text-gray-600 font-semibold">
-                    Min. Experience -{" "}
-                    <span className="text-blue-950">
-                      {latestJob?.MinExperience} Year(s)
-                    </span>
-                  </p>
-                  <p className="text-sm text-gray-600 font-semibold"></p>
-                  {latestJob?.appliedApplicants == decodedToken?.userId && (
-                    <p className="text-center text-md text-green-500 font-semibold">
-                      Already applied
-                    </p>
-                  )}
-                  <Link
-                    to={`/all-jobs/${latestJob?._id}`}
-                    className="cursor-pointer w-full flex-col rounded-lg bg-blue-900 p-4 text-center text-white hover:bg-white hover:text-black-100 hover:text-gray-900 border border-blue-950 mt-2"
-                  >
-                    <span className="text-md font-bold lg:text-md">
-                      Know More
-                    </span>
-                  </Link>
-                </div>
-              ))}
+          (latestJobs?.length>0) ?<div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+             {latestJobs?.map((latestJob) => (
+               <div
+               key={latestJob._id}
+               className="flex flex-col justify-between h-64 overflow-hidden rounded-lg bg-white shadow-2xl-gray-200 p-4 shadow-lg hover:shadow-2xl "
+             >
+               <h3 className="text-xl text-blue-950 font-bold">
+                 {latestJob?.JobTitle}
+               </h3>
+               <div className="w-44 h-0.5 bg-blue-950 md:mb-6 "></div>
+               <p className="text-sm text-gray-600 font-semibold">
+                 Industry -{" "}
+                 <span className="text-blue-950">{latestJob?.Industry}</span>
+               </p>
+               <p className="text-sm text-gray-600 font-semibold">
+                 Channel -{" "}
+                 <span className="text-blue-950">{latestJob?.Channel}</span>
+               </p>
+               <p className="text-sm text-gray-600 font-semibold">
+                 Min. Experience -{" "}
+                 <span className="text-blue-950">
+                   {latestJob?.MinExperience} Year(s)
+                 </span>
+               </p>
+               <p className="text-sm text-gray-600 font-semibold"></p>
+               {latestJob?.appliedApplicants == decodedToken?.userId && (
+                 <p className="text-center text-md text-green-500 font-semibold">
+                   Already applied
+                 </p>
+               )}
+               <Link
+                 to={`/all-jobs/${latestJob?._id}`}
+                 className="cursor-pointer w-full flex-col rounded-lg bg-blue-900 p-4 text-center text-white hover:bg-white hover:text-black-100 hover:text-gray-900 border border-blue-950 mt-2"
+               >
+                 <span className="text-md font-bold lg:text-md">
+                   Know More
+                 </span>
+               </Link>
+             </div>
+             ))}
           </div>
+          : <div className="text-center text-2xl text-red-500 w-full">No Jobs Found </div>
         )}
         <div className="flex justify-center items-center mt-8 ">
           <ReactPaginate
