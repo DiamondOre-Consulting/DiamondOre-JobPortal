@@ -1491,6 +1491,8 @@ router.post("/upload-dsr-excel", excelUpload.single('myFile'), async (req, res) 
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }
+  console.log(req.file)
+  
   const filePath = req.file.path;  
   try{                   
     const fileBuffer = fs.readFileSync(filePath);    
@@ -1524,10 +1526,13 @@ router.post("/upload-dsr-excel", excelUpload.single('myFile'), async (req, res) 
                {deleteMany : { filter : {} }},
                ...formattedData.map((doc)=> ({insertOne : {document:doc}}))               
       ]
-      await DSR.bulkWrite(bulkOps);
+      const res=await DSR.bulkWrite(bulkOps);
+      console.log(res)
     } catch (insertError) {
       errorArray.push({ error: insertError.message });
       console.error("Database insertion error:", insertError.message);
+      return res.status(400).json({message : "Database insertion error"});
+
     }
 
     if (errorArray.length > 0) {

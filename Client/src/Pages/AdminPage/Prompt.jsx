@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useJwt } from "react-jwt";
 import { useNavigate } from "react-router-dom";
+import { KeyboardReturn } from "@mui/icons-material";
 
 
 
@@ -77,12 +78,14 @@ const Prompt = () => {
         if (fileInputRef.current) {
           fileInputRef.current.value = "";
         }
+        console.log(response.data)
         alert("DSR added successfully");
-      } else {
-        console.error("Failed to submit DSR:", response.data);
-      }
+        return
+      } 
     } catch (error) {
+      alert("Error in submitting DSR")
       console.error("Error submitting DSR:", error);
+      return
     }
     finally{
       setLoading(false);
