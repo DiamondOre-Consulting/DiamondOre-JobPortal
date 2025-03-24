@@ -5,9 +5,6 @@ import axios from "axios";
 import PropagateLoader from "react-spinners/PropagateLoader";
 import ReactPaginate from "react-paginate";
 
-
-
-
 const CandidateAllJobsCards = () => {
   const navigate = useNavigate();
   let [loading, setLoading] = useState(true);
@@ -27,20 +24,16 @@ const CandidateAllJobsCards = () => {
   const [ctcRanges, setCtcRanges] = useState(["1-5", "6-10", "11-15", "16-20"]);
   const { decodedToken } = useJwt(localStorage.getItem("token"));
   const [searchButtonToggle, setSearchButtonToggle] = useState(false);
-  const [data,setData] = useState()
+  const [data, setData] = useState();
 
   const [pageNumber, setPageNumber] = useState(0);
   const jobsPerPage = 20;
 
   const pagesVisited = pageNumber * jobsPerPage;
 
-
-
   const changePage = ({ selected }) => {
     setPageNumber(selected);
   };
-
-  
 
   const override = {
     display: "flex",
@@ -50,38 +43,35 @@ const CandidateAllJobsCards = () => {
 
   useEffect(() => {
     const fetchAllJobs = async () => {
-      try{
-       
-
+      try {
         const query = new URLSearchParams();
 
-        if(selectedCity){
+        if (selectedCity) {
           query.append("City", selectedCity);
         }
 
-        if(selectedChannel){
+        if (selectedChannel) {
           query.append("Channel", selectedChannel);
         }
 
-        if(selectedCtcRange){
+        if (selectedCtcRange) {
           query.append("minCTC", selectedCtcRange?.split("-")[0]);
           query.append("maxCTC", selectedCtcRange?.split("-")[1]);
         }
-        
-          query.append("page", pageNumber);       
-          query.append("limit", jobsPerPage);
-        
+
+        query.append("page", pageNumber);
+        query.append("limit", jobsPerPage);
 
         const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/candidates/all-jobs?${query.toString()}`
+          `${
+            import.meta.env.VITE_BASE_URL
+          }/candidates/all-jobs?${query.toString()}`
         );
 
-
-       
         if (response.status === 200) {
           // const all = response.data.allJobs;
-          
-          setData(response.data)
+
+          setData(response.data);
           // setAllJobs(filteredJobs);
           setLatestJobs(response.data.allJobs);
           setCities(response.data.uniqueCities);
@@ -89,7 +79,7 @@ const CandidateAllJobsCards = () => {
           setLoading(false);
         }
       } catch (error) {
-        console.log("error",error)
+        console.log("error", error);
         console.error("Error fetching associates:", error);
       }
     };
@@ -129,19 +119,13 @@ const CandidateAllJobsCards = () => {
   //   return filteredJobs;
   // };
 
-  
-
   const handleSearch = () => {
-
-    if(selectedCity||selectedChannel||selectedCtcRange){
-      setSearchButtonToggle(prev=>!prev)
+    if (selectedCity || selectedChannel || selectedCtcRange) {
+      setSearchButtonToggle((prev) => !prev);
+    } else {
+      alert("Please select at least one filter");
+      return;
     }
-    else{
-      alert("Please select at least one filter")
-      return
-    }
-    
-
   };
 
   const handleClearFilters = () => {
@@ -150,53 +134,107 @@ const CandidateAllJobsCards = () => {
     setShowSelectedcity("City");
     setShowSelectedChannel("Channel");
     setSelectedCtcRange(null);
-    setSearchButtonToggle(prev=>!prev)
-    
+    setSearchButtonToggle((prev) => !prev);
   };
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredCities = cities.filter((city) =>
+    city.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="sm:py-8 mt-24">
       <div className="flex flex-wrap items-center justify-center mx-auto  mb-16">
         <div className="relative">
-          <h2 className="bg-blue-900 text-white px-4 py-2 text-center mb-1 border-md">City</h2>
+          <h2 className="bg-blue-900 text-white px-4 py-2 text-center mb-1 border-md">
+            City
+          </h2>
           <button
             onClick={toggleDropdownCity}
             className="border mx-2 flex align-center border-gray-400 text-black font-bold py-1 px-6 rounded focus:outline-none focus:shadow-outline"
             type="button"
           >
-            {showselectedcity}  <svg className="h-5 w-5 text-gray-600 float-right " viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">  <polyline points="6 9 12 15 18 9" /></svg>
+            {showselectedcity}{" "}
+            <svg
+              className="h-5 w-5 text-gray-600 float-right "
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              {" "}
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
           </button>
 
           {isOpenCity && (
             <div className="absolute left-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10 overflow-y-auto max-h-60">
               <ul>
                 {/* <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">{showselectedcity}</li> */}
-                {cities.map((city, index) => (
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+
+                {filteredCities.map((city, index) => (
                   <li
                     key={index}
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                     onClick={() => {
                       setSelectedCity(city);
-                      setShowSelectedcity(city)
+                      setShowSelectedcity(city);
                       toggleDropdownCity();
                     }}
                   >
                     {city}
                   </li>
                 ))}
+
+                
+                {/* {cities.map((city, index) => (
+                  <li
+                    key={index}
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => {
+                      setSelectedCity(city);
+                      setShowSelectedcity(city);
+                      toggleDropdownCity();
+                    }}
+                  >
+                    {city}
+                  </li>
+                ))} */}
               </ul>
             </div>
           )}
         </div>
 
         <div className="relative ">
-          <h2 className="bg-blue-900 text-white px-4 py-2 text-center mb-1 border-md mx-2">Channels</h2>
+          <h2 className="bg-blue-900 text-white px-4 py-2 text-center mb-1 border-md mx-2">
+            Channels
+          </h2>
           <button
             onClick={toggleDropdownChannel}
             className="border mx-2 flex align-center border-gray-400 text-black font-bold py-1 px-6 rounded focus:outline-none focus:shadow-outline"
             type="button"
           >
-            {showselectedchannel}  <svg className="h-5 w-5 text-gray-600 float-right " viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">  <polyline points="6 9 12 15 18 9" /></svg>
+            {showselectedchannel}{" "}
+            <svg
+              className="h-5 w-5 text-gray-600 float-right "
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              {" "}
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
           </button>
           {isOpenChannel && (
             <div className="absolute left-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10 overflow-y-auto max-h-60">
@@ -219,15 +257,28 @@ const CandidateAllJobsCards = () => {
           )}
         </div>
 
-
         <div className="relative ">
-          <h2 className="bg-blue-900 text-white px-4 py-2 text-center mb-1 border-md mx-2">CTC</h2>
+          <h2 className="bg-blue-900 text-white px-4 py-2 text-center mb-1 border-md mx-2">
+            CTC
+          </h2>
           <button
             onClick={toggleDropdownCtc}
             className="border mx-2 flex align-center border-gray-400 text-black font-bold py-1 px-6 rounded focus:outline-none focus:shadow-outline"
             type="button"
           >
-            {showselectedctc}  <svg className="h-5 w-5 text-gray-600 float-right " viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">  <polyline points="6 9 12 15 18 9" /></svg>
+            {showselectedctc}{" "}
+            <svg
+              className="h-5 w-5 text-gray-600 float-right "
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              {" "}
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
           </button>
           {isOpenCtc && (
             <div className="absolute left-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10 overflow-y-auto max-h-60">
@@ -262,7 +313,25 @@ const CandidateAllJobsCards = () => {
           className="ml-4 bg-red-500 hover:bg-red-600 mt-3  h-12 text-white font-bold px-4 rounded focus:outline-none focus:shadow-outline"
           type="button"
         >
-          <svg class="h-8 w-8 text-gray-100" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <line x1="4" y1="7" x2="20" y2="7" />  <line x1="10" y1="11" x2="10" y2="17" />  <line x1="14" y1="11" x2="14" y2="17" />  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+          <svg
+            class="h-8 w-8 text-gray-100"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            {" "}
+            <path stroke="none" d="M0 0h24v24H0z" />{" "}
+            <line x1="4" y1="7" x2="20" y2="7" />{" "}
+            <line x1="10" y1="11" x2="10" y2="17" />{" "}
+            <line x1="14" y1="11" x2="14" y2="17" />{" "}
+            <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />{" "}
+            <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+          </svg>
         </button>
       </div>
       <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
@@ -280,49 +349,52 @@ const CandidateAllJobsCards = () => {
               data-testid="loader"
             />
           </div>
-        ) : (
-          (latestJobs?.length>0) ?<div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
-             {latestJobs?.map((latestJob) => (
-               <div
-               key={latestJob._id}
-               className="flex flex-col justify-between h-64 overflow-hidden rounded-lg bg-white shadow-2xl-gray-200 p-4 shadow-lg hover:shadow-2xl "
-             >
-               <h3 className="text-xl text-blue-950 font-bold">
-                 {latestJob?.JobTitle}
-               </h3>
-               <div className="w-44 h-0.5 bg-blue-950 md:mb-6 "></div>
-               <p className="text-sm text-gray-600 font-semibold">
-                 Industry -{" "}
-                 <span className="text-blue-950">{latestJob?.Industry}</span>
-               </p>
-               <p className="text-sm text-gray-600 font-semibold">
-                 Channel -{" "}
-                 <span className="text-blue-950">{latestJob?.Channel}</span>
-               </p>
-               <p className="text-sm text-gray-600 font-semibold">
-                 Min. Experience -{" "}
-                 <span className="text-blue-950">
-                   {latestJob?.MinExperience} Year(s)
-                 </span>
-               </p>
-               <p className="text-sm text-gray-600 font-semibold"></p>
-               {latestJob?.appliedApplicants == decodedToken?.userId && (
-                 <p className="text-center text-md text-green-500 font-semibold">
-                   Already applied
-                 </p>
-               )}
-               <Link
-                 to={`/all-jobs/${latestJob?._id}`}
-                 className="cursor-pointer w-full flex-col rounded-lg bg-blue-900 p-4 text-center text-white hover:bg-white hover:text-black-100 hover:text-gray-900 border border-blue-950 mt-2"
-               >
-                 <span className="text-md font-bold lg:text-md">
-                   Know More
-                 </span>
-               </Link>
-             </div>
-             ))}
+        ) : latestJobs?.length > 0 ? (
+          <div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+            {latestJobs?.map((latestJob) => (
+              <div
+                key={latestJob._id}
+                className="flex flex-col justify-between h-64 overflow-hidden rounded-lg bg-white shadow-2xl-gray-200 p-4 shadow-lg hover:shadow-2xl "
+              >
+                <h3 className="text-xl text-blue-950 font-bold">
+                  {latestJob?.JobTitle}
+                </h3>
+                <div className="w-44 h-0.5 bg-blue-950 md:mb-6 "></div>
+                <p className="text-sm text-gray-600 font-semibold">
+                  Industry -{" "}
+                  <span className="text-blue-950">{latestJob?.Industry}</span>
+                </p>
+                <p className="text-sm text-gray-600 font-semibold">
+                  Channel -{" "}
+                  <span className="text-blue-950">{latestJob?.Channel}</span>
+                </p>
+                <p className="text-sm text-gray-600 font-semibold">
+                  Min. Experience -{" "}
+                  <span className="text-blue-950">
+                    {latestJob?.MinExperience} Year(s)
+                  </span>
+                </p>
+                <p className="text-sm text-gray-600 font-semibold"></p>
+                {latestJob?.appliedApplicants == decodedToken?.userId && (
+                  <p className="text-center text-md text-green-500 font-semibold">
+                    Already applied
+                  </p>
+                )}
+                <Link
+                  to={`/all-jobs/${latestJob?._id}`}
+                  className="cursor-pointer w-full flex-col rounded-lg bg-blue-900 p-4 text-center text-white hover:bg-white hover:text-black-100 hover:text-gray-900 border border-blue-950 mt-2"
+                >
+                  <span className="text-md font-bold lg:text-md">
+                    Know More
+                  </span>
+                </Link>
+              </div>
+            ))}
           </div>
-          : <div className="text-center text-2xl text-red-500 w-full">No Jobs Found </div>
+        ) : (
+          <div className="text-center text-2xl text-red-500 w-full">
+            No Jobs Found{" "}
+          </div>
         )}
         <div className="flex justify-center items-center mt-8 ">
           <ReactPaginate
@@ -330,14 +402,21 @@ const CandidateAllJobsCards = () => {
             nextLabel={"Next"}
             pageCount={data?.totalPages}
             onPageChange={changePage}
-            containerClassName={"pagination flex justify-center mt-8  gap-0 md:gap-2 shadow-lg px-10 py-4 "}
-            previousLinkClassName={"pagination__link border border-gray-300 bg-gray-400 text-black rounded-l px-2 py-1 md:px-4 md:py-2  "}
-            nextLinkClassName={"pagination__link  rounded-r bg-blue-950 text-white px-2 py-1 md:px-4 md:py-2 "}
+            containerClassName={
+              "pagination flex justify-center mt-8  gap-0 md:gap-2 shadow-lg px-10 py-4 "
+            }
+            previousLinkClassName={
+              "pagination__link border border-gray-300 bg-gray-400 text-black rounded-l px-2 py-1 md:px-4 md:py-2  "
+            }
+            nextLinkClassName={
+              "pagination__link  rounded-r bg-blue-950 text-white px-2 py-1 md:px-4 md:py-2 "
+            }
             disabledClassName={"pagination__link--disabled opacity-50"}
             activeClassName={"pagination__link--active bg-blue-500 text-white"}
-            pageLinkClassName={"pagination__link border border-gray-300  px-1 py-1 md:px-3 md:py-1"}
+            pageLinkClassName={
+              "pagination__link border border-gray-300  px-1 py-1 md:px-3 md:py-1"
+            }
           />
-
         </div>
       </div>
     </div>
