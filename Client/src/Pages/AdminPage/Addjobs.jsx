@@ -48,6 +48,8 @@ const AddJobs = () => {
         }
       );
 
+    
+
       if (response.status === 200){
         console.log("res",response.data)
         setSheet("")
@@ -57,8 +59,7 @@ const AddJobs = () => {
         alert('Jobs added Successfully');
       }
     } catch (error) {
-      console.error('Error:', error.message);
-      alert(error.message);
+      alert(error?.response?.data?.message);
       return
     } finally {
       setIsSubmitting(false);  // End submission
