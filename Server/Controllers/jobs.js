@@ -219,11 +219,12 @@ router.post("/upload-job-excel", AdminAuthenticateToken, excelUpload.single('myF
           ...result.map((doc)=> ( { insertOne : {document:doc}}))
       ]
        await Jobs.bulkWrite(bulkOps)
-
+   
     }
     catch(err){
       errorArray.push({ error: err.message });
       console.error("Database insertion error:", err.message);
+      return response = res.status(400).json({message : "Database insertion error"});
     }
 
     return res.status(200).json({

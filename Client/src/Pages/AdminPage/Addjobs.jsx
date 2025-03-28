@@ -49,17 +49,17 @@ const AddJobs = () => {
       );
 
       if (response.status === 200){
+        console.log("res",response.data)
         setSheet("")
         if (fileRef.current) {
           fileRef.current.value = "";
         }
         alert('Jobs added Successfully');
-      } else {
-        alert('Failed to add jobs.');
       }
     } catch (error) {
       console.error('Error:', error.message);
       alert(error.message);
+      return
     } finally {
       setIsSubmitting(false);  // End submission
     }
