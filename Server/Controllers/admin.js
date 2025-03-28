@@ -1600,7 +1600,6 @@ router.get("/findJobs/:phone", async (req, res) =>{
         { State : candidate.currentLocation }
       ],
       JobStatus: "Active",
-      Channel: candidate.currentChannel,
       MaxSalary:{
         $gte: (candidate.currentCTC),
         $lte: (candidate.currentCTC * 1.5),
