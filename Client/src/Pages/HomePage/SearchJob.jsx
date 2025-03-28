@@ -166,7 +166,7 @@ const SearchJob = () => {
                         </svg>
                     </div>
                 ) : (
-                    profile.length>0 ? (
+                    profile?.length>0 ? (
                         <div className="px-4 md:px-40 py-4">
                             <h2 className="text-2xl font-bold mb-4 text-center">Recommended Jobs For {profile?.candidateName}</h2>
 
