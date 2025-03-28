@@ -1796,7 +1796,6 @@ router.get("/find-bulk-jobs", async (req, res) => {
 
     candidates.forEach((candidate) => {      
       citiesOfCandidates.push(candidate.currentLocation)
-      channelsOfCandidates.push(candidate.currentChannel)
     })
 
     const allJobs = await Jobs.find({
@@ -1804,7 +1803,6 @@ router.get("/find-bulk-jobs", async (req, res) => {
         { City: { $in: citiesOfCandidates } }, 
         { State: { $in: citiesOfCandidates } }
       ],
-      Channel: { $in: channelsOfCandidates } 
     });
 
     console.log(allJobs)
@@ -1818,7 +1816,6 @@ router.get("/find-bulk-jobs", async (req, res) => {
         return (
              job.JobStatus == "Active" &&
              (job.City===candidate.currentLocation || job.State===candidate.currentLocation) &&
-             job.Channel === candidate.currentChannel &&
              (job.MaxSalary >= candidate.currentCTC &&
              job.MaxSalary <= candidate.currentCTC * 1.5)
         )
