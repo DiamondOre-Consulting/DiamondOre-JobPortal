@@ -211,7 +211,7 @@ export default function Prompt() {
                         </div>
                     )}
 
-                    {jobsData.success==false&&<p>No jobs found</p>}
+                    {jobsData?.success==false&&<p>No jobs found</p>}
                     
                 </div>
         </div>
