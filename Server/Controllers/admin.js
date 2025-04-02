@@ -1591,7 +1591,7 @@ router.get("/findJobs/:phone", async (req, res) =>{
   try {
     const candidate = await DSR.findOne({ phone: req.params.phone });
     if(!candidate) {
-      return res.status(404).send("Candidate not found");
+      return res.status(404).send({success:false,message:"No candidates found"});
     }
     
     const suitableJobs = await Jobs.find({
@@ -1756,7 +1756,7 @@ router.get("/find-bulk-jobs", async (req, res) => {
       return res.status(400).send("Please provide fromDate and toDate");
     }
 
-    console.log(location)
+   
 
   
  

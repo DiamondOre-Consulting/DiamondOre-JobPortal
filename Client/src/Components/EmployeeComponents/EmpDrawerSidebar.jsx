@@ -40,6 +40,8 @@ import kpiicon from '../../assets/kpiicon.png'
 import EmployeePolicies from './EmployeePolicies';
 import MappedEmployee from './MappedEmployee';
 import Shortlisting from './Shortlisting';
+import Prompt from './Prompt';
+
 
 const drawerWidth = 240;
 
@@ -254,7 +256,7 @@ export default function EmpDrawerSidebar() {
               ...(open && { display: 'none' }),
             }}
           >
-            <MenuIcon />
+          <MenuIcon />
           </IconButton>
           <Typography variant='h6' noWrap component='div'>
             <img src={logo} alt='' className='w-40 cursor-pointer' />
@@ -290,6 +292,7 @@ export default function EmpDrawerSidebar() {
             ...(userData?.isTeamLead ? [
               { text: 'Mapped Employee', icon: <ManageAccountsIcon sx={{ fontSize: 30 }} />, path: '/mapped-emp' }
             ] : []),
+            {text: 'Prompt', icon: <ManageAccountsIcon sx={{ fontSize: 30 }} />, path: '/prompt' },
             { text: 'Shortlisted Candidate', icon: <ManageAccountsIcon sx={{ fontSize: 30 }} />, path: '/shortlisted' },
             
 
@@ -332,6 +335,7 @@ export default function EmpDrawerSidebar() {
           <Route path='/all-accounts' element={<AllAccounts />} />
           <Route path='/all-policies' element={<EmployeePolicies/>}/>
           <Route path='/mapped-emp' element={<MappedEmployee userData={userData}/>}/>
+          <Route path='/prompt' element={<Prompt/>} />
           <Route path='/shortlisted' element={<Shortlisting userData={userData}/>}/>
         </Routes>
       </Box>

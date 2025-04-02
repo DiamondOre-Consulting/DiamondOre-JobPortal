@@ -19,6 +19,7 @@ import { excelUpload } from "../Middlewares/multer.middleware.js";
 import { uploadFile } from "../utils/fileUpload.utils.js";
 import {deleteFile} from '../utils/fileUpload.utils.js';
 import fs from "fs/promises";
+import DSR from "../Models/DSR.js";
 
 dotenv.config();
 
@@ -941,6 +942,71 @@ router.post("/upload-shortlistedsheet/:id",EmployeeAuthenticateToken ,excelUploa
     }
   }
 });
+
+const dsrDataSchema =  z.object({
+  candidateName: z.string().min(3,"Candidate name is required"),
+  email :z.string().email().optional(),
+  phone: z.string().min(10,"Phone number should be of at least 10 digits").max(10,"Phone number should be of at least 10 digits"),
+  currentCompany:z.string().optional(),
+  currentChannel: z.string().optional(),
+  currentCTC: z.coerce.number().min(1,"Ctc is required"),
+  currentLocation: z.string().min(3,"Current location is required"),
+  recruiterName: z.string().min(3,"Recruiter name is required"),
+  kamName: z.string().min(3,"KAM name is required"),
+  currentDate: z.coerce.date()
+})
+
+
+
+router.post("/upload-dsr-by-employee",EmployeeAuthenticateToken,async(req,res)=>{
+  try{
+     
+      const {error,success,data} = dsrDataSchema.safeParse(req.body)
+ 
+      const userId = req.user.userId
+     
+      if (error) {
+
+        console.log(error.errors.map((err) => ({
+          path: err.path.join("."),
+          message: err.message,
+        })))
+        return res.status(400).json({
+          success: false,
+          message: "Some fields are missing or erroneous" ,
+        });
+      }
+   
+
+      const existingCandidate = await DSR.findOne({
+         $or: [{ phone: data.phone }, { email: data.email }]
+      })
+
+     
+      if(existingCandidate){
+        return res.status(400).send({
+          success:false,
+          message:"Candidate already exist in database"
+        })
+      }
+    
+      const newDSR = await DSR.create(data);
+      
+      return res.status(200).send({
+        success:true,
+        message:"DSR updated successfully"
+      })
+
+}
+catch(err){
+   console.log(err)
+   res.status(500).send({
+    success:false,
+    message:"Internal server error"
+   })
+}
+
+})
 
 
 
