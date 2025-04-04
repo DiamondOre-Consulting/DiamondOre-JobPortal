@@ -147,9 +147,11 @@ const candidateSignupSchema = z.object({
 router.post("/signup", uploadImage.fields([{name:"myFileImage", maxCount:1},{name:"myFileResume",maxCount:1}]),  
   async (req, res) => {
   const { name, email, phone, password, otp } = req.body;
+
+  console.log(req.files);
   
-  const profilePic = req.files.myFileImage[0]
-  const resume = req.files.myFileResume[0]
+  const profilePic = req?.files?.myFileImage[0]
+  const resume = req?.files?.myFileResume[0]
   // const resume = req.resume
 
  
