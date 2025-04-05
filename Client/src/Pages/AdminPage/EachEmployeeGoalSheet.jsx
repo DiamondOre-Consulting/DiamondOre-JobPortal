@@ -320,6 +320,20 @@ const EachEmployeeGoalSheet = () => {
   };
 
 
+  
+  const grandTotal = useMemo(() => {
+    return filteredData
+      .flatMap((data) => data.goalSheetDetails)
+      .reduce((acc, detail) => {
+        acc.noOfJoinings += detail.noOfJoinings || 0;
+        acc.revenue += detail.revenue || 0;
+        acc.cost += detail.cost || 0;
+        acc.target += detail.target || 0;
+        return acc;
+      }, { noOfJoinings: 0, revenue: 0, cost: 0, target: 0 });
+  }, [filteredData]);
+
+
    
 
   const totals = useMemo(() => {
@@ -813,10 +827,10 @@ const EachEmployeeGoalSheet = () => {
                 <td colSpan="2" className="font-bold">
                   Grand Total
                 </td>
-                <td className="font-bold">{totals.noOfJoinings}</td>
-                <td className="font-bold">{totals.revenue}</td>
-                <td className="font-bold">{totals.cost}</td>
-                <td className="font-bold">{totals.target}</td>
+                <td className="font-bold">{grandTotal?.noOfJoinings}</td>
+                <td className="font-bold">{grandTotal?.revenue}</td>
+                <td className="font-bold">{grandTotal?.cost}</td>
+                <td className="font-bold">{grandTotal?.target}</td>
               </tr>
             </table>
           </div>
