@@ -3735,81 +3735,58 @@ router.post("/send-mail/:id", async (req, res) => {
   .join("");
 
 
-    const goalSheetTable = `
-        <table border="1" style="border-collapse: collapse; width: 100%;">
-          <thead>
-            <tr>
-              <th>Year</th>
-              <th>Month</th>
-              <th>No of Joinings</th>
-              <th>Cost</th>
-              <th>Revenue</th>
-              <th>Target</th>
-              <th>Cumulative Cost</th>
-              <th>Cumulative Revenue</th>
-              <th>Achievement YTD</th>
-              <th>Achievement MTD</th>
-              <th>Incentive</th>
-              <th>Leakage</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${formattedGoalSheetDetails}
-          </tbody>
-        </table>
-      `;
-
+   
     const achievement_ratio = (total_revenue / total_costs).toFixed(2);
-   const emailContent = `
-  <div style="font-family: Arial, sans-serif; color: #333;">
-    <p style="font-size: 16px; margin: 0 0 0 0;">
-      ${description || "No additional details provided."}
-    </p>
-
-    <h2 style="color: #2c3e50; margin-bottom: 1px;">📊 Financial Overview</h2>
-    <table style="width: 100%; border-collapse: collapse; margin-bottom: 2px;">
-      <tr>
-        <td style="padding: 8px; font-weight: bold; border: 1px solid #ccc;">Total Costs:</td>
-        <td style="padding: 8px; border: 1px solid #ccc;">₹${total_costs}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; font-weight: bold; border: 1px solid #ccc;">Total Revenue:</td>
-        <td style="padding: 8px; border: 1px solid #ccc;">₹${total_revenue}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; font-weight: bold; border: 1px solid #ccc;">Expected Revenue:</td>
-        <td style="padding: 8px; border: 1px solid #ccc;">₹${expected_revenue}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; font-weight: bold; border: 1px solid #ccc;">Achievement Ratio:</td>
-        <td style="padding: 8px; border: 1px solid #ccc;">${achievement_ratio}x</td>
-      </tr>
-    </table>
-
-    <h2 style="color: #2c3e50; margin-bottom: 2px;">📅 Goal Sheet Details for ${mailSelectedYear}</h2>
-    <table style="width: 100%; border-collapse: collapse; font-size: 14px; border: 1px solid #ccc;">
-      <thead>
-        <tr style="background-color: #2ecc71; color: white;">
-          <th style="padding: 8px; border: 1px solid #ccc;">Year</th>
-          <th style="padding: 8px; border: 1px solid #ccc;">Month</th>
-          <th style="padding: 8px; border: 1px solid #ccc;">Joinings</th>
-          <th style="padding: 8px; border: 1px solid #ccc;">Cost</th>
-          <th style="padding: 8px; border: 1px solid #ccc;">Revenue</th>
-          <th style="padding: 8px; border: 1px solid #ccc;">Target</th>
-          <th style="padding: 8px; border: 1px solid #ccc;">Cum. Cost</th>
-          <th style="padding: 8px; border: 1px solid #ccc;">Cum. Revenue</th>
-          <th style="padding: 8px; border: 1px solid #ccc;">YTD</th>
-          <th style="padding: 8px; border: 1px solid #ccc;">MTD</th>
-          <th style="padding: 8px; border: 1px solid #ccc;">Incentive</th>
-          <th style="padding: 8px; border: 1px solid #ccc;">Leakage</th>
+    const emailContent = `
+    <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+      <p style="font-size: 16px; margin: 0 0 16px 0;">
+        ${description || "No additional details provided."}
+      </p>
+  
+      <h2 style="color: #2c3e50; margin-bottom: 8px;">📊 Financial Overview</h2>
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
+        <tr>
+          <td style="padding: 10px; font-weight: bold; border: 1px solid #ccc;">Total Costs:</td>
+          <td style="padding: 10px; border: 1px solid #ccc;">₹${total_costs}</td>
         </tr>
-      </thead>
-      <tbody>
-        ${formattedGoalSheetDetails}
-      </tbody>
-    </table>
-  </div>
-`;
+        <tr>
+          <td style="padding: 10px; font-weight: bold; border: 1px solid #ccc;">Total Revenue:</td>
+          <td style="padding: 10px; border: 1px solid #ccc;">₹${total_revenue}</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; font-weight: bold; border: 1px solid #ccc;">Expected Revenue:</td>
+          <td style="padding: 10px; border: 1px solid #ccc;">₹${expected_revenue}</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; font-weight: bold; border: 1px solid #ccc;">Achievement Ratio:</td>
+          <td style="padding: 10px; border: 1px solid #ccc;">${achievement_ratio}x</td>
+        </tr>
+      </table>
+  
+      <h2 style="color: #2c3e50; margin-bottom: 12px;">📅 Goal Sheet Details for ${mailSelectedYear}</h2>
+      <table style="width: 100%; border-collapse: collapse; font-size: 14px; border: 1px solid #ccc;">
+        <thead>
+          <tr style="background-color: #3498db; color: white;">
+            <th style="padding: 10px; border: 1px solid #ccc;">Year</th>
+            <th style="padding: 10px; border: 1px solid #ccc;">Month</th>
+            <th style="padding: 10px; border: 1px solid #ccc;">Joinings</th>
+            <th style="padding: 10px; border: 1px solid #ccc;">Cost</th>
+            <th style="padding: 10px; border: 1px solid #ccc;">Revenue</th>
+            <th style="padding: 10px; border: 1px solid #ccc;">Target</th>
+            <th style="padding: 10px; border: 1px solid #ccc;">Cum. Cost</th>
+            <th style="padding: 10px; border: 1px solid #ccc;">Cum. Revenue</th>
+            <th style="padding: 10px; border: 1px solid #ccc;">YTD</th>
+            <th style="padding: 10px; border: 1px solid #ccc;">MTD</th>
+            <th style="padding: 10px; border: 1px solid #ccc;">Incentive</th>
+            <th style="padding: 10px; border: 1px solid #ccc;">Leakage</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${formattedGoalSheetDetails}
+        </tbody>
+      </table>
+    </div>
+  `;
 
   
 
