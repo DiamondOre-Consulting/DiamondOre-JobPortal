@@ -39,7 +39,6 @@ import AddJobs from '../../Pages/AdminPage/Addjobs';
 import AllReviews from '../../Pages/AdminPage/AllReviews';
 import AllEmployee from '../../Pages/AdminPage/AllEmployee';
 import EachEmployeeGoalSheet from '../../Pages/AdminPage/EachEmployeeGoalSheet';
-import AddRecruiter from '../../Pages/AdminPage/AddRecruiter';
 import Employeesignup from '../../Pages/AdminPage/Employeesignup';
 import Prompt from '../../Pages/AdminPage/Prompt';
 import AdminSignup from '../../Pages/AdminPage/AdminSignup';
@@ -275,7 +274,6 @@ const AdminDrawerSidebar = () => {
                         { text: 'ERP', icon: <img src={erpicon} className='w-6 h-6' />, path: '/erp-dashboard' },
                         { text: 'All Reviews', icon: <ReviewsIcon />, path: '/all-reviews' },
                         ...(userData?.adminType !== "subAdmin" ? [{ text: 'All Employees', icon: <BadgeIcon />, path: '/all-employees' }] : []),
-                        ...(userData?.adminType !== "subAdmin" ? [{ text: 'Add Recruiter', icon: <AddCircleOutlineIcon />, path: '/add-recruiter' }] : []),
                         ...(userData?.adminType !== "subAdmin" ? [{ text: 'Add Employee', icon: <PersonAddIcon />, path: '/add-employee' }] : []),
                         ...(userData?.adminType !== "subAdmin" ? [{ text: 'Make Admin', icon: <AdminPanelSettingsIcon />, path: '/make-admin' }] : []),
                         { text: 'Edit Profile', icon: <AccountBoxIcon />, path: '/edit-profile' },
@@ -325,7 +323,6 @@ const AdminDrawerSidebar = () => {
                     <Route path='/goal-sheet/:id/:employeename' element={<EachEmployeeGoalSheet />} />
                     <Route path='/each-account/:id' element={<EachEmployeeAccounts />} />
                     <Route path='/kpi/:id' element={<EachEmployeeKPIScore />} />
-                    <Route path='/add-recruiter' element={<AddRecruiter />} />
                     <Route path='/add-employee' element={<Employeesignup />} />
                     <Route path='/prompt' element={<Prompt />} />
                     <Route path='/make-admin' element={<AdminSignup />} />

@@ -215,13 +215,7 @@ const AdminNav = () => {
 
             {isDropdownOpen && (
               <div className="absolute right-8 top-6 mt-12 py-2 w-lg bg-white shadow-gray-200 rounded-md shadow-lg">
-                <a
-                  onClick={() => { setShowPopup(true) }}
-                  className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100 cursor-pointer"
-
-                >
-                  Add Recruiter/KAM
-                </a>
+                
                 <Link
                   to={'/employee-signup'}
                   className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
@@ -383,16 +377,7 @@ const AdminNav = () => {
             </Link>
 
 
-            <a>
-              <li
-                onClick={() => { setShowPopup(true) }}
-                className={`${menuOpen ? "block" : "hidden"
-                  } px-18 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
-              >
-                Add Recruiter/KAM
-              </li>
-            </a>
-
+           
 
             <Link
               to="#"
