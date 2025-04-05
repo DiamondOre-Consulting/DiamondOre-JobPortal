@@ -72,7 +72,7 @@ const EmployeeBranchesPage = () => {
     getTeamMembers();
   }, [teamId]);
 
-  console.log("mapped emp", mappedemp);
+ 
 
   const unassignedemp = async (employeeId) => {
     try {
@@ -92,6 +92,9 @@ const EmployeeBranchesPage = () => {
       alert("Failed to unmap employee. Please try again.");
     }
   };
+
+
+  console.log("enp",employee)
 
   return (
     <div className="realtive">
@@ -145,14 +148,14 @@ const EmployeeBranchesPage = () => {
 
         <div>
           {employee?.shortlistedCandidates && (
-            <a
-              className=" text-center p-4 text-white absolute  right-10 top-40 bg-green-600"
-              href={employee?.shortlistedCandidates}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              View Shorlisted Candidates
-            </a>
+           <a
+            className=" text-center p-4 text-white absolute  right-10 top-40 bg-green-600"
+           href={`https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(employee?.shortlistedCandidates)}`}
+           target="_blank"
+           rel="noopener noreferrer"
+         >
+           View Shortlisted Candidates
+         </a>
           )}
         </div>
 

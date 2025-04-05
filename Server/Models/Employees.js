@@ -2,14 +2,14 @@ import mongoose, { mongo } from "mongoose";
 
 // / goalDetail.target = cost * 4;
 const employeeSchema = new mongoose.Schema({
-  empType: {
+  empType:{
     type: String,
     default: "Recruiter",
   },
   kpiDesignation:{
     type:String
   },
-  name: {
+  name:{
     type: String,
     required: true,
   },

@@ -36,6 +36,7 @@ const EmployeePolicies = () => {
   }, []);
 
 
+
   return (
     <div>
       <p className="text-3xl text-center uppercase ">All Policies</p>
