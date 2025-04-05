@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useJwt } from "react-jwt";
 import { useNavigate, useParams } from "react-router-dom";
 import Snackbar from "@mui/material/Snackbar";
@@ -35,6 +35,11 @@ const EachEmployeeGoalSheet = () => {
   const [filteredGoalSheetData, setFilteredGoalSheetData] = useState([]);
   const [trigger, setTrigger] = useState(0);
 
+  const [mailYearSelectData,setMailYearSelectData] = useState([])
+  const [mailSelectedYear,setMailSelectedYear] = useState(null)
+
+ 
+
   const [open, setOpen] = useState(false);
   const [selectedColor, setSelectedColor] = useState(null);
 
@@ -42,6 +47,7 @@ const EachEmployeeGoalSheet = () => {
     { name: "Orange", code: "#FFA500" },
     { name: "Green", code: "#008000" },
   ];
+
 
 
 
@@ -61,7 +67,7 @@ const EachEmployeeGoalSheet = () => {
 
         if (response.status === 201) {
           setEmployee(response.data);
-          console.log("emp data", response.data);
+          
         }
       } catch (error) {}
     };
@@ -219,12 +225,14 @@ const EachEmployeeGoalSheet = () => {
             },
           }
         );
-
+       
         if (response.status === 200) {
           setAllGoalSheetData(response.data); // Update the goal sheet data
           setgetTickerMessage(response.data[0].YTDLessTickerMessage);
           // You can verify the data here
-          console.log("My Goal Sheet ", response.data);
+         
+          const years = [...new Set(response.data[0].goalSheetDetails.map(item => item.year))].sort((a, b) => b - a);
+          setMailYearSelectData(years)
           setFilteredData(response.data);
         }
       } catch (error) {
@@ -311,20 +319,27 @@ const EachEmployeeGoalSheet = () => {
     }
   };
 
-  const totals = filteredData
-    .flatMap((data) => data.goalSheetDetails) // Flatten all goalSheetDetails
-    .reduce(
-      (acc, detail) => {
-        acc.noOfJoinings += detail.noOfJoinings;
-        acc.revenue += detail.revenue;
-        acc.cost += detail.cost;
-        acc.target += detail.target;
-        return acc;
-      },
-      { noOfJoinings: 0, revenue: 0, cost: 0, target: 0 }
-    );
 
-  console.log(totals); // { noOfJoinings: X, revenue: Y, cost: Z, target: W }
+   
+
+  const totals = useMemo(() => {
+    return filteredData
+      .flatMap((data) => data.goalSheetDetails)
+      .filter((detail) => detail.year === Number(mailSelectedYear))
+      .reduce(
+        (acc, detail) => {
+          acc.noOfJoinings += detail.noOfJoinings || 0;
+          acc.revenue += detail.revenue || 0;
+          acc.cost += detail.cost || 0;
+          acc.target += detail.target || 0;
+          return acc;
+        },
+        { noOfJoinings: 0, revenue: 0, cost: 0, target: 0 }
+      );
+  }, [filteredData, mailSelectedYear]);
+
+
+  
 
   // for uploading joining Excel
   const [file, setFile] = useState(null); // Selected file
@@ -356,7 +371,7 @@ const EachEmployeeGoalSheet = () => {
         }
       );
 
-      console.log(response.data)
+     
 
       if (response.status === 200) {
         setLoading(false);
@@ -1023,7 +1038,28 @@ const EachEmployeeGoalSheet = () => {
                   placeholder="Enter the description"
                   className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
+                
               </div>
+
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">
+                  Select year
+                </label>
+                <select
+                  value={mailSelectedYear}
+                  onChange={(e) => setMailSelectedYear(e.target.value)}
+                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">-- Select Year --</option>
+                  {mailYearSelectData.map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">
                   Total Costs
