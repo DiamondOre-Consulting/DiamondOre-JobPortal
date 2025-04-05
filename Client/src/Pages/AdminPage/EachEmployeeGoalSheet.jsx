@@ -439,6 +439,7 @@ const EachEmployeeGoalSheet = () => {
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/admin-confi/send-mail/${id}`,
         {
+          mailSelectedYear,
           description,
           total_costs: totals.cost,
           total_revenue: totals.revenue,

@@ -3691,7 +3691,7 @@ const sendMailToEmployee = async (email, emailContent) => {
 router.post("/send-mail/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { description, total_costs, total_revenue, expected_revenue } =
+    const { description, total_costs, total_revenue, expected_revenue,mailSelectedYear } =
       req.body;
 
     if (!total_costs || !total_revenue || !expected_revenue) {
@@ -3713,25 +3713,27 @@ router.post("/send-mail/:id", async (req, res) => {
     }
 
     const formattedGoalSheetDetails = goalSheet.goalSheetDetails
-      .map(
-        (detail) => `
-          <tr>
-            <td>${detail.year || "N/A"}</td>
-            <td>${detail.month || "N/A"}</td>
-            <td>${detail.noOfJoinings || "N/A"}</td>
-            <td>${detail.cost || "N/A"}</td>
-            <td>${detail.revenue || "N/A"}</td>
-            <td>${detail.target || "N/A"}</td>
-            <td>${detail.cumulativeCost || "N/A"}</td>
-            <td>${detail.cumulativeRevenue || "N/A"}</td>
-            <td>${detail.achYTD || "N/A"}</td>
-            <td>${detail.achMTD || "N/A"}</td>
-            <td>${detail.incentive || "N/A"}</td>
-            <td>${detail.leakage || "N/A"}</td>
-          </tr>
-        `
-      )
-      .join("");
+  .filter((detail) => detail.year == mailSelectedYear)
+  .map(
+    (detail) => `
+      <tr>
+        <td style="border:1px solid #ccc;">${detail.year || "N/A"}</td>
+        <td style="border:1px solid #ccc;">${detail.month || "N/A"}</td>
+        <td style="border:1px solid #ccc;">${detail.noOfJoinings || "N/A"}</td>
+        <td style="border:1px solid #ccc;">${detail.cost || "N/A"}</td>
+        <td style="border:1px solid #ccc;">${detail.revenue || "N/A"}</td>
+        <td style="border:1px solid #ccc;">${detail.target || "N/A"}</td>
+        <td style="border:1px solid #ccc;">${detail.cumulativeCost || "N/A"}</td>
+        <td style="border:1px solid #ccc;">${detail.cumulativeRevenue || "N/A"}</td>
+        <td style="border:1px solid #ccc;">${detail.achYTD || "N/A"}</td>
+        <td style="border:1px solid #ccc;">${detail.achMTD || "N/A"}</td>
+        <td style="border:1px solid #ccc;">${detail.incentive || "N/A"}</td>
+        <td style="border:1px solid #ccc;">${detail.leakage || "N/A"}</td>
+      </tr>
+    `
+  )
+  .join("");
+
 
     const goalSheetTable = `
         <table border="1" style="border-collapse: collapse; width: 100%;">
@@ -3758,20 +3760,58 @@ router.post("/send-mail/:id", async (req, res) => {
       `;
 
     const achievement_ratio = (total_revenue / total_costs).toFixed(2);
+   const emailContent = `
+  <div style="font-family: Arial, sans-serif; color: #333;">
+    <p style="font-size: 16px; margin: 0 0 0 0;">
+      ${description || "No additional details provided."}
+    </p>
 
-    const emailContent = `
-          <p>${description || "No additional details provided."}</p>
-        <h2>Financial Overview</h2>
-        <ul>
-          <li><strong>Total Costs:</strong> ₹${total_costs}</li>
-          <li><strong>Total Revenue:</strong> ₹${total_revenue}</li>
-          <li><strong>Expected Revenue:</strong> ₹${expected_revenue}</li>
-        </ul>
-        <p><strong>Achievement Ratio:</strong> ${achievement_ratio}x</p>
-        <h2>Goal Sheet Details</h2>
-        ${goalSheetTable}
-      
-      `;
+    <h2 style="color: #2c3e50; margin-bottom: 1px;">📊 Financial Overview</h2>
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 2px;">
+      <tr>
+        <td style="padding: 8px; font-weight: bold; border: 1px solid #ccc;">Total Costs:</td>
+        <td style="padding: 8px; border: 1px solid #ccc;">₹${total_costs}</td>
+      </tr>
+      <tr>
+        <td style="padding: 8px; font-weight: bold; border: 1px solid #ccc;">Total Revenue:</td>
+        <td style="padding: 8px; border: 1px solid #ccc;">₹${total_revenue}</td>
+      </tr>
+      <tr>
+        <td style="padding: 8px; font-weight: bold; border: 1px solid #ccc;">Expected Revenue:</td>
+        <td style="padding: 8px; border: 1px solid #ccc;">₹${expected_revenue}</td>
+      </tr>
+      <tr>
+        <td style="padding: 8px; font-weight: bold; border: 1px solid #ccc;">Achievement Ratio:</td>
+        <td style="padding: 8px; border: 1px solid #ccc;">${achievement_ratio}x</td>
+      </tr>
+    </table>
+
+    <h2 style="color: #2c3e50; margin-bottom: 2px;">📅 Goal Sheet Details for ${mailSelectedYear}</h2>
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; border: 1px solid #ccc;">
+      <thead>
+        <tr style="background-color: #2ecc71; color: white;">
+          <th style="padding: 8px; border: 1px solid #ccc;">Year</th>
+          <th style="padding: 8px; border: 1px solid #ccc;">Month</th>
+          <th style="padding: 8px; border: 1px solid #ccc;">Joinings</th>
+          <th style="padding: 8px; border: 1px solid #ccc;">Cost</th>
+          <th style="padding: 8px; border: 1px solid #ccc;">Revenue</th>
+          <th style="padding: 8px; border: 1px solid #ccc;">Target</th>
+          <th style="padding: 8px; border: 1px solid #ccc;">Cum. Cost</th>
+          <th style="padding: 8px; border: 1px solid #ccc;">Cum. Revenue</th>
+          <th style="padding: 8px; border: 1px solid #ccc;">YTD</th>
+          <th style="padding: 8px; border: 1px solid #ccc;">MTD</th>
+          <th style="padding: 8px; border: 1px solid #ccc;">Incentive</th>
+          <th style="padding: 8px; border: 1px solid #ccc;">Leakage</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${formattedGoalSheetDetails}
+      </tbody>
+    </table>
+  </div>
+`;
+
+  
 
     await sendMailToEmployee(employee.email, emailContent);
 
