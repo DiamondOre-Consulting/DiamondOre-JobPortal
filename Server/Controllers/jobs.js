@@ -145,8 +145,8 @@ const downloadFile = async (url, outputFilePath) => {
 // });
 
 router.post("/upload-job-excel", AdminAuthenticateToken, excelUpload.single('myFile') , async (req, res) => {
-  
-  if(req.user.email!="info@rasonline.in"||req.user.email!="info.codifiers@gmail.com"){
+  console.log(req.user)
+  if(req.user.email!="info@rasonline.in"&&req.user.email!="info.codifiers@gmail.com"){
     return res.status(400).send({success:false,message:"Unauthorized access"});
   }
   
