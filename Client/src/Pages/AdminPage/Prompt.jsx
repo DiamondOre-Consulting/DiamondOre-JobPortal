@@ -69,7 +69,11 @@ const Prompt = () => {
       formData.append("myFile", sheet);
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-dsr-excel`,
-        formData
+        formData,{
+          headers: {  
+               Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        }
       );
 
       if (response.status === 200) {        
