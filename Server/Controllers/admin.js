@@ -2682,14 +2682,13 @@ router.post("/set-goalSheet", async (req, res) => {
       )
     );
 
-    console.log(lastDetail);
+   
 
     // Calculate necessary fields
 
     let target;
 
-    console.log(employee.empType);
-
+    
     if (employee.empType === "Recruiter") {
       target = cost * 4;
     } else if (employee.empType === "SeniorRecruiter") {
