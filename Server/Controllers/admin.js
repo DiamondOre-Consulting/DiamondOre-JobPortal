@@ -2797,7 +2797,7 @@ router.get("/goalsheet/:id", AdminAuthenticateToken, async (req, res) => {
 
 // EDIT A GOALSHEET
 router.put("/edit-goalSheet", async (req, res) => {
-  // console.log("enter")
+  
   const {
     empId,
     year,
@@ -2829,7 +2829,7 @@ router.put("/edit-goalSheet", async (req, res) => {
       return res.status(404).json({ error: "GoalSheet not found" });
     }
 
-    const goalSheet = await goalSheetBeforeSort.goalSheetDetails.sort(
+    const goalSheet =  goalSheetBeforeSort.goalSheetDetails.sort(
       (a, b) => {
         if (a.year !== b.year) {
           return a.year - b.year;
@@ -2934,14 +2934,10 @@ router.put("/edit-goalSheet", async (req, res) => {
 
 
     if (goalSheet.length > 1) {
-      console.log("enter1")
+      
       for (let i = goalDetailIndex ; i < goalSheet.length; i++) {
         const detail = goalSheet[i];
-        console.log(detail.cumulativeRevenue)
-        console.log(detail.cumulativeCost)
-        console.log( (
-          detail.cumulativeRevenue / detail.cumulativeCost
-        ).toFixed(2))
+       
         detail.cumulativeCost = goalSheet[i - 1].cumulativeCost + detail.cost;
         detail.cumulativeRevenue =
           goalSheet[i - 1].cumulativeRevenue + detail.revenue;
@@ -2967,6 +2963,76 @@ router.put("/edit-goalSheet", async (req, res) => {
     console.log(error);
   }
 });
+
+
+router.delete("/delete-goalsheet/:empId/:sheetId",AdminAuthenticateToken,async (req, res) => {
+      try{
+
+          const { empId,sheetId } = req.params;
+          
+          const employee = await Employees.findOne({ _id: empId });
+          if (!employee) {
+            return res.status(404).json({ error: "Employee not found" });
+          }
+
+          const goalSheetBeforeSort = await GoalSheet.findOne({ owner: employee._id });
+
+          
+          const goalSheetAfterSort =  goalSheetBeforeSort.goalSheetDetails.sort(
+            (a, b) => {
+              if (a.year !== b.year) {
+                return a.year - b.year;
+              }
+              return a.month - b.month;
+            }
+          );
+      
+          
+      
+          const goalDetailIndex = goalSheetAfterSort.findIndex(
+            (data) => data?._id.toString() === sheetId.toString()
+          );
+      
+          if (goalDetailIndex === -1) {
+            console.log(typeof goalDetailIndex);
+            return res
+              .status(404)
+              .json({ error: "GoalSheet for this month and year not found" });
+          }
+
+
+          goalSheetAfterSort.splice(goalDetailIndex, 1);
+
+
+          if (goalSheetAfterSort.length > 1 && goalDetailIndex >1) {
+      
+            for (let i = goalDetailIndex ; i < goalSheetAfterSort.length; i++) {
+              const detail = goalSheetAfterSort[i];
+             
+              detail.cumulativeCost = goalSheetAfterSort[i - 1].cumulativeCost + detail.cost;
+              detail.cumulativeRevenue =
+              goalSheetAfterSort[i - 1].cumulativeRevenue + detail.revenue;
+              detail.achYTD = (
+                detail.cumulativeRevenue / detail.cumulativeCost
+              ).toFixed(2);
+              detail.achMTD = (detail.revenue / detail.cost).toFixed(2);
+            }
+          }
+
+          await goalSheetBeforeSort.save();      
+
+
+
+          res.status(200).json({ message: "GoalSheet deleted successfully" });  
+            
+      }
+      catch(error){
+        res
+        .status(500)
+        .json({ error: "An error occurred", details: error.message });
+         console.log(error);
+      }
+ })
 
 // GET ALL THE DUPLICATE PHONE NUMBER REQUESTS
 router.get("/duplicate-phone-requests",AdminAuthenticateToken,async (req, res) => {

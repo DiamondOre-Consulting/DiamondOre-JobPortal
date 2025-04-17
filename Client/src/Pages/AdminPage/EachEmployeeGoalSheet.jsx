@@ -34,6 +34,7 @@ const EachEmployeeGoalSheet = () => {
   const [allGoalSheetData, setAllGoalSheetData] = useState([]);
   const [filteredGoalSheetData, setFilteredGoalSheetData] = useState([]);
   const [trigger, setTrigger] = useState(0);
+  const [deletePopup,setDeletePopup] = useState(false)
 
   const [mailYearSelectData,setMailYearSelectData] = useState([])
   const [mailSelectedYear,setMailSelectedYear] = useState(null)
@@ -47,6 +48,9 @@ const EachEmployeeGoalSheet = () => {
     { name: "Orange", code: "#FFA500" },
     { name: "Green", code: "#008000" },
   ];
+
+
+  const [sheetId,setSheetId]= useState(null)
 
 
 
@@ -163,6 +167,38 @@ const EachEmployeeGoalSheet = () => {
     setSnackbarOpen(false);
   };
 
+
+  const handleDeleteGoalSheet = async(e) =>{
+    e.preventDefault();
+    setShowSubmitLoader(true);
+     try{
+
+      const token = localStorage.getItem("token");
+
+      const response = await axios.delete(
+        `${import.meta.env.VITE_BASE_URL}/admin-confi/delete-goalsheet/${id}/${sheetId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      
+      if(response.status==200){
+        setTrigger((prev) => prev + 1);
+        alert(response.data.message)
+      }
+      setDeletePopup(false)
+     }catch(err){
+       console.log(err)
+       alert(err.response.data.message)
+       return 
+     }
+     finally{
+      setShowSubmitLoader(true);
+     }
+  } 
+
   // getGoalSheet
 
   const handleEditGoalSheet = async (e) => {
@@ -243,16 +279,6 @@ const EachEmployeeGoalSheet = () => {
     handleGoalSheet();
   }, [trigger]);
 
-  // useEffect(() => {
-  //   if (selectedYear) {
-  //     const filteredData = allGoalSheetData.filter(
-  //       (item) => item.year === parseInt(selectedYear)
-  //     );
-  //     setFilteredGoalSheetData(filteredData);
-  //   } else {
-  //     setFilteredGoalSheetData([]);
-  //   }
-  // }, [selectedYear, allGoalSheetData]);
 
   const handleYearChange = (e) => {
     setSelectedYear(e.target.value);
@@ -282,6 +308,7 @@ const EachEmployeeGoalSheet = () => {
   const [editRevenue, setEditRevenue] = useState(0);
   const [editIncentive, setEditIncentive] = useState(0);
   const [editleakage, setEditLeakage] = useState(0);
+  
 
   const [goalSheetToEdit, setGoalSheetToEdit] = useState({});
 
@@ -299,6 +326,11 @@ const EachEmployeeGoalSheet = () => {
     setEditLeakage(detail.leakage);
     setGoalSheetToEdit(detail);
   };
+
+  const handleDeleteClick = (sheetId) => {
+    setSheetId(sheetId);
+    setDeletePopup(true);
+  }
 
   const [filteredData, setFilteredData] = useState([]);
   const [selectedYearchange, setSelectedYearchange] = useState("All");
@@ -755,6 +787,7 @@ const EachEmployeeGoalSheet = () => {
                   <th className="px-4 py-2">Incentive</th>
                   <th className="px-4 y-2">Leakage</th>
                   <th className="px-4 y-2">Action</th>
+                  <th className="px-4 y-2">Action</th>
                 </tr>
               </thead>
 
@@ -809,6 +842,14 @@ const EachEmployeeGoalSheet = () => {
                             }}
                           >
                             Edit
+                          </td>
+                          <td
+                            className="px-4 py-2 text-red-600 border cursor-pointer"
+                            onClick={() => {
+                              handleDeleteClick(detail?._id);
+                            }}
+                          >
+                            Delete
                           </td>
                         </tr>
                       ))
@@ -1031,6 +1072,40 @@ const EachEmployeeGoalSheet = () => {
           </div>
         </div>
       )}
+
+    {deletePopup && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-lg relative">
+                {/* Close button */}
+                <button
+                  onClick={() => setDeletePopup(false)}
+                  className="absolute top-2 right-2 text-gray-500 hover:text-black text-xl"
+                >
+                  &times;
+                </button>
+
+                <h2 className="text-xl font-semibold mb-4 text-center">Are you sure?</h2>
+                <p className="text-gray-600 text-center mb-6">
+                  This action cannot be undone.
+                </p>
+
+                <div className="flex justify-between">
+                  <button
+                    onClick={() => setDeletePopup(false)}
+                    className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleDeleteGoalSheet}
+                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                  >
+                    Confirm Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
       {sendEmialPopup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
