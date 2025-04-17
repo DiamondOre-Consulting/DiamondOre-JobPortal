@@ -219,7 +219,7 @@ export default function EmpDrawerSidebar() {
   // logout
   const handleLogout = () => {
     localStorage.removeItem("token");
-    window.location.href = "/employee-login";
+    window.location.href = "/";
 
   };
 
