@@ -3004,11 +3004,14 @@ router.delete("/delete-goalsheet/:empId/:sheetId",AdminAuthenticateToken,async (
 
           goalSheetAfterSort.splice(goalDetailIndex, 1);
 
-
-          if (goalSheetAfterSort.length > 1 && goalDetailIndex >1) {
+       
+          if (goalSheetAfterSort.length >= 1 && goalDetailIndex >=1) {
+       
       
             for (let i = goalDetailIndex ; i < goalSheetAfterSort.length; i++) {
               const detail = goalSheetAfterSort[i];
+
+              console.log(detail)
              
               detail.cumulativeCost = goalSheetAfterSort[i - 1].cumulativeCost + detail.cost;
               detail.cumulativeRevenue =
