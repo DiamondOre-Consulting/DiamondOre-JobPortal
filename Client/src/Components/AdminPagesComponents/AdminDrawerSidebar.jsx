@@ -205,7 +205,7 @@ const AdminDrawerSidebar = () => {
 
     const handleLogout = () => {
         localStorage.removeItem("token");
-        navigate("/admin-login");
+        navigate("/");
     };
 
     const handleDrawerOpen = () => {

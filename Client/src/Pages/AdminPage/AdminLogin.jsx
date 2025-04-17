@@ -69,7 +69,7 @@ const AdminLogin = () => {
   };
 
   const handleShowPassword = () => {
-    return setShowPass(!showPass);
+      setShowPassword(prev=>!prev);
   };
 
   return (
@@ -165,16 +165,6 @@ const AdminLogin = () => {
                   )}
                 </span>
               </div>
-              <label for="check">Show Password</label>
-              <input
-                className='ml-2'
-                id="check"
-                type="checkbox"
-                value={showPassword}
-                onChange={() =>
-                  setShowPassword((prev) => !prev)
-                }
-              />
             </div>
 
             <button
