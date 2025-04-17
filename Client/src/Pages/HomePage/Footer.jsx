@@ -22,69 +22,62 @@ const Footer = () => {
                   with <b>Diamond Ore Consulting Pvt Ltd,</b> your trusted
                   placement consulting company.
                 </p>
-
-                <div className="flex  my-4  space-x-4 ">
-                  <div className="relative flex items-center group">
-
-                 <a href="https://www.instagram.com/diamondoreconsulting?igsh=ZXpwZWxpc2t0YTIz" target="_blank"><FaInstagram  className="text-4xl cursor-pointer "/></a>
-
-                    {/* <img
-                      src={instalogo}
-                      alt="Instagram"
-                      className="cursor-pointer w-8"
-                    /> */}
-
-                    <div
-                      role="tooltip"
-                      className="absolute bottom-full mb-2 left-2/3 -translate-x-1/2 z-10 invisible opacity-0 group-hover:visible group-hover:opacity-100 px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs dark:bg-gray-700"
+                <div className="flex flex-wrap justify-center items-center gap-6 my-4">
+                  <div className="flex flex-col items-center">
+                    <a
+                      href="https://www.instagram.com/diamondoreconsulting?igsh=ZXpwZWxpc2t0YTIz"
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
-                      DiamondOre 
-                      <div className="tooltip-arrow" data-popper-arrow></div>
-                    </div>
+                      <FaInstagram className="text-4xl cursor-pointer" />
+                    </a>
+                    <p>DiamonOre</p>
                   </div>
 
-                  <div className="relative flex items-center group">
-                  <a href="https://www.instagram.com/profile_genie_1?igsh=MW01amE5aHVwMTVpaw==" target="_blank"><FaInstagram  className="text-4xl cursor-pointer "/></a>
-
-                    <div
-                      role="tooltip"
-                      className="absolute bottom-full mb-2 left-2/3 -translate-x-1/2 z-10 invisible opacity-0 group-hover:visible group-hover:opacity-100 px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs dark:bg-gray-700"
+                  <div className="flex flex-col items-center">
+                    <a
+                      href="https://www.instagram.com/profile_genie_1?igsh=MW01amE5aHVwMTVpaw=="
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
-                     Profile Genie
-                      <div className="tooltip-arrow" data-popper-arrow></div>
-                    </div>
+                      <FaInstagram className="text-4xl cursor-pointer" />
+                    </a>
+                    <p>Profile Genie</p>
                   </div>
 
-
-                  <div className="relative flex items-center group">
-                  <a href="https://www.instagram.com/cv_genie_?igsh=bzIwdGQ1aHp6a3Vz" target="_blank"><FaInstagram  className="text-4xl cursor-pointer "/></a>
-
-                    <div
-                      role="tooltip"
-                      className="absolute bottom-full mb-2 left-2/3 -translate-x-1/2 z-10 invisible opacity-0 group-hover:visible group-hover:opacity-100 px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs dark:bg-gray-700"
+                  <div className="flex flex-col items-center">
+                    <a
+                      href="https://www.instagram.com/cv_genie_?igsh=bzIwdGQ1aHp6a3Vz"
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
-                      CV Genie 
-                      <div className="tooltip-arrow" data-popper-arrow></div>
-                    </div>
+                      <FaInstagram className="text-4xl cursor-pointer" />
+                    </a>
+                    <p>CV Genie</p>
                   </div>
 
-
-                  <div className="relative flex items-center group">
-                  <a href="https://www.instagram.com/doc_labz?igsh=YzBsY25wZWM1aXNp" target="_blank"><FaInstagram  className="text-4xl cursor-pointer "/></a>
-
-                    <div
-                      role="tooltip"
-                      className="absolute bottom-full mb-2 left-2/3  -translate-x-1/2 z-10 invisible opacity-0 group-hover:visible group-hover:opacity-100 px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs dark:bg-gray-700"
+                  <div className="flex flex-col items-center">
+                    <a
+                      href="https://www.instagram.com/doc_labz?igsh=YzBsY25wZWM1aXNp"
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
-                      DOC LABZ 
-                      <div className="tooltip-arrow" data-popper-arrow></div>
-                    </div>
+                      <FaInstagram className="text-4xl cursor-pointer" />
+                    </a>
+                    <p>DOC LABZ</p>
                   </div>
 
-                  <a href="https://youtube.com/@diamondore-career?si=FTT-w0fUn63CuPX3" target="_blank"><LuYoutube    className="text-4xl cursor-pointer "/></a>
+                  <div className="flex flex-col items-center">
+                    <a
+                      href="https://youtube.com/@diamondore-career?si=FTT-w0fUn63CuPX3"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <LuYoutube className="text-4xl cursor-pointer" />
+                    </a>
+                    <p>YouTube</p>
+                  </div>
                 </div>
-
-              
               </div>
 
               <div>
