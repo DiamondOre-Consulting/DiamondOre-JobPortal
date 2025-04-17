@@ -30,10 +30,13 @@ const HeroNav = () => {
       <section className="relative overflow-hidden flex items-center h-screen bg-cover bg-center" >
         <div className="absolute inset-0 bg-black opacity-40"></div>
         <video
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
           autoPlay
           loop
           muted
+          playsInline
+          disablePictureInPicture
+          controls={false}
         >
           <source src="https://s3.tebi.io/general-pics/hero-section-video.webm" type="video/webm" />
           Your browser does not support the video tag.
