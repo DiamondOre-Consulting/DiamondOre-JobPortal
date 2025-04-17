@@ -296,12 +296,13 @@ router.get("/all-jobs", async (req, res) => {
     const page  = data.page || 0;
     const limit = data.limit || 20;
 
-
     const skip = (page) * limit;
 
-    const allJobsCount = await Jobs.countDocuments({JobStatus:true});
+    const allJobsCount = await Jobs.countDocuments({JobStatus:"Active"});
+    console.log(allJobsCount)
 
-    const allJobs = await Jobs.find({JobStatus:true}).limit(limit).skip(skip);
+    const allJobs = await Jobs.find({JobStatus:"Active"}).limit(limit).skip(skip);
+    console.log(allJobs)
     
 
     return res.status(200).json({
@@ -2969,7 +2970,7 @@ router.delete("/delete-goalsheet/:empId/:sheetId",AdminAuthenticateToken,async (
       try{
 
           const { empId,sheetId } = req.params;
-          
+
           const employee = await Employees.findOne({ _id: empId });
           if (!employee) {
             return res.status(404).json({ error: "Employee not found" });
