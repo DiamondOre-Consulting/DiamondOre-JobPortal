@@ -27,8 +27,18 @@ const HeroNav = () => {
 
     <div>
       {showModal && <PopUpBox closeModal={closeModal} setShowModal={setShowModal} />}
-      <section className="relative overflow-hidden flex items-center h-screen bg-cover bg-center" style={{ backgroundImage: 'url(https://s3.tebi.io/generalpics/DOC-HomeGIF.gif)' }}>
+      <section className="relative overflow-hidden flex items-center h-screen bg-cover bg-center" >
         <div className="absolute inset-0 bg-black opacity-40"></div>
+        <video
+          className="absolute inset-0 w-full h-full object-cover"
+          autoPlay
+          loop
+          muted
+        >
+          <source src="https://s3.tebi.io/general-pics/hero-section-video.webm" type="video/webm" />
+          Your browser does not support the video tag.
+        </video>
+        
         <div className="p-8 md:p-12 lg:px-16 lg:py-40 relative z-10 flex items-center justify-center sm:justify-start">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
