@@ -94,7 +94,7 @@ function App() {
           aria-label="Loading Spinner"
           data-testid="loader"
         />
-          <p className="text-black text-center mt-2 font-bold text-2xl">Loading opportunities....</p>
+          <p className="text-black text-center mt-2 font-bold text-2xl">Loading opportunities...</p>
         </div>
   
         </>

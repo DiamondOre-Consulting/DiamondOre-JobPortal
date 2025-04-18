@@ -3,9 +3,10 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import PopUpBox from "./PopUpBox";
+import { ScaleLoader } from "react-spinners";
 
 const HeroNav = () => {
-
+  const [videoLoaded, setVideoLoaded] = useState(false);
   const [showModal, setShowModal] = useState(() => {
     const isPopupShown = sessionStorage.getItem('isPopupShown');
     return !isPopupShown;
@@ -37,10 +38,17 @@ const HeroNav = () => {
           playsInline
           disablePictureInPicture
           controls={false}
+          onLoadedData={() => setVideoLoaded(true)}
         >
           <source src="https://s3.tebi.io/general-pics/hero-section-video.webm" type="video/webm" />
           Your browser does not support the video tag.
         </video>
+        {!videoLoaded && (
+        <div className="inset-0 absolute z-[50000] flex flex-col items-center justify-center bg-white w-[100vw]  h-screen">
+          <ScaleLoader size={150} color="#023E8A" />
+          <p className="text-black text-center mt-2 font-bold text-2xl">Loading opportunities...</p>
+        </div>
+        )}
         
         <div className="p-8 md:p-12 lg:px-16 lg:py-40 relative z-10 flex items-center justify-center sm:justify-start">
           <motion.div
