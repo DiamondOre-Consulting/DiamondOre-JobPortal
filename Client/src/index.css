@@ -40,3 +40,8 @@ input[type="number"] {
 }
 
 
+video::-webkit-media-controls {
+  display: none !important;
+}
+
+
