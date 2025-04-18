@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import simg from '../../assets/signupimg.svg';
 import { z } from "zod";
 import {toast} from  "sonner"
+import { ScaleLoader } from "react-spinners";
 
 const PROFILEIMAGE_MAX_SIZE = 2 * 1024 * 1024;
 const RESUMEFILE_MAX_SIZE = 2 * 1024 * 1024;
@@ -47,7 +48,7 @@ const candidateSignupSchema = z.object({
 })
 
 const Signup = ({ toggleForm }) => {
-  let [loading, setLoading] = useState(true);
+  let [loading, setLoading] = useState(false);
   const navigate = useNavigate()
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -63,6 +64,9 @@ const Signup = ({ toggleForm }) => {
   const [otpSent, setOtpSent] = useState(false);
   const [showLoader, setShowLoader] = useState(false);
   const [showLoaderResume, setShowLoaderResume] = useState(false);
+
+
+  console.log(loading)
 
 
   // const handleUploadImage = async (e) => {
@@ -208,7 +212,8 @@ const Signup = ({ toggleForm }) => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
+    console.log("otp: 1");
     if(!otp){
       setError("Otp is missing")
       return    
@@ -234,15 +239,6 @@ const Signup = ({ toggleForm }) => {
     }
      
 
-    // if(!resume){
-    //   setError("resume is missing")
-    //   return 
-    // }
-
-    // if(!profilePic){
-    //   setError("Profile picture is missing")
-    //   return 
-    // }
 
    
     const { profilePicSuccess, profilePicError } = profilePicUploadSchema.safeParse({
@@ -323,9 +319,12 @@ const Signup = ({ toggleForm }) => {
         } else {
           setError("An error occurred while in signup. Please try again later.");
         }
-      } else {
+      }else {
         setError("An error occurred while signup. Please try again later.");
-      }
+      }      
+    }finally{
+      console.log("enter56")
+      setLoading(false);
     }
   };
 
@@ -636,6 +635,12 @@ const Signup = ({ toggleForm }) => {
               </div>
             )}
           </div>
+           {loading && (
+                  <div className="inset-0 absolute z-[50000] flex flex-col items-center justify-center bg-white w-[100vw]  h-[110vh]">
+                    <ScaleLoader size={150} color="#023E8A" />
+                    <p className="text-black text-center mt-2 font-bold text-2xl">Loading opportunities...</p>
+                  </div>
+                  )}
           <div className="flex items-center justify-center  rounded-lg  ">
             <div className="hidden md:block">
               <img src={simg} />

@@ -27,7 +27,7 @@ const candidateSchema = new mongoose.Schema({
   },
   resume: {
     type: String,
-    required: true,
+
   },
   preferredFormStatus: {
     type: Boolean,

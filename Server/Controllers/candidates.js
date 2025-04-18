@@ -138,8 +138,8 @@ const candidateSignupSchema = z.object({
   phone: z.string().min(10).max(10),
   password: z.string().min(8),
   otp: z.string(),
-  profilePic: z.instanceof(Object), 
-  resume: z.instanceof(Object),
+  profilePic: z.instanceof(Object).optional(), 
+  resume: z.instanceof(Object).optional(),
 })
 
 
@@ -148,10 +148,10 @@ router.post("/signup", uploadImage.fields([{name:"myFileImage", maxCount:1},{nam
   async (req, res) => {
   const { name, email, phone, password, otp } = req.body;
 
-  console.log(req.files);
+ 
   
-  const profilePic = req?.files?.myFileImage[0]
-  const resume = req?.files?.myFileResume[0]
+  const profilePic = req?.files?.myFileImage?.[0]
+  const resume = req?.files?.myFileResume?.[0]
   // const resume = req.resume
 
  
@@ -172,9 +172,14 @@ router.post("/signup", uploadImage.fields([{name:"myFileImage", maxCount:1},{nam
       if (userExists) {
         return res.status(409).json({ message: "User already exists" });
       }
-
-      const uploadProfilePic = await uploadFile(profilePic, "profilepics");
-      const uploadResume = await uploadFile(resume, "profilepics");
+      let uploadProfilePic=null;
+      let uploadResume=null
+      if(profilePic){
+         uploadProfilePic = await uploadFile(profilePic, "profilepics");
+      }
+      if(resume){
+         uploadResume = await uploadFile(resume, "profilepics");
+      }
 
 
       // Hash the password
