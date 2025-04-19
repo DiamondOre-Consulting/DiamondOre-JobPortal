@@ -4136,4 +4136,25 @@ router.get('/incentive-tree-Data',AdminAuthenticateToken, async(req,res) =>{
 
 
 
+router.get('/policies', AdminAuthenticateToken, async (req, res) => {
+  try {
+    const existingPolicies = await Policies.findOne();
+
+    if (!existingPolicies) {
+      return res.status(404).json({ success: false,
+         message: "No policies found" });
+    }
+
+    return res.status(200).json({ success: true,
+       Policies: existingPolicies });
+  } catch (err) {
+    console.error("Error fetching policies:", err);
+    return res.status(500).json({ success:false,
+      message:"Internal server error" });
+  }
+});
+
+
+
+
 export default router;

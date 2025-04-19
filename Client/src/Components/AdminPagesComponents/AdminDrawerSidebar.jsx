@@ -63,6 +63,7 @@ import EachEmployeeKPIScore from '../../Pages/AdminPage/EachEmployeeKPIScore';
 import loader from '../../assets/loader.svg';
 import EditErp from '../../Pages/AdminPage/EditErp';
 import AdminIncentiveForEmployee from './AdminIncentiveForEmployee';
+import AdminEmployeePolicies from './AdminEmployeePolicies';
 
 
 const drawerWidth = 240;
@@ -277,6 +278,7 @@ const AdminDrawerSidebar = () => {
                         ...(userData?.adminType !== "subAdmin" ? [{ text: 'Add Employee', icon: <PersonAddIcon />, path: '/add-employee' }] : []),
                         ...(userData?.adminType !== "subAdmin" ? [{ text: 'Make Admin', icon: <AdminPanelSettingsIcon />, path: '/make-admin' }] : []),
                         { text: 'Edit Profile', icon: <AccountBoxIcon />, path: '/edit-profile' },
+                        {text: 'Policies', icon: <AccountBoxIcon />, path: '/policies'},
 
                     ].map((item) => (
                         <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
@@ -330,6 +332,7 @@ const AdminDrawerSidebar = () => {
                     <Route path='/all-accounts' element={<AllEmployeeAccounts />} />
                     <Route path='/all-duplicate-phone/request' element={<AllDuplicatePhoneRequest />} />
                     <Route path='/incetive-tree/:id' element={<AdminIncentiveForEmployee />} />
+                    <Route path="/policies" element={<AdminEmployeePolicies />}/>
                 </Routes>
                 <AdminFooter />
             </Box>

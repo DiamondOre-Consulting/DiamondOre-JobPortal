@@ -2,11 +2,9 @@ import React, { useEffect, useState,useRef } from "react";
 import { useJwt } from "react-jwt";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import AdminNav from "../../Components/AdminPagesComponents/AdminNav";
-import Snackbar from "@mui/material/Snackbar";
 import { MdDelete } from "react-icons/md";
 import PropagateLoader from "react-spinners/PropagateLoader";
-import Alert from "@mui/material/Alert";
+
 
 const AllEmployee = () => {
   const { decodedToken } = useJwt(localStorage.getItem("token"));
@@ -14,9 +12,7 @@ const AllEmployee = () => {
   const [inactiveEmployees, setInactiveEmployees] = useState([]);
   let [loading, setLoading] = useState(true);
   const [deleteActive, setDeleteActive] = useState(false);
-  const holidayFileRef = useRef()
-  const performanceManagementFileRef = useRef()
-  const leavePoliciesFileRef = useRef()
+ 
 
 
   const navigate = useNavigate();
@@ -102,79 +98,17 @@ const AllEmployee = () => {
     setDeleteActive(false);
   };
 
-  const [policypopup, setPolicyPopup] = useState(false);
-  const [files, setFiles] = useState([]);
-  // const [urls, setUrls] = useState({
-  //   leave: "",
-  //   performanceMenegement: "",
-  //   holidayCalendar: "",
-  // });
+ 
 
   
 
-  const handleFileChange = (file,index) => {
-    
-    setFiles(prevFiles => {
-      const newFiles = [...prevFiles]; 
-      newFiles[index] = file; 
-      return newFiles; 
-    });
-    console.log(files)
-   
-  };
-
-  // const getFileUrl = async (file, field) => {
-  //   const formData = new FormData();
-  //   formData.append("myFileImage", file);
-
-  //   try {
-  //     const response = await axios.post(
-  //       `${import.meta.env.VITE_BASE_URL}/admin-confi/get-policy-url`,
-  //       formData,
-  //       {
-  //         headers: { "Content-Type": "multipart/form-data" },
-  //       }
-  //     );
-  //     setUrls((prevUrls) => ({
-  //       ...prevUrls,
-  //       [field]: response.data, // Set the URL in the state for the corresponding field
-  //     }));
-  //   } catch (error) {
-  //     console.error("Error fetching URL for file:", error);
-  //   }
-  // };
+  
 
  
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // Ensure URLs are ready for all fields before proceeding
-     const formData = new FormData()
-     for(let file of files){
-      formData.append("policies",file)
-     }
-
-    try {
-      // Send the policy data to update all employees
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-policies`,
-        formData,{
-          headers: {
-            Authorization : `Bearer ${localStorage.getItem('token')}`
-          }
-        }
-      );
-      alert("files uploaded successfully");
-      setPolicyPopup(false); // Close modal on success
-    } catch (error) {
-      console.error(error);
-      alert("Error uploading policies.");
-    }
-  };
 
   const [maketlpopup, setMAkeTLPopUp] = useState(false);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
-  // const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   
   const makeTeamLead = async (e) => {
     e.preventDefault();
@@ -240,12 +174,7 @@ const AllEmployee = () => {
   return (
     <>
       {/* <AdminNav /> */}
-      <p
-        className="float-right bg-blue-900 p-3 text-gray-100 rounded-md cursor-pointer"
-        onClick={() => setPolicyPopup(true)}
-      >
-        upload policies
-      </p>
+    
       <div className="px-4">
         <div className="mx-auto mb-10 text-center ">
           <h1 className="text-4xl font-bold">All Employees</h1>
@@ -521,90 +450,7 @@ const AllEmployee = () => {
         )}
       </div>
 
-      {policypopup && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-          onClick={() => setPolicyPopup(false)} // Close modal when clicking outside
-        >
-          <div
-            className="w-full max-w-xl p-6 bg-white rounded-lg shadow-lg"
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
-          >
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <p className="text-lg text-center uppercase text-blue-900">
-                Upload policies
-              </p>
-              <div className="mx-auto bg-blue-900 h-1 w-20"></div>
-              <div className="">
-                <label className="block text-gray-800  mb-1">
-                  Leave Report
-                </label>
-                <div className="relative">
-                <input
-                  ref={leavePoliciesFileRef}
-                  type="file"
-                  onChange={(e) => {
-                    handleFileChange(e.target.files[0],0);
-                  }}
-                />
-                <button type="button" onClick={(e)=>{
-                  handleRemove(0)
-                  if (leavePoliciesFileRef.current) {
-                    leavePoliciesFileRef.current.value = "";
-                  }
-                  }} className="absolute top-0 right-0">X</button>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-gray-800  mb-1">
-                  Performance Management
-                </label>
-                <div className="relative">
-                <input
-                ref={performanceManagementFileRef}
-                  type="file"
-                  onChange={(e) => {
-                    handleFileChange(e.target.files[0],1);
-                  }}
-                />
-                <button type="button" onClick={(e)=>{handleRemove(1)
-                  if (performanceManagementFileRef.current) {
-                    performanceManagementFileRef.current.value = "";
-                  }
-                }} className="absolute top-0 right-0">X</button>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-gray-800  mb-1">
-                  Holiday Calendar
-                </label>
-                <div className="relative">
-                <input
-                ref={holidayFileRef}
-                  type="file"
-                  onChange={(e) => {
-                    handleFileChange(e.target.files[0],2);
-                  }}
-                />
-                 <button type="button" onClick={(e)=>{handleRemove(2)
-                  if (holidayFileRef.current) {
-                    holidayFileRef.current.value = "";
-                  }
-                 }} className="absolute top-0 right-0">X</button>
-                 </div>
-              </div>
-              <button
-                type="submit"
-                className="w-full p-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
-              >
-                Upload Policies
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
+     
 
       {/* make TL Popup */}
       {maketlpopup && (
