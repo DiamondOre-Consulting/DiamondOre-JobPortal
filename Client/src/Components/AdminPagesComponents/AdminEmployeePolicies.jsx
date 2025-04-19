@@ -5,7 +5,11 @@ import { LoaderCircle } from 'lucide-react';
 const AdminEmployeePolicies = () => {
   const [userData, setUserData] = useState();
   const [policyPopup, setPolicyPopup] = useState(false);
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState([
+    { type: "leave", file: null },
+    { type: "performance", file: null },
+    { type: "holiday", file: null },
+  ]);
   const [loading,setLoading] = useState(false)
   const holidayFileRef = useRef()
   const performanceManagementFileRef = useRef()
@@ -31,6 +35,7 @@ const AdminEmployeePolicies = () => {
           }
         );
         if (response.status == 200) {
+          
           setUserData(response.data.Policies.Policies);
         } else {
           setUserData("Did not get any response!!!");
@@ -43,14 +48,16 @@ const AdminEmployeePolicies = () => {
     fetchPolicyData();
   }, []);
 
+ 
+
 
   const handleFileChange = (file,index) => {
     
-    setFiles(prevFiles => {
-      const newFiles = [...prevFiles]; 
-      newFiles[index] = file; 
-      return newFiles; 
-    });
+    setFiles((prevFiles) => {
+        const updatedFiles = [...prevFiles];
+        updatedFiles[index] = { ...updatedFiles[index], file };
+        return updatedFiles;
+      });
  
    
   };
@@ -61,7 +68,15 @@ const AdminEmployeePolicies = () => {
       // Ensure URLs are ready for all fields before proceeding
        const formData = new FormData()
        for(let file of files){
-        formData.append("policies",file)
+        if(file.type == "holiday"){
+          formData.append("holiday",file.file)
+        }
+        if(file.type == "performance"){
+          formData.append("performance",file.file)
+        }
+        if(file.type == "leave"){
+          formData.append("leave",file.file)
+        }
        }
   
       try {
@@ -76,6 +91,11 @@ const AdminEmployeePolicies = () => {
         );
         alert("files uploaded successfully");
         setPolicyPopup(false); // Close modal on success
+        setFiles([
+          { type: "leave", file: null },
+          { type: "performance", file: null },
+          { type: "holiday", file: null },
+        ]);
       } catch (error) {
         console.error(error);
         alert("Error uploading policies.");
@@ -84,6 +104,7 @@ const AdminEmployeePolicies = () => {
         setLoading(false)
       }
     };
+
 
 
 

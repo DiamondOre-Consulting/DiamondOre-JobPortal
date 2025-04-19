@@ -15,7 +15,6 @@ const s3Client = new S3Client({
 export const uploadFile = async (file, bucketName) => {
  
   if (!file) return null;
-  console.log(file)
   const fileName = `${uuidv4()}.${file.originalname.split(".").pop()}`;
   const fileBuffer = file.buffer || await fs.createReadStream(file.path);
   try {

@@ -3638,43 +3638,63 @@ router.post("/fire-ticker/:id", async (req, res) => {
 
 
 
-router.post("/upload-policies",AdminAuthenticateToken, pdfUpload.array("policies",3) , async (req, res) => {
+router.post("/upload-policies",AdminAuthenticateToken, pdfUpload.fields([
+  { name: 'leave', maxCount: 1 },
+  { name: 'performance', maxCount: 1 },
+  { name: 'holiday', maxCount: 1 }
+]), async (req, res) => {
   
   try {
-
-    const existingPolicies  = await Policies.findOne()
-
-
-    const deletePromises = [
-      existingPolicies.Policies.leave && deleteFile(existingPolicies.Policies.leave,'profilepics'),
-      existingPolicies.Policies.performanceManagement&& deleteFile(existingPolicies.Policies.performanceManagement,'profilepics'),
-      existingPolicies.Policies.holidayCalendar && deleteFile(existingPolicies.Policies.holidayCalendar,'profilepics')
-    ].filter(Boolean)
-
-     await Promise.allSettled(deletePromises)
-  
-    
-    const uploadPromises = req.files.map(file => uploadFile(file, "profilepics"));
-
-    const results= await Promise.allSettled(uploadPromises)
-
-    const urls = results
-    .filter(result => result.status === "fulfilled") 
-    .map(result => result.value); 
-
-  
-
-    const policies = await Policies.updateOne({}, { 
-      Policies: {
-        leave: urls[0] || "", 
-        performanceManagement: urls[1] || "", 
-        holidayCalendar: urls[2] || "" 
-      }
-    }, { upsert: true });
+    const existingPolicies = await Policies.findOne();
+    const uploadedFiles = {};
 
 
+    if (req.files.leave && existingPolicies?.Policies?.leave) {
+      console.log("enter1")
+      await deleteFile(existingPolicies.Policies.leave, 'profilepics');
+    }
+    if (req.files.performance && existingPolicies?.Policies?.performanceManagement) {
+      console.log("enter2")
+      await deleteFile(existingPolicies.Policies.performanceManagement, 'profilepics');
+    }
+    if (req.files.holiday && existingPolicies?.Policies?.holidayCalendar) {
+      console.log("enter3")
+      await deleteFile(existingPolicies.Policies.holidayCalendar, 'profilepics');
+    }
 
-    return res.status(200).send("Files uploaded successfully")
+   
+    if (req.files.leave) {
+     
+      const result = await uploadFile(req.files.leave[0], 'profilepics');
+      uploadedFiles.leave = result;
+    } else {
+      uploadedFiles.leave = existingPolicies?.Policies?.leave || '';
+    }
+
+    if (req.files.performance) {
+     
+      const result = await uploadFile(req.files.performance[0], 'profilepics');
+      uploadedFiles.performanceManagement = result;
+    } else {
+      uploadedFiles.performanceManagement = existingPolicies?.Policies?.performanceManagement || '';
+    }
+
+    if (req.files.holiday) {
+   
+      const result = await uploadFile(req.files.holiday[0], 'profilepics');
+      uploadedFiles.holidayCalendar = result;
+    } else {
+      uploadedFiles.holidayCalendar = existingPolicies?.Policies?.holidayCalendar || '';
+    }
+
+ 
+    await Policies.updateOne(
+      {},
+      { Policies: uploadedFiles },
+      { upsert: true }
+    );
+
+    return res.status(200).send("Files uploaded successfully");
 
   } catch (error) {
     console.error("Error in /upload-policies route:", error);
