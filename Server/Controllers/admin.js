@@ -1208,8 +1208,7 @@ router.put("/edit-profile", AdminAuthenticateToken,uploadImage.single('profilePi
     const { name ,password,profilePic, passcode } = req.body;
     const { email } = req.user;
     
-    console.log(req.body)
-    console.log(req.file)
+  
 
    
 
@@ -2043,9 +2042,7 @@ router.delete("/delete-review/:id", AdminAuthenticateToken, async (req, res) => 
 );
 
 
-// EMPLOYEE SECTION
 
-// SIGNUP IS IN employees.js
 
 // FETCHING ALL employees
 router.get("/all-employees", AdminAuthenticateToken, async (req, res) => {
@@ -3650,15 +3647,15 @@ router.post("/upload-policies",AdminAuthenticateToken, pdfUpload.fields([
 
 
     if (req.files.leave && existingPolicies?.Policies?.leave) {
-      console.log("enter1")
+      
       await deleteFile(existingPolicies.Policies.leave, 'profilepics');
     }
     if (req.files.performance && existingPolicies?.Policies?.performanceManagement) {
-      console.log("enter2")
+    
       await deleteFile(existingPolicies.Policies.performanceManagement, 'profilepics');
     }
     if (req.files.holiday && existingPolicies?.Policies?.holidayCalendar) {
-      console.log("enter3")
+      
       await deleteFile(existingPolicies.Policies.holidayCalendar, 'profilepics');
     }
 
