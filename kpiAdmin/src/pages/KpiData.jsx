@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
@@ -225,6 +225,7 @@ const KpiData = () => {
             );
 
             if (response.status === 200) {
+                console.log(response.data)
                 setKpiDesignation(response.data.owner?.kpiDesignation);
                 setTableData(response.data);
             }
@@ -436,127 +437,171 @@ const KpiData = () => {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                                {tableData?.kpis?.length > 0 ? (
-                                    tableData.kpis.map((row, idx) => (
-                                        <>
-                                            <tr key={`${idx}-header`} className="bg-gray-100">
-                                                <td className="px-6 py-4 whitespace-nowrap font-medium">
-                                                    {row?.kpiMonth?.month} {row?.kpiMonth?.year}
-                                                </td>
-                                                <td colSpan="4" className="px-6 py-4 whitespace-nowrap font-medium">
-                                                    KPI Metrics
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap font-medium">
-                                                    <div className="flex space-x-2">
-                                                        <button 
-                                                            onClick={() => handleEdit(row)}
-                                                            className="text-blue-600 hover:text-blue-900"
-                                                        >
-                                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                            </svg>
-                                                        </button>
-                                                        <button 
-                                                            onClick={() => handleDelete(row._id)}
-                                                            className="text-red-600 hover:text-red-900"
-                                                        >
-                                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                            </svg>
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            
-                                            {/* Target (formerly Cost Vs Revenue) - Blurred */}
-                                            <tr key={`${idx}-target`}>
-                                                <td className="px-6 py-4 whitespace-nowrap"></td>
-                                                <td className="px-6 py-4 whitespace-nowrap">TargetVsRevenue</td>
-                                                <td className="px-6 py-4 whitespace-nowrap blur-sm  transition-all">
-                                                    {renderKpiRow('target', row?.kpiMonth?.costVsRevenue)}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap blur-sm  transition-all">
-                                                    {renderKpiRow('actual', row?.kpiMonth?.costVsRevenue)}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap blur-sm  transition-all">
-                                                    {renderKpiRow('kpiScore', row?.kpiMonth?.costVsRevenue)}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap"></td>
-                                            </tr>
-                                            
-                                            {/* Successful Drives */}
-                                            <tr key={`${idx}-drives`}>
-                                                <td className="px-6 py-4 whitespace-nowrap"></td>
-                                                <td className="px-6 py-4 whitespace-nowrap">Successful Drives</td>
-                                                <td className="px-6 py-4 whitespace-nowrap">{renderKpiRow('target', row?.kpiMonth?.successfulDrives)}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap">{renderKpiRow('actual', row?.kpiMonth?.successfulDrives)}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap">{renderKpiRow('kpiScore', row?.kpiMonth?.successfulDrives)}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap"></td>
-                                            </tr>
-                                            
-                                            {/* Accounts - conditionally rendered */}
-                                            {(kpiDesignation === "Recruiter/KAM/Mentor" || kpiDesignation === "Sr. Consultant") && (
-                                                <tr key={`${idx}-accounts`}>
-                                                    <td className="px-6 py-4 whitespace-nowrap"></td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">Accounts</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">{renderKpiRow('target', row?.kpiMonth?.accounts)}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">{renderKpiRow('actual', row?.kpiMonth?.accounts)}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">{renderKpiRow('kpiScore', row?.kpiMonth?.accounts)}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap"></td>
-                                                </tr>
-                                            )}
-                                            
-                                            {/* Mentorship - conditionally rendered */}
-                                            {kpiDesignation === "Recruiter/KAM/Mentor" && (
-                                                <tr key={`${idx}-mentorship`}>
-                                                    <td className="px-6 py-4 whitespace-nowrap"></td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">Mentorship</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">{renderKpiRow('target', row?.kpiMonth?.mentorship)}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">{renderKpiRow('actual', row?.kpiMonth?.mentorship)}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">{renderKpiRow('kpiScore', row?.kpiMonth?.mentorship)}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap"></td>
-                                                </tr>
-                                            )}
-                                            
-                                            {/* Process Adherence */}
-                                            <tr key={`${idx}-process`}>
-                                                <td className="px-6 py-4 whitespace-nowrap"></td>
-                                                <td className="px-6 py-4 whitespace-nowrap">Process Adherence</td>
-                                                <td className="px-6 py-4 whitespace-nowrap">{renderKpiRow('target', row?.kpiMonth?.processAdherence)}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap">{renderKpiRow('actual', row?.kpiMonth?.processAdherence)}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap">{renderKpiRow('kpiScore', row?.kpiMonth?.processAdherence)}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap"></td>
-                                            </tr>
-                                            
-                                            {/* Leakage */}
-                                            <tr key={`${idx}-leakage`}>
-                                                <td className="px-6 py-4 whitespace-nowrap"></td>
-                                                <td className="px-6 py-4 whitespace-nowrap">Leakage</td>
-                                                <td className="px-6 py-4 whitespace-nowrap">{renderKpiRow('target', row?.kpiMonth?.leakage)}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap">{renderKpiRow('actual', row?.kpiMonth?.leakage)}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap">{renderKpiRow('kpiScore', row?.kpiMonth?.leakage)}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap"></td>
-                                            </tr>
-                                            
-                                            {/* Total */}
-                                            <tr key={`${idx}-total`} className="bg-blue-50">
-                                                <td className="px-6 py-4 whitespace-nowrap font-medium"></td>
-                                                <td className="px-6 py-4 whitespace-nowrap font-medium">Total KPI Score</td>
-                                                <td colSpan="3" className="px-6 py-4 whitespace-nowrap font-medium">
-                                                    {row?.kpiMonth?.totalKPIScore || "N/A"}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap"></td>
-                                            </tr>
-                                        </>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan="6" className="px-6 py-4 text-center text-gray-500">
-                                            No KPI data found
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
+    {tableData?.kpis?.length > 0 ? (
+        tableData.kpis.map((row, idx) => {
+            // Extract the month/year and metrics data
+            const monthYear = `${row?.kpiMonth?.month || ''} ${row?.kpiMonth?.year || ''}`;
+            const metrics = row?.kpiMonth || {};
+
+            return (
+                <React.Fragment key={`${idx}-fragment`}>
+                    <tr className="bg-gray-100">
+                        <td className="px-6 py-4 whitespace-nowrap font-medium">
+                            {monthYear}
+                        </td>
+                        <td colSpan="4" className="px-6 py-4 whitespace-nowrap font-medium">
+                            KPI Metrics
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap font-medium">
+                            <div className="flex space-x-2">
+                                <button 
+                                    onClick={() => handleEdit(row)}
+                                    className="text-blue-600 hover:text-blue-900"
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </button>
+                                <button 
+                                    onClick={() => handleDelete(row._id)}
+                                    className="text-red-600 hover:text-red-900"
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    {/* Cost Vs Revenue - Blurred */}
+                    {metrics.costVsRevenue && (
+                        <tr>
+                            <td className="px-6 py-4 whitespace-nowrap"></td>
+                            <td className="px-6 py-4 whitespace-nowrap">TargetVsRevenue</td>
+                            <td className="px-6 py-4 whitespace-nowrap blur-sm">
+                                {metrics.costVsRevenue.target || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap blur-sm">
+                                {metrics.costVsRevenue.actual || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap blur-sm">
+                                {metrics.costVsRevenue.kpiScore || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap"></td>
+                        </tr>
+                    )}
+                    
+                    {/* Successful Drives */}
+                    {metrics.successfulDrives && (
+                        <tr>
+                            <td className="px-6 py-4 whitespace-nowrap"></td>
+                            <td className="px-6 py-4 whitespace-nowrap">Successful Drives</td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                {metrics.successfulDrives.target || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                {metrics.successfulDrives.actual || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                {metrics.successfulDrives.kpiScore || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap"></td>
+                        </tr>
+                    )}
+                    
+                    {/* Accounts - conditionally rendered */}
+                    {(kpiDesignation === "Recruiter/KAM/Mentor" || kpiDesignation === "Sr. Consultant") && metrics.accounts && (
+                        <tr>
+                            <td className="px-6 py-4 whitespace-nowrap"></td>
+                            <td className="px-6 py-4 whitespace-nowrap">Accounts</td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                {metrics.accounts.target || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                {metrics.accounts.actual || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                {metrics.accounts.kpiScore || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap"></td>
+                        </tr>
+                    )}
+                    
+                    {/* Mentorship - conditionally rendered */}
+                    {kpiDesignation === "Recruiter/KAM/Mentor" && metrics.mentorship && (
+                        <tr>
+                            <td className="px-6 py-4 whitespace-nowrap"></td>
+                            <td className="px-6 py-4 whitespace-nowrap">Mentorship</td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                {metrics.mentorship.target || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                {metrics.mentorship.actual || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                {metrics.mentorship.kpiScore || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap"></td>
+                        </tr>
+                    )}
+                    
+                    {/* Process Adherence */}
+                    {metrics.processAdherence && (
+                        <tr>
+                            <td className="px-6 py-4 whitespace-nowrap"></td>
+                            <td className="px-6 py-4 whitespace-nowrap">Process Adherence</td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                {metrics.processAdherence.target || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                {metrics.processAdherence.actual || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                {metrics.processAdherence.kpiScore || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap"></td>
+                        </tr>
+                    )}
+                    
+                    {/* Leakage */}
+                    {metrics.leakage && (
+                        <tr>
+                            <td className="px-6 py-4 whitespace-nowrap"></td>
+                            <td className="px-6 py-4 whitespace-nowrap">Leakage</td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                {metrics.leakage.target || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                {metrics.leakage.actual || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                {metrics.leakage.kpiScore || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap"></td>
+                        </tr>
+                    )}
+                    
+                    {/* Total */}
+                    <tr className="bg-blue-50">
+                        <td className="px-6 py-4 whitespace-nowrap font-medium"></td>
+                        <td className="px-6 py-4 whitespace-nowrap font-medium">Total KPI Score</td>
+                        <td colSpan="3" className="px-6 py-4 whitespace-nowrap font-medium">
+                            {metrics.totalKPIScore || "N/A"}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap"></td>
+                    </tr>
+                </React.Fragment>
+            );
+        })
+    ) : (
+        <tr>
+            <td colSpan="6" className="px-6 py-4 text-center text-gray-500">
+                No KPI data found
+            </td>
+        </tr>
+    )}
+</tbody>
                         </table>
                     </div>
                 </div>
