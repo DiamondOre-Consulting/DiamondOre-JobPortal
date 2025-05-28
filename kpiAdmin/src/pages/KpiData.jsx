@@ -109,7 +109,11 @@ const KpiData = () => {
             if (isEditing) {
                 response = await axios.put(
                     `${import.meta.env.VITE_BASE_URL}/admin-confi/edit-kpi-score/${currentKpiId}`, 
-                    validation.data
+                    validation.data,{
+                        headers:{
+                            Authorization: `Bearer ${localStorage.getItem('token')}`
+                        }
+                    }
                 );
                 setSnackbarMessage("KPI Score updated successfully!");
             } else {
