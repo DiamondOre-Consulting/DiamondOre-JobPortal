@@ -119,7 +119,11 @@ const KpiData = () => {
             } else {
                 response = await axios.post(
                     `${import.meta.env.VITE_BASE_URL}/admin-confi/set-kpi-score`, 
-                    validation.data
+                    validation.data,{
+                        headers:{
+                            Authorization: `Bearer ${localStorage.getItem('token')}`
+                        }
+                    }
                 );
                 setSnackbarMessage("KPI Score added successfully!");
             }
