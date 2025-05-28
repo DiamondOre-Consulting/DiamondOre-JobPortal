@@ -1,188 +1,139 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import PropagateLoader from "react-spinners/PropagateLoader";
 
 const KPIscore = () => {
-
     const [tableData, setTableData] = useState([]);
-    let [loading, setLoading] = useState(true);
-
-    const override = {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-
-    };
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-
         const getkpidata = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/employee/my-kpi`, {
-
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-
-                })
-
+                const response = await axios.get(
+                    `${import.meta.env.VITE_BASE_URL}/employee/my-kpi`,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
                 if (response.status === 200) {
-                     
                     setTableData(response.data);
-                    setLoading(false)
-
                 }
-
-
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
             }
-            catch (error) {
-
-
-
-            }
-
-        }
-
+        };
         getkpidata();
-
-
     }, []);
 
+    const kpiCategories = [
+        { name: 'Cost Vs Revenue', key: 'costVsRevenue' },
+        { name: 'Successful Drives', key: 'successfulDrives' },
+        ...(tableData?.owner?.kpiDesignation === "Recruiter/KAM/Mentor" || 
+           tableData?.owner?.kpiDesignation === "Sr. Consultant" 
+            ? [{ name: 'Accounts', key: 'accounts' }] : []),
+        ...(tableData?.owner?.kpiDesignation === "Recruiter/KAM/Mentor" 
+            ? [{ name: 'Mentorship', key: 'mentorship' }] : []),
+        { name: 'Process Adherence', key: 'processAdherence' },
+        { name: 'Leakage', key: 'leakage' }
+    ];
 
-    const headers = ['Target', 'Actual', 'Weight', 'KPI Score'];
+    const renderValue = (value) => {
+        if (value === undefined || value === null) return "N/A";
+        if (typeof value === 'object') return value.actual ?? "N/A";
+        return value;
+    };
 
     return (
-        <>
-            <div>
-                <h1 className='text-4xl font-bold'>KPI Score</h1>
-                <div className='w-20 h-0.5 bg-blue-900 mb-10'></div>
-
-                {
-                    loading ?
-                        <div style={override}>
-                            <PropagateLoader
-                                color={'#023E8A'}
-                                loading={loading}
-                                size={20}
-                                aria-label="Loading Spinner"
-                                data-testid="loader"
-                            />
-                        </div> :
-                        <div className="overflow-x-auto" style={{ width: "90vw" }}>
-                            <table className="w-full bg-white border border-gray-300">
-                                <thead className="bg-gray-200">
-                                    <tr>
-                                        <th rowSpan="2" className="border border-gray-500 px-4 py-2">Month</th>
-                                        <th rowSpan="2" className="border border-gray-500 px-4 py-2">Year</th>
-                                        <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-200">Cost Vs Revenue</th>
-                                        <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-200">Successful Drives</th>
-                                        {(tableData?.owner?.kpiDesignation=="Recruiter/KAM/Mentor"||
-                                         tableData?.owner?.kpiDesignation=="Sr. Consultant")&&
-                                        <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-200">Accounts</th>}
-                                        {tableData?.owner?.kpiDesignation=="Recruiter/KAM/Mentor"&&<th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-200">Mentorship</th>}
-                                        <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-200">Process Adherence</th>
-                                        <th colSpan="4" className="border border-gray-900 px-4 py-2 bg-yellow-200">Leakage</th>
-                                        
-                                        <th rowSpan="2" className="border border-gray-900 px-4 py-2 bg-gray-300">Total KPI Score</th>
-
-
-
-                                    </tr>
-                                    <tr>
-                                        {headers.map((header, idx) => (
-                                            <th key={`cost-${idx}`} className="border border-gray-500 bg-blue-100 px-4 py-2">{header}</th>
-                                        ))}
-                                        {headers.map((header, idx) => (
-                                            <th key={`drive-${idx}`} className="border border-gray-500 bg-blue-100 px-4 py-2">{header}</th>
-                                        ))}
-                                        {(tableData?.owner?.kpiDesignation=="Recruiter/KAM/Mentor"||
-                                         tableData?.owner?.kpiDesignation=="Sr. Consultant")&&headers.map((header, idx) => (
-                                            <th key={`accounts-${idx}`} className="border border-gray-500 bg-blue-100 px-4 py-2">{header}</th>
-                                        ))}
-                                        {tableData?.owner?.kpiDesignation=="Recruiter/KAM/Mentor"&&headers.map((header, idx) => (
-                                            <th key={`mentorship-${idx}`} className="border border-gray-500 bg-blue-100 px-4 py-2">{header}</th>
-                                        ))}
-                                        {headers.map((header, idx) => (
-                                            <th key={`process-${idx}`} className="border border-gray-500 bg-blue-100 px-4 py-2">{header}</th>
-                                        ))}
-                                        {headers.map((header, idx) => (
-                                            <th key={`leakage-${idx}`} className="border border-gray-500 bg-blue-100 px-4 py-2">{header}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {tableData?.kpis?.length > 0 ? (
-                                        tableData?.kpis?.map((row, idx) => (
-                                            <tr key={idx} className="border-t border-gray-300">
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.month}</td>
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.year}</td>
-
-                                                {/* Cost Vs Revenue */}
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.costVsRevenue?.target}</td>
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.costVsRevenue?.actual}</td>
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.costVsRevenue?.weight}</td>
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.costVsRevenue?.kpiScore}</td>
-
-                                                {/* Successful Drives */}
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.successfulDrives?.target}</td>
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.successfulDrives?.actual}</td>
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.successfulDrives?.weight}</td>
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.successfulDrives?.kpiScore}</td>
-
-                                                {/* accounts */}
-                                                {(tableData?.owner?.kpiDesignation == "Recruiter/KAM/Mentor" || tableData?.owner?.kpiDesignation == "Sr. Consultant") && (
-                                                    <>
-                                                       <td className={`border ${(row?.kpiMonth?.accounts?.target<=0||row?.kpiMonth?.accounts?.target>0)?"":"text-blue-500"} border-gray-300 px-4 py-2`}>{row?.kpiMonth?.accounts?.target<=0?0:row?.kpiMonth?.accounts?.target>0?row?.kpiMonth?.accounts?.target:"N/A"}</td>
-                                                       <td className={`border ${(row?.kpiMonth?.accounts?.actual<=0||row?.kpiMonth?.accounts?.actual>0)?"":"text-blue-500"} border-gray-300 px-4 py-2`}>{row?.kpiMonth?.accounts?.actual<=0?0:row?.kpiMonth?.accounts?.actual>0?row?.kpiMonth?.accounts?.actual:"N/A"}</td>
-                                                       <td className={`border ${(row?.kpiMonth?.accounts?.weight<=0||row?.kpiMonth?.accounts?.weight>0)?"":"text-blue-500"} border-gray-300 px-4 py-2`}>{row?.kpiMonth?.accounts?.weight<=0?0:row?.kpiMonth?.accounts?.weight>0?row?.kpiMonth?.accounts?.weight:"N/A"}</td>
-                                                       <td className={`border ${(row?.kpiMonth?.accounts?.kpiScore<=0||row?.kpiMonth?.accounts?.kpiScore>0)?"":"text-blue-500"} border-gray-300 px-4 py-2`}>{row?.kpiMonth?.accounts?.kpiScore<=0?0:row?.kpiMonth?.accounts?.kpiScore>0?row?.kpiMonth?.accounts?.kpiScore:"N/A"}</td>
-                                                    </>
-                                                  )}
-
-                                                {/* Mentorship */}
-                                                    {tableData?.owner?.kpiDesignation === "Recruiter/KAM/Mentor" && (
-                                                    <>
-                                                       <td className={`border ${(row?.kpiMonth?.mentorship?.target<=0||row?.kpiMonth?.mentorship?.target)?"":"text-blue-500"} border-gray-300 px-4 py-2`}>{row?.kpiMonth?.mentorship?.target<=0?0:row?.kpiMonth?.mentorship?.target>0?row?.kpiMonth?.mentorship?.target:"N/A"}</td>
-                                                       <td className={`border ${(row?.kpiMonth?.mentorship?.actual<=0||row?.kpiMonth?.mentorship?.actual)?"":"text-blue-500"} border-gray-300 px-4 py-2`}>{row?.kpiMonth?.mentorship?.actual<=0?0:row?.kpiMonth?.mentorship?.actual>0?row?.kpiMonth?.mentorship?.actual:"N/A"}</td>
-                                                       <td className={`border ${(row?.kpiMonth?.mentorship?.weight<=0||row?.kpiMonth?.mentorship?.weight)?"":"text-blue-500"} border-gray-300 px-4 py-2`}>{row?.kpiMonth?.mentorship?.weight<=0?0:row?.kpiMonth?.mentorship?.weight>0?row?.kpiMonth?.mentorship?.weight:"N/A"}</td>
-                                                       <td className={`border ${(row?.kpiMonth?.mentorship?.kpiScore<=0||row?.kpiMonth?.mentorship?.weight)?"":"text-blue-500"} border-gray-300 px-4 py-2`}>{row?.kpiMonth?.mentorship?.kpiScore<=0?0:row?.kpiMonth?.mentorship?.kpiScore>0?row?.kpiMonth?.mentorship?.kpiScore:"N/A"}</td>
-                                                    </>
-                                                    )}
-
-                                                {/* Process Adherence */}
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.processAdherence?.target}</td>
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.processAdherence?.actual}</td>
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.processAdherence?.weight}</td>
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.processAdherence?.kpiScore}</td>
-
-                                                {/* Leakage */}
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.leakage?.target}</td>
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.leakage?.actual}</td>
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.leakage?.weight}</td>
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.leakage?.kpiScore}</td>
-
-
-                                        
-
-                                                <td className="border border-gray-500 px-4 py-2">{row?.kpiMonth?.totalKPIScore}</td>
-                                            </tr>
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td colSpan="26" className="border border-gray-300 px-4 py-2 text-center">
-                                                No Data Found...
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-                }
+        <div className="container mx-auto px-4 py-8">
+            <div className="mb-8">
+                <h1 className="text-3xl font-bold">KPI Score</h1>
+                <div className="w-20 h-1 bg-blue-900 mt-2"></div>
             </div>
 
-        </>
-    )
-}
+            {loading ? (
+                <div className="flex justify-center items-center h-64">
+                    <PropagateLoader color="#023E8A" loading={loading} size={15} />
+                </div>
+            ) : (
+                <div className="overflow-x-auto bg-white rounded-lg shadow">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Month/Year
+                                </th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Metric
+                                </th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Target
+                                </th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Actual
+                                </th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Weight
+                                </th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Score
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {tableData?.kpis?.length > 0 ? (
+                                tableData.kpis.map((row, idx) => (
+                                    <React.Fragment key={idx}>
+                                        <tr className="bg-gray-100">
+                                            <td className="px-4 py-3 whitespace-nowrap font-medium text-sm">
+                                                {row?.kpiMonth?.month} {row?.kpiMonth?.year}
+                                            </td>
+                                            <td colSpan="5" className="px-4 py-3 whitespace-nowrap font-medium text-sm">
+                                                KPI Metrics
+                                            </td>
+                                        </tr>
+                                        
+                                        {kpiCategories.map((category) => (
+                                            <tr key={`${idx}-${category.key}`}>
+                                                <td className="px-4 py-2"></td>
+                                                <td className="px-4 py-2 text-sm">{category.name}</td>
+                                                <td className="px-4 py-2 text-sm">
+                                                    {renderValue(row?.kpiMonth?.[category.key]?.target)}
+                                                </td>
+                                                <td className="px-4 py-2 text-sm">
+                                                    {renderValue(row?.kpiMonth?.[category.key]?.actual)}
+                                                </td>
+                                                <td className="px-4 py-2 text-sm">
+                                                    {renderValue(row?.kpiMonth?.[category.key]?.weight)}
+                                                </td>
+                                                <td className="px-4 py-2 text-sm">
+                                                    {row?.kpiMonth?.[category.key]?.kpiScore?.toFixed(2) || "N/A"}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                        
+                                        <tr className="bg-blue-50">
+                                            <td className="px-4 py-2"></td>
+                                            <td className="px-4 py-2 font-medium text-sm">Total KPI Score</td>
+                                            <td colSpan="4" className="px-4 py-2 font-medium text-sm">
+                                                {row?.kpiMonth?.totalKPIScore?.toFixed(2) || "N/A"}
+                                            </td>
+                                        </tr>
+                                    </React.Fragment>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="6" className="px-4 py-4 text-center text-gray-500">
+                                        No KPI data found
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+        </div>
+    );
+};
 
-export default KPIscore
+export default KPIscore;

@@ -637,6 +637,8 @@ router.get("/my-kpi", EmployeeAuthenticateToken, async (req, res) => {
       return res.status(402).json({ message: "No KPI found!!!" });
     }
 
+    myKPI.kpis.sort((a, b) => b._id.getTimestamp()-a._id.getTimestamp());
+
     res.status(200).json(myKPI);
   } catch (error) {
     console.error(error.message);

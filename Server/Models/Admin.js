@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const adminSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -20,6 +19,8 @@ const adminSchema = new mongoose.Schema({
   },
   adminType:{
     type:String,
+    enum:['superAdmin','subAdmin','kpiAdmin'],
+    
   },
   passcode:{
     type:String,

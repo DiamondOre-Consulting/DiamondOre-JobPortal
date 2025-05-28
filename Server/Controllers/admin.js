@@ -137,9 +137,6 @@ router.post("/signup-admin",AdminAuthenticateToken ,uploadImage.single('myFileIm
   req.body;
 
   
- 
-
-
   try {
     // Verify OTP
 
@@ -190,9 +187,7 @@ router.post("/signup-admin",AdminAuthenticateToken ,uploadImage.single('myFileIm
     console.error("Error creating user:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
-  // } else {
-  //   res.status(400).json({ error: "Invalid OTP" });
-  // }
+
 });
 
 const adminLoginSchema = z.object({
@@ -202,7 +197,7 @@ const adminLoginSchema = z.object({
 
 // LOGIN AS ADMIN
 router.post("/login-admin", async (req, res) => {
-  console.log("login-route enter")
+
   const { email, password } = req.body;
    
   const {success,error} = adminLoginSchema.safeParse({email,password})
@@ -223,7 +218,7 @@ router.post("/login-admin", async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    console.log("login",secretKey)
+    
 
     // Generate JWT token
 
@@ -249,6 +244,62 @@ router.post("/login-admin", async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 });
+
+
+// Admin Login for Kpi Admin
+
+router.post("/login-kpi-admin", async (req, res) => {
+
+  const { email, password } = req.body;
+
+  const {success,error} = adminLoginSchema.safeParse({email,password})
+    if (!success) {
+        return res.status(400).json({message: "Invalid credentials"});
+    }
+
+    console.log(req.body)
+
+  try {
+    // Find the user in the database
+    const admin = await Admin.findOne({ email });
+    if (!admin) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+    const passwordMatch = await bcrypt.compare(password, admin.password);
+    if (!passwordMatch) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+    
+    if(!(admin.adminType == "kpiAdmin"|| admin.adminType == "superAdmin")){
+      return res.status(401).json({ message: "Unauthorized access" });
+    }
+
+
+    // Generate JWT token
+
+    function signJwt(payload,secretKey,expiresIn = '24h'){
+      try{
+             return jwt.sign(payload,secretKey,{expiresIn})
+      }
+      catch(err){
+        
+        console.log(err) 
+      }
+            
+    }
+    const token = signJwt(
+      { userId: admin._id, name: admin.name, email: admin.email, role: admin.adminType },
+      secretKey
+    );
+    
+
+    return res.status(200).json({ token });
+  } catch (error) {
+    console.error("Error logging in:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 
 // FETCHING USER DATA
 router.get("/user-data", AdminAuthenticateToken, async (req, res) => {
@@ -3240,7 +3291,7 @@ const kpiScoreSchema = z.object({
   costVsRevenue:z.object({
       target:z.coerce.number(),
       actual:z.coerce.number()
-  }),
+  }).optional(),
   successfulDrives:z.object({
       target:z.coerce.number(),
       actual:z.coerce.number()
@@ -3267,10 +3318,15 @@ const kpiScoreSchema = z.object({
   })
 })
 
+
+
 // SET KPI SCORE
-router.post("/set-kpi-score", async(req, res) => {
+router.post("/set-kpi-score", AdminAuthenticateToken, async(req, res) => {
   try {
-    const {
+
+     if(!(req.user.role !== "superAdmin"|| req.user.role !== "kpiAdmin")) return res.status(403).json({ message: "Not authorized" });
+
+    const  {
       owner,
       month,
       year,
@@ -3335,15 +3391,20 @@ router.post("/set-kpi-score", async(req, res) => {
       if (target === 0||actual===0) return { weight: 0, kpiScore: 0 };
       const weight = parseFloat((actual / target).toFixed(2));
       const kpiScore = parseFloat(((weightPercentage / 100) * weight).toFixed(2));
-    
+
       return { weight, kpiScore };
     };
 
-    const costVsRevenueScore = calculateScore(
-      costVsRevenue.target,
-      costVsRevenue.actual,
-      weights[kpi.owner?.kpiDesignation]?.costVsRevenue
-    );
+    let costVsRevenueScore =0;
+     
+    if(costVsRevenue){
+        costVsRevenueScore = calculateScore(
+        costVsRevenue.target,
+        costVsRevenue.actual,
+        weights[kpi.owner?.kpiDesignation]?.costVsRevenue
+      );
+    }
+
     const successfulDrivesScore = calculateScore(
       successfulDrives.target,
       successfulDrives.actual,
@@ -3383,7 +3444,7 @@ router.post("/set-kpi-score", async(req, res) => {
     // Calculate total KPI score
     const totalKPIScore = parseFloat(
       (
-        Number(costVsRevenueScore?.kpiScore) +
+        Number(costVsRevenueScore?.kpiScore||0) +
         Number(successfulDrivesScore?.kpiScore) +
         Number(accountsScore?.kpiScore || 0) +
         Number(mentorshipScore?.kpiScore || 0) +
@@ -3392,7 +3453,6 @@ router.post("/set-kpi-score", async(req, res) => {
       ) * 100
     ).toFixed(3);
 
-      console.log(totalKPIScore)
 
     // Construct the new KPI month information
     const newKpiMonth = {
@@ -3400,10 +3460,10 @@ router.post("/set-kpi-score", async(req, res) => {
         month: month,
         year: (year),
         costVsRevenue: {
-          target:   (costVsRevenue.target),
-          actual:   (costVsRevenue.actual),
-          weight:   (costVsRevenueScore.weight),
-          kpiScore: (costVsRevenueScore.kpiScore),
+          target:   (costVsRevenue.target)||0,
+          actual:   (costVsRevenue.actual)||0,
+          weight:   (costVsRevenueScore.weight)||0,
+          kpiScore: (costVsRevenueScore.kpiScore)||0,
         },
         successfulDrives: {
           target:   (successfulDrives.target),
@@ -3462,16 +3522,204 @@ router.post("/set-kpi-score", async(req, res) => {
   }
 });
 
+
+
+const editKpiScoreSchema = z.object({
+  owner: z.string(),
+  month: z.string().optional(),
+  year: z.coerce.number().optional(),
+  costVsRevenue: z.object({
+    target: z.coerce.number(),
+    actual: z.coerce.number()
+  }).optional(),
+  successfulDrives: z.object({
+    target: z.coerce.number(),
+    actual: z.coerce.number()
+  }).optional(),
+  // Make all other fields optional similarly
+  accounts: z.object({
+    target: z.coerce.number(),
+    actual: z.coerce.number()
+  }).optional(),
+  mentorship: z.object({
+    target: z.coerce.number(),
+    actual: z.coerce.number()
+  }).optional(),
+  processAdherence: z.object({
+    target: z.coerce.number(),
+    actual: z.coerce.number()
+  }).optional(),
+  leakage: z.object({
+    target: z.coerce.number(),
+    actual: z.coerce.number()
+  }).optional(),
+  noOfJoining: z.object({
+    target: z.coerce.number(),
+    actual: z.coerce.number()
+  }).optional()
+});
+
+router.put("/edit-kpi-score/:kpiId",AdminAuthenticateToken, async (req, res) => {
+  try {
+     if(!(req.user.role !== "superAdmin"|| req.user.role !== "kpiAdmin")) return res.status(403).json({ message: "Not authorized" });
+
+    const parsed = editKpiScoreSchema.safeParse(req.body);
+
+    if (!parsed.success) {
+      return res.status(422).json({ message: "Validation failed", errors: parsed.error.errors });
+    }
+
+   const {
+      owner,
+      month,
+      year,
+      costVsRevenue,
+      successfulDrives,
+      accounts,
+      mentorship,
+      processAdherence,
+      leakage,
+    } = parsed.data;
+
+    const kpi = await KPI.findOne({ owner:owner }).populate("owner");
+    if (!kpi) return res.status(404).json({ message: "KPI not found" });
+
+    const monthIndex = kpi.kpis.findIndex(k => k._id.toString() === req.params.kpiId);
+    if (monthIndex === -1) return res.status(404).json({ message: "KPI month not found" });
+
+    const weights = {
+      "Recruiter/KAM/Mentor": {
+        costVsRevenue: 25, successfulDrives: 15, accounts: 15, mentorship: 20, processAdherence: 10, leakage: 15
+      },
+      "Recruiter": {
+        costVsRevenue: 60, successfulDrives: 15, processAdherence: 10, leakage: 15
+      },
+      "Sr. Consultant": {
+        costVsRevenue: 25, successfulDrives: 15, accounts: 15, processAdherence: 10, leakage: 15
+      }
+    };
+
+    const calculateScore = (target, actual, weightPercentage) => {
+      if (target === 0 || actual === 0) return { weight: 0, kpiScore: 0 };
+      const weight = parseFloat((actual / target).toFixed(2));
+      
+      const kpiScore = parseFloat(((weightPercentage / 100) * weight).toFixed(2));
+      return { weight, kpiScore };
+    };
+
+    
+    const role = kpi.owner?.kpiDesignation;
+    const selectedMonth = kpi.kpis[monthIndex];
+    
+    if (month!==kpi.kpis[monthIndex].kpiMonth.month) selectedMonth.kpiMonth.month = month;
+    if (year!==kpi.kpis[monthIndex].kpiMonth.year) selectedMonth.kpiMonth.year = year;
+
+    const updateField = (field, input, allowedRoles) => {
+      if (input ) {
+        console.log(field,input)
+        const { weight, kpiScore } = calculateScore(input.target, input.actual, weights[role][field]);
+
+        console.log(field,weight, kpiScore)
+        selectedMonth.kpiMonth[field] = {
+          target: input.target,
+          actual: input.actual,
+          weight,
+          kpiScore
+        };
+        return kpiScore;
+      }
+      return 0;
+    };
+
+    const total = [
+      updateField("costVsRevenue", costVsRevenue),
+      updateField("successfulDrives", successfulDrives),
+      // updateField("accounts", accounts, ["Recruiter/KAM/Mentor", "Sr. Consultant"]),
+      // updateField("mentorship", mentorship, ["Recruiter/KAM/Mentor"]),
+      updateField("processAdherence", processAdherence),
+      updateField("leakage", leakage)
+    ].reduce((sum, val) => sum + val, 0);
+
+    console.log(total)
+
+    selectedMonth.kpiMonth.totalKPIScore = (total * 100).toFixed(3);
+
+    await kpi.save();
+
+    res.status(200).json({ message: "KPI score updated successfully" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.delete("/delete-kpi-month/:kpiId/:owner", AdminAuthenticateToken, async (req, res) => {
+  try {
+
+    if(!(req.user.role !== "superAdmin"|| req.user.role !== "kpiAdmin")) return res.status(403).json({ message: "Not authorized" });
+
+    // Find KPI document containing the specific month record
+    const kpi = await KPI.findOne({ owner:req.params.owner});
+    if (!kpi) {
+      return res.status(404).json({ message: "KPI record not found" });
+    }
+
+    // Find and remove only the specific month's data
+    const monthIndex = kpi.kpis.findIndex(k => k._id.toString() === req.params.kpiId);
+    if (monthIndex === -1) {
+      return res.status(404).json({ message: "KPI month data not found" });
+    }
+
+    // Remove just this month's entry from the kpis array
+    kpi.kpis.splice(monthIndex, 1);
+
+    // Save the updated document
+    await kpi.save();
+
+    res.status(200).json({ 
+      message: "KPI month data deleted successfully",
+      remainingMonths: kpi.kpis.length // Optional: return count of remaining months
+    });
+    
+  } catch (error) {
+    console.error("Error deleting KPI month:", error);
+    res.status(500).json({ 
+      message: "Failed to delete KPI month data",
+      error: error.message 
+    });
+  }
+});
+
+
 // EMPLOYEE'S KPI SCORE
 router.get("/employee-kpi-score/:id",AdminAuthenticateToken,async (req, res) => {
     try {
+      const user= req.user
       const { id } = req.params;
 
       const myKPI = await KPI.findOne({ owner: id }).populate("owner");
+     
       if (!myKPI) {
         return res.status(402).json({ message: "No KPI found!!!" });
       }
 
+      myKPI.kpis.sort((a, b) => b._id.getTimestamp()-a._id.getTimestamp());
+     
+       if (user.role === "kpiAdmin"){
+      myKPI.kpis = myKPI.kpis.map((entry) => {
+        const cloned = JSON.parse(JSON.stringify(entry));
+        if (cloned.kpiMonth && cloned.kpiMonth.costVsRevenue) {
+          cloned.kpiMonth.costVsRevenue = {
+            target: 0,
+            actual: 0,
+            weight: 0,
+            kpiScore: 0,
+          };
+        }
+        return cloned;
+      });
+    }
+ 
       res.status(200).json(myKPI);
     } catch (error) {
       console.error(error.message);
@@ -4170,6 +4418,31 @@ router.get('/policies', AdminAuthenticateToken, async (req, res) => {
       message:"Internal server error" });
   }
 });
+
+
+router.get('/validate-token-for-kpi-admin',(req, res) => {
+
+   const token = req.headers.authorization?.split(' ')[1]; 
+  
+
+  if (!token) {
+    return res.status(401).json({ message: 'No token provided' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_ADMIN);
+    console.log(decoded)
+    if (!(decoded.role == 'kpiAdmin'||decoded.role=="superAdmin")) {
+      return res.status(403).json({ message: 'Access denied: Not a KPI admin' });
+    }
+
+    res.status(200).json({ message: 'Token valid for KPI admin', user: decoded });
+  } catch (err) {
+    console.log(err)
+    res.status(401).json({ message: 'Invalid or expired token' });
+  }
+ 
+})
 
 
 

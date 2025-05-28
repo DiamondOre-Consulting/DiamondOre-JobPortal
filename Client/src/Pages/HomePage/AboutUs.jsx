@@ -88,7 +88,7 @@ const AboutUs = () => {
                 <div className="container  mx-auto my-10 p-8  justify-between grid grid-cols-1 md:grid-cols-2 gap-8 flex items-center ">
                     <div className='bg-blue-950 p-8 text-white hover:bg-white hover:text-black border-blue-950 shadow-2xl shadow-blue-950'>
                         <p className="mb-4">
-                            We are  100+ people strong company with an extensive network and databases of sales force which enables us to recruit people in a 24 to a 48hours notice using our internal database and AI tools. Our specialization is working in the BFSI space for sales force hiring. But we can still provide ‘feet on street’ profiles to all the industries wherever there is a product or service is being sold, because we have a database of about 30,000 people which we can skim from.
+                            We are  100+ people strong company with an extensive network and databases of sales force which enables us to recruit people in a 24 to a 48hours notice using our internal database and AI tools. Our specialization is working in the BFSI space for sales force hiring. But we can still provide ‘feet on street’ profiles to all the industries wherever there is a product or service is being sold, because we have a database of about 1,00,000+ people which we can skim from.
                         </p>
 
                     </div>

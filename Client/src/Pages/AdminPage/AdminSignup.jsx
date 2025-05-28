@@ -86,6 +86,15 @@ const AdminSignup = ({ toggleForm }) => {
       if (response.status === 201) {
         
         toast.success("Admin Registered Successfully");
+        setOtpSent(false);
+        setName("");
+        setEmail("");
+        setPassword("");
+        setPhone("");
+        setOtp("");
+        setProfilePic(null);
+        setProfilePicUrl("");
+        setAdminType("");
 
       } else {
         setError("Some details are wrong!!");
@@ -230,6 +239,7 @@ const AdminSignup = ({ toggleForm }) => {
 
                   <option value="subAdmin">Sub Admin</option>
                   <option value="superAdmin">Super Admin</option>
+                  <option value="kpiAdmin">KPI Admin</option>
 
                 </select>
               </div>

@@ -5,12 +5,8 @@ config()
 
 
 const AdminAuthenticateToken = (req, res, next) => {
-    // Get the JWT token from the request headers
-    // console.log("enter")
     const token = req.headers.authorization?.split(' ')[1];
-    // console.log(req.headers)
-
-
+   
     if (!token) {
       return res.status(401).json({ message: 'Authorization token not found' });
     }
