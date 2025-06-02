@@ -3632,7 +3632,7 @@ router.put("/edit-kpi-score/:kpiId",AdminAuthenticateToken, async (req, res) => 
     };
 
     const total = [
-      updateField("costVsRevenue", costVsRevenue),
+      costVsRevenue?updateField("costVsRevenue", costVsRevenue):kpi.kpis[monthIndex].kpiMonth.costVsRevenue.kpiScore,
       updateField("successfulDrives", successfulDrives),
       // updateField("accounts", accounts, ["Recruiter/KAM/Mentor", "Sr. Consultant"]),
       // updateField("mentorship", mentorship, ["Recruiter/KAM/Mentor"]),

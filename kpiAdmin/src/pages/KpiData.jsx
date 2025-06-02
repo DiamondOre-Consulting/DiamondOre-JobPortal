@@ -162,10 +162,6 @@ const KpiData = () => {
             owner: empId,
             month: kpi.kpiMonth.month,
             year: kpi.kpiMonth.year,
-            costVsRevenue: { 
-                target: kpi.kpiMonth.costVsRevenue?.target || '', 
-                actual: kpi.kpiMonth.costVsRevenue?.actual || '' 
-            },
             successfulDrives: { 
                 target: kpi.kpiMonth.successfulDrives?.target || '', 
                 actual: kpi.kpiMonth.successfulDrives?.actual || '' 
