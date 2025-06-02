@@ -3720,7 +3720,7 @@ router.get("/employee-kpi-score/:id",AdminAuthenticateToken,async (req, res) => 
       const myKPI = await KPI.findOne({ owner: id }).populate("owner");
      
       if (!myKPI) {
-        return res.status(402).json({ message: "No KPI found!!!" });
+        return res.status(203).json({ myKPI,message: "No KPI found!!!" });
       }
 
       myKPI.kpis.sort((a, b) => b._id.getTimestamp()-a._id.getTimestamp());

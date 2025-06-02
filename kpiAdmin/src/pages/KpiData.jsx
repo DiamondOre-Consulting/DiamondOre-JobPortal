@@ -136,6 +136,8 @@ const KpiData = () => {
         }
     };
 
+    
+
     const resetForm = () => {
         setFormData({
             owner: empId,
@@ -221,9 +223,13 @@ const KpiData = () => {
             );
 
             if (response.status === 200) {
-                console.log(response.data)
+                
                 setKpiDesignation(response.data.owner?.kpiDesignation);
                 setTableData(response.data);
+            }
+            if(response.status===201){
+                setKpiDesignation(response.data.owner?.kpiDesignation);
+                setTableData(null);
             }
         } catch (error) {
             console.error("Error fetching KPI data:", error);
