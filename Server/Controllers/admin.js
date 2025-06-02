@@ -208,6 +208,9 @@ router.post("/login-admin", async (req, res) => {
   try {
     // Find the user in the database
     const user = await Admin.findOne({ email });
+    if(user.adminType=="kpiAdmin"){
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
@@ -3420,9 +3423,8 @@ router.post("/set-kpi-score", AdminAuthenticateToken, async(req, res) => {
      );
     }  
     let mentorshipScore =null
-    if(mentorship&&kpi.owner?.kpiDesignation==="Recruiter/KAM/Mentor"){
-    
-     mentorshipScore = calculateScore(
+    if(mentorship&&kpi.owner?.kpiDesignation==="Recruiter/KAM/Mentor"){    
+      mentorshipScore = calculateScore(
       mentorship.target,
       mentorship.actual,
       weights[kpi.owner?.kpiDesignation]?.mentorship
@@ -3437,7 +3439,7 @@ router.post("/set-kpi-score", AdminAuthenticateToken, async(req, res) => {
       leakage.target, 
       leakage.actual, 
       weights[kpi.owner?.kpiDesignation]?.leakage
-    );
+    );login-admin
     
 
 
