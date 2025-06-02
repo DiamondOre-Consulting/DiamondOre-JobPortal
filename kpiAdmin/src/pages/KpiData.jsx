@@ -10,10 +10,6 @@ const kpiScoreSchema = z.object({
     owner: z.string(),
     month: z.string(),
     year: z.coerce.number(),
-    costVsRevenue: z.object({
-        target: z.coerce.number(),
-        actual: z.coerce.number()
-    }),
     successfulDrives: z.object({
         target: z.coerce.number(),
         actual: z.coerce.number()
