@@ -3341,6 +3341,10 @@ router.post("/set-kpi-score", AdminAuthenticateToken, async(req, res) => {
       leakage,
     } = req.body;
 
+   
+    
+
+
     const {success, error} = kpiScoreSchema.safeParse(req.body)
 
     if(error){
@@ -3383,6 +3387,8 @@ router.post("/set-kpi-score", AdminAuthenticateToken, async(req, res) => {
         leakage:15   
       }
     }
+    
+  
 
     if(!kpi){
       // If no KPI document exists, create a new one
@@ -3397,10 +3403,12 @@ router.post("/set-kpi-score", AdminAuthenticateToken, async(req, res) => {
 
       return { weight, kpiScore };
     };
+  
 
     let costVsRevenueScore =0;
      
     if(costVsRevenue){
+    
         costVsRevenueScore = calculateScore(
         costVsRevenue.target,
         costVsRevenue.actual,
@@ -3408,11 +3416,14 @@ router.post("/set-kpi-score", AdminAuthenticateToken, async(req, res) => {
       );
     }
 
+  
+
     const successfulDrivesScore = calculateScore(
       successfulDrives.target,
       successfulDrives.actual,
       weights[kpi.owner?.kpiDesignation]?.successfulDrives
     );
+    
     let accountsScore= null
     if(accounts&&kpi.owner?.kpiDesignation==="Recruiter/KAM/Mentor"||kpi.owner?.kpiDesignation==="Sr. Consultant"){
    
@@ -3422,6 +3433,7 @@ router.post("/set-kpi-score", AdminAuthenticateToken, async(req, res) => {
         weights[kpi.owner?.kpiDesignation]?.accounts
      );
     }  
+   
     let mentorshipScore =null
     if(mentorship&&kpi.owner?.kpiDesignation==="Recruiter/KAM/Mentor"){    
       mentorshipScore = calculateScore(
@@ -3430,6 +3442,7 @@ router.post("/set-kpi-score", AdminAuthenticateToken, async(req, res) => {
       weights[kpi.owner?.kpiDesignation]?.mentorship
     );
     }
+    
     const processAdherenceScore = calculateScore(
       processAdherence.target,
       processAdherence.actual,
@@ -3440,7 +3453,7 @@ router.post("/set-kpi-score", AdminAuthenticateToken, async(req, res) => {
       leakage.actual, 
       weights[kpi.owner?.kpiDesignation]?.leakage
     );
-    
+  
 
 
     // Calculate total KPI score
@@ -3455,15 +3468,15 @@ router.post("/set-kpi-score", AdminAuthenticateToken, async(req, res) => {
       ) * 100
     ).toFixed(3);
 
-
+    
     // Construct the new KPI month information
     const newKpiMonth = {
       kpiMonth: {
         month: month,
         year: (year),
         costVsRevenue: {
-          target:   (costVsRevenue.target)||0,
-          actual:   (costVsRevenue.actual)||0,
+          target:   (costVsRevenue?.target)||0,
+          actual:   (costVsRevenue?.actual)||0,
           weight:   (costVsRevenueScore.weight)||0,
           kpiScore: (costVsRevenueScore.kpiScore)||0,
         },
@@ -3490,6 +3503,7 @@ router.post("/set-kpi-score", AdminAuthenticateToken, async(req, res) => {
         totalKPIScore: (totalKPIScore),
       },
     };
+   
 
     if(accounts&&accountsScore){
       newKpiMonth.kpiMonth.accounts = {
@@ -3500,6 +3514,8 @@ router.post("/set-kpi-score", AdminAuthenticateToken, async(req, res) => {
       }
     }
 
+  
+
     if(mentorship&&mentorshipScore){
       newKpiMonth.kpiMonth.mentorship = {
         target:   (mentorship.target),
@@ -3508,6 +3524,8 @@ router.post("/set-kpi-score", AdminAuthenticateToken, async(req, res) => {
         kpiScore: (mentorshipScore.kpiScore),
       }
     } 
+
+    
 
     
 
