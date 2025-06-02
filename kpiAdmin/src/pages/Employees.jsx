@@ -12,7 +12,7 @@ const Employees = () => {
     try {
       const token = localStorage.getItem("token");
 
-      if (!token) {
+      if (!token){
         console.error("No token found");
         navigate("/");
         return;

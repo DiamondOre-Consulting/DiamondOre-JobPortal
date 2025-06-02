@@ -27,7 +27,7 @@ const KPIscore = () => {
     }, []);
 
     const kpiCategories = [
-        { name: 'Cost Vs Revenue', key: 'costVsRevenue' },
+        { name: 'Target Vs Revenue', key: 'costVsRevenue' },
         { name: 'Successful Drives', key: 'successfulDrives' },
         ...(tableData?.owner?.kpiDesignation === "Recruiter/KAM/Mentor" || 
            tableData?.owner?.kpiDesignation === "Sr. Consultant" 

@@ -298,7 +298,7 @@ const EachEmployeeKPIScore = () => {
                             </div>
 
                             {[
-                                { label: 'Cost Vs Revenue', name: 'costVsRevenue' },
+                                { label: 'Target Vs Revenue', name: 'costVsRevenue' },
                                 { label: 'Successful Drives', name: 'successfulDrives' },
                                 ...(kpiDesignation === "Recruiter/KAM/Mentor" || kpiDesignation === "Sr. Consultant" ? 
                                     [{ label: 'Accounts', name: 'accounts' }] : []),
@@ -425,7 +425,7 @@ const EachEmployeeKPIScore = () => {
                                             {/* Cost Vs Revenue */}
                                             <tr key={`${idx}-cost`}>
                                                 <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap"></td>
-                                                <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-xs sm:text-sm">Cost Vs Revenue</td>
+                                                <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-xs sm:text-sm">Target Vs Revenue</td>
                                                 <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-xs sm:text-sm">
                                                     {renderKpiValue(row?.kpiMonth?.costVsRevenue?.target)}
                                                 </td>
