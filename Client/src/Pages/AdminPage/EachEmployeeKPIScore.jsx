@@ -255,7 +255,7 @@ const EachEmployeeKPIScore = () => {
                         </div>
                         <div className="bg-blue-900 w-16 sm:w-20 h-1 mb-4 sm:mb-6"></div>
 
-                        <form onSubmit={handleSubmitKpiScore} className="p-2 sm:p-4">
+                        <form noValidate onSubmit={handleSubmitKpiScore} className="p-2 sm:p-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
                                 <div>
                                     <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
@@ -318,6 +318,7 @@ const EachEmployeeKPIScore = () => {
                                                 placeholder="Enter Target"
                                                 value={formData[item.name].target}
                                                 onChange={handleChange}
+                                                
                                                 className="w-full p-1 sm:p-2 border rounded text-sm sm:text-base"
                                                 required
                                             />
