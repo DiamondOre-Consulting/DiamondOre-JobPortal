@@ -3439,7 +3439,7 @@ router.post("/set-kpi-score", AdminAuthenticateToken, async(req, res) => {
       leakage.target, 
       leakage.actual, 
       weights[kpi.owner?.kpiDesignation]?.leakage
-    );login-admin
+    );
     
 
 
