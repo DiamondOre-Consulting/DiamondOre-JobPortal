@@ -208,6 +208,8 @@ const KpiData = () => {
         }
     };
 
+    console.log("fad",kpiDesignation)
+
     const handleCloseSnackbar = () => {
         setSnackbarOpen(false);
     };
@@ -221,14 +223,14 @@ const KpiData = () => {
                 `${import.meta.env.VITE_BASE_URL}/admin-confi/employee-kpi-score/${empId}`,
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-
+            console.log(response.data)
             if (response.status === 200) {
                 
-                setKpiDesignation(response.data.owner?.kpiDesignation);
+                setKpiDesignation(response.data.employeeData?.kpiDesignation||response.data.owner.kpiDesignation);
                 setTableData(response.data);
             }
             if(response.status===201){
-                setKpiDesignation(response.data.owner?.kpiDesignation);
+                setKpiDesignation(response.data.employeeData?.kpiDesignation||response.data.owner.kpiDesignation);
                 setTableData(null);
             }
         } catch (error) {
@@ -255,6 +257,9 @@ const KpiData = () => {
         }
         return value;
     };
+
+    console.log('bv',tableData)
+    console.log('ed',kpiDesignation)
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -500,13 +505,13 @@ const KpiData = () => {
                             <td className="px-6 py-4 whitespace-nowrap"></td>
                             <td className="px-6 py-4 whitespace-nowrap">Successful Drives</td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                {metrics.successfulDrives.target || 'N/A'}
+                                {metrics.successfulDrives.target }
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                {metrics.successfulDrives.actual || 'N/A'}
+                                {metrics.successfulDrives.actual }
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                {metrics.successfulDrives.kpiScore || 'N/A'}
+                                {metrics.successfulDrives.kpiScore }
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap"></td>
                         </tr>
@@ -518,13 +523,13 @@ const KpiData = () => {
                             <td className="px-6 py-4 whitespace-nowrap"></td>
                             <td className="px-6 py-4 whitespace-nowrap">Accounts</td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                {metrics.accounts.target || 'N/A'}
+                                {metrics.accounts.target }
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                {metrics.accounts.actual || 'N/A'}
+                                {metrics.accounts.actual}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                {metrics.accounts.kpiScore || 'N/A'}
+                                {metrics.accounts.kpiScore}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap"></td>
                         </tr>
@@ -536,13 +541,13 @@ const KpiData = () => {
                             <td className="px-6 py-4 whitespace-nowrap"></td>
                             <td className="px-6 py-4 whitespace-nowrap">Mentorship</td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                {metrics.mentorship.target || 'N/A'}
+                                {metrics.mentorship.target}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                {metrics.mentorship.actual || 'N/A'}
+                                {metrics.mentorship.actual}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                {metrics.mentorship.kpiScore || 'N/A'}
+                                {metrics.mentorship.kpiScore}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap"></td>
                         </tr>
@@ -554,13 +559,13 @@ const KpiData = () => {
                             <td className="px-6 py-4 whitespace-nowrap"></td>
                             <td className="px-6 py-4 whitespace-nowrap">Process Adherence</td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                {metrics.processAdherence.target || 'N/A'}
+                                {metrics.processAdherence.target }
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                {metrics.processAdherence.actual || 'N/A'}
+                                {metrics.processAdherence.actual }
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                {metrics.processAdherence.kpiScore || 'N/A'}
+                                {metrics.processAdherence.kpiScore }
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap"></td>
                         </tr>
@@ -572,13 +577,13 @@ const KpiData = () => {
                             <td className="px-6 py-4 whitespace-nowrap"></td>
                             <td className="px-6 py-4 whitespace-nowrap">Leakage</td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                {metrics.leakage.target || 'N/A'}
+                                {metrics.leakage.target}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                {metrics.leakage.actual || 'N/A'}
+                                {metrics.leakage.actual }
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                {metrics.leakage.kpiScore || 'N/A'}
+                                {metrics.leakage.kpiScore }
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap"></td>
                         </tr>
@@ -589,7 +594,7 @@ const KpiData = () => {
                         <td className="px-6 py-4 whitespace-nowrap font-medium"></td>
                         <td className="px-6 py-4 whitespace-nowrap font-medium">Total KPI Score</td>
                         <td colSpan="3" className="px-6 py-4 whitespace-nowrap font-medium">
-                            {metrics.totalKPIScore || "N/A"}
+                            {metrics.totalKPIScore }
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap"></td>
                     </tr>

@@ -48,6 +48,7 @@ import {deleteFile} from '../utils/fileUpload.utils.js';
 import Policies from '../Models/Policies.js'
 import {pdfUpload} from '../Middlewares/multer.middleware.js'
 
+
 dotenv.config();
 
 const secretKey = process.env.JWT_SECRET_ADMIN;
@@ -3358,8 +3359,15 @@ router.post("/set-kpi-score", AdminAuthenticateToken, async(req, res) => {
     // Find the KPI document for the owner
     let kpi = await KPI.findOne({ owner: owner }).populate("owner");
 
-    console.log(kpi.owner?.kpiDesignation)
+     if (!kpi) {
+      console.log("enter");
+      kpi = new KPI({ owner: owner, kpis: [] });
 
+      
+      const ownerData = await Employees.findById(owner); 
+      kpi.owner = ownerData;
+    }
+  
     if(!kpi.owner?.kpiDesignation){
       return res.status(404).json({message:"Please first set the KPI designation of the employee"})
     }
@@ -3390,10 +3398,7 @@ router.post("/set-kpi-score", AdminAuthenticateToken, async(req, res) => {
     
   
 
-    if(!kpi){
-      // If no KPI document exists, create a new one
-      kpi = new KPI({ owner: owner, kpis: [] });
-    }
+   
 
     // Helper function to calculate weight and kpiScore
     const calculateScore = (target, actual, weightPercentage) => {
@@ -3403,7 +3408,7 @@ router.post("/set-kpi-score", AdminAuthenticateToken, async(req, res) => {
 
       return { weight, kpiScore };
     };
-  
+    console.log(1)
 
     let costVsRevenueScore =0;
      
@@ -3415,6 +3420,8 @@ router.post("/set-kpi-score", AdminAuthenticateToken, async(req, res) => {
         weights[kpi.owner?.kpiDesignation]?.costVsRevenue
       );
     }
+
+    console.log(2)
 
   
 
@@ -3646,6 +3653,7 @@ router.put("/edit-kpi-score/:kpiId",AdminAuthenticateToken, async (req, res) => 
           weight,
           kpiScore
         };
+        console.log(kpiScore)
         return kpiScore;
       }
       return 0;
@@ -3654,13 +3662,15 @@ router.put("/edit-kpi-score/:kpiId",AdminAuthenticateToken, async (req, res) => 
     const total = [
       costVsRevenue?updateField("costVsRevenue", costVsRevenue):kpi.kpis[monthIndex].kpiMonth.costVsRevenue.kpiScore,
       updateField("successfulDrives", successfulDrives),
-      // updateField("accounts", accounts, ["Recruiter/KAM/Mentor", "Sr. Consultant"]),
-      // updateField("mentorship", mentorship, ["Recruiter/KAM/Mentor"]),
+      role === "Recruiter/KAM/Mentor" || role === "Sr. Consultant"? updateField("accounts", accounts, ["Recruiter/KAM/Mentor", "Sr. Consultant"]):0,
+      role === "Recruiter/KAM/Mentor"  ? updateField("mentorship", mentorship, ["Recruiter/KAM/Mentor", "Sr. Consultant"]):0,
       updateField("processAdherence", processAdherence),
       updateField("leakage", leakage)
-    ].reduce((sum, val) => sum + val, 0);
-
-    console.log(total)
+    ].reduce((sum, val) =>{
+     return val?sum+val:sum
+    }, 0);
+   
+    
 
     selectedMonth.kpiMonth.totalKPIScore = (total * 100).toFixed(3);
 
@@ -3718,9 +3728,11 @@ router.get("/employee-kpi-score/:id",AdminAuthenticateToken,async (req, res) => 
       const { id } = req.params;
 
       const myKPI = await KPI.findOne({ owner: id }).populate("owner");
+
      
       if (!myKPI) {
-        return res.status(203).json({ myKPI,message: "No KPI found!!!" });
+         const employeeData = await Employees.findOne({ _id: id });
+        return res.status(201).json({ employeeData,message: "No KPI found!!!" });
       }
 
       myKPI.kpis.sort((a, b) => b._id.getTimestamp()-a._id.getTimestamp());
