@@ -64,6 +64,7 @@ import loader from '../../assets/loader.svg';
 import EditErp from '../../Pages/AdminPage/EditErp';
 import AdminIncentiveForEmployee from './AdminIncentiveForEmployee';
 import AdminEmployeePolicies from './AdminEmployeePolicies';
+import AllAdmins from '@/Pages/AdminPage/AllAdmins';
 
 
 const drawerWidth = 240;
@@ -270,13 +271,14 @@ const AdminDrawerSidebar = () => {
                         { text: 'All Jobs', icon: <WorkIcon />, path: '/all-Jobs' },
                         { text: 'Add & Delete Jobs', icon: <DomainAddIcon />, path: '/add-jobs' },
                         { text: 'All Candidate', icon: <GroupIcon />, path: '/all-candidates' },
-                        ...(userData?.adminType !== "subAdmin" ? [{ text: 'All Accounts', icon: <ManageAccountsIcon />, path: '/all-accounts' }] : []),
+                        ...(userData?.adminType == "superAdmin" ? [{ text: 'All Accounts', icon: <ManageAccountsIcon />, path: '/all-accounts' }] : []),
                         { text: 'Prompt', icon: <SaveAsIcon />, path: '/prompt' },
                         { text: 'ERP', icon: <img src={erpicon} className='w-6 h-6' />, path: '/erp-dashboard' },
                         { text: 'All Reviews', icon: <ReviewsIcon />, path: '/all-reviews' },
-                        ...(userData?.adminType !== "subAdmin" ? [{ text: 'All Employees', icon: <BadgeIcon />, path: '/all-employees' }] : []),
-                        ...(userData?.adminType !== "subAdmin" ? [{ text: 'Add Employee', icon: <PersonAddIcon />, path: '/add-employee' }] : []),
-                        ...(userData?.adminType !== "subAdmin" ? [{ text: 'Make Admin', icon: <AdminPanelSettingsIcon />, path: '/make-admin' }] : []),
+                        ...(userData?.adminType == "superAdmin" ? [{ text: 'All Employees', icon: <BadgeIcon />, path: '/all-employees' }] : []),
+                        ...(userData?.adminType == "superAdmin" ? [{ text: 'Add Employee', icon: <PersonAddIcon />, path: '/add-employee' }] : []),
+                        ...(userData?.adminType == "superAdmin" ? [{ text: 'Make Admin', icon: <AdminPanelSettingsIcon />, path: '/make-admin' }] : []),
+                        ...(userData?.adminType == "superAdmin" ? [{ text: 'All Admins', icon: <AdminPanelSettingsIcon />, path: '/all-admins' }] : []),
                         { text: 'Edit Profile', icon: <AccountBoxIcon />, path: '/edit-profile' },
                         {text: 'Policies', icon: <AccountBoxIcon />, path: '/policies'},
 
@@ -333,6 +335,7 @@ const AdminDrawerSidebar = () => {
                     <Route path='/all-duplicate-phone/request' element={<AllDuplicatePhoneRequest />} />
                     <Route path='/incetive-tree/:id' element={<AdminIncentiveForEmployee />} />
                     <Route path="/policies" element={<AdminEmployeePolicies />}/>
+                    <Route path="/all-admins" element={< AllAdmins/>} />
                 </Routes>
                 <AdminFooter />
             </Box>

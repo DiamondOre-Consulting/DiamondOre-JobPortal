@@ -4477,6 +4477,40 @@ router.get('/validate-token-for-kpi-admin',(req, res) => {
 })
 
 
+router.get('/fetch-all-admins',AdminAuthenticateToken,async(req, res)=>{
+  try {
+    const allAdmins = await Admin.find();
+    if (allAdmins.length==0) {
+      return res.status(402).json({ message: "No admin found!!!" });
+    }
+    res.status(200).json(allAdmins);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
+  }
+})
+
+
+router.delete("/delete/admin/:id",AdminAuthenticateToken,async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      console.log(id);
+
+      await Admin.deleteOne({ _id: id });
+
+      return res
+        .status(201)
+        .json({ message: "Admin deleted successfully!" });
+    } catch (e) {
+      return res
+        .status(500)
+        .json({ message: "Something went wrong!!!", err: e.message });
+    }
+  }
+);
+
+
+
 
 
 export default router;
