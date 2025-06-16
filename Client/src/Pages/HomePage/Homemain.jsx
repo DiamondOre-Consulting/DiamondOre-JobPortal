@@ -112,7 +112,7 @@ const Homemain = () => {
         <HeroNav />
         <StatsPartners />
         <PathSearch latestJobs={latestJobs} />
-        <CvSection />
+        {/* <CvSection /> */}
         <JobsReviews />
         <Footer />
         <Chatboot />

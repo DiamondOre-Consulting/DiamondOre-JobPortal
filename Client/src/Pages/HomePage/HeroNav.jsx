@@ -81,7 +81,7 @@ const HeroNav = () => {
               <div className="mt-4 md:mt-8">
                 <div className="flex items-center">
                   <Link
-                    to={"/all-jobs"}
+                    to={"/all-jobs-page"}
                     className="inline-block rounded bg-blue-900 px-4 md:px-12 py-3 text-sm font-medium text-white transition hover:bg-blue-950 focus:outline-none focus:ring focus:ring-yellow-400"
                   >
                     Find Current Job Openings
