@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Logo from "../../assets/Logo.png";
+import Logo from "../../assets/logoblue.png";
 import instalogo from "../../assets/instaicon.png";
 import { FaInstagram } from "react-icons/fa6";
 import { LuYoutube } from "react-icons/lu";
@@ -13,7 +13,7 @@ const Footer = () => {
           <div className="mx-auto max-w-screen-2xl lg:px-4 px-10 md:px-8 sm:px-16">
             <div className="grid grid-cols-2 gap-12 border-t pt-10 md:grid-cols-4 lg:grid-cols-6 lg:gap-8 lg:pt-12">
               <div className="col-span-full lg:col-span-2">
-                <div className="mb-4 w-3/4">
+                <div className="mb-4 w-2/4">
                   <img src={Logo} alt="" />
                 </div>
 

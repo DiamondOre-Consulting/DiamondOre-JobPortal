@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
-import Logo from '../../assets/logo2.png';
-import { useJwt } from 'react-jwt';
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+// import Logo from '../../assets/logo2.png';
+import Logo from "../../assets/logowhite.png";
+
+import { useJwt } from "react-jwt";
 
 const Navbar = () => {
-
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   // const { decodedToken } = useJwt(localStorage.getItem("token"));
@@ -12,62 +13,69 @@ const Navbar = () => {
 
   const handleSignup = () => {
     if (token && decodedToken && decodedToken.exp * 1000 > Date.now()) {
-      if (decodedToken.role === 'admin') {
-        navigate('/admin-dashboard');
-      } else if (decodedToken.role === 'candidate') {
-        navigate('/dashboard');
+      if (decodedToken.role === "admin") {
+        navigate("/admin-dashboard");
+      } else if (decodedToken.role === "candidate") {
+        navigate("/dashboard");
       } else {
-        navigate('/login');
+        navigate("/login");
       }
     } else {
-      navigate('/login');
+      navigate("/login");
     }
-  }
+  };
 
   const [menuOpen, setMenuOpen] = useState(false);
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
-    
   };
   return (
-    <div className=''>
+    <div className="">
       {/* Header and Nav Section Start */}
       <div className="fixed top-0 z-50 w-full bg-gray-900 backdrop-blur-md bg-opacity-65">
         <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
           <header className="flex items-center justify-between py-2 md:mb-2 md:py-2 xl:mb-2 sm:mb-2">
-
-            <img className='w-3/6 sm:w-2/6 md:w-1/6 h-auto z-40 py-2' src={Logo} alt="DiamondOre Logo" />
+            <img
+              className="w-3/6 sm:w-2/6 md:w-1/6 h-auto z-40 py-2"
+              src={Logo}
+              alt="DiamondOre Logo"
+            />
 
             <nav className="hidden gap-12 lg:flex cursor-pointer z-40">
-              <Link to={'/'} href="#" className="text-md font-semibold text-white">
+              <Link
+                to={"/"}
+                href="#"
+                className="text-md font-semibold text-white"
+              >
                 Home
               </Link>
-              <Link to={'/about'}
+              <Link
+                to={"/about"}
                 className="text-md font-semibold text-white transition duration-100  active:text-blue-900"
               >
                 About Us
               </Link>
-              <Link to={'/services'}
-
+              <Link
+                to={"/services"}
                 className="text-md font-semibold text-white transition duration-100  active:text-blue-900"
               >
                 Services
               </Link>
-              <Link to={'/contact'}
-
+              <Link
+                to={"/contact"}
                 className="text-md font-semibold text-white transition duration-100  active:text-blue-900"
               >
                 Contact Us
               </Link>
-              <Link to={'/search-job'}
-
+              <Link
+                to={"/search-job"}
                 className="text-md font-semibold text-white transition duration-100  active:text-blue-900"
               >
                 Search By Phone No.
               </Link>
 
-              <Link to={'/post-review'}
-
+              <Link
+                to={"/post-review"}
                 className="text-md font-semibold text-white transition duration-100  active:text-blue-900"
               >
                 Post Reviews
@@ -85,7 +93,8 @@ const Navbar = () => {
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
-                  viewBox="0 0 14 18">
+                  viewBox="0 0 14 18"
+                >
                   <path d="M7 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Zm2 1H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z" />
                 </svg>
                 <span className="ml-2 text-white z-40">Sign in</span>
@@ -109,41 +118,45 @@ const Navbar = () => {
                   clipRule="evenodd"
                 />
               </svg>
-
             </button>
           </header>
           <ul
-            className={`gap-10 ${menuOpen ? "block" : "hidden"
-              } w-full flex flex-col items-center justify-center mb-14`}
+            className={`gap-10 ${
+              menuOpen ? "block" : "hidden"
+            } w-full flex flex-col items-center justify-center mb-14`}
           >
             <Link to={"/"}>
               <li
-                className={`${menuOpen ? "block" : "hidden"
-                  } transition ease-in-out delay-150 px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${
+                  menuOpen ? "block" : "hidden"
+                } transition ease-in-out delay-150 px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Home
               </li>
             </Link>
             <Link to={"/about"}>
               <li
-                className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${
+                  menuOpen ? "block" : "hidden"
+                } px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 About Us
               </li>
             </Link>
             <Link to={"/services"}>
               <li
-                className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${
+                  menuOpen ? "block" : "hidden"
+                } px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Services
               </li>
             </Link>
             <Link to={"/contact"}>
               <li
-                className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${
+                  menuOpen ? "block" : "hidden"
+                } px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Contact Us
               </li>
@@ -151,39 +164,40 @@ const Navbar = () => {
 
             <Link to={"/search-job"}>
               <li
-                className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${
+                  menuOpen ? "block" : "hidden"
+                } px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Search By Phone No.
               </li>
             </Link>
 
-
             <Link to={"/post-review"}>
               <li
-                className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${
+                  menuOpen ? "block" : "hidden"
+                } px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Post Reviews
               </li>
             </Link>
 
-            <a href='#'>
+            <a href="#">
               <li
                 onClick={handleSignup}
-                className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-3 text-md font-semibold bg-blue-900 text-white hover:bg-blue-950 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${
+                  menuOpen ? "block" : "hidden"
+                } px-32 py-3 text-md font-semibold bg-blue-900 text-white hover:bg-blue-950 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Signin
               </li>
             </a>
           </ul>
-
         </div>
       </div>
       {/* Header and Nav Section End */}
     </div>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

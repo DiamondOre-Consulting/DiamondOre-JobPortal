@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import path from "path";
 import multer from "multer";
 import nodemailer from "nodemailer";
-import {otpStore} from "../server.js";
+import { otpStore } from "../server.js";
 // import {emailStore} from "../server.js";
 // import forgotOtp from "../server.js";
 import { S3Client } from "@aws-sdk/client-s3";
@@ -20,18 +20,17 @@ import CandidateContact from "../Models/CandidateContact.js";
 import PreferenceForm from "../Models/PreferenceForm.js";
 import RemovedCandidates from "../Models/RemovedCandidates.js";
 import fs from "fs";
-import { fileURLToPath } from 'url';
-import mammoth from "mammoth"
+import { fileURLToPath } from "url";
+import mammoth from "mammoth";
 import Docxtemplater from "docxtemplater";
 import PizZip from "pizzip";
 import ResumeTemp from "../Models/ResumeTemp.js";
 import ClientReviews from "../Models/ClientReviews.js";
-import {z} from 'zod'
-import { uploadImage } from '../Middlewares/multer.middleware.js'
+import { z } from "zod";
+import { uploadImage } from "../Middlewares/multer.middleware.js";
 import { skipMiddlewareFunction } from "mongoose";
 import { uploadFile } from "../utils/fileUpload.utils.js";
-import {deleteFile} from "../utils/fileUpload.utils.js"
-
+import { deleteFile } from "../utils/fileUpload.utils.js";
 
 dotenv.config();
 
@@ -129,152 +128,153 @@ const s3ClientResumes = new S3Client({
   region: "global",
 });
 
-
-
-
 const candidateSignupSchema = z.object({
   name: z.string(),
   email: z.string().email(),
   phone: z.string().min(10).max(10),
   password: z.string().min(8),
   otp: z.string(),
-  profilePic: z.instanceof(Object).optional(), 
+  profilePic: z.instanceof(Object).optional(),
   resume: z.instanceof(Object).optional(),
-})
-
-
-// SIGNUP AS CANDIDATE
-router.post("/signup", uploadImage.fields([{name:"myFileImage", maxCount:1},{name:"myFileResume",maxCount:1}]),  
-  async (req, res) => {
-  const { name, email, phone, password, otp } = req.body;
-
- 
-  
-  const profilePic = req?.files?.myFileImage?.[0]
-  const resume = req?.files?.myFileResume?.[0]
-  // const resume = req.resume
-
- 
-  
-
-
-  
-  const {success,error} = candidateSignupSchema.safeParse({name,email,phone,password,otp,profilePic,resume})
-    if (!success){
-        return res.status(400).json({message: "Invalid credentials"});
-    }
-
-  
-  try {
-    // Verify OTP
-    if (otpStore[email] == otp) {
-      const userExists = await Candidates.exists({ email });
-      if (userExists) {
-        return res.status(409).json({ message: "User already exists" });
-      }
-      let uploadProfilePic=null;
-      let uploadResume=null
-      if(profilePic){
-         uploadProfilePic = await uploadFile(profilePic, "profilepics");
-      }
-      if(resume){
-         uploadResume = await uploadFile(resume, "profilepics");
-      }
-
-
-      // Hash the password
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      // Create a new user object
-      const newUser = new Candidates({
-        name,
-        email,
-        phone,
-        otp: null,
-        password: hashedPassword,
-        profilePic:uploadProfilePic,
-        resume:uploadResume,
-      });
-
-      // Save the user to the database
-      await newUser.save();
-
-      const token = jwt.sign(
-        {
-          userId: newUser._id,
-          name: newUser.name,
-          email: newUser.email,
-          role: "candidate",
-        },
-        secretKey,
-        {
-          expiresIn: "7d",
-        }
-      );
-
-      delete otpStore[email];
-
-      // Send Confermation via email using Nodemailer
-      const sendConfirmationByEmail = async (email) => {
-        try {
-          const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-              user: "tech@diamondore.in",
-              pass: "zlnbcvnhzdddzrqn",
-            },
-          });
-
-          const mailOptions = {
-            from: "Diamondore.in <tech@diamondore.in>",
-            to: `Recipient <${email}>`,
-            subject: "Welcome to Diamond Ore Pvt.Ltd !",
-            text: `Congratulations! We are thrilled to have you as a new member of our community. By joining us, you've taken the first step towards unlocking a world of opportunities.`,
-            html: `<p font-size: 1rem">Congratulations! We are thrilled to have you as a new member of our community. By joining us, you've taken the first step towards unlocking a world of opportunities.</p>`,
-          };
-
-          const info = await transporter.sendMail(mailOptions);
-          console.log("Email sent: " + info.response);
-
-          // console.log(info);
-        } catch (error) {
-          console.error("Error sending Mail:", error);
-          throw error;
-        }
-      };
-      await sendConfirmationByEmail(email);
-      return res
-        .status(200)
-        .json({success: true, message: "Candidate User created successfully", token });
-    } else {
-      return res.status(400).json({ message: "user already exists" });
-    }
-    // Check if user already exists
-  } catch (error) {
-    console.error("Error creating user:", error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-  // } else {
-  //   res.status(400).json({ error: "Invalid OTP" });
-  // }
 });
 
+// SIGNUP AS CANDIDATE
+router.post(
+  "/signup",
+  uploadImage.fields([
+    { name: "myFileImage", maxCount: 1 },
+    { name: "myFileResume", maxCount: 1 },
+  ]),
+  async (req, res) => {
+    const { name, email, phone, password, otp } = req.body;
+
+    const profilePic = req?.files?.myFileImage?.[0];
+    const resume = req?.files?.myFileResume?.[0];
+    // const resume = req.resume
+
+    const { success, error } = candidateSignupSchema.safeParse({
+      name,
+      email,
+      phone,
+      password,
+      otp,
+      profilePic,
+      resume,
+    });
+    if (!success) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    try {
+      // Verify OTP
+      if (otpStore[email] == otp) {
+        const userExists = await Candidates.exists({ email });
+        if (userExists) {
+          return res.status(409).json({ message: "User already exists" });
+        }
+        let uploadProfilePic = null;
+        let uploadResume = null;
+        if (profilePic) {
+          uploadProfilePic = await uploadFile(profilePic, "profilepics");
+        }
+        if (resume) {
+          uploadResume = await uploadFile(resume, "profilepics");
+        }
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create a new user object
+        const newUser = new Candidates({
+          name,
+          email,
+          phone,
+          otp: null,
+          password: hashedPassword,
+          profilePic: uploadProfilePic,
+          resume: uploadResume,
+        });
+
+        // Save the user to the database
+        await newUser.save();
+
+        const token = jwt.sign(
+          {
+            userId: newUser._id,
+            name: newUser.name,
+            email: newUser.email,
+            role: "candidate",
+          },
+          secretKey,
+          {
+            expiresIn: "7d",
+          }
+        );
+
+        delete otpStore[email];
+
+        // Send Confermation via email using Nodemailer
+        const sendConfirmationByEmail = async (email) => {
+          try {
+            const transporter = nodemailer.createTransport({
+              service: "gmail",
+              auth: {
+                user: "tech@diamondore.in",
+                pass: "zlnbcvnhzdddzrqn",
+              },
+            });
+
+            const mailOptions = {
+              from: "Diamondore.in <tech@diamondore.in>",
+              to: `Recipient <${email}>`,
+              subject: "Welcome to Diamond Ore Pvt.Ltd !",
+              text: `Congratulations! We are thrilled to have you as a new member of our community. By joining us, you've taken the first step towards unlocking a world of opportunities.`,
+              html: `<p font-size: 1rem">Congratulations! We are thrilled to have you as a new member of our community. By joining us, you've taken the first step towards unlocking a world of opportunities.</p>`,
+            };
+
+            const info = await transporter.sendMail(mailOptions);
+            console.log("Email sent: " + info.response);
+
+            // console.log(info);
+          } catch (error) {
+            console.error("Error sending Mail:", error);
+            throw error;
+          }
+        };
+        await sendConfirmationByEmail(email);
+        return res.status(200).json({
+          success: true,
+          message: "Candidate User created successfully",
+          token,
+        });
+      } else {
+        return res.status(400).json({ message: "user already exists" });
+      }
+      // Check if user already exists
+    } catch (error) {
+      console.error("Error creating user:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+    // } else {
+    //   res.status(400).json({ error: "Invalid OTP" });
+    // }
+  }
+);
+
 const candidateLoginSchema = z.object({
-  email:z.string().email(),
-  password:z.string()
-})
+  email: z.string().email(),
+  password: z.string(),
+});
 
 // LOGIN AS CANDIDATE
 
 router.post("/login", async (req, res) => {
-
-
   const { email, password } = req.body;
 
-  const {success,error} = candidateLoginSchema.safeParse(req.body)
+  const { success, error } = candidateLoginSchema.safeParse(req.body);
 
-  if(!success){
-    return res.status(400).json({message : "invalid Credentials"})
+  if (!success) {
+    return res.status(400).json({ message: "invalid Credentials" });
   }
 
   try {
@@ -351,77 +351,62 @@ router.get("/user-data", CandidateAuthenticateToken, async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
- 
 
 const jobSchema = z.object({
-  Channel:z.string().optional(),
-  City:z.string().optional(),
-  minCTC:z.coerce.number().optional(),
-  maxCTC:z.coerce.number().optional(), 
-  page:z.coerce.number(),
-  limit:z.coerce.number()
-})
+  Channel: z.string().optional(),
+  City: z.string().optional(),
+  minCTC: z.coerce.number().optional(),
+  maxCTC: z.coerce.number().optional(),
+  page: z.coerce.number().optional(),
+  limit: z.coerce.number().optional(),
+});
 
 // FETCHING ALL JOBS
 router.get("/all-jobs", async (req, res) => {
   try {
-      
-    const {success, data , error }  = jobSchema.safeParse(req.query)
-    
-    if(!success){
-      return res.status(422).json({message : "invalid Credentials"})
+    const { success, data, error } = jobSchema.safeParse(req.query);
+
+    if (!success) {
+      return res.status(422).json({ message: "invalid Credentials" });
     }
-    
-    const {Channel,City,minCTC,maxCTC} = data
-    
-    const page  = data.page;
+
+    const { Channel, City, minCTC, maxCTC } = data;
+
+    const page = data.page || 1;
     const limit = data.limit || 20;
 
-    
-    const skip = (page) * limit;
-  
+    const skip = page * limit;
+
     let queryData;
     let totalCount;
-    if(Channel||City){
-        
-
+    if (Channel || City) {
       const query = {
-        $and: [
-          { JobStatus: "Active" },
-          City ? { City } : null
-        ],
+        $and: [{ JobStatus: "Active" }, City ? { City } : null],
         $or: [
-          ...(minCTC && maxCTC ? [{ MaxSalary: { $gte: minCTC, $lte: maxCTC } }] : []),
+          ...(minCTC && maxCTC
+            ? [{ MaxSalary: { $gte: minCTC, $lte: maxCTC } }]
+            : []),
           Channel ? { Channel } : null,
-        ].filter(Boolean)
+        ].filter(Boolean),
       };
-      
+
       totalCount = await Jobs.countDocuments(query);
       queryData = await Jobs.find(query).skip(skip).limit(limit);
-     
-      
-
-    }
-    else{
+    } else {
       totalCount = await Jobs.countDocuments();
       queryData = await Jobs.find({}).skip(skip).limit(limit);
-      
     }
-
-    
 
     const uniqueCities = await Jobs.distinct("City");
     const uniqueChannels = await Jobs.distinct("Channel");
 
     return res.status(200).json({
-      allJobs:queryData.reverse(),
+      allJobs: queryData.reverse(),
       currentPage: page,
       totalPages: Math.ceil(totalCount / limit),
       uniqueCities,
-      uniqueChannels
+      uniqueChannels,
     });
-
-
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Something went wrong!!!" });
@@ -465,8 +450,6 @@ router.get(
       } else {
         const allJobs = await Jobs.find({});
 
-        
-
         return res.status(200).json(allJobs);
       }
     } catch (error) {
@@ -477,7 +460,10 @@ router.get(
 );
 
 // FETCHING ALL APPLIED JOBS
-router.get("/all-applied-jobs",CandidateAuthenticateToken,async (req, res) => {
+router.get(
+  "/all-applied-jobs",
+  CandidateAuthenticateToken,
+  async (req, res) => {
     try {
       // Get the user's email from the decoded token
       const { email } = req.user;
@@ -501,7 +487,10 @@ router.get("/all-applied-jobs",CandidateAuthenticateToken,async (req, res) => {
 );
 
 // FETCHING ALL SHORTLISTED JOBS
-router.get("/all-shortlisted-jobs",CandidateAuthenticateToken,async (req, res) => {
+router.get(
+  "/all-shortlisted-jobs",
+  CandidateAuthenticateToken,
+  async (req, res) => {
     try {
       // Get the user's email from the decoded token
       const { email } = req.user;
@@ -735,15 +724,16 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
                  <p style="text-align: left; ">Regards,</p>
             <p style="text-align: left;"><img src="cid:logo" alt="Company Logo" style="width:200px;height:auto;"/></p>
             `,
-            attachments: [{
-              filename: 'logo.png',
-              path: 'C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png',
-              cid: 'logo'
-            }]
+            // attachments: [
+            //   {
+            //     filename: "Logo.png",
+            //     path: "C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/Logo.png",
+            //     cid: "Logo",
+            //   },
+            // ],
           };
           const info = await transporter.sendMail(mailOptions);
           console.log("Email sent: " + info.response);
-
         } catch (error) {
           console.error("Error sending Mail :", error);
           throw error;
@@ -765,7 +755,11 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
           const mailOptions = {
             from: "Diamondore.in <tech@diamondore.in>",
             to: `hr@diamondore.in`,
-            cc: ['rahul@rasonline.in', 'rahul@diamondore.in', 'zoya.rasonline@gmail.com'],
+            cc: [
+              "rahul@rasonline.in",
+              "rahul@diamondore.in",
+              "zoya.rasonline@gmail.com",
+            ],
             subject: `A new applicant applied for ${job.JobTitle}`,
             html: `
             <ul>
@@ -777,16 +771,17 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
             <p style="text-align: left;">Regards,</p>
             <p style="text-align: left;"><img src="cid:logo" alt="Company Logo" style="width:200px;height:auto;"/></p>
             `,
-            attachments: [{
-              filename: 'logo.png',
-              path: 'C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png', // Replace with the path to your logo image
-              cid: 'logo' // Same cid value as in the html img src
-            }]
+            // attachments: [
+            //   {
+            //     filename: "logo.png",
+            //     path: "C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png", // Replace with the path to your logo image
+            //     cid: "logo", // Same cid value as in the html img src
+            //   },
+            // ],
           };
 
           const info = await transporter.sendMail(mailOptions);
           console.log("Email sent: " + info.response);
-
         } catch (error) {
           console.error("Error sending Mail to admin:", error);
           throw error;
@@ -795,7 +790,9 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
       await jobAppliedSucessfully(email, job);
       await CandidateAppliedJob(job, CandidateUser);
 
-      res.status(201).json({ newStatus, message: "Applied to job successfully!!!" });
+      res
+        .status(201)
+        .json({ newStatus, message: "Applied to job successfully!!!" });
     }
   } catch (error) {
     console.log(error);
@@ -804,7 +801,10 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
 });
 
 // STATUS OF A JOB
-router.get("/status/:id1/:id2",CandidateAuthenticateToken, async (req, res) => {
+router.get(
+  "/status/:id1/:id2",
+  CandidateAuthenticateToken,
+  async (req, res) => {
     try {
       const { userId, email } = req.user;
       const { id1, id2 } = req.params;
@@ -849,76 +849,73 @@ router.post("/help-contact", async (req, res) => {
 });
 
 // EDIT PROFILE (Let Aayush know how this is gonna work)
-router.put("/edit-profile", CandidateAuthenticateToken,uploadImage.fields([{name:"myFileImage", maxCount:1},{name:"myFileResume",maxCount:1}]) ,async (req, res) =>{
-  try {
-    const { name, phone, password, } = req.body;
-    const { email } = req.user;
+router.put(
+  "/edit-profile",
+  CandidateAuthenticateToken,
+  uploadImage.fields([
+    { name: "myFileImage", maxCount: 1 },
+    { name: "myFileResume", maxCount: 1 },
+  ]),
+  async (req, res) => {
+    try {
+      const { name, phone, password } = req.body;
+      const { email } = req.user;
 
-    const profilePic = req.files?.myFileImage?.[0] || null;
-    const resume = req.files?.myFileResume?.[0] || null;
+      const profilePic = req.files?.myFileImage?.[0] || null;
+      const resume = req.files?.myFileResume?.[0] || null;
 
-
-
-    const user = await Candidates.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    
-
-    
-  
-     
-    let uploadProfilePic = null; 
-
-    if(profilePic){
-
-      if(user.profilePic){
-          const deleteProfilePic = await deleteFile(user.profilePic, "profilepics")
+      const user = await Candidates.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
       }
 
-      uploadProfilePic = await uploadFile(profilePic, "profilepics");
-   
-      user.profilePic=uploadProfilePic
-    }
+      let uploadProfilePic = null;
 
-    let uploadResume = null;
-    if(resume){
-      if(user.resume){
-        const deleteProfilePic = await deleteFile(user.resume, "profilepics")
+      if (profilePic) {
+        if (user.profilePic) {
+          const deleteProfilePic = await deleteFile(
+            user.profilePic,
+            "profilepics"
+          );
+        }
+
+        uploadProfilePic = await uploadFile(profilePic, "profilepics");
+
+        user.profilePic = uploadProfilePic;
       }
-      uploadResume = await uploadFile(resume, "profilepics");
-     
-      user.resume=uploadResume     
+
+      let uploadResume = null;
+      if (resume) {
+        if (user.resume) {
+          const deleteProfilePic = await deleteFile(user.resume, "profilepics");
+        }
+        uploadResume = await uploadFile(resume, "profilepics");
+
+        user.resume = uploadResume;
+      }
+
+      if (name) {
+        user.name = name;
+      }
+
+      if (phone) {
+        user.phone = phone;
+      }
+
+      if (password) {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user.password = hashedPassword;
+      }
+
+      await user.save();
+
+      res.status(201).json({ message: "Edit profile successful!!!", user });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Something went wrong!!!" });
     }
-
-
-    if (name) {
-      user.name = name;
-      
-    }
-
-    if (phone) {
-      user.phone = phone;
-     
-    }
-
-    if (password) {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      user.password = hashedPassword;
-
-     
-    }
-
-  
-
-    await user.save();
-
-    res.status(201).json({ message: "Edit profile successful!!!", user });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Something went wrong!!!" });
   }
-});
+);
 
 // PREFERENCE FORM
 router.post("/add-preference", CandidateAuthenticateToken, async (req, res) => {
@@ -1010,7 +1007,6 @@ router.get("/get-pref-data", CandidateAuthenticateToken, async (req, res) => {
     const prefFormData = await PreferenceForm.findOne({ candidateId: userId });
 
     res.status(200).json(prefFormData);
-
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Something went wrong!!!" });
@@ -1089,14 +1085,18 @@ router.delete(
 
       await sendDeleteAccountEmail(deletedUser);
 
-      res.status(200).json({ message: "Candidate has been removed from Candidates DB and Transferred to DeletedCandidates Schema!!!" });
+      res.status(200).json({
+        message:
+          "Candidate has been removed from Candidates DB and Transferred to DeletedCandidates Schema!!!",
+      });
     } catch (error) {
       console.error("Error:", error);
       res.status(500).json({ message: "Internal Server Error" });
     }
-  });
+  }
+);
 
-// FORGOT PASSWORD 
+// FORGOT PASSWORD
 // Send OTP via email using Nodemailer For Forgot Password
 const sendOTPByEmailForgotPassword = async (email, otp) => {
   try {
@@ -1153,22 +1153,24 @@ router.post("/forgot-password", async (req, res) => {
   }
 });
 
-
 const updatePasswordSchema = z.object({
   email: z.string().email(),
   otp: z.string(),
   password: z.string().min(8),
-})
+});
 
 // VERIFY AND UPDATE PASSWORD
 router.put("/update-password", async (req, res) => {
   const { email, otp, password } = req.body;
 
-  const {success, error} = updatePasswordSchema.safeParse({email, otp, password});
+  const { success, error } = updatePasswordSchema.safeParse({
+    email,
+    otp,
+    password,
+  });
   if (!success) {
-    return res.status(400).json({ error: "fields sent were errounous"});
+    return res.status(400).json({ error: "fields sent were errounous" });
   }
-  
 
   try {
     // const { id } = req.params;
@@ -1212,7 +1214,20 @@ const s3ClientFreeResumes = new S3Client({
 
 router.post("/free-resume", async (req, res) => {
   try {
-    const { full_name, address, phone, email, linkedinUrl, summary, tech_skills, soft_skills, experience, graduation, twelfth, tenth } = req.body;
+    const {
+      full_name,
+      address,
+      phone,
+      email,
+      linkedinUrl,
+      summary,
+      tech_skills,
+      soft_skills,
+      experience,
+      graduation,
+      twelfth,
+      tenth,
+    } = req.body;
 
     // Your existing code to generate output.docx
     const templatePath = path.resolve(__dirname, "Template_Resume.docx");
@@ -1251,12 +1266,13 @@ router.post("/free-resume", async (req, res) => {
       tenth_year: tenth.tenth_year,
       tenth_school_name: tenth.tenth_school_name,
       tenth_school_city: tenth.tenth_school_city,
-      tenth_board_name: tenth.tenth_board_name
+      tenth_board_name: tenth.tenth_board_name,
     });
 
-
     // Save Word document
-    const buffer = doc.getZip().generate({ type: "nodebuffer", compression: "DEFLATE" });
+    const buffer = doc
+      .getZip()
+      .generate({ type: "nodebuffer", compression: "DEFLATE" });
     const outputPath = path.resolve(__dirname, `${full_name}_free_resume.docx`);
     fs.writeFileSync(outputPath, buffer);
 
@@ -1265,7 +1281,7 @@ router.post("/free-resume", async (req, res) => {
       new PutObjectCommand({
         Bucket: "freeresumesbuild",
         Key: `${full_name}_free_resume.docx`,
-        Body: fs.readFileSync(outputPath)
+        Body: fs.readFileSync(outputPath),
       })
     );
 
@@ -1291,7 +1307,6 @@ router.post("/free-resume", async (req, res) => {
       return res.status(404).json({ message: "file not saved" });
     }
     if (baseUrl) {
-
       const newFreeResume = new ResumeTemp({
         full_name: full_name,
         address: address,
@@ -1323,7 +1338,7 @@ router.post("/free-resume", async (req, res) => {
           twelfth_year: twelfth.twelfth_year,
           twelfth_school_name: twelfth.twelfth_school_name,
           twelfth_school_city: twelfth.twelfth_school_city,
-          twelfth_board_name: twelfth.twelfth_board_name
+          twelfth_board_name: twelfth.twelfth_board_name,
         },
         tenth: {
           tenth_field: tenth.tenth_field,
@@ -1333,14 +1348,11 @@ router.post("/free-resume", async (req, res) => {
           tenth_board_name: tenth.tenth_board_name,
         },
         resumeLink: baseUrl,
-
-      })
-      await newFreeResume.save()
+      });
+      await newFreeResume.save();
     }
 
     res.status(200).send(baseUrl); // Return the URL of the uploaded file
-
-
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Something went wrong!!!", error });
@@ -1372,7 +1384,7 @@ router.post("/request-call", async (req, res) => {
       text: `A new message has been submitted by ${name}.`,
       html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${name}</h4> </br>
                     <h4 style="font-size:1rem; display:flex; justify-content: center;">Phone No: ${phone}</h4> </br>`,
-      cc: ['rahul@rasonline.in']
+      cc: ["rahul@rasonline.in"],
     };
 
     const info = await transporter.sendMail(mailOptions);
@@ -1390,7 +1402,9 @@ router.post("/post-review", async (req, res) => {
     const { name, email, reviewFor, diamonds, review } = req.body;
 
     if (!reviewFor || !diamonds) {
-      return res.status(401).json({ message: "Review for and diamonds are required fields!!!" });
+      return res
+        .status(401)
+        .json({ message: "Review for and diamonds are required fields!!!" });
     }
 
     const newReview = new ClientReviews({
@@ -1398,17 +1412,17 @@ router.post("/post-review", async (req, res) => {
       email,
       reviewFor,
       diamonds,
-      review
-    })
+      review,
+    });
 
     await newReview.save();
 
     res.status(200).json({ message: "Review posted sucessfully!!!" });
   } catch (error) {
     console.log(error.message);
-    res.status(500).json({ message: "Something went wrong!!!", error })
+    res.status(500).json({ message: "Something went wrong!!!", error });
   }
-})
+});
 
 // FETCH ALL REVIEWS
 router.get("/all-reviews", async (req, res) => {
@@ -1418,8 +1432,8 @@ router.get("/all-reviews", async (req, res) => {
     res.status(201).json(allReviews);
   } catch (error) {
     console.log(error.message);
-    res.status(500).json({ message: "" })
+    res.status(500).json({ message: "" });
   }
-})
+});
 
 export default router;
