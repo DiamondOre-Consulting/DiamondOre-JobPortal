@@ -13,7 +13,6 @@ const HomeNewRecommend = () => {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-
   };
 
   const { decodedToken } = useJwt(localStorage.getItem("token"));
@@ -40,32 +39,27 @@ const HomeNewRecommend = () => {
           `${import.meta.env.VITE_BASE_URL}/candidates/recommended-jobs`,
           {
             headers: {
-              Authorization: `Bearer ${token}`
-            }
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
+        console.log("data", response);
         if (response.status === 200) {
           if (response.data.length === 0) {
-            setEmpty(`No Job Found According to your prefrence `)
+            console.log("inside", response?.data);
+            setEmpty(`No Job Found According to your prefrence `);
             setLoading(false);
             return;
-
-          }
-          else {
-
-            const all = response.data;
-            const filteredJobs = all.filter(job => job.jobStatus === "true");
-            const latest = filteredJobs.slice(-7);
+          } else {
+            const all = response.data.slice(-8);
+            // const filteredJobs = all.filter(job => job.jobStatus === "true");
+            // const latest = filteredJobs.slice(-7);
             // ;
-            setLatestJobs(latest.reverse());
-            setLoading(false)
-
-
+            setLatestJobs(all);
+            console.log(latestJobs);
+            setLoading(false);
           }
-
         }
-
-
       } catch (error) {
         console.error("Error fetching associates:", error);
         // Handle error and show appropriate message
@@ -84,7 +78,7 @@ const HomeNewRecommend = () => {
         {loading ? (
           <div style={override}>
             <PropagateLoader
-              color={'#023E8A'}
+              color={"#023E8A"}
               loading={loading}
               size={20}
               aria-label="Loading Spinner"
@@ -94,7 +88,16 @@ const HomeNewRecommend = () => {
         ) : (
           <>
             {latestJobs.length === 0 ? (
-              <p className="text-center text-red-500 font-semibold">{empty} <Link to={'/edit-prefrence-form'} className="underline text-blue-600">click here</Link> to change your prefrence </p>
+              <p className="text-center text-red-500 font-semibold">
+                {empty}{" "}
+                <Link
+                  to={"/edit-prefrence-form"}
+                  className="underline text-blue-600"
+                >
+                  click here
+                </Link>{" "}
+                to change your prefrence{" "}
+              </p>
             ) : (
               <div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4 mb-4">
                 {latestJobs.map((latestJob, index) => (
@@ -108,20 +111,38 @@ const HomeNewRecommend = () => {
                       </h3>
                       <div className="w-44 h-0.5 bg-blue-950 md:mb-6 "></div>
                       <p className="text-sm text-gray-600 font-semibold">
-                        Industry - <span className="text-blue-950">{latestJob?.Industry}</span>
+                        Industry -{" "}
+                        <span className="text-blue-950">
+                          {latestJob?.Industry}
+                        </span>
                       </p>
-                      <p className="text-sm text-gray-600 font-semibold">Channel - <span className="text-blue-950">{latestJob?.Channel}</span></p>
                       <p className="text-sm text-gray-600 font-semibold">
-                        Min. Experience - <span className="text-blue-950">{latestJob?.MinExperience} Year(s)</span>
+                        Channel -{" "}
+                        <span className="text-blue-950">
+                          {latestJob?.Channel}
+                        </span>
+                      </p>
+                      <p className="text-sm text-gray-600 font-semibold">
+                        Min. Experience -{" "}
+                        <span className="text-blue-950">
+                          {latestJob?.MinExperience} Year(s)
+                        </span>
                       </p>
                       <p className="text-sm text-gray-600 font-semibold"></p>
                       {latestJob?.appliedApplicants == decodedToken?.userId ? (
-                        <p className="text-center text-md text-green-500 font-semibold">Already applied</p>
+                        <p className="text-center text-md text-green-500 font-semibold">
+                          Already applied
+                        </p>
                       ) : (
                         ""
                       )}
-                      <Link to={`/all-jobs/${latestJob?._id}`} className="cursor-pointer w-full flex-col rounded-lg bg-blue-900 p-4 text-center text-white hover:bg-white hover:text-black-100 hover:text-gray-900 border border-blue-950 mt-2">
-                        <span className="text-md font-bold lg:text-md">Know More</span>
+                      <Link
+                        to={`/all-jobs/${latestJob?._id}`}
+                        className="cursor-pointer w-full flex-col rounded-lg bg-blue-900 p-4 text-center text-white hover:bg-white hover:text-black-100 hover:text-gray-900 border border-blue-950 mt-2"
+                      >
+                        <span className="text-md font-bold lg:text-md">
+                          Know More
+                        </span>
                       </Link>
                     </div>
                   </div>
@@ -133,7 +154,6 @@ const HomeNewRecommend = () => {
       </div>
     </div>
   );
-
 };
 
 export default HomeNewRecommend;
