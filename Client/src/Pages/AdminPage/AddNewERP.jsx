@@ -2,15 +2,17 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useJwt } from "react-jwt";
 import { useNavigate } from "react-router-dom";
-import { FaCamera } from 'react-icons/fa'
-
+import { FaCamera, FaPlus, FaTimes } from "react-icons/fa";
+import { toast } from "sonner";
 
 const AddERPForm = () => {
   const navigate = useNavigate();
   const [profilePic, setProfilePic] = useState(null);
   const [preview, setPreview] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [employees, setEmployees] = useState([]);
 
-  const initialerpData = {
+  const initialErpData = {
     EmpOfMonth: "",
     recognitionType: "",
     EmpOfMonthDesc: "",
@@ -22,671 +24,353 @@ const AddERPForm = () => {
     JoningsForWeek: [{ names: "", noOfJoinings: 0 }],
   };
 
-
-  const [erpData, seterpData] = useState(initialerpData);
-  console.log(erpData)
+  const [erpData, setErpData] = useState(initialErpData);
   const { decodedToken } = useJwt(localStorage.getItem("token"));
   const token = localStorage.getItem("token");
-  if (!token) {
-    navigate("/admin-login"); // Redirect to login page if not authenticated
-    return null;
-  }
+
+  // Redirect if no token
+  useEffect(() => {
+    if (!token) {
+      navigate("/admin-login");
+      return;
+    }
+
+    const tokenExpiration = decodedToken?.exp ? decodedToken.exp * 1000 : 0;
+    if (tokenExpiration && tokenExpiration < Date.now()) {
+      localStorage.removeItem("token");
+      navigate("/admin-login");
+    }
+  }, [decodedToken, navigate, token]);
+
+  // Fetch employees
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/admin-confi/all-employees`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setEmployees(response.data.allEmployees || []);
+      } catch (error) {
+        toast.error("Failed to load employees");
+        console.error("Error fetching employees:", error);
+      }
+    };
+
+    if (token) fetchEmployees();
+  }, [token, navigate]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setProfilePic(file);
-      setPreview(URL.createObjectURL(file)); // Preview the selected image
+      setPreview(URL.createObjectURL(file));
     }
   };
 
-  const userName = decodedToken ? decodedToken.name : "No Name Found";
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      // No token found, redirect to login page
-      navigate("/admin-login");
-    } else {
-      const tokenExpiration = decodedToken ? decodedToken.exp * 1000 : 0; // Convert expiration time to milliseconds
-
-      if (tokenExpiration && tokenExpiration < Date.now()) {
-        // Token expired, remove from local storage and redirect to login page
-        localStorage.removeItem("token");
-        navigate("/admin-login");
-      }
-    }
-  }, [decodedToken, navigate]);
-
   const handleInputChange = (field, value) => {
-    seterpData({
-      ...erpData,
-      [field]: value,
-    });
+    setErpData(prev => ({ ...prev, [field]: value }));
   };
 
   const handleAddItem = (field) => {
-    console.log(field)
-    seterpData({
-      ...erpData,
-      [field]: [...erpData[field], {}],
-    });
+    const template = {
+      Top5HRs: { name: "" },
+      Top5Clients: { name: "" },
+      RnRInterns: { title: "", name: "", count: 0, percentage: 0 },
+      RnRRecruiters: { title: "", name: "", count: 0, percentage: 0 },
+      BreakingNews: { news: "" },
+      JoningsForWeek: { names: "", noOfJoinings: 0 }
+    };
+    
+    setErpData(prev => ({
+      ...prev,
+      [field]: [...prev[field], template[field]]
+    }));
   };
 
   const handleRemoveItem = (field, index) => {
-    const updatedItems = [...erpData[field]];
-    updatedItems.splice(index, 1);
-    seterpData({
-      ...erpData,
-      [field]: updatedItems,
-    });
+    setErpData(prev => ({
+      ...prev,
+      [field]: prev[field].filter((_, i) => i !== index)
+    }));
   };
 
   const handleItemInputChange = (field, index, key, value) => {
-    const updatedItems = [...erpData[field]];
-    updatedItems[index][key] = value;
-    seterpData({
-      ...erpData,
-      [field]: updatedItems,
+    setErpData(prev => {
+      const updatedItems = [...prev[field]];
+      updatedItems[index] = { ...updatedItems[index], [key]: value };
+      return { ...prev, [field]: updatedItems };
     });
   };
 
-  const handleFormSubmit = async () => {
-    const formData = new FormData();
-    formData.append("profilePic",profilePic)
+  const validateForm = () => {
+    // Check if at least one field has data
+    const hasData = 
+      erpData.EmpOfMonth ||
+      erpData.recognitionType ||
+      erpData.EmpOfMonthDesc ||
+      erpData.Top5HRs.some(hr => hr.name) ||
+      erpData.Top5Clients.some(client => client.name) ||
+      erpData.RnRInterns.some(intern => intern.name || intern.title) ||
+      erpData.RnRRecruiters.some(recruiter => recruiter.name || recruiter.title) ||
+      erpData.BreakingNews.some(news => news.news) ||
+      erpData.JoningsForWeek.some(joining => joining.names);
+
+    if (!hasData) {
+      toast.error("Please fill at least one field before submitting");
+      return false;
+    }
+    return true;
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
     
-    formData.append("erpData", JSON.stringify(erpData)); 
+    if (!validateForm()) return;
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    const formData = new FormData();
+
     try {
+      if (profilePic) formData.append("profilePic", profilePic);
+      formData.append("erpData", JSON.stringify(erpData));
+
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/admin-confi/erp/add-erp-data`,
         formData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
           },
         }
       );
-      // Handle success, e.g., show a success message or redirect to another page
-      if (response.status === 201) {
 
+      if (response.status === 201) {
+        toast.success("ERP data added successfully!");
         navigate("/admin-dashboard/erp-dashboard");
       }
-
-      // Reset the form after successful submission
-      seterpData(initialerpData);
     } catch (error) {
-      console.error("Error adding ERP data:", error.message);
-      // Handle error, e.g., show an error message
+      toast.error(error.response?.data?.message || "Failed to add ERP data");
+      console.error("Submission error:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const [employees, setEmployees] = useState([]);
-
-  // Fetch all employees on component mount
-  useEffect(() => {
-    const fetchAllEmployee = async () => {
-      try {
-        if (!token) {
-          console.error("No token found");
-          navigate("/admin-login");
-          return;
+  // Render field groups dynamically
+  const fieldGroups = [
+    {
+      title: "Employee of the Month",
+      fields: [
+        { name: "EmpOfMonth", label: "Select Employee", type: "select", options: employees },
+        { name: "recognitionType", label: "Recognition Type", type: "text" },
+        { name: "EmpOfMonthDesc", label: "Description", type: "textarea" }
+      ]
+    },
+    {
+      title: "Top Performers",
+      lists: [
+        { name: "Top5HRs", label: "Top 5 HRs", fields: [{ name: "name", label: "Name" }] },
+        { name: "Top5Clients", label: "Top 5 Clients", fields: [{ name: "name", label: "Name" }] }
+      ]
+    },
+    {
+      title: "Rewards & Recognition",
+      lists: [
+        { 
+          name: "RnRInterns", 
+          label: "RnR Interns", 
+          fields: [
+            { name: "title", label: "Title" },
+            { name: "name", label: "Name" },
+            { name: "count", label: "Count", type: "number" },
+            { name: "percentage", label: "Percentage", type: "number" }
+          ]
+        },
+        { 
+          name: "RnRRecruiters", 
+          label: "RnR Recruiters", 
+          fields: [
+            { name: "title", label: "Title" },
+            { name: "name", label: "Name" },
+            { name: "count", label: "Count", type: "number" },
+            { name: "percentage", label: "Percentage", type: "number" }
+          ]
         }
-
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/admin-confi/all-employees`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          setEmployees(response.data.allEmployees);
+      ]
+    },
+    {
+      title: "Company Updates",
+      lists: [
+        { name: "BreakingNews", label: "Breaking News", fields: [{ name: "news", label: "News" }] },
+        { 
+          name: "JoningsForWeek", 
+          label: "Joinings for the Week", 
+          fields: [
+            { name: "names", label: "Names" },
+            { name: "noOfJoinings", label: "Number of Joinings", type: "number" }
+          ]
         }
-      } catch (error) {
-        console.error("Error fetching employees:", error);
-        // Handle error appropriately
-      }
-    };
-
-    fetchAllEmployee();
-  }, [navigate, token]);
-
-
-  
+      ]
+    }
+  ];
 
   return (
-    <div className="">
-      <h1 className="mx-auto my-2 text-3xl text-center">
-        RNR LEADERBOARD
-      </h1>
-
-
-
-      <div className="w-44 h-0.5 bg-blue-900 justify-center mx-auto"></div>
-      <form className="grid max-w-screen-md gap-4 p-5 mx-auto shadow-lg sm:grid-cols-2">
-
-
-        <div>
-          <label
-            htmlFor="EmpOfMonth"
-            className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
-          >
-            Select Employee*
-          </label>
-          <br />
-          <select
-            className="w-full px-2 py-2"
-            value={erpData.EmpOfMonth}
-            onChange={(e) => handleInputChange("EmpOfMonth", e.target.value)}
-          >
-            <option value="">Select Employee</option>
-            {employees.map((emp) => (
-              <option key={emp._id} value={emp._id}>
-                {emp.name}
-              </option>
-            ))}
-          </select>
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">RNR LEADERBOARD</h1>
+          <div className="w-32 h-1 bg-blue-600 mx-auto mt-2"></div>
         </div>
-        <div className="flex flex-col items-center justify-center mt-4">
-          <div className="relative w-32 h-32 group">
-            {/* Profile Image or Placeholder */}
-            <img
-              src={preview || "https://via.placeholder.com/200x200.png"}
-              alt="Profile"
-              className="object-cover w-full h-full rounded-full shadow-md"
-            />
 
-            {/* Overlay with Camera Icon */}
-            <label
-              htmlFor="profilePicInput"
-              className="absolute inset-0 flex items-center justify-center transition-opacity bg-black bg-opacity-50 rounded-full opacity-0 cursor-pointer group-hover:opacity-100"
-            >
-              <FaCamera className="w-6 h-6 text-white" />
-            </label>
-
-            {/* Hidden File Input */}
-            <input
-              id="profilePicInput"
-              type="file"
-              name="profilePic"
-              className="hidden"
-              accept="image/*"
-              onChange={handleImageChange}
-            />
+        <form onSubmit={handleFormSubmit} className="bg-white shadow rounded-lg p-6">
+          {/* Profile Picture Upload */}
+          <div className="flex flex-col items-center mb-8">
+            <div className="relative group">
+              <img
+                src={preview || "/default-profile.png"}
+                alt="Profile"
+                className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
+              />
+              <label className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                <FaCamera className="text-white text-2xl" />
+                <input
+                  type="file"
+                  className="hidden"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
+              </label>
+            </div>
+            <p className="mt-2 text-sm text-gray-500">Click to upload profile picture</p>
           </div>
 
-          {/* Upload Button */}
-          
-        </div>
-        <div className="w-full col-span-2">
-          <label
-            htmlFor="recognitionType"
-            className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
-          >
-            Recognition Type
-          </label>
-          <br />
-          <input
-            id="recognitionType" // Add an id for better accessibility
-            type="text"
-            className="w-full px-2 py-2 border rounded-md"
-            value={erpData.recognitionType}
-            onChange={(e) => handleInputChange("recognitionType", e.target.value)}
-          />
-        </div>
+          {/* Dynamic Form Sections */}
+          {fieldGroups.map((group, groupIndex) => (
+            <div key={groupIndex} className="mb-10">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b">
+                {group.title}
+              </h2>
 
+              {/* Regular Fields */}
+              {group.fields?.map((field) => (
+                <div key={field.name} className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {field.label}
+                  </label>
+                  {field.type === "select" ? (
+                    <select
+                      className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      value={erpData[field.name]}
+                      onChange={(e) => handleInputChange(field.name, e.target.value)}
+                    >
+                      <option value="">Select {field.label}</option>
+                      {field.options?.map((option) => (
+                        <option key={option._id} value={option._id}>
+                          {option.name}
+                        </option>
+                      ))}
+                    </select>
+                  ) : field.type === "textarea" ? (
+                    <textarea
+                      rows={3}
+                      className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      value={erpData[field.name]}
+                      onChange={(e) => handleInputChange(field.name, e.target.value)}
+                    />
+                  ) : (
+                    <input
+                      type={field.type || "text"}
+                      className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      value={erpData[field.name]}
+                      onChange={(e) => handleInputChange(field.name, e.target.value)}
+                    />
+                  )}
+                </div>
+              ))}
 
-        <div className="w-full col-span-2">
-          <label
-            htmlFor="EmpOfMonthDesc"
-            className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
-          >
-            Description*
-          </label>
-          <br />
-          <textarea
-            id="EmpOfMonthDesc" // Add an id for better accessibility
-            rows="4"
-            type="text"
-            className="w-full px-2 py-2 border rounded-md" // Ensure consistent styling
-            value={erpData.EmpOfMonthDesc} // Ensure this is bound to the state
-            onChange={(e) =>
-              handleInputChange("EmpOfMonthDesc", e.target.value)
-            }
-          />
-        </div>
+              {/* List Fields */}
+              {group.lists?.map((list) => (
+                <div key={list.name} className="mb-6">
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="text-lg font-medium text-gray-700">{list.label}</h3>
+                    <button
+                      type="button"
+                      onClick={() => handleAddItem(list.name)}
+                      className="flex items-center text-sm text-blue-600 hover:text-blue-800"
+                    >
+                      <FaPlus className="mr-1" /> Add
+                    </button>
+                  </div>
 
-        {/* Top5HRs */}
-        <div className="sm:col-span-2">
-          <label
-            htmlFor="Top5HRs"
-            className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
-          >
-            Top 5 HRs*
-          </label>
-          {erpData?.Top5HRs?.map((hr, index) => (
-            <div key={index} className="flex items-center">
-              <input
-                type="text"
-                className="w-full px-3 py-2 my-1 text-gray-800 transition duration-100 border rounded outline-none bg-gray-50 ring-indigo-300"
-                value={hr.name}
-                onChange={(e) =>
-                  handleItemInputChange(
-                    "Top5HRs",
-                    index,
-                    "name",
-                    e.target.value
-                  )
-                }
-              />
-              <button
-                type="button"
-                className="p-2 mx-2 text-gray-100 bg-red-400 hover:bg-red-600"
-                onClick={() => handleRemoveItem("Top5HRs", index)}
-              >
-                Remove
-              </button>
+                  {erpData[list.name]?.map((item, index) => (
+                    <div key={index} className="mb-3 p-3 bg-gray-50 rounded-md">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                        {list.fields.map((field) => (
+                          <div key={field.name}>
+                            <label className="block text-xs font-medium text-gray-500 mb-1">
+                              {field.label}
+                            </label>
+                            <input
+                              type={field.type || "text"}
+                              className="w-full p-2 text-sm border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                              value={item[field.name] || ""}
+                              onChange={(e) =>
+                                handleItemInputChange(
+                                  list.name,
+                                  index,
+                                  field.name,
+                                  field.type === "number" ? 
+                                    parseInt(e.target.value) || 0 : 
+                                    e.target.value
+                                )
+                              }
+                            />
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex justify-end mt-2">
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveItem(list.name, index)}
+                          className="text-red-500 hover:text-red-700 text-sm flex items-center"
+                        >
+                          <FaTimes className="mr-1" /> Remove
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
             </div>
           ))}
-          <button
-            type="button"
-            onClick={() => handleAddItem("Top5HRs")}
-            className="p-2 my-2 text-gray-100 bg-blue-500 rounded"
-          >
-            Add HR
-          </button>
-        </div>
 
-        {/* Top5Clients */}
-        <div className="sm:col-span-2">
-          <label
-            htmlFor="Top5Clients"
-            className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
-          >
-            Top 5 Clients*
-          </label>
-          {erpData?.Top5Clients?.map((client, index) => (
-            <div key={index} className="flex items-center">
-              <input
-                type="text"
-                className="w-full px-3 py-2 my-1 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
-                value={client.name}
-                onChange={(e) =>
-                  handleItemInputChange(
-                    "Top5Clients",
-                    index,
-                    "name",
-                    e.target.value
-                  )
-                }
-              />
-              <button
-                type="button"
-                className="p-2 mx-2 text-gray-100 bg-red-400 rounded hover:bg-red-600"
-                onClick={() => handleRemoveItem("Top5Clients", index)}
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => handleAddItem("Top5Clients")}
-            className="p-2 my-2 text-gray-100 bg-blue-500 rounded"
-          >
-            Add Client
-          </button>
-        </div>
-
-        {/* RnRInterns */}
-        <div className="sm:col-span-2">
-          <label
-            htmlFor="RnRInterns"
-            className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
-          >
-            RnR Interns*
-          </label>
-          {erpData?.RnRInterns?.map((intern, index) => (
-            <div key={index} className="flex items-center">
-              <input
-                type="text"
-                placeholder="Title"
-                className="w-full px-3 py-2 my-1 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
-                value={intern.title}
-                onChange={(e) =>
-                  handleItemInputChange(
-                    "RnRInterns",
-                    index,
-                    "title",
-                    e.target.value
-                  )
-                }
-              />
-              <input
-                type="text"
-                placeholder="Name"
-                className="w-full px-3 py-2 my-1 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
-                value={intern.name}
-                onChange={(e) =>
-                  handleItemInputChange(
-                    "RnRInterns",
-                    index,
-                    "name",
-                    e.target.value
-                  )
-                }
-              />
-              <input
-                type="number"
-                placeholder="Count"
-                className="w-full px-3 py-2 my-1 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
-                value={intern.count}
-                onChange={(e) =>
-                  handleItemInputChange(
-                    "RnRInterns",
-                    index,
-                    "count",
-                    e.target.value
-                  )
-                }
-              />
-              <input
-                type="number"
-                placeholder="Percentage"
-                className="w-full px-3 py-2 my-1 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
-                value={intern.percentage}
-                onChange={(e) =>
-                  handleItemInputChange(
-                    "RnRInterns",
-                    index,
-                    "percentage",
-                    e.target.value
-                  )
-                }
-              />
-              <button
-                type="button"
-                className="p-2 mx-2 text-gray-100 bg-red-400 rounded hover:bg-red-600"
-                onClick={() => handleRemoveItem("RnRInterns", index)}
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => handleAddItem("RnRInterns")}
-            className="p-2 my-2 text-gray-100 bg-blue-500 rounded"
-          >
-            Add Intern
-          </button>
-        </div>
-
-        {/* RnRRecruiters */}
-        <div className="sm:col-span-2">
-          <label
-            htmlFor="RnRRecruiters"
-            className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
-          >
-            RnR Recruiters*
-          </label>
-          {erpData?.RnRRecruiters?.map((recruiter, index) => (
-            <div key={index} className="flex items-center">
-              <input
-                type="text"
-                placeholder="Title"
-                className="w-full px-3 py-2 my-1 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
-                value={recruiter.title}
-                onChange={(e) =>
-                  handleItemInputChange(
-                    "RnRRecruiters",
-                    index,
-                    "title",
-                    e.target.value
-                  )
-                }
-              />
-              <input
-                type="text"
-                placeholder="Name"
-                className="w-full px-3 py-2 my-1 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
-                value={recruiter.name}
-                onChange={(e) =>
-                  handleItemInputChange(
-                    "RnRRecruiters",
-                    index,
-                    "name",
-                    e.target.value
-                  )
-                }
-              />
-              <input
-                type="number"
-                placeholder="Count"
-                className="w-full px-3 py-2 my-1 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
-                value={recruiter.count}
-                onChange={(e) =>
-                  handleItemInputChange(
-                    "RnRRecruiters",
-                    index,
-                    "count",
-                    e.target.value
-                  )
-                }
-              />
-              <input
-                type="number"
-                placeholder="Percentage"
-                className="w-full px-3 py-2 my-1 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
-                value={recruiter.percentage}
-                onChange={(e) =>
-                  handleItemInputChange(
-                    "RnRRecruiters",
-                    index,
-                    "percentage",
-                    e.target.value
-                  )
-                }
-              />
-              <button
-                type="button"
-                className="p-2 mx-2 text-gray-100 bg-red-400 rounded hover:bg-red-600"
-                onClick={() => handleRemoveItem("RnRRecruiters", index)}
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => handleAddItem("RnRRecruiters")}
-            className="p-2 my-2 text-gray-100 bg-blue-500 rounded"
-          >
-            Add Recruiter
-          </button>
-        </div>
-
-        {/* BreakingNews */}
-        <div className="sm:col-span-2">
-          <label
-            htmlFor="BreakingNews"
-            className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
-          >
-            Breaking News*
-          </label>
-          {erpData?.BreakingNews?.map((newsItem, index) => (
-            <div key={index} className="flex items-center">
-              <input
-                type="text"
-                className="w-full px-3 py-2 my-1 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
-                value={newsItem.news}
-                onChange={(e) =>
-                  handleItemInputChange(
-                    "BreakingNews",
-                    index,
-                    "news",
-                    e.target.value
-                  )
-                }
-              />
-              <button
-                type="button"
-                className="p-2 mx-2 text-gray-100 bg-red-400 rounded hover:bg-red-600"
-                onClick={() => handleRemoveItem("BreakingNews", index)}
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => handleAddItem("BreakingNews")}
-            className="p-2 my-2 text-gray-100 bg-blue-500 rounded"
-          >
-            Add News
-          </button>
-        </div>
-
-        {/* JoningsForWeek */}
-        <div className="sm:col-span-2">
-          <label
-            htmlFor="JoningsForWeek"
-            className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
-          >
-            Jonings for the Week*
-          </label>
-          {erpData?.JoningsForWeek?.map((joining, index) => (
-            <div
-              key={index}
-              className="flex flex-col items-center my-2 space-y-2 md:flex-row"
+          {/* Submit Button */}
+          <div className="mt-8">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={`w-full py-3 px-4 rounded-md text-white font-medium flex items-center justify-center ${
+                isSubmitting ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
+              }`}
             >
-              <input
-                type="text"
-                placeholder="Channel"
-                className="w-full px-3 py-2 mt-2 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
-                value={joining.names}
-                onChange={(e) =>
-                  handleItemInputChange(
-                    "JoningsForWeek",
-                    index,
-                    "names",
-                    e.target.value
-                  )
-                }
-              />
-              <input
-                type="text"
-                placeholder="Client"
-                className="w-full px-3 py-2 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
-                value={joining.client}
-                onChange={(e) =>
-                  handleItemInputChange(
-                    "JoningsForWeek",
-                    index,
-                    "client",
-                    e.target.value
-                  )
-                }
-              />
-              <input
-                type="text"
-                placeholder="Location"
-                className="w-full px-3 py-2 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
-                value={joining.location}
-                onChange={(e) =>
-                  handleItemInputChange(
-                    "JoningsForWeek",
-                    index,
-                    "location",
-                    e.target.value
-                  )
-                }
-              />
-              <input
-                type="number"
-                placeholder="CTC"
-                className="w-full px-3 py-2 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
-                value={joining.ctc}
-                onChange={(e) =>
-                  handleItemInputChange(
-                    "JoningsForWeek",
-                    index,
-                    "ctc",
-                    e.target.value
-                  )
-                }
-              />
-              <input
-                type="text"
-                placeholder="Recruiter Name"
-                className="w-full px-3 py-2 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
-                value={joining.recruiterName}
-                onChange={(e) =>
-                  handleItemInputChange(
-                    "JoningsForWeek",
-                    index,
-                    "recruiterName",
-                    e.target.value
-                  )
-                }
-              />
-              <input
-                type="text"
-                placeholder="Team Leader Name"
-                className="w-full px-3 py-2 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
-                value={joining.teamLeaderName}
-                onChange={(e) =>
-                  handleItemInputChange(
-                    "JoningsForWeek",
-                    index,
-                    "teamLeaderName",
-                    e.target.value
-                  )
-                }
-              />
-              <input
-                type="number"
-                placeholder="Number of Joinings"
-                className="w-full px-3 py-2 text-gray-800 transition duration-100 bg-gray-100 border rounded outline-none ring-indigo-300"
-                value={joining.noOfJoinings}
-                onChange={(e) =>
-                  handleItemInputChange(
-                    "JoningsForWeek",
-                    index,
-                    "noOfJoinings",
-                    e.target.value
-                  )
-                }
-              />
-              <button
-                type="button"
-                className="p-2 mx-2 text-gray-100 bg-red-400 rounded hover:bg-red-600"
-                onClick={() => handleRemoveItem("JoningsForWeek", index)}
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => handleAddItem("JoningsForWeek")}
-            className="p-2 my-2 text-gray-100 bg-blue-500 rounded"
-          >
-            Add Joining
-          </button>
-        </div>
-
-        {/* Submit Button */}
-        <button
-          type="button"
-          onClick={handleFormSubmit}
-          className="w-full p-3 mx-2 my-5 text-white bg-blue-600 rounded hover:bg-blue-700"
-        >
-          Submit
-        </button>
-      </form>
+              {isSubmitting ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Submitting...
+                </>
+              ) : (
+                "Submit ERP Data"
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

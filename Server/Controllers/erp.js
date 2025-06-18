@@ -34,62 +34,82 @@ router.post("/add-erp-data", AdminAuthenticateToken, uploadImage.single('profile
   try {
     const { email } = req.user;
 
+    // Safely parse ERP data with defaults
+    const erpData = req.body.erpData ? JSON.parse(req.body.erpData) : {};
+    
+    // Destructure with default empty values
     const {
-      EmpOfMonth,
-      recognitionType,
-      EmpOfMonthDesc,
-      Top5HRs,
-      Top5Clients,
-      RnRInterns,
-      RnRRecruiters,
-      BreakingNews,
-      JoningsForWeek,
-      
-    } =JSON.parse(req.body.erpData);
+      EmpOfMonth = "",
+      recognitionType = "",
+      EmpOfMonthDesc = "",
+      Top5HRs = [],
+      Top5Clients = [],
+      RnRInterns = [],
+      RnRRecruiters = [],
+      BreakingNews = [],
+      JoningsForWeek = []
+    } = erpData;
 
-    
-   
-    
-    // Find the user in the database
-    const user = await Admin.findOne({ email });
+    // Find user with error handling
+    const user = await Admin.findOne({ email }).catch(err => {
+      console.error("Database error finding user:", err);
+      throw new Error("Database operation failed");
+    });
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    
-    let profilePicUrl= null;
-    
-    if(req.file){
-      const uniqueFileName = `${uuidv4()}.${req.file.originalname.split(".").pop()}`;
-      await s3Client.send(new PutObjectCommand({
-        Bucket: "profilepics",
-        Key: uniqueFileName,
-        Body: req.file.buffer,
-      }));
-      profilePicUrl = `https://s3.tebi.io/profilepics/${uniqueFileName}`;
-    }
-    
-    console.log(profilePicUrl)
 
+    // Handle profile picture upload
+    let profilePicUrl = null;
+    if (req.file) {
+      try {
+        const uniqueFileName = `${uuidv4()}.${req.file.originalname.split(".").pop()}`;
+        await s3Client.send(new PutObjectCommand({
+          Bucket: "profilepics",
+          Key: uniqueFileName,
+          Body: req.file.buffer,
+        }));
+        profilePicUrl = `https://s3.tebi.io/profilepics/${uniqueFileName}`;
+      } catch (uploadError) {
+        console.error("S3 upload failed:", uploadError);
+        // Continue without failing the entire operation
+      }
+    }
+
+    // Create new ERP data with validation
     const newERPData = new ERP({
       EmpOfMonth,
       EmpOfMonthDesc,
       recognitionType,
-      Top5HRs,
-      Top5Clients,
-      RnRInterns,
-      RnRRecruiters,
-      BreakingNews,
-      JoningsForWeek,
+      Top5HRs: Array.isArray(Top5HRs) ? Top5HRs : [],
+      Top5Clients: Array.isArray(Top5Clients) ? Top5Clients : [],
+      RnRInterns: Array.isArray(RnRInterns) ? RnRInterns : [],
+      RnRRecruiters: Array.isArray(RnRRecruiters) ? RnRRecruiters : [],
+      BreakingNews: Array.isArray(BreakingNews) ? BreakingNews : [],
+      JoningsForWeek: Array.isArray(JoningsForWeek) ? JoningsForWeek : [],
       profilePic: profilePicUrl
     });
 
-    await newERPData.save();
+    // Save with error handling
+    const savedData = await newERPData.save().catch(err => {
+      console.error("Database save error:", err);
+      throw new Error("Failed to save ERP data");
+    });
 
-    res.status(201).json({ message: "New ERP data is added successfully!!! ", newERPData });
+    res.status(201).json({ 
+      success: true,
+      message: "ERP data added successfully",
+      data: savedData
+    });
 
   } catch (error) {
-    console.log(error, "Something went wrong!!!");
-    res.status(500).json("Something went wrong!!!", error);
+    console.error("Error in /add-erp-data:", error.message);
+    res.status(500).json({ 
+      success: false,
+      message: error.message || "Internal server error",
+      error: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 });
 
