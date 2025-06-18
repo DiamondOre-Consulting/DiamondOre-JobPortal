@@ -73,7 +73,8 @@ const HeroNav = () => {
                 <span className="font-bold">Diamond Ore Consulting,</span>{" "}
                 <br></br> your{" "}
                 <span className="font-bold ">placement consulting company</span>{" "}
-                and Gateway to Career Success. Discover, Connect, Excel.
+                and Gateway to Career Success.
+                <br /> Discover, Connect, Excel.
                 <br />
                 Choose us, Choose Your Future.
               </p>

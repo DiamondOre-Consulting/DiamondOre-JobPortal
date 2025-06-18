@@ -218,11 +218,11 @@ const AllJobs = () => {
 
           <div className="relative ">
             <h2 className="bg-blue-900 text-white px-4 py-2 text-center mb-1 border-md mx-2">
-              Channels
+              Channels / Roles
             </h2>
             <button
               onClick={toggleDropdownChannel}
-              className="border mx-2 flex align-center border-gray-400 text-black font-bold py-1 px-6 rounded focus:outline-none focus:shadow-outline"
+              className="border mx-2 flex align-center  border-gray-400 text-black font-bold py-1 px-6 rounded focus:outline-none focus:shadow-outline"
               type="button"
             >
               {showselectedchannel}{" "}

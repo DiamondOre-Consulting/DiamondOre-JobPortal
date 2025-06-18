@@ -83,9 +83,7 @@ const StatsPartners = () => {
               >
                 {companies}+
               </motion.div>
-              <div className="text-sm font-semibold sm:text-base">
-                Companies
-              </div>
+              <div className="text-sm font-semibold sm:text-base">Clients</div>
             </motion.div>
 
             <motion.div className="flex flex-col items-center md:p-4 hover:shadow-lg">
@@ -109,7 +107,7 @@ const StatsPartners = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
               >
-                {placed}+
+                6000+
               </motion.div>
               <div className="text-sm font-semibold sm:text-base">
                 Got Placed
@@ -123,7 +121,7 @@ const StatsPartners = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
               >
-                A couple
+                A couple of
               </motion.div>
               <div className="text-sm font-semibold sm:text-base">
                 Coffee breaks

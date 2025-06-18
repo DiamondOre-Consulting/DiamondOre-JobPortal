@@ -74,15 +74,15 @@ const PathSearch = ({ latestJobs }) => {
               <div className="flex flex-1 flex-col py-4 px-4 sm:p-6">
                 <h2 className="mb-2 text-lg font-semibold text-white">
                   <p className="transition duration-100 text-white ">
-                    Register your Account
+                    Register yourself
                   </p>
                   <div className="w-24 bg-gray-400 h-0.5 hover:w-48 mb-2 transition-width duration-300"></div>
                 </h2>
 
                 <p className="mb-8 text-gray-200 text-sm" style={{}}>
                   Unlock a world of opportunities and seamless access by
-                  creating your account today. Join our community and experience
-                  the benefits of being part of.
+                  creating your account today. Experience the benefits of being
+                  part of The Community.
                 </p>
               </div>
             </div>
@@ -151,7 +151,7 @@ const PathSearch = ({ latestJobs }) => {
 
                 <p className="mb-8 text-gray-200 text-sm" style={{}}>
                   Our platform simplifies the job-hunting process, offering a
-                  seamless experience to navigate through diverse roles.Take
+                  seamless experience to navigate through diverse roles. Take
                   control of your professional destiny by exploring a wide array
                   of job listings at your fingertips
                 </p>
