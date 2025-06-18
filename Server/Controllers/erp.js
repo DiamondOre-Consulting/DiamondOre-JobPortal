@@ -145,9 +145,13 @@ router.put("/edit-erp-data/:id", AdminAuthenticateToken, uploadImage.single('pro
     }
     
 
-    
+    if(EmpOfMonth){
+      singleERP.EmpOfMonth=EmpOfMonth;
+    }
+    else{
+      singleERP.EmpOfMonth=undefined
+    }
 
-    singleERP.EmpOfMonth = EmpOfMonth;
     singleERP.EmpOfMonthDesc = EmpOfMonthDesc;
     singleERP.recognitionType = recognitionType;
     singleERP.Top5HRs = Top5HRs;
@@ -169,31 +173,28 @@ router.put("/edit-erp-data/:id", AdminAuthenticateToken, uploadImage.single('pro
 
 // GET ALL ERP DATA
 router.get("/all-erp-data", AdminAuthenticateToken, async (req, res) => {
-
   try {
-    
-    const { email } = req.user;
+    // 1. Check user exists
+    const user = await Admin.findOne({ email: req.user.email });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Find the user in the database
-    const user = await Admin.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    // 2. Get latest ERP data
+    const allData = await ERP.findOne().sort({ createdAt: -1 });
+    
+    // 3. Prepare response
+    const response = { allData };
+    
+    // 4. Only add employee if exists
+    if (allData && allData.EmpOfMonth) {
+      response.findEmp = await Employees.findById(allData.EmpOfMonth);
     }
 
-  
+    // 5. Send response
+    res.status(200).json(response);
 
-    const allData = await ERP.findOne().sort({ createdAt: -1 });
-
-    const findEmp = await Employees.findById({ _id: allData.EmpOfMonth });
-
-   
-  
-    // console.log(findEmp)
-
-    res.status(200).json({ allData, findEmp });
   } catch (error) {
-    console.log(error, "Something went wrong!!!");
-    res.status(500).json("Something went wrong!!!", error);
+    console.log("Error:", error);
+    res.status(500).json({ message: "Something went wrong" });
   }
 });
 

@@ -84,8 +84,10 @@ const InternRnrBoard = () => {
 
         if (response.status === 200) {
           const lastData = response.data.allData;
-          const empdata = response.data.findEmp;
-          setEmployee(empdata);          
+          const empdata = response.data.findEmp||"";
+          if(empdata){
+            setEmployee(empdata||"");          
+          }
           setLatestNews(lastData.BreakingNews || []);
           setHrName(lastData.Top5HRs || []);
           setClient(lastData.Top5Clients || []);

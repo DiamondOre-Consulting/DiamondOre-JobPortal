@@ -178,13 +178,18 @@ router.get("/all-erp-data", EmployeeAuthenticateToken, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const allData = await ERP.findOne().sort({ _id: -1 });
-
-    console.log(allData.EmpOfMonth);
-
-    const findEmp = await Employees.findById({ _id: allData.EmpOfMonth });
-
-    res.status(200).json({ allData, findEmp });
+      const allData = await ERP.findOne().sort({ createdAt: -1 });
+       
+       // 3. Prepare response
+       const response = { allData };
+       
+       // 4. Only add employee if exists
+       if (allData && allData.EmpOfMonth) {
+         response.findEmp = await Employees.findById(allData.EmpOfMonth);
+       }
+   
+       // 5. Send response
+       res.status(200).json(response);
   } catch (error) {
     console.log(error, "Something went wrong!!!");
     res.status(500).json("Something went wrong!!!", error);
@@ -695,13 +700,18 @@ router.get('/rnr-leaderboraddetails/:passcode', async (req, res) => {
 
 
 
-    const allData = await ERP.findOne().sort({ _id: -1 });
-
-    console.log(allData.EmpOfMonth);
-
-    const findEmp = await Employees.findById({ _id: allData.EmpOfMonth });
-
-    res.status(200).json({ allData, findEmp });
+   const allData = await ERP.findOne().sort({ createdAt: -1 });
+       
+       // 3. Prepare response
+       const response = { allData };
+       
+       // 4. Only add employee if exists
+       if (allData && allData.EmpOfMonth) {
+         response.findEmp = await Employees.findById(allData.EmpOfMonth);
+       }
+   
+       // 5. Send response
+       res.status(200).json(response);
   }
   catch (error) {
     console.error(error.message);

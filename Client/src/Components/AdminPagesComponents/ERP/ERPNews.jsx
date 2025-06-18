@@ -38,24 +38,28 @@ const HomeNews = ({ employee, latestnews, profilePicUrl, empOfMonthDesc, recogni
       <div className='my-10 '>
         <div className='grid grid-cols-1 px-6 md:grid-cols-3'>
           <div className='col'>
-            <div className='absolute mt-10 border border-2 border-blue-900 h-52 opacity-1 w-60 '></div>
-            <div><img className="relative object-cover h-52 bottom-1 left-10 w-60 " src={profilePicUrl || "https://easy-feedback.de/wp-content/uploads/2022/10/Employee-Journey-What-it-is-and-how-to-improve-it.jpg"} alt="" /></div>
+           {profilePicUrl && 
+           <div className='absolute mt-10 border border-2 border-blue-900 h-52 opacity-1 w-60 '></div>}
+
+             {profilePicUrl &&<div><img className="relative object-cover h-52 bottom-1 left-10 w-60 " src={profilePicUrl || "https://easy-feedback.de/wp-content/uploads/2022/10/Employee-Journey-What-it-is-and-how-to-improve-it.jpg"} alt="" /></div>}
+            
           </div>
 
           <div className='flex flex-col mt-20 md:col-span-2 md:mt-0 '>
             {/* <h1 className='text-3xl font-bold text-gray-700 uppercase md:text-5xl'>Employee of the month</h1> */}
-            <h1 className='text-3xl font-bold text-gray-700 uppercase md:text-5xl'>{recognitionType}</h1>
+           {recognitionType&& <h1 className='text-3xl font-bold text-gray-700 uppercase md:text-5xl'>{recognitionType}</h1>}
 
             <div className='mt-4'>
-              <h1 className='text-xl font-bold capitilized'>{employee?.name}</h1>
-              <p>{empOfMonthDesc}</p>
+             {employee && employee?.name && <h1 className='text-xl font-bold capitilized'>{employee?.name}</h1>}
+
+              {empOfMonthDesc&&<p>{empOfMonthDesc||""}</p>}
             </div>
           </div>
 
         </div>
 
       </div>
-      <div className='mx-auto bg-blue-900 w-60  h-0.5'></div>
+      {employee&&<div className='mx-auto bg-blue-900 w-60  h-0.5'></div>}
     </div>
   );
 };

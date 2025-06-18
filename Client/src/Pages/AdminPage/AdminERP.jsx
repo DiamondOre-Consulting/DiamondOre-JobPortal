@@ -54,9 +54,11 @@ const AdminERP = () => {
         if (response.status === 200) {
           console.log("adfdf",response.data)
           const lastData = response.data.allData;
-          const empdata = response.data.findEmp;
+          const empdata = response.data.findEmp||"";
           console.log(response.data.empdata)
-          setEmployee(empdata);
+          if(empdata){
+            setEmployee(empdata||"");
+          }
           setId(lastData?._id)
           setLatestNews(lastData.BreakingNews || []);
           setHrName(lastData.Top5HRs || []);
