@@ -1,55 +1,65 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import simg from '../../assets/signupimg.svg';
+import simg from "../../assets/signupimg.svg";
 import { z } from "zod";
-import {toast} from  "sonner"
+import { toast } from "sonner";
 import { ScaleLoader } from "react-spinners";
 
 const PROFILEIMAGE_MAX_SIZE = 2 * 1024 * 1024;
 const RESUMEFILE_MAX_SIZE = 2 * 1024 * 1024;
 
 const ACCEPTED_IMAGE_TYPES = [
-  'image/jpeg', // .jpg, .jpeg
-  'image/png',  // .png
-  'image/webp', // .webp
+  "image/jpeg", // .jpg, .jpeg
+  "image/png", // .png
+  "image/webp", // .webp
 ];
 
 const ACCEPTED_RESUME_TYPES = [
-  'application/pdf', // .pdf
-  'application/msword', // .doc
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
-  'text/plain', // .txt
-  'application/vnd.oasis.opendocument.text', // .odt
+  "application/pdf", // .pdf
+  "application/msword", // .doc
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
+  "text/plain", // .txt
+  "application/vnd.oasis.opendocument.text", // .odt
 ];
 
-
 const resumeUploadSchema = z.object({
-  resume:z.instanceof(File)
-  .refine((file)=> file.size <= RESUMEFILE_MAX_SIZE, "File size should be less than 5MB")
-  .refine((file) => ACCEPTED_RESUME_TYPES.includes(file?.type),
-  "Only .pdf, .doc, .docx, .txt, and .odt formats are supported."
- )
-})
+  resume: z
+    .instanceof(File)
+    .refine(
+      (file) => file.size <= RESUMEFILE_MAX_SIZE,
+      "File size should be less than 5MB"
+    )
+    .refine(
+      (file) => ACCEPTED_RESUME_TYPES.includes(file?.type),
+      "Only .pdf, .doc, .docx, .txt, and .odt formats are supported."
+    ),
+});
 
 const profilePicUploadSchema = z.object({
-  profilePic:z.instanceof(File)
-  .refine((file)=> file.size<= PROFILEIMAGE_MAX_SIZE, "File size should be less than 500kb")
-  .refine((file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-  "Only .jpg, .jpeg, .png and .webp formats are supported.")
-})
+  profilePic: z
+    .instanceof(File)
+    .refine(
+      (file) => file.size <= PROFILEIMAGE_MAX_SIZE,
+      "File size should be less than 500kb"
+    )
+    .refine(
+      (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+      "Only .jpg, .jpeg, .png and .webp formats are supported."
+    ),
+});
 
 const candidateSignupSchema = z.object({
-   name:  z.string(),
-   email: z.string().email(),
-   password: z.string(),
-   phone: z.string(),
-   otp: z.string(),
-})
+  name: z.string(),
+  email: z.string().email(),
+  password: z.string(),
+  phone: z.string(),
+  otp: z.string(),
+});
 
 const Signup = ({ toggleForm }) => {
   let [loading, setLoading] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -64,15 +74,13 @@ const Signup = ({ toggleForm }) => {
   const [otpSent, setOtpSent] = useState(false);
   const [showLoader, setShowLoader] = useState(false);
   const [showLoaderResume, setShowLoaderResume] = useState(false);
+  const [loader, setLoader] = useState(false);
 
-
-  console.log(loading)
-
+  console.log(loading);
 
   // const handleUploadImage = async (e) => {
   //   try {
-      
-      
+
   //     e.preventDefault();
 
   //     if(!profilePic){
@@ -83,14 +91,14 @@ const Signup = ({ toggleForm }) => {
   //     const {success,error} = profilePicUploadSchema.safeParse({
   //       profilePic
   //     })
-      
+
   //     if(!success){
   //       error.errors.forEach((err) => {
   //         setError(err.message);
   //       });
   //       return;
   //     }
-      
+
   //     setShowLoader(true);
   //     setError(null);
   //     const formData = new FormData();
@@ -116,8 +124,6 @@ const Signup = ({ toggleForm }) => {
   //     }
   //     else {
 
-
-
   //     }
   //   } catch (error) {
 
@@ -126,9 +132,9 @@ const Signup = ({ toggleForm }) => {
 
   // const handleUploadResume = async (e) => {
   //   try {
-      
+
   //     e.preventDefault();
-      
+
   //     if(!resume){
   //       setError("Please Upload your resume")
   //       return
@@ -137,12 +143,12 @@ const Signup = ({ toggleForm }) => {
   //     const {success,error} = resumeUploadSchema.safeParse({
   //       resume
   //     })
-      
+
   //     if(!success){
   //       error.errors.forEach((err) => {
   //         setError(err.message);
   //       });
-        
+
   //       return;
   //     }
   //     setShowLoaderResume(true);
@@ -172,8 +178,6 @@ const Signup = ({ toggleForm }) => {
   //     }
   //     else {
 
-
-
   //       setShowLoaderResume(false);
   //     }
   //   } catch (error) {
@@ -184,29 +188,30 @@ const Signup = ({ toggleForm }) => {
   const handleSendOtp = async (e) => {
     e.preventDefault();
     setError(null);
-
+    setLoader(true);
     // Simulate sending OTP logic here
     try {
       // Simulate OTP sent successfully
       // For demonstration purposes, setting OTP sent to true after a delay
-      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/candidates/send-otp`, {
-        email
-      })
-
-
-      
-        if (response.status === 201) {
-          setOtpSent(true);
-
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/candidates/send-otp`,
+        {
+          email,
         }
-       
+      );
+
+      if (response.status === 201) {
+        setOtpSent(true);
+      }
     } catch (error) {
-      if(error?.response?.data?.message=="User already exists"){
-        setError("User already exists")
-        return
+      if (error?.response?.data?.message == "User already exists") {
+        setError("User already exists");
+        return;
       }
       console.error("Error sending OTP:", error);
       setError("Error sending OTP. Please try again.");
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -214,64 +219,62 @@ const Signup = ({ toggleForm }) => {
     e.preventDefault();
     setLoading(true);
     console.log("otp: 1");
-    if(!otp){
-      setError("Otp is missing")
-      return    
+    if (!otp) {
+      setError("Otp is missing");
+      return;
     }
 
-    if(!name){
-      setError("name is missing")
-      return 
+    if (!name) {
+      setError("name is missing");
+      return;
     }
 
-    if(!email){
-      setError("email is missing")
-      return 
+    if (!email) {
+      setError("email is missing");
+      return;
     }
-    if(!password){
-      setError("password is missing")
-      return 
+    if (!password) {
+      setError("password is missing");
+      return;
     }
 
-    if(!phone){
-      setError("phone is missing")
-      return 
+    if (!phone) {
+      setError("phone is missing");
+      return;
     }
-     
 
+    const { profilePicSuccess, profilePicError } =
+      profilePicUploadSchema.safeParse({
+        profilePicUploadSchema,
+      });
+    const { resumeUploadSuccess, resumeUploadError } =
+      resumeUploadSchema.safeParse({
+        resumeUploadSchema,
+      });
 
-   
-    const { profilePicSuccess, profilePicError } = profilePicUploadSchema.safeParse({
-      profilePicUploadSchema
-    });
-    const { resumeUploadSuccess, resumeUploadError } = resumeUploadSchema.safeParse({
-      resumeUploadSchema
-    });
-
-    const {success,error} = candidateSignupSchema.safeParse({
+    const { success, error } = candidateSignupSchema.safeParse({
       name,
       email,
       password,
       phone,
       otp,
-    })
+    });
 
-    if(resumeUploadError){
+    if (resumeUploadError) {
       resumeUploadError.errors.forEach((err) => {
         setError(err.message);
       });
       return;
     }
 
-    
-    if(profilePicError){
+    if (profilePicError) {
       profilePicError.errors.forEach((err) => {
         setError(err.message);
       });
       return;
     }
 
-    if(!success){
+    if (!success) {
       error.errors.forEach((err) => {
         setError(err.message);
       });
@@ -280,36 +283,33 @@ const Signup = ({ toggleForm }) => {
 
     setError(null);
     const formData = new FormData();
-    formData.append("myFileImage",  profilePic);
+    formData.append("myFileImage", profilePic);
     formData.append("myFileResume", resume);
-    formData.append('name',name)
-    formData.append('email',email)
-    formData.append('password',password)
-    formData.append('phone',phone)  
-    formData.append('otp',otp)
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("phone", phone);
+    formData.append("otp", otp);
 
-     
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/candidates/signup`,
-         formData, 
-         {
-           headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-           }                 
-         }
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
       );
 
       if (response.data.success) {
-        toast.success(`${name} registered successfully`)
-        localStorage.setItem("token",response.data.token)
-        navigate('/dashboard')
+        toast.success(`${name} registered successfully`);
+        localStorage.setItem("token", response.data.token);
+        navigate("/dashboard");
+      } else if (response.data.message == "user already exists") {
+        toast.error("User already exists");
+        return;
       }
-      else if(response.data.message == "user already exists"){
-        toast.error("User already exists")
-        return
-      }
-
     } catch (error) {
       console.error("Error signing up:", error);
       if (error.response) {
@@ -317,13 +317,15 @@ const Signup = ({ toggleForm }) => {
         if (status === 409) {
           setError("User already Exist");
         } else {
-          setError("An error occurred while in signup. Please try again later.");
+          setError(
+            "An error occurred while in signup. Please try again later."
+          );
         }
-      }else {
+      } else {
         setError("An error occurred while signup. Please try again later.");
-      }      
-    }finally{
-      console.log("enter56")
+      }
+    } finally {
+      console.log("enter56");
       setLoading(false);
     }
   };
@@ -337,14 +339,7 @@ const Signup = ({ toggleForm }) => {
       <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 bg-white rounded-md ">
         <div className="grid grid-cols-1 md:grid-cols-2">
           <div className="p-6 space-y-4">
-            <form
-            noValidate 
-            onSubmit=
-              {handleSignup}
-              className="space-y-4"
-
-
-            >
+            <form noValidate onSubmit={handleSignup} className="space-y-4">
               <h1 className=" text-3xl font-bold sm:text-3xl">
                 Create Your Account
               </h1>
@@ -369,10 +364,19 @@ const Signup = ({ toggleForm }) => {
                   />
 
                   <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
-                    <svg className="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg
+                      className="h-6 w-6 text-gray-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
                     </svg>
-
                   </span>
                 </div>
               </div>
@@ -395,15 +399,31 @@ const Signup = ({ toggleForm }) => {
                   <button
                     onClick={handleSendOtp}
                     className={` rounded-lg bg-blue-900 hover:bg-blue-950 px-3 py-3 ml-4 text-sm font-medium text-white  mt-2 mb-2`}
-
                   >
-                    Send OTP
+                    {loader ? (
+                      <div role="status">
+                        <svg
+                          aria-hidden="true"
+                          class="w-3 h-3 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600 text-center "
+                          viewBox="0 0 100 101"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                            fill="currentColor"
+                          />
+                          <path
+                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                            fill="currentFill"
+                          />
+                        </svg>
+                      </div>
+                    ) : (
+                      <p>Send OTP</p>
+                    )}
                   </button>
-
                 </div>
-
-
-
               </div>
 
               {/* OTP input field starts */}
@@ -536,17 +556,34 @@ const Signup = ({ toggleForm }) => {
                   />
 
                   <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
-                    <svg className="h-6 w-6 text-gray-500" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" /></svg>
-
+                    <svg
+                      className="h-6 w-6 text-gray-500"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      strokeWidth="2"
+                      stroke="currentColor"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      {" "}
+                      <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                      <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" />
+                    </svg>
                   </span>
-
                 </div>
               </div>
 
               {/* Profile Image upload feild starts  */}
 
               <div className="mt-1 ">
-                <label className="block mb-2 text-md font-medium text-gray-900  font-bold text-2xl mb-4" for="file_input">Upload File</label>
+                <label
+                  className="block mb-2 text-md font-medium text-gray-900  font-bold text-2xl mb-4"
+                  for="file_input"
+                >
+                  Upload File
+                </label>
                 <div className="flex mb-8">
                   <input
                     className="w-[60%] rounded-md border-0 pe-12 text-sm shadow-sm "
@@ -568,8 +605,6 @@ const Signup = ({ toggleForm }) => {
                   </button> */}
                   <div className=" my-auto">Upload Profile Image</div>
                 </div>
-
-
               </div>
 
               {/* Profile image upload feild ends  */}
@@ -581,7 +616,6 @@ const Signup = ({ toggleForm }) => {
                   <input
                     className="w-[60%] rounded-lg border-gray-200 pe-12 text-sm shadow-sm"
                     type="file"
-                    
                     name="resume"
                     onChange={(e) => setResume(e.target.files[0])}
                   />
@@ -600,8 +634,6 @@ const Signup = ({ toggleForm }) => {
                   </button> */}
                   <div className=" my-auto">Upload Resume/CV</div>
                 </div>
-
-
               </div>
 
               {/* Resume feild ends */}
@@ -610,10 +642,11 @@ const Signup = ({ toggleForm }) => {
 
               <button
                 type="submit"
-                className={`block w-full rounded-lg bg-blue-900 px-5 py-3 text-sm font-medium text-white ${!name || !email || !password
-                  ? "opacity-50 cursor-not-allowed"
-                  : ""
-                  }`}
+                className={`block w-full rounded-lg bg-blue-900 px-5 py-3 text-sm font-medium text-white ${
+                  !name || !email || !password
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
                 disabled={!name || !email || !password}
               >
                 Sign up
@@ -623,7 +656,10 @@ const Signup = ({ toggleForm }) => {
 
               <p className="text-center text-sm text-gray-500">
                 Have account already?
-                <Link to={"/login"} className="underline cursor-pointer text-blue-900">
+                <Link
+                  to={"/login"}
+                  className="underline cursor-pointer text-blue-900"
+                >
                   Sign in
                 </Link>
               </p>
@@ -635,12 +671,14 @@ const Signup = ({ toggleForm }) => {
               </div>
             )}
           </div>
-           {loading && (
-                  <div className="inset-0 absolute z-[50000] flex flex-col items-center justify-center bg-white w-[100vw]  h-[110vh]">
-                    <ScaleLoader size={150} color="#023E8A" />
-                    <p className="text-black text-center mt-2 font-bold text-2xl">Loading opportunities...</p>
-                  </div>
-                  )}
+          {loading && (
+            <div className="inset-0 absolute z-[50000] flex flex-col items-center justify-center bg-white w-[100vw]  h-[110vh]">
+              <ScaleLoader size={150} color="#023E8A" />
+              <p className="text-black text-center mt-2 font-bold text-2xl">
+                Loading opportunities...
+              </p>
+            </div>
+          )}
           <div className="flex items-center justify-center  rounded-lg  ">
             <div className="hidden md:block">
               <img src={simg} />

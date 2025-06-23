@@ -5,7 +5,12 @@ import { Command as CommandPrimitive, useCommandState } from "cmdk";
 import { XIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Command, CommandGroup, CommandItem, CommandList } from "../ui/command";
+import {
+  Command,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+} from "@/Components/ui/command";
 
 export function useDebounce(value, delay) {
   const [debouncedValue, setDebouncedValue] = React.useState(value);
@@ -420,7 +425,7 @@ const MultipleSelector = ({
                 : placeholder
             }
             className={cn(
-              " border-0 placeholder:text-gray-500/70 flex-1 bg-transparent outline-hidden disabled:cursor-not-allowed dark:placeholder:text-gray-400/70",
+              "placeholder:text-gray-500/70 flex-1 bg-transparent outline-hidden disabled:cursor-not-allowed dark:placeholder:text-gray-400/70",
               {
                 "w-full": hidePlaceholderWhenSelected,
                 "px-3 py-2": selected.length === 0,

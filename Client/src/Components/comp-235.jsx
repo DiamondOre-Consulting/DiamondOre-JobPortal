@@ -1,5 +1,5 @@
-import { Label } from "@/components/ui/label"
-import MultipleSelector from "@/components/ui/multiselect";
+import { Label } from "@/Components/ui/label";
+import MultipleSelector from "@/Components/ui/multiselect";
 
 const frameworks = [
   {
@@ -66,11 +66,11 @@ const frameworks = [
     value: "lit",
     label: "Lit",
   },
-]
+];
 
 export default function Component() {
   return (
-    (<div className="*:not-first:mt-2">
+    <div className="*:not-first:mt-2">
       <Label>Multiselect with placeholder and clear</Label>
       <MultipleSelector
         commandProps={{
@@ -78,20 +78,23 @@ export default function Component() {
         }}
         defaultOptions={frameworks}
         placeholder="Select frameworks"
-        emptyIndicator={<p className="text-center text-sm">No results found</p>} />
+        emptyIndicator={<p className="text-center text-sm">No results found</p>}
+      />
       <p
         className="text-gray-500 mt-2 text-xs dark:text-gray-400"
         role="region"
-        aria-live="polite">
+        aria-live="polite"
+      >
         Inspired by{""}
         <a
           className="hover:text-gray-950 underline dark:hover:text-gray-50"
           href="https://shadcnui-expansions.typeart.cc/docs/multiple-selector"
           target="_blank"
-          rel="noopener nofollow">
+          rel="noopener nofollow"
+        >
           shadcn/ui expansions
         </a>
       </p>
-    </div>)
+    </div>
   );
 }
