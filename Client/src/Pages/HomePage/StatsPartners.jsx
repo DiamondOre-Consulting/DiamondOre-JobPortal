@@ -152,16 +152,41 @@ const StatsPartners = () => {
                 alt=""
                 className="w-14 sm:w-14 md:w-20 lg:w-20 object-cover mb-4 mr-16 inline-block"
               />
-              <img
+              {/* <img
                 src={agarwal}
                 alt=""
                 className="w-14 sm:w-14 md:w-20 lg:w-20 object-cover mb-4 mr-16 inline-block"
-              />
+              /> */}
               <img
                 src={india}
                 alt=""
                 className="w-14 sm:w-14 md:w-20 lg:w-32 object-cover mb-4  mr-16 inline-block"
               />
+
+              <img
+                src="https://www.vhv.rs/dpng/d/260-2609327_cigna-png-manipal-cigna-health-insurance-logo-transparent.png"
+                alt=""
+                className="w-14 sm:w-14 md:w-20 lg:w-40 object-cover mb-4  mr-16 inline-block"
+              />
+
+              <img
+                src="https://www.godigit.com/content/dam/godigit/images/logo.svg"
+                alt=""
+                className="w-14 sm:w-14 md:w-20 lg:w-32 object-cover mb-4 mr-16 inline-block"
+              />
+
+              <img
+                src="https://startagist.com/wp-content/uploads/2020/10/SBI-Card-Logo.png"
+                alt=""
+                className="w-14 sm:w-14 md:w-20 lg:w-40 object-cover mb-4 mr-16 inline-block"
+              />
+
+              <img
+                src="https://membership.clubmahindra.com/landing/cmh25/images/CMogo-01.jpg"
+                alt=""
+                className="w-14 sm:w-14 md:w-20 lg:w-40 object-cover mb-4 mr-16 inline-block"
+              />
+
               <img
                 src={punjab}
                 alt=""
@@ -177,11 +202,11 @@ const StatsPartners = () => {
                 alt=""
                 className="w-20 sm:w-32 md:w-10 lg:w-44 object-cover mb-4 mr-16 inline-block"
               />
-              <img
+              {/* <img
                 src="https://www.careinsurance.com/images/care_health_insurance_logo.svg"
                 alt="helthcare"
                 className="w-18 sm:w-14 md:w-20 lg:w-44 object-cover mb-4 mr-16 inline-block"
-              />
+              /> */}
               <img
                 src="https://companieslogo.com/img/orig/MOTILALOFS.NS_BIG-55e383aa.png?t=1720436307"
                 alt="motilal oswal"

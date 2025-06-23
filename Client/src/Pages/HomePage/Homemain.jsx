@@ -8,16 +8,22 @@ import HeroNav from "./HeroNav";
 import axios from "axios";
 import Chatboot from "./Chatboot";
 import CvSection from "./CvSection";
+import { FaArrowDown } from "react-icons/fa";
+import { Label } from "@/Components/ui/label";
+import MultipleSelector from "@/Components/ui/multiselect";
+import { toast } from "sonner";
 
 const Homemain = () => {
   const [latestJobs, setLatestJobs] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [queryFor, setQueryFor] = useState([]);
   const [showsubmitloader, setShowSubmitLoader] = useState(false);
   const badgeRef = useRef(null);
   const [popup, setPopUp] = useState(false);
 
+  console.log(name, phone, queryFor);
   useEffect(() => {
     const fetchLatestJobs = async () => {
       try {
@@ -54,17 +60,21 @@ const Homemain = () => {
     e.preventDefault();
     setShowSubmitLoader(true);
 
-    // const payload = { name, phone };
-
+    if (phone.length !== 10) {
+      toast.error("Phone number should be exactly 10 digits");
+      setShowSubmitLoader(false);
+      return;
+    }
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/candidates/request-call`,
         {
           name,
           phone,
+          queryFor: queryFor.map((q) => q.label).join(", "),
         }
       );
-
+      console.log("data", name, phone, queryFor);
       if (response.status === 200) {
         // Handle successful form submission (e.g., show a success message, close the popup)
         // alert('Form submitted successfully!');
@@ -72,11 +82,11 @@ const Homemain = () => {
         closePopup();
         setPopUp(true);
       } else {
-        // Handle form submission error
         alert("Failed to submit the form");
         setShowSubmitLoader(false);
       }
     } catch (error) {
+      console.log(error);
       console.error("Error submitting form:", error.message);
       alert("An error occurred while submitting the form");
       setShowSubmitLoader(false);
@@ -105,6 +115,39 @@ const Homemain = () => {
   }, []);
 
   console.log("jobsss", latestJobs);
+
+  const handleScrollDown = () => {
+    window.scrollBy({
+      top: 500,
+      behavior: "smooth",
+    });
+  };
+
+  const frameworks = [
+    {
+      value: "Management Consulting",
+      label: "Management Consulting",
+    },
+    {
+      value: "Financial Advisory Services",
+      label: "Financial Advisory Services",
+    },
+    {
+      value: "Resume Building",
+      label: "Resume Building",
+    },
+
+    {
+      value: "Real Estate",
+      label: "Real Estate",
+    },
+
+    {
+      value: "IT Services",
+      label: "IT Services",
+    },
+  ];
+
   return (
     <div>
       <>
@@ -157,7 +200,7 @@ const Homemain = () => {
               </button>
               <h2 className="text-2xl mb-4">Get A Call Back From Our Team</h2>
               <form onSubmit={submitCallReq}>
-                <div className="mb-4">
+                <div className="mb-3">
                   <label htmlFor="name" className="block text-gray-700">
                     Name:
                   </label>
@@ -169,7 +212,7 @@ const Homemain = () => {
                     onChange={(e) => setName(e.target.value)}
                   />
                 </div>
-                <div className="mb-4">
+                <div className="mb-3">
                   <label htmlFor="phone" className="block text-gray-700">
                     Phone:
                   </label>
@@ -179,6 +222,25 @@ const Homemain = () => {
                     className="w-full px-3 py-2 border border-gray-500 rounded-lg"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
+                  />
+                </div>
+
+                <div className="*:not-first:mt-2  mb-3 ">
+                  <Label> Query For</Label>
+                  <MultipleSelector
+                    className=" w-full border-gray-600 "
+                    commandProps={{
+                      label: "Select Query",
+                    }}
+                    defaultOptions={frameworks}
+                    value={queryFor}
+                    onChange={setQueryFor}
+                    placeholder="Select Query"
+                    emptyIndicator={
+                      <p className="text-center text-sm  border-0">
+                        No results found
+                      </p>
+                    }
                   />
                 </div>
                 <button
@@ -298,6 +360,13 @@ const Homemain = () => {
           </div>
         )}
       </>
+
+      <div
+        onClick={handleScrollDown}
+        className=" cursor-pointer md:block hidden fixed bottom-8 z-40 right-28 bg-white rounded-full shadow-xl p-4 text-gray-700 animate-bounce"
+      >
+        <FaArrowDown />
+      </div>
     </div>
   );
 };

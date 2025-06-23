@@ -4,6 +4,8 @@ import Logo from "../../assets/logoblue.png";
 import instalogo from "../../assets/instaicon.png";
 import { FaInstagram } from "react-icons/fa6";
 import { LuYoutube } from "react-icons/lu";
+import instaicon from "../../assets/instaicon.png";
+import youtubeicon from "../../assets/youtubeicon.png";
 
 const Footer = () => {
   return (
@@ -22,60 +24,82 @@ const Footer = () => {
                   with <b>Diamond Ore Consulting Pvt Ltd,</b> your trusted
                   placement consulting company.
                 </p>
-                <div className="flex flex-wrap justify-center items-center gap-6 my-4">
-                  <div className="flex flex-col items-center">
-                    <a
-                      href="https://www.instagram.com/diamondoreconsulting?igsh=ZXpwZWxpc2t0YTIz"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <FaInstagram className="text-4xl cursor-pointer" />
-                    </a>
-                    <p>DiamonOre</p>
+                <div className="my-4 md:p-6   space-y-6">
+                  <div>
+                    <h2 className="text-xl font-semibold mb-4 text-gray-700">
+                      Our Socials
+                    </h2>
+                    <div className="flex gap-10 items-center">
+                      <div className="flex flex-col items-center hover:scale-105 transition">
+                        <a
+                          href="https://www.instagram.com/diamondoreconsulting?igsh=ZXpwZWxpc2t0YTIz"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <img src={instaicon} alt="" className="w-8" />
+                          <instaicon className="text-pink-600 text-3xl mb-1" />
+                        </a>
+                        <p className="text-sm text-gray-700">DiamondOre</p>
+                      </div>
+
+                      <div className="flex flex-col items-center hover:scale-105 transition">
+                        <a
+                          href="https://youtube.com/@diamondore-career?si=FTT-w0fUn63CuPX3"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <img src={youtubeicon} alt="" className="w-9" />
+                        </a>
+                        <p className="text-sm text-gray-700">YouTube</p>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="flex flex-col items-center">
-                    <a
-                      href="https://www.instagram.com/profile_genie_1?igsh=MW01amE5aHVwMTVpaw=="
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <FaInstagram className="text-4xl cursor-pointer" />
-                    </a>
-                    <p>Profile Genie</p>
-                  </div>
+                  {/* Our Other Properties */}
+                  <div>
+                    <h2 className="text-xl font-semibold mb-4 text-gray-700">
+                      Our Other Properties
+                    </h2>
+                    <div className="flex flex-wrap gap-10 items-center">
+                      <div className="flex flex-col items-center hover:scale-105 transition">
+                        <a
+                          href="https://www.instagram.com/profile_genie_1?igsh=MW01amE5aHVwMTVpaw=="
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <img src={instaicon} alt="" className="w-8" />
+                        </a>
+                        <p className="text-sm text-gray-700 text-center">
+                          Profile Genie
+                        </p>
+                      </div>
 
-                  <div className="flex flex-col items-center">
-                    <a
-                      href="https://www.instagram.com/cv_genie_?igsh=bzIwdGQ1aHp6a3Vz"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <FaInstagram className="text-4xl cursor-pointer" />
-                    </a>
-                    <p>CV Genie</p>
-                  </div>
+                      <div className="flex flex-col items-center hover:scale-105 transition">
+                        <a
+                          href="https://www.instagram.com/cv_genie_?igsh=bzIwdGQ1aHp6a3Vz"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <img src={instaicon} alt="" className="w-8" />
+                        </a>
+                        <p className="text-sm text-gray-700 text-center">
+                          CV Genie
+                        </p>
+                      </div>
 
-                  <div className="flex flex-col items-center">
-                    <a
-                      href="https://www.instagram.com/doc_labz?igsh=YzBsY25wZWM1aXNp"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <FaInstagram className="text-4xl cursor-pointer" />
-                    </a>
-                    <p>DOC LABZ</p>
-                  </div>
-
-                  <div className="flex flex-col items-center">
-                    <a
-                      href="https://youtube.com/@diamondore-career?si=FTT-w0fUn63CuPX3"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <LuYoutube className="text-4xl cursor-pointer" />
-                    </a>
-                    <p>YouTube</p>
+                      <div className="flex flex-col items-center hover:scale-105 transition">
+                        <a
+                          href="https://www.instagram.com/doc_labz?igsh=YzBsY25wZWM1aXNp"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <img src={instaicon} alt="" className="w-8" />
+                        </a>
+                        <p className="text-sm text-gray-700 text-center">
+                          DOC LABZ
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -124,6 +148,32 @@ const Footer = () => {
                     >
                       Be Our Client
                     </Link>
+                  </div>
+                </nav>
+
+                <div className="mb-4 mt-4 font-bold uppercase tracking-widest text-gray-800">
+                  Other Products
+                </div>
+
+                <nav className="flex flex-col gap-4">
+                  <div>
+                    <a
+                      href="https://www.cvgenie.in/"
+                      target="_blank"
+                      className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600"
+                    >
+                      CV-Genie
+                    </a>
+                  </div>
+
+                  <div>
+                    <a
+                      href="https://www.doclabz.com/"
+                      target="_blank"
+                      className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600"
+                    >
+                      DOC-Labz
+                    </a>
                   </div>
                 </nav>
               </div>

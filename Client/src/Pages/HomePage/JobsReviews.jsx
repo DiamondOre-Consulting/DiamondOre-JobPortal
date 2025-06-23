@@ -65,7 +65,7 @@ const JobsReviews = () => {
   }, []);
 
   return (
-<div>
+    <div>
       <section className="bg-gray-100">
         <div className="mx-auto max-w-[1340px] px-4 py-12 sm:px-6 lg:me-0 lg:py-16 lg:pe-0 lg:ps-8 xl:py-24">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 lg:items-center lg:gap-16">
@@ -82,8 +82,8 @@ const JobsReviews = () => {
                 solutions without compromising quality. As a trusted partner in
                 placement consulting, we pride ourselves on delivering tailored
                 strategies that ensure success at every step. Choose us for a
-                collaboration that is proficient, agile, and
-                consistently dependable.
+                collaboration that is proficient, agile, and consistently
+                dependable.
               </p>
 
               <div className="hidden lg:mt-8 lg:flex lg:gap-4">
@@ -403,18 +403,87 @@ const JobsReviews = () => {
 
                       <div className="mt-4">
                         <p className="text-2xl font-bold text-blue-950 sm:text-3xl">
-                          Zuheb Sidd
+                          CA. Amit Singhal
                         </p>
 
                         <p className="mt-4 leading-relaxed text-gray-700">
-                          "I want to express my utmost gratitude to Diamond Ore
-                          Consulting Pvt Ltd and their HR team for their
-                          exceptional support in finding me the perfect job.
-                          Their professionalism, dedication, and personalized
-                          approach made the entire job search process smooth and
-                          efficient. I highly recommend their services to anyone
-                          seeking employment assistance. Thank you for helping
-                          me secure a fantastic opportunity!"
+                          "I have known Mr. Mathur for more than 12 years now.
+                          Very simply put, he is a perfectionist, an adorable
+                          team leader and driver, a true mentor and a great
+                          strategist. When you think your doors are closed to a
+                          problem, approach him for a solution. To work with him
+                          is an experience in itself. He makes you meet the best
+                          you. And then, he is always there - the best friend
+                          you could ever have. Wish you all the best!!!"
+                        </p>
+                      </div>
+                    </div>
+                  </blockquote>
+                </div>
+
+                <div className="keen-slider__slide shadow-lg shadow-gray-400">
+                  <blockquote className="flex h-full flex-col justify-between bg-white p-6 shadow-sm sm:p-8 lg:p-12">
+                    <div>
+                      <div className="flex gap-0.5 text-yellow-500">
+                        <svg
+                          className="h-5 w-5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+
+                        <svg
+                          className="h-5 w-5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+
+                        <svg
+                          className="h-5 w-5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+
+                        <svg
+                          className="h-5 w-5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+
+                        <svg
+                          className="h-5 w-5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      </div>
+
+                      <div className="mt-4">
+                        <p className="text-2xl font-bold text-blue-950 sm:text-3xl">
+                          Mario Braganza (Investment Advisory)
+                        </p>
+
+                        <p className="mt-4 leading-relaxed text-gray-700">
+                          "Rahul’s ability to derive the most from his team is a
+                          tribute to the fine Interpersonal Skills and Mentoring
+                          Skills he possesses. As a leader and team player he
+                          can be relied upon to deliver even in the most
+                          challenging situations. This coupled with his
+                          dedication and hard-work makes Rahul an asset to
+                          have!! I wish Rahul every success in the times ahead."
                         </p>
                       </div>
                     </div>
@@ -470,7 +539,7 @@ const JobsReviews = () => {
         </div>
       </section>
     </div>
-  )
-}
+  );
+};
 
 export default JobsReviews;

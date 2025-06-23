@@ -10,11 +10,17 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import utsavmathur from "..//../assets/Utsav Mathurr.jpg";
 import axios from "axios";
+import MultipleSelector from "@/Components/ui/multiselect";
+import { Label } from "@/Components/ui/label";
+
+import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 const AboutUs = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [queryFor, setQueryFor] = useState([]);
   const [showsubmitloader, setShowSubmitLoader] = useState(false);
   const badgeRef = useRef(null);
   const [popup, setPopUp] = useState(false);
@@ -23,17 +29,21 @@ const AboutUs = () => {
     e.preventDefault();
     setShowSubmitLoader(true);
 
-    // const payload = { name, phone };
-
+    if (phone.length !== 10) {
+      toast.error("Phone number should be exactly 10 digits");
+      setShowSubmitLoader(false);
+      return;
+    }
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/candidates/request-call`,
         {
           name,
           phone,
+          queryFor: queryFor.map((q) => q.label).join(", "),
         }
       );
-
+      console.log("data", name, phone, queryFor);
       if (response.status === 200) {
         // Handle successful form submission (e.g., show a success message, close the popup)
         // alert('Form submitted successfully!');
@@ -41,11 +51,11 @@ const AboutUs = () => {
         closePopup();
         setPopUp(true);
       } else {
-        // Handle form submission error
         alert("Failed to submit the form");
         setShowSubmitLoader(false);
       }
     } catch (error) {
+      console.log(error);
       console.error("Error submitting form:", error.message);
       alert("An error occurred while submitting the form");
       setShowSubmitLoader(false);
@@ -72,6 +82,31 @@ const AboutUs = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  const frameworks = [
+    {
+      value: "Management Consulting",
+      label: "Management Consulting",
+    },
+    {
+      value: "Financial Advisory Services",
+      label: "Financial Advisory Services",
+    },
+    {
+      value: "Resume Building",
+      label: "Resume Building",
+    },
+
+    {
+      value: "Real Estate",
+      label: "Real Estate",
+    },
+
+    {
+      value: "IT Services",
+      label: "IT Services",
+    },
+  ];
 
   return (
     <div>
@@ -124,7 +159,7 @@ const AboutUs = () => {
         </div>
       </div>
 
-      <section className="bg-blue-950 text-white">
+      {/* <section className="bg-blue-950 text-white">
         <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
           <div className="mx-auto max-w-lg text-center">
             <h2 className="text-3xl font-bold sm:text-4xl ">Why Us?</h2>
@@ -321,6 +356,215 @@ const AboutUs = () => {
             </a>
           </div>
         </div>
+      </section> */}
+
+      <section className="">
+        <div className="">
+          {/* Section 1: Job Consultant */}
+          <div className="bg-blue-950 text-white">
+            <div className=" mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
+              <div className="mx-auto max-w-lg text-center">
+                <h2 className="text-3xl font-bold sm:text-4xl">
+                  Why Choose Us As Your Job Consultant
+                </h2>
+                <p className="mt-4 text-gray-300">
+                  Unleash the power of our job portal, with key features
+                  designed to revolutionize your job search journey. Discover
+                  smarter job matches, seamless application tracking, and
+                  personalized alerts that bring your dream job closer.
+                </p>
+              </div>
+
+              <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                {/* Card 1 */}
+                <div className="block rounded-xl border border-gray-800 shadow-lg bg-white text-black p-8 hover:shadow-white-500/10 transition">
+                  <svg
+                    className="h-6 w-6 text-gray-900"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    {" "}
+                    <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                    <path d="M3.5 5.5l1.5 1.5l2.5 -2.5" />{" "}
+                    <path d="M3.5 11.5l1.5 1.5l2.5 -2.5" />{" "}
+                    <path d="M3.5 17.5l1.5 1.5l2.5 -2.5" />{" "}
+                    <line x1="11" y1="6" x2="20" y2="6" />{" "}
+                    <line x1="11" y1="12" x2="20" y2="12" />{" "}
+                    <line x1="11" y1="18" x2="20" y2="18" />
+                  </svg>
+                  <h2 className="mt-4 text-xl font-bold">High Job Listing</h2>
+                  <p className="mt-1 text-sm">
+                    Display detailed job listings including title, description,
+                    and application steps.
+                  </p>
+                </div>
+
+                {/* Card 2 */}
+                <div className="block rounded-xl border border-gray-300 p-8 shadow-xl hover:shadow-white-500/10 transition">
+                  <svg
+                    className="h-6 w-6 text-white"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    {" "}
+                    <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                    <line x1="4" y1="6" x2="20" y2="6" />{" "}
+                    <line x1="4" y1="18" x2="9" y2="18" />{" "}
+                    <path d="M4 12h13a3 3 0 0 1 0 6h-4l2 -2m0 4l-2 -2" />
+                  </svg>
+                  <h2 className="mt-4 text-xl font-bold text-white">
+                    Easy Process
+                  </h2>
+                  <p className="mt-1 text-sm text-gray-300">
+                    Enjoy the simplicity of job search with filters and
+                    recommendations tailored to you.
+                  </p>
+                </div>
+
+                {/* Card 3 */}
+                <div className="block rounded-xl border border-gray-800 shadow-lg bg-white text-black p-8 hover:shadow-white-500/10 transition">
+                  <svg
+                    className="h-6 w-6 text-gray-900"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                    />
+                  </svg>
+
+                  <h2 className="mt-4 text-xl font-bold">
+                    Constant Touch With HR
+                  </h2>
+                  <p className="mt-1 text-sm">
+                    Stay informed and connected with HR throughout the
+                    application journey.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-10 lg:px-4 lg:py-4">
+            <div className="mx-auto max-w-lg text-center mt-20">
+              <h2 className="text-3xl font-bold sm:text-4xl">
+                Why Choose Us As A Staffing Vendor
+              </h2>
+              <p className="mt-4 text-gray-800">
+                As a trusted staffing partner, we offer strategic hiring tools,
+                regular candidate updates, and advanced screening systems to
+                help you find top-tier talent efficiently.
+              </p>
+            </div>
+
+            <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Card 1 */}
+              <div className="rounded-xl border border-gray-800 bg-white text-black p-6 shadow-md hover:shadow-white/10 transition duration-300">
+                <svg
+                  className="h-6 w-6 text-gray-900"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                  stroke="currentColor"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" />
+                  <path d="M3 20l1.3 -3.9a9 8 0 1 1 3.4 2.9l-4.7 1" />
+                  <line x1="12" y1="12" x2="12" y2="12.01" />
+                  <line x1="8" y1="12" x2="8" y2="12.01" />
+                  <line x1="16" y1="12" x2="16" y2="12.01" />
+                </svg>
+                <h2 className="mt-4 text-xl font-bold">Regular Notification</h2>
+                <p className="mt-1 text-sm">
+                  Get curated candidate alerts that match your hiring needs
+                  quickly and accurately.
+                </p>
+              </div>
+
+              {/* Card 2 */}
+              <div className="rounded-xl border border-gray-800 bg-blue-950 p-6 shadow-md hover:shadow-white/10 transition duration-300">
+                <svg
+                  className="h-6 w-6 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                  />
+                </svg>
+                <h2 className="mt-4 text-xl font-bold text-white">
+                  Shorten Hiring Process
+                </h2>
+                <p className="mt-1 text-sm text-gray-300">
+                  Speed up recruitment with our optimized hiring workflows and
+                  automation tools.
+                </p>
+              </div>
+
+              {/* Card 3 */}
+              <div className="rounded-xl border border-gray-800 bg-white text-black p-6 shadow-md hover:shadow-white/10 transition duration-300">
+                <svg
+                  className="h-8 w-8 text-gray-900"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                  stroke="currentColor"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" />
+                  <path d="M4 7v-1a2 2 0 0 1 2 -2h2" />
+                  <path d="M4 17v1a2 2 0 0 0 2 2h2" />
+                  <path d="M16 4h2a2 2 0 0 1 2 2v1" />
+                  <path d="M16 20h2a2 2 0 0 0 2 -2v-1" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                <h2 className="mt-4 text-xl font-bold">
+                  Advanced Candidate Screening
+                </h2>
+                <p className="mt-1 text-sm">
+                  Use intelligent screening technology to identify the best
+                  candidates for your company’s needs.
+                </p>
+              </div>
+
+              {/* CTA Button */}
+              <div className="col-span-1 sm:col-span-2 lg:col-span-3 flex justify-center mt-6">
+                <Link
+                  to="/be-our-client"
+                  className="bg-blue-950 hover:bg-blue-900 text-white font-medium py-2 px-6 rounded-md transition duration-300"
+                >
+                  Be Our Client
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <div className="bg-white py-6 sm:py-8 lg:py-12" id="ourteam">
@@ -506,32 +750,35 @@ const AboutUs = () => {
         </div>
       </div>
 
-      <div className=" mx-20 my-10 p-8 grid grid-cols-1 md:grid-cols-2 gap-x-32">
-        <div>
-          <h2 className="text-3xl md:text-4xl font-bold text-blue-950">
-            Utsav Mathur
-          </h2>
-          <div className="bg-gray-950 w-48 h-0.5 rounded-lg mb-8"></div>
-          <p className="text-gray-700 mb-8">
-            He has graduated in Business Administration from Symbiosis, Pune
-            with a dual specialization in Marketing and International Business.
-            He has 5+ years of experience in international markets like Middle
-            East and South Asia, working with a Singapore based Logistics Major,
-            where he excelled at vendor development, supply chain optimization
-            and business development. Furthermore he has 3 years of experience
-            in the recruitment space, focusing on channel development, internal
-            talent acquisition, process implementation, following a system
-            oriented approach to drive numbers.
-          </p>
+      <div className="max-w-6xl mx-auto my-12 px-4 md:px-6 lg:px-8">
+        <div className="flex flex-col lg:flex-row items-center gap-10">
+          <div className="lg:w-2/3">
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-950">
+              Utsav Mathur
+            </h2>
+            <div className="bg-gray-950 w-32 h-1 rounded-lg my-4"></div>
+            <p className="text-gray-700 leading-relaxed text-justify">
+              He has graduated in Business Administration from Symbiosis, Pune
+              with a dual specialization in Marketing and International
+              Business. He has 5+ years of experience in international markets
+              like the Middle East and South Asia, working with a
+              Singapore-based logistics major, where he excelled at vendor
+              development, supply chain optimization, and business development.
+              Furthermore, he has 3 years of experience in the recruitment
+              space, focusing on channel development, internal talent
+              acquisition, process implementation, and a system-oriented
+              approach to drive numbers.
+            </p>
+          </div>
+
+          <div className="lg:w-1/3 flex justify-center">
+            <img
+              src={utsavmathur}
+              alt="Utsav Mathur"
+              className="w-64 h-64 md:w-72 md:h-72 lg:w-80 lg:h-80 object-cover object-top rounded-full shadow-md"
+            />
+          </div>
         </div>
-        <div
-          className="rounded-full w-full h-full"
-          style={{
-            backgroundImage: `url('${utsavmathur}')`,
-            backgroundPosition: "top",
-            backgroundSize: "cover",
-          }}
-        ></div>
       </div>
 
       <div className="fixed right-0 top-0 h-full w-6 bg-transparent pointer-events-none flex items-end justify-center">
@@ -573,7 +820,7 @@ const AboutUs = () => {
             </button>
             <h2 className="text-2xl mb-4">Get A Call Back From Our Team</h2>
             <form onSubmit={submitCallReq}>
-              <div className="mb-4">
+              <div className="mb-3">
                 <label htmlFor="name" className="block text-gray-700">
                   Name:
                 </label>
@@ -585,7 +832,7 @@ const AboutUs = () => {
                   onChange={(e) => setName(e.target.value)}
                 />
               </div>
-              <div className="mb-4">
+              <div className="mb-3">
                 <label htmlFor="phone" className="block text-gray-700">
                   Phone:
                 </label>
@@ -595,6 +842,25 @@ const AboutUs = () => {
                   className="w-full px-3 py-2 border border-gray-500 rounded-lg"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
+                />
+              </div>
+
+              <div className="*:not-first:mt-2  mb-3 ">
+                <Label> Query For</Label>
+                <MultipleSelector
+                  className=" w-full border-gray-600 "
+                  commandProps={{
+                    label: "Select Query",
+                  }}
+                  defaultOptions={frameworks}
+                  value={queryFor}
+                  onChange={setQueryFor}
+                  placeholder="Select Query"
+                  emptyIndicator={
+                    <p className="text-center text-sm  border-0">
+                      No results found
+                    </p>
+                  }
                 />
               </div>
               <button
