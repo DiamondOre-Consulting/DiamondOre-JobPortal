@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useJwt } from "react-jwt";
 import CandidateNav from "../../Components/CandidatePagesComponents/CandidateNav";
@@ -6,18 +6,16 @@ import CandidateFooter from "../../Components/CandidatePagesComponents/Candidate
 import HomeNewRecommend from "../../Components/CandidatePagesComponents/HomeNewRecommend";
 import HomeChannelwise from "../../Components/CandidatePagesComponents/HomeChannelwise";
 import Banner from "../../Components/CandidatePagesComponents/Banner";
-
+import axios from "axios";
 const CandidateHome = () => {
   const navigate = useNavigate();
-
+  const [name, setName] = useState("");
   const { decodedToken } = useJwt(localStorage.getItem("token"));
   const token = localStorage.getItem("token");
   if (!token) {
     navigate("/login"); // Redirect to login page if not authenticated
     return;
   }
-
-  const userName = decodedToken ? decodedToken.name : "No Name Found";
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -35,12 +33,34 @@ const CandidateHome = () => {
     }
   }, [decodedToken]);
 
+  const handleGetUserData = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/candidates/user-data`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("resa", response);
+      setName(response?.data?.name);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    handleGetUserData();
+  }, []);
+
   return (
     <div className="bg-white">
       <CandidateNav />
 
       <h2 className="text-5xl px-10 font-bold text-gray-800 ">
-        Welcome aboard, <span className="text-blue-900 ">{userName}</span>
+        Welcome aboard, <span className="text-blue-900 ">{name}</span>
       </h2>
       <Link
         className="mt-6 flex justify-center items-center bg-blue-400 overflow-hidden h-10"

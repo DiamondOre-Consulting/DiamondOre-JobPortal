@@ -257,7 +257,7 @@ const Footer = () => {
                 <nav className="flex flex-col gap-4">
                   <div>
                     <Link
-                      to={"/terms-of-services"}
+                      to={"/terms-and-conditions"}
                       className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600"
                     >
                       Terms of Service
@@ -266,7 +266,7 @@ const Footer = () => {
 
                   <div>
                     <Link
-                      to={"/privicy-policy"}
+                      to={"/privacy-policy"}
                       className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600"
                     >
                       Privacy Policy
