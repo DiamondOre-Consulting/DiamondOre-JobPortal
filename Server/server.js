@@ -10,7 +10,6 @@ import newJobPost from "./Controllers/jobs.js";
 import adminController from "./Controllers/admin.js";
 import adminERPController from "./Controllers/erp.js";
 import empController from "./Controllers/employees.js";
-import { storeOtp, otpStore } from "./utils/otp.js";
 
 import employeeAuthRouter from './Controllers/employees-auth/auth.js'
 

@@ -476,10 +476,7 @@ router.get(
 );
 
 // UPDATE CV SHORTLISTED
-router.put(
-  "/update-cv-shortlisted/:id1/:id2",
-  AdminAuthenticateToken,
-  async (req, res) => {
+router.put("/update-cv-shortlisted/:id1/:id2",AdminAuthenticateToken,async (req, res) => {
     try {
       const { id1, id2 } = req.params;
       const { email } = req.user;
@@ -500,7 +497,7 @@ router.put(
       const CandidateUser = await Candidates.findById({ _id: id1 });
       // Send notification email
       const { subject, html } = jobStatusTemplate({
-        type: "shortlisted",
+        type: "CV-shortlisted",
         candidateName: CandidateUser.name,
         jobTitle: cvShortlistedJob.JobTitle,
       });
@@ -509,6 +506,7 @@ router.put(
         .status(201)
         .json({ message: "CV Shortlisted status updated sucessfully!!!" });
     } catch (error) {
+      console.log(error)
       return res
         .status(500)
         .json({ message: "Something went wrong!!!", error });
@@ -542,10 +540,11 @@ router.put("/update-screening/:id1/:id2",AdminAuthenticateToken,
       );
       const CandidateUser = await Candidates.findById({ _id: id1 });
       // Send notification email
+      console.log(screeningJob.JobTitle)
       const { subject, html } = jobStatusTemplate({
-        type: "joined",
+        type: "screening",
         candidateName: CandidateUser.name,
-        company: screeningJob.JobTitle,
+        jobTitle: screeningJob.JobTitle,
       });
       await sendEmail({ to: CandidateUser.email, subject, html });
       return res
@@ -559,6 +558,302 @@ router.put("/update-screening/:id1/:id2",AdminAuthenticateToken,
     }
   }
 );
+
+router.put("/update-interviewscheduled/:id1/:id2", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { email } = req.user;
+    const { id1, id2 } = req.params;
+
+    // Verify admin user exists
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update status in single operation
+    const updatedStatus = await Status.findOneAndUpdate(
+      { candidateId: id1, jobId: id2 },
+      {
+        $set: {
+          status: {
+            Applied: true,
+            CvShortlisted: true,
+            Screening: true,
+            InterviewScheduled: true,
+          },
+        },
+      },
+      { new: true }
+    );
+
+    // Update job with interviewed candidate
+    const interviewScheduledJob = await Jobs.findByIdAndUpdate(
+      { _id: id2 },
+      { $push: { interviewedScheduledApplicants: id1 } },
+      { new: true }
+    );
+
+    // Get candidate details
+    const candidate = await Candidates.findById({ _id: id1 });
+    if (!candidate) {
+      return res.status(404).json({ message: "Candidate not found" });
+    }
+
+    // Send email using centralized email service
+    const { subject, html } = jobStatusTemplate({
+      type: "interviewScheduled",
+      candidateName: candidate.name,
+      jobTitle: interviewScheduledJob.JobTitle,
+      company: interviewScheduledJob.companyName || "Our Company"
+    });
+
+    await sendEmail({ 
+      to: candidate.email, 
+      subject, 
+      html,
+    });
+
+    return res.status(200).json({ 
+      message: "Interview scheduled status updated successfully",
+      data: {
+        status: updatedStatus,
+        job: interviewScheduledJob
+      }
+    });
+
+  } catch (error) {
+    console.error("Error in update-interviewscheduled:", error);
+    return res.status(500).json({ 
+      message: "An error occurred while updating interview status",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+
+router.put("/update-interviewed/:id1/:id2", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { email } = req.user;
+    const { id1, id2 } = req.params;
+
+    // Verify admin user exists
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update status in single operation
+    const updatedStatus = await Status.findOneAndUpdate(
+      { candidateId: id1, jobId: id2 },
+      {
+        $set: {
+          status: {
+            Applied: true,
+            CvShortlisted: true,
+            Screening: true,
+            InterviewScheduled: true,
+            Interviewed: true,
+          },
+        },
+      },
+      { new: true }
+    );
+
+    // Update job with interviewed candidate
+    const interviewedJob = await Jobs.findByIdAndUpdate(
+      { _id: id2 },
+      { $push: { interviewedApplicants: id1 } },
+      { new: true }
+    );
+
+    // Get candidate details
+    const candidate = await Candidates.findById({ _id: id1 });
+    if (!candidate) {
+      return res.status(404).json({ message: "Candidate not found" });
+    }
+
+    // Send email using centralized email service
+    const { subject, html } = jobStatusTemplate({
+      type: "interviewed",
+      candidateName: candidate.name,
+      jobTitle: interviewedJob.JobTitle,
+      company: interviewedJob.companyName || "Our Company"
+    });
+
+    await sendEmail({ 
+      to: candidate.email, 
+      subject, 
+      html,
+    });
+
+    return res.status(200).json({ 
+      message: "Interview status updated successfully",
+      data: {
+        status: updatedStatus,
+        job: interviewedJob
+      }
+    });
+
+  } catch (error) {
+    console.error("Error in update-interviewed:", error);
+    return res.status(500).json({ 
+      message: "An error occurred while updating interview status",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+router.put("/update-shortlisted/:id1/:id2", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { email } = req.user;
+    const { id1, id2 } = req.params;
+
+    // Verify admin user exists
+    const user = await Admin.findOne({ email });
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update status in single operation
+    const updatedStatus = await Status.findOneAndUpdate(
+      { candidateId: id1, jobId: id2 },
+      {
+        $set: {
+          status: {
+            Applied: true,
+            CvShortlisted: true,
+            Screening: true,
+            InterviewScheduled: true,
+            Interviewed: true,
+            Shortlisted: true,
+          },
+        },
+      },
+      { new: true }
+    );
+
+    // Update job with shortlisted candidate
+    const shortlistedJob = await Jobs.findByIdAndUpdate(
+      { _id: id2 },
+      { $push: { shortlistedApplicants: id1 } },
+      { new: true }
+    );
+
+    // Get candidate details
+    const candidate = await Candidates.findById({ _id: id1 });
+    if (!candidate) {
+      return res.status(404).json({ message: "Candidate not found" });
+    }
+
+    // Send email using centralized email service
+    const { subject, html } = jobStatusTemplate({
+      type: "shortlisted",
+      candidateName: candidate.name,
+      jobTitle: shortlistedJob.JobTitle,
+      company: shortlistedJob.companyName || "Our Company"
+    });
+
+    await sendEmail({ 
+      to: candidate.email, 
+      subject, 
+      html,
+    });
+
+    return res.status(200).json({ 
+      message: "Shortlisted status updated successfully",
+      data: {
+        status: updatedStatus,
+        job: shortlistedJob
+      }
+    });
+
+  } catch (error) {
+    console.error("Error in update-shortlisted:", error);
+    return res.status(500).json({ 
+      message: "An error occurred while updating shortlisted status",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+router.put("/update-joined/:id1/:id2", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { email } = req.user;
+    const { id1, id2 } = req.params;
+
+    // Verify admin user exists
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update status in single operation
+    const updatedStatus = await Status.findOneAndUpdate(
+      { candidateId: id1, jobId: id2 },
+      {
+        $set: {
+          status: {
+            Applied: true,
+            CvShortlisted: true,
+            Screening: true,
+            InterviewScheduled: true,
+            Interviewed: true,
+            Shortlisted: true,
+            Joined: true,
+          },
+        },
+      },
+      { new: true }
+    );
+
+    // Update job with joined candidate and decrement vacancies
+    const joinedJob = await Jobs.findByIdAndUpdate(
+      { _id: id2 },
+      { 
+        $push: { joinedApplicants: id1 },
+        $inc: { Vacancies: -1 }
+      },
+      { new: true }
+    );
+
+    // Get candidate details
+    const candidate = await Candidates.findById({ _id: id1 });
+    if (!candidate) {
+      return res.status(404).json({ message: "Candidate not found" });
+    }
+
+    // Send email using centralized email service
+    const { subject, html } = jobStatusTemplate({
+      type: "joined",
+      candidateName: candidate.name,
+      jobTitle: joinedJob.JobTitle,
+      company: joinedJob.Company || joinedJob.companyName || "Our Company"
+    });
+
+    await sendEmail({ 
+      to: candidate.email, 
+      subject, 
+      html,
+    });
+
+    return res.status(200).json({ 
+      message: "Joined status updated successfully",
+      data: {
+        status: updatedStatus,
+        job: joinedJob
+      }
+    });
+
+  } catch (error) {
+    console.error("Error in update-joined:", error);
+    return res.status(500).json({ 
+      message: "An error occurred while updating joined status",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
 
 // FETCH ALL MESSAGES OF CANDIDATES
 router.get("/all-messages", AdminAuthenticateToken, async (req, res) => {
@@ -1305,18 +1600,13 @@ router.delete(
   }
 );
 
-router.put(
-  "/update-status/employee/:id",
-  AdminAuthenticateToken,
-  async (req, res, next) => {
+router.put("/update-status/employee/:id",AdminAuthenticateToken,async (req, res, next) => {
     try {
       const { id } = req.params;
       const { status } = req.body;
       console.log(id);
 
       const employee = await Employees.findById({ _id: id });
-
-      console.log(employee);
 
       employee.activeStatus = status;
 
@@ -1353,11 +1643,7 @@ const SendMailWhenEditEmployee = async (email, updatedFields) => {
   });
 };
 
-router.put(
-  "/all-employees-edit/:id",
-  AdminAuthenticateToken,
-  async (req, res) => {
-    // console.log("request-accepted")
+router.put("/all-employees-edit/:id",AdminAuthenticateToken,async (req, res) => {
     try {
       const { id } = req.params;
 
