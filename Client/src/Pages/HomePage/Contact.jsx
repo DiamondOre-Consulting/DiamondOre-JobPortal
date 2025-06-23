@@ -14,6 +14,7 @@ const Contact = () => {
   const [Message, setMsg] = useState(null);
   const [sucesss, setsucess] = useState(null);
   const [queryFor, setQueryFor] = useState([]);
+  const [loader, setLoader] = useState(false);
 
   const [error, setError] = useState(null);
 
@@ -313,10 +314,10 @@ const Contact = () => {
                   ></textarea>
                 </div>
 
-                <div className="mt-4">
+                <div className="mt-4 w-full">
                   <button
                     type="submit"
-                    className="inline-block w-full  rounded-lg bg-white px-5 py-3 font-medium text-black sm:w-auto"
+                    className="inline-block w-full  rounded-lg bg-white px-5 py-3 font-medium text-black "
                     onClick={sendmessage}
                   >
                     Send Message
