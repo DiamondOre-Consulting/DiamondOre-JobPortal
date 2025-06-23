@@ -5,12 +5,7 @@ import { Command as CommandPrimitive, useCommandState } from "cmdk";
 import { XIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import {
-  Command,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-} from "@/Components/ui/command";
+import { Command, CommandGroup, CommandItem, CommandList } from "../ui/command";
 
 export function useDebounce(value, delay) {
   const [debouncedValue, setDebouncedValue] = React.useState(value);
