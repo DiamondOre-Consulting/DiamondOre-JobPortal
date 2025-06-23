@@ -96,11 +96,11 @@ const EachJob = () => {
           return;
         }
 
-        const userid = decodedToken.userId;
+        const userid = decodedToken?.userId;
 
         // Fetch associates data from the backend
         const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/candidates/status/${userid}/${id}`,
+          `${import.meta.env.VITE_BASE_URL}/candidates/status/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -131,7 +131,7 @@ const EachJob = () => {
           },
         }
       );
-      if (apply.status === 201) {
+      if (apply.status === 200) {
         setApplyRes("Congratulations!!! Applied to this job successfully.");
         alert("Congratulations You have Applied For this Job sucessfully");
         setLoader(false);

@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { otpStore } from "../utils/otp.js";
-import { S3Client } from '@aws-sdk/client-s3';
+import { S3Client } from "@aws-sdk/client-s3";
 // import nodemailer from "nodemailer";
 
 import mongoose from "mongoose";
@@ -37,20 +37,15 @@ import ClientReviews from "../Models/ClientReviews.js";
 import GoalSheet from "../Models/GoalSheet.js";
 import AccountHandling from "../Models/AccountHandling.js";
 import KPI from "../Models/KPI.js";
-import {z} from 'zod'
-import {excelUpload} from "../Middlewares/multer.middleware.js";
-import { uploadImage } from '../Middlewares/multer.middleware.js'
+import { z } from "zod";
+import { excelUpload } from "../Middlewares/multer.middleware.js";
+import { uploadImage } from "../Middlewares/multer.middleware.js";
 import { uploadFile } from "../utils/fileUpload.utils.js";
-import {deleteFile} from '../utils/fileUpload.utils.js';
-import Policies from '../Models/Policies.js'
-import {pdfUpload} from '../Middlewares/multer.middleware.js'
+import { deleteFile } from "../utils/fileUpload.utils.js";
+import Policies from "../Models/Policies.js";
+import { pdfUpload } from "../Middlewares/multer.middleware.js";
 
-import {
-  generateOtp,
-  storeOtp,
-  validateOtp,
-  clearOtp,
-} from "../utils/otp.js";
+import { generateOtp, storeOtp, validateOtp, clearOtp } from "../utils/otp.js";
 import {
   sendEmail,
   otpEmailTemplate,
@@ -68,9 +63,6 @@ const secretKey = process.env.JWT_SECRET_ADMIN;
 
 const router = express.Router();
 
-
-
-
 // Initiate OTP sending
 
 const credentials = {
@@ -84,10 +76,6 @@ const s3Client = new S3Client({
   credentials: credentials,
   region: "global",
 });
-
-
-
-
 
 // FETCHING USER DATA
 router.get("/user-data", AdminAuthenticateToken, async (req, res) => {
@@ -119,40 +107,35 @@ router.get("/user-data", AdminAuthenticateToken, async (req, res) => {
 });
 
 const allJobsSchema = z.object({
-    page:z.coerce.number(),
-    limit:z.coerce.number()
-})
+  page: z.coerce.number(),
+  limit: z.coerce.number(),
+});
 
 // FETCHING ALL JOBS
 router.get("/all-jobs", async (req, res) => {
   try {
-    
-    const {success,error,data} = allJobsSchema.safeParse(req.query)
+    const { success, error, data } = allJobsSchema.safeParse(req.query);
     if (!success) {
-        return res.status(400).json({message: "Invalid credentials"});
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const page  = data.page || 0;
+    const page = data.page || 0;
     const limit = data.limit || 20;
 
-    
+    const skip = page * limit;
 
-    const skip = (page) * limit;
+    const allJobsCount = await Jobs.countDocuments({ JobStatus: "Active" });
 
-    const allJobsCount = await Jobs.countDocuments({JobStatus:"Active"});
-    
-
-    const allJobs = await Jobs.find({JobStatus:"Active"}).limit(limit).skip(skip);
-   
- 
+    const allJobs = await Jobs.find({ JobStatus: "Active" })
+      .limit(limit)
+      .skip(skip);
 
     return res.status(200).json({
-        totalPages: Math.ceil(allJobsCount/limit),
-        allJobs:allJobs,
-        currentPage: page
-      });
-
-  }catch(error){
+      totalPages: Math.ceil(allJobsCount / limit),
+      allJobs: allJobs,
+      currentPage: page,
+    });
+  } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Something went wrong!!!" });
   }
@@ -170,7 +153,6 @@ router.get("/all-jobs/:id", AdminAuthenticateToken, async (req, res) => {
     }
 
     const oneJob = await Jobs.findById({ _id: id });
-   
 
     return res.status(201).json(oneJob);
   } catch (error) {
@@ -211,17 +193,17 @@ router.get("/jobs-high", async (req, res) => {
     const topJobs = await Jobs.aggregate([
       {
         $addFields: {
-          applicantsCount: { $size: "$appliedApplicants" } 
-        }
+          applicantsCount: { $size: "$appliedApplicants" },
+        },
       },
       {
-        $sort: { applicantsCount: -1 } 
+        $sort: { applicantsCount: -1 },
       },
       {
-        $limit: 6 
-      }
+        $limit: 6,
+      },
     ]);
-    
+
     return res.status(200).json(topJobs);
   } catch (error) {
     console.log(error);
@@ -229,44 +211,44 @@ router.get("/jobs-high", async (req, res) => {
   }
 });
 const allCandidatesSchema = z.object({
-  page:z.coerce.number(),
-  limit:z.coerce.number()
-})
+  page: z.coerce.number(),
+  limit: z.coerce.number(),
+});
 
 // FETCHING ALL CANDIDATES
 router.get("/all-candidates", AdminAuthenticateToken, async (req, res) => {
   try {
     const { email } = req.user;
-  
-    const {success,error,data} = allCandidatesSchema.safeParse(req.query)
-    if (!success) {
-        return res.status(400).json({message: "erronous data"});
-    }
 
+    const { success, error, data } = allCandidatesSchema.safeParse(req.query);
+    if (!success) {
+      return res.status(400).json({ message: "erronous data" });
+    }
 
     const user = await Admin.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-  
-    const page= data.page || 0;
+    const page = data.page || 0;
     const limit = data.limit || 20;
 
     const skip = page * limit;
     const totalPages = await Candidates.countDocuments();
-    
-    const allCandidates = await Candidates.find().skip(skip).limit(limit).select({password:0});
 
-    console.log(skip)
-    console.log(allCandidates) 
-    
+    const allCandidates = await Candidates.find()
+      .skip(skip)
+      .limit(limit)
+      .select({ password: 0 });
+
+    console.log(skip);
+    console.log(allCandidates);
+
     return res.status(200).json({
-      allCandidates:allCandidates,
-      totalPages: Math.ceil(totalPages/limit),
-      currentPage: page
-    }
-    );
+      allCandidates: allCandidates,
+      totalPages: Math.ceil(totalPages / limit),
+      currentPage: page,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Something went wrong!!!" });
@@ -288,7 +270,6 @@ router.get("/all-candidates/:id", AdminAuthenticateToken, async (req, res) => {
       { _id: id },
       { password: 0 }
     );
-    
 
     return res.status(201).json(oneCandidate);
   } catch (error) {
@@ -297,124 +278,122 @@ router.get("/all-candidates/:id", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
-const singleCandidateSchema= z.object({
-  searchTerm:z.string(),
-  page:z.coerce.number().optional(),
-  limit:z.coerce.number().optional()
-})
+const singleCandidateSchema = z.object({
+  searchTerm: z.string(),
+  page: z.coerce.number().optional(),
+  limit: z.coerce.number().optional(),
+});
 
-router.get("/search-candidate", AdminAuthenticateToken , async(req,res)=>{
-  
-  try{
-    const {data,success} = singleCandidateSchema.safeParse(req.query)
-    
+router.get("/search-candidate", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { data, success } = singleCandidateSchema.safeParse(req.query);
 
-    if(!success){
-      return res.status(422).json({message: "erroneous data"})
+    if (!success) {
+      return res.status(422).json({ message: "erroneous data" });
     }
 
-  const { email } = req.user;
+    const { email } = req.user;
 
-  const page= data.page || 0;
-  const limit = data.limit || 6;
-  const skip = page * limit;
-  
-  const user = await Admin.findOne({ email });
-  
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
-  }
+    const page = data.page || 0;
+    const limit = data.limit || 6;
+    const skip = page * limit;
 
- 
-  const candidates = await Candidates.aggregate([
-    {
-      $search:{
-        index: "candidates_search_index",
-        text:{
-          query: data.searchTerm, 
-          path: "name",    
-          fuzzy: { maxEdits: 2 } 
-        }
-      }},
-      {
-        $addFields: { score: { $meta: "textScore" }} 
-      },
-      {
-        $sort: { score: -1, _id: 1 }
-      },
-      { $skip: skip },
-      { $limit: limit },   
-      {
-        $project: {
-          password: 0 
-        }
-      }
-  ])
+    const user = await Admin.findOne({ email });
 
-  const totalCandidates = await Candidates.aggregate([
-    {
-      $search: {
-        index: "candidates_search_index",
-        text: {
-          query: data.searchTerm,
-          path: "name",
-          fuzzy: { maxEdits: 2 },
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const candidates = await Candidates.aggregate([
+      {
+        $search: {
+          index: "candidates_search_index",
+          text: {
+            query: data.searchTerm,
+            path: "name",
+            fuzzy: { maxEdits: 2 },
+          },
         },
       },
-    },
-    { $count: "total" },
-     
-  ]);
+      {
+        $addFields: { score: { $meta: "textScore" } },
+      },
+      {
+        $sort: { score: -1, _id: 1 },
+      },
+      { $skip: skip },
+      { $limit: limit },
+      {
+        $project: {
+          password: 0,
+        },
+      },
+    ]);
 
-  // const candidates = await Candidates.find({
-  //    name :{ $regex:data.searchTerm, $options:"i"}
-  // })
+    const totalCandidates = await Candidates.aggregate([
+      {
+        $search: {
+          index: "candidates_search_index",
+          text: {
+            query: data.searchTerm,
+            path: "name",
+            fuzzy: { maxEdits: 2 },
+          },
+        },
+      },
+      { $count: "total" },
+    ]);
 
-  const totalResults = totalCandidates.length > 0 ? totalCandidates[0].total : 0;
-  
-  
+    // const candidates = await Candidates.find({
+    //    name :{ $regex:data.searchTerm, $options:"i"}
+    // })
 
-  res.status(200).json({
-    success:true,
-    searchedCandidate:candidates,
-    totalPages :Math.ceil(totalResults/limit),
-    currentPage:page
-  })
+    const totalResults =
+      totalCandidates.length > 0 ? totalCandidates[0].total : 0;
 
-  }
-  catch(err){
-    console.log(err)
+    res.status(200).json({
+      success: true,
+      searchedCandidate: candidates,
+      totalPages: Math.ceil(totalResults / limit),
+      currentPage: page,
+    });
+  } catch (err) {
+    console.log(err);
     res.status(500).json({
-      success:false,
-      error:err
-    })
-
+      success: false,
+      error: err,
+    });
   }
+});
 
- 
-})
-
-
-router.get("/newly-added-candidates", AdminAuthenticateToken , async(req,res)=>{ 
-      try{
-          const limit = 10;
-          const newlyAddedCandidates = await Candidates.find().sort({createdAt: -1}).limit(limit).select({password:0})        
-          res.status(200).json({
-            newlyAddedCandidates:newlyAddedCandidates
-          })      
-      }
-      catch(err){
-         console.log(err)
-         res.status(500).json({
-          success:false,
-          error:err
-         })
-      }
-
-})
+router.get(
+  "/newly-added-candidates",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      const limit = 10;
+      const newlyAddedCandidates = await Candidates.find()
+        .sort({ createdAt: -1 })
+        .limit(limit)
+        .select({ password: 0 });
+      res.status(200).json({
+        newlyAddedCandidates: newlyAddedCandidates,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        success: false,
+        error: err,
+      });
+    }
+  }
+);
 
 // FETCHING ALL APPLIED JOBS BY A CANDIDATE
-router.get("/all-applied-jobs/:id",AdminAuthenticateToken,async (req, res) => {
+router.get(
+  "/all-applied-jobs/:id",
+  AdminAuthenticateToken,
+  async (req, res) => {
     try {
       // Get the user's email from the decoded token
       const { email } = req.user;
@@ -442,7 +421,10 @@ router.get("/all-applied-jobs/:id",AdminAuthenticateToken,async (req, res) => {
 );
 
 // FETCHING ALL CANDIDATES APPLIED FOR A PARTICULAR JOB
-router.get("/applied-candidates/:id",AdminAuthenticateToken,async (req, res) => {
+router.get(
+  "/applied-candidates/:id",
+  AdminAuthenticateToken,
+  async (req, res) => {
     try {
       const { id } = req.params;
       const { email } = req.user;
@@ -469,7 +451,10 @@ router.get("/applied-candidates/:id",AdminAuthenticateToken,async (req, res) => 
 );
 
 // GET STATUS OF A CANDIDATE FOR A PARTICULAR JOB
-router.get("/get-status/:id1/:id2",AdminAuthenticateToken, async (req, res) => {
+router.get(
+  "/get-status/:id1/:id2",
+  AdminAuthenticateToken,
+  async (req, res) => {
     try {
       const { id1, id2 } = req.params;
       const { email } = req.user;
@@ -491,70 +476,89 @@ router.get("/get-status/:id1/:id2",AdminAuthenticateToken, async (req, res) => {
 );
 
 // UPDATE CV SHORTLISTED
-router.put("/update-cv-shortlisted/:id1/:id2", AdminAuthenticateToken, async (req, res) => {
-  try {
-    const { id1, id2 } = req.params;
-    const { email } = req.user;
-    const user = await Admin.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+router.put(
+  "/update-cv-shortlisted/:id1/:id2",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { id1, id2 } = req.params;
+      const { email } = req.user;
+      const user = await Admin.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      await Status.findOneAndUpdate(
+        { candidateId: id1, jobId: id2 },
+        { $set: { status: { Applied: true, CvShortlisted: true } } },
+        { new: true }
+      );
+      const cvShortlistedJob = await Jobs.findById({ _id: id2 });
+      await Jobs.findByIdAndUpdate(
+        { _id: id2 },
+        { $push: { shortlistedResumeApplicants: id1 } }
+      );
+      const CandidateUser = await Candidates.findById({ _id: id1 });
+      // Send notification email
+      const { subject, html } = jobStatusTemplate({
+        type: "shortlisted",
+        candidateName: CandidateUser.name,
+        jobTitle: cvShortlistedJob.JobTitle,
+      });
+      await sendEmail({ to: CandidateUser.email, subject, html });
+      return res
+        .status(201)
+        .json({ message: "CV Shortlisted status updated sucessfully!!!" });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: "Something went wrong!!!", error });
     }
-    await Status.findOneAndUpdate(
-      { candidateId: id1, jobId: id2 },
-      { $set: { status: { Applied: true, CvShortlisted: true } } },
-      { new: true }
-    );
-    const cvShortlistedJob = await Jobs.findById({ _id: id2 });
-    await Jobs.findByIdAndUpdate(
-      { _id: id2 },
-      { $push: { shortlistedResumeApplicants: id1 } }
-    );
-    const CandidateUser = await Candidates.findById({ _id: id1 });
-    // Send notification email
-    const { subject, html } = jobStatusTemplate({
-      type: "cvShortlisted",
-      candidateName: CandidateUser.name,
-      jobTitle: cvShortlistedJob.JobTitle,
-    });
-    await sendEmail({ to: CandidateUser.email, subject, html });
-    return res.status(201).json({ message: "CV Shortlisted status updated sucessfully!!!" });
-  } catch (error) {
-    return res.status(500).json({ message: "Something went wrong!!!", error });
   }
-});
+);
 
 // UPDATE Screening
-router.put("/update-screening/:id1/:id2", AdminAuthenticateToken, async (req, res) => {
-  try {
-    const { email } = req.user;
-    const { id1, id2 } = req.params;
-    const user = await Admin.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+router.put("/update-screening/:id1/:id2",AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { email } = req.user;
+      const { id1, id2 } = req.params;
+      const user = await Admin.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      await Status.findOneAndUpdate(
+        { candidateId: id1, jobId: id2 },
+        {
+          $set: {
+            status: { Applied: true, CvShortlisted: true, Screening: true },
+          },
+        },
+        { new: true }
+      );
+      const screeningJob = await Jobs.findById({ _id: id2 });
+      await Jobs.findByIdAndUpdate(
+        { _id: id2 },
+        { $push: { joinedApplicants: id1 }, $inc: { Vacancies: -1 } }
+      );
+      const CandidateUser = await Candidates.findById({ _id: id1 });
+      // Send notification email
+      const { subject, html } = jobStatusTemplate({
+        type: "joined",
+        candidateName: CandidateUser.name,
+        company: screeningJob.JobTitle,
+      });
+      await sendEmail({ to: CandidateUser.email, subject, html });
+      return res
+        .status(201)
+        .json({ message: "Joined status updated sucessfully!!!" });
+    } catch (error) {
+      console.log(error);
+      return res
+        .status(500)
+        .json({ message: "Something went wrong!!!", error });
     }
-    await Status.findOneAndUpdate(
-      { candidateId: id1, jobId: id2 },
-      { $set: { status: { Applied: true, CvShortlisted: true, Screening: true } } },
-      { new: true }
-    );
-    const screeningJob = await Jobs.findById({ _id: id2 });
-    await Jobs.findByIdAndUpdate(
-      { _id: id2 },
-      { $push: { joinedApplicants: id1 }, $inc: { Vacancies: -1 } }
-    );
-    const CandidateUser = await Candidates.findById({ _id: id1 });
-    // Send notification email
-    const { subject, html } = jobStatusTemplate({
-      type: "joined",
-      candidateName: CandidateUser.name,
-      company: JoinedJob.Company,
-    });
-    await sendEmail({ to: CandidateUser.email, subject, html });
-    return res.status(201).json({ message: "Joined status updated sucessfully!!!" });
-  } catch (error) {
-    return res.status(500).json({ message: "Something went wrong!!!", error });
   }
-});
+);
 
 // FETCH ALL MESSAGES OF CANDIDATES
 router.get("/all-messages", AdminAuthenticateToken, async (req, res) => {
@@ -599,56 +603,58 @@ router.get("/all-messages/:id", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
-router.put("/edit-profile", AdminAuthenticateToken,uploadImage.single('profilePic') ,async (req, res) => {
-  try {
-    const { name ,password,profilePic, passcode } = req.body;
-    const { email } = req.user;
-    
-  
+router.put(
+  "/edit-profile",
+  AdminAuthenticateToken,
+  uploadImage.single("profilePic"),
+  async (req, res) => {
+    try {
+      const { name, password, profilePic, passcode } = req.body;
+      const { email } = req.user;
 
-   
+      const user = await Admin.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
 
-    const user = await Admin.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    if(req.file){
-        const deleteProfilePic = await deleteFile(user.profilePic,"profilepics");
+      if (req.file) {
+        const deleteProfilePic = await deleteFile(
+          user.profilePic,
+          "profilepics"
+        );
         const uploadProfilePic = await uploadFile(req.file, "profilepics");
-        user.profilePic = uploadProfilePic
-        console.log("asdf",uploadProfilePic)
+        user.profilePic = uploadProfilePic;
+        console.log("asdf", uploadProfilePic);
+      }
+
+      if (name) {
+        user.name = name;
+        await user.save();
+      }
+
+      if (password) {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user.password = hashedPassword;
+
+        await user.save();
+      }
+      if (profilePic) {
+        user.profilePic = profilePic;
+        await user.save();
+      }
+
+      if (passcode) {
+        user.passcode = passcode;
+        await user.save();
+      }
+
+      res.status(201).json({ message: "Edit profile successful!!!", user });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Something went wrong!!!" });
     }
-
-
-
-    if (name) {
-      user.name = name;
-      await user.save();
-    }
-
-    if (password) {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      user.password = hashedPassword;
-
-      await user.save();
-    }
-    if (profilePic) {
-      user.profilePic = profilePic;
-      await user.save();
-    }
-
-    if (passcode) {
-      user.passcode = passcode;
-      await user.save();
-    }
-
-    res.status(201).json({ message: "Edit profile successful!!!", user });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Something went wrong!!!" });
   }
-});
+);
 
 // CHATBOT MESSAGE RECIEVE
 router.post("/send-chatbot", async (req, res) => {
@@ -673,9 +679,11 @@ router.post("/send-chatbot", async (req, res) => {
       to: "rahul@rasonline.in",
       cc: "tech@diamondore.in",
       subject: `ROBO_RECRUITER: New Message Received from ${userName}`,
-      html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${userName}</h4><br/><h4 style="font-size:1rem; display:flex; justify-content: center;">Email Id: ${userEmailAddress}</h4><br/><h4 style="font-size:1rem; display:flex; justify-content: center;">Phone No: ${userPhone}</h4><br/><h4 style="font-size:1rem; display:flex; justify-content: center;">Preferred City: ${userPreferredCity}</h4><br/><h4 style="font-size:1rem; display:flex; justify-content: center;">Preferred Channel: ${userPreferredChannel}</h4><br/><h4 style="font-size:1rem; display:flex; justify-content: center;">Current CTC: ${userCurrentCTC}</h4>`
+      html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${userName}</h4><br/><h4 style="font-size:1rem; display:flex; justify-content: center;">Email Id: ${userEmailAddress}</h4><br/><h4 style="font-size:1rem; display:flex; justify-content: center;">Phone No: ${userPhone}</h4><br/><h4 style="font-size:1rem; display:flex; justify-content: center;">Preferred City: ${userPreferredCity}</h4><br/><h4 style="font-size:1rem; display:flex; justify-content: center;">Preferred Channel: ${userPreferredChannel}</h4><br/><h4 style="font-size:1rem; display:flex; justify-content: center;">Current CTC: ${userCurrentCTC}</h4>`,
     });
-    res.status(201).json({ message: "ROBO_RECRUITER Sent message successfully!!!" });
+    res
+      .status(201)
+      .json({ message: "ROBO_RECRUITER Sent message successfully!!!" });
   } catch (error) {
     res.status(500).json({ error: "An error occurred" });
   }
@@ -750,12 +758,6 @@ const s3ClientResumes = new S3Client({
   region: "global",
 });
 
-
-
-    
-
-
-
 const downloadFile = async (url, outputFilePath) => {
   const writer = fs.createWriteStream(outputFilePath);
 
@@ -773,82 +775,78 @@ const downloadFile = async (url, outputFilePath) => {
   });
 };
 
-
-
-router.post("/upload-dsr-excel", AdminAuthenticateToken , excelUpload.single('myFile'), async (req, res) => {
- 
-  
-
-  if (!req.file) {
-    return res.status(400).json({ error: "No file uploaded" });
-  }
-  console.log(req.file)
-  
-  const filePath = req.file.path;  
-  try{                   
-    const fileBuffer = fs.readFileSync(filePath);    
-    const workbook = xlsx.read(fileBuffer, { type: "buffer" });   
-    const sheetName = workbook.SheetNames[0];  
-    const result = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
-   
-
-    if(!result.length){
-     return res.status(400).json({ error: "Empty file or invalid format" });
+router.post(
+  "/upload-dsr-excel",
+  AdminAuthenticateToken,
+  excelUpload.single("myFile"),
+  async (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
     }
+    console.log(req.file);
 
-    let errorArray = [];
-    
-    const excelSerialToJSDate = (serial) => {
-      const excelEpoch = new Date(1899, 11, 30); 
-      return new Date(excelEpoch.getTime() + serial * 86400000);
-    };
-
-    const formattedData = result.map((entry) => {
-       
-      if (entry.currentDate && !isNaN(entry.currentDate)) {        
-        entry.currentDate = excelSerialToJSDate(entry.currentDate);    
-      }        
-      return entry;
-    });
-   
+    const filePath = req.file.path;
     try {
+      const fileBuffer = fs.readFileSync(filePath);
+      const workbook = xlsx.read(fileBuffer, { type: "buffer" });
+      const sheetName = workbook.SheetNames[0];
+      const result = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
-      const bulkOps = [
-               {deleteMany : { filter : {} }},
-               ...formattedData.map((doc)=> ({insertOne : {document:doc}}))               
-      ]
-      const res=await DSR.bulkWrite(bulkOps);
-      console.log(res)
-    } catch (insertError) {
-      errorArray.push({ error: insertError.message });
-      console.error("Database insertion error:", insertError.message);
-      return res.status(400).json({message : "Database insertion error"});
+      if (!result.length) {
+        return res.status(400).json({ error: "Empty file or invalid format" });
+      }
 
+      let errorArray = [];
+
+      const excelSerialToJSDate = (serial) => {
+        const excelEpoch = new Date(1899, 11, 30);
+        return new Date(excelEpoch.getTime() + serial * 86400000);
+      };
+
+      const formattedData = result.map((entry) => {
+        if (entry.currentDate && !isNaN(entry.currentDate)) {
+          entry.currentDate = excelSerialToJSDate(entry.currentDate);
+        }
+        return entry;
+      });
+
+      try {
+        const bulkOps = [
+          { deleteMany: { filter: {} } },
+          ...formattedData.map((doc) => ({ insertOne: { document: doc } })),
+        ];
+        const res = await DSR.bulkWrite(bulkOps);
+        console.log(res);
+      } catch (insertError) {
+        errorArray.push({ error: insertError.message });
+        console.error("Database insertion error:", insertError.message);
+        return res.status(400).json({ message: "Database insertion error" });
+      }
+
+      if (errorArray.length > 0) {
+        await sendErrorEmailToAdmin(errorArray);
+      }
+
+      return res.status(200).json({
+        message: "DSR upload process completed!",
+      });
+    } catch (err) {
+      console.log({ message: err.message });
+      return res.status(400).json({ message: "Internal server error" });
+    } finally {
+      fs.unlinkSync(filePath);
     }
-
-    if (errorArray.length > 0) {
-      await sendErrorEmailToAdmin(errorArray);
-    }
-
-    return res.status(200).json({
-      message: "DSR upload process completed!",
-    });
   }
-   catch (err) {
-    console.log({message: err.message})
-    return res.status(400).json({message : "Internal server error"});
-  } 
-  finally{
-    fs.unlinkSync(filePath);
-  }
-});
+);
 
 // Function to send error email to admin
 async function sendErrorEmailToAdmin(errorArray) {
   const errorDetails = errorArray
     .map(
       (error, index) =>
-        `Entry #${error.index + 1}: ${JSON.stringify(error.entry)}\nError: ${error.error}\n\n`
+        `Entry #${error.index + 1}: ${JSON.stringify(error.entry)}\nError: ${
+          error.error
+        }\n\n`
     )
     .join("\n");
   await sendEmail({
@@ -858,25 +856,31 @@ async function sendErrorEmailToAdmin(errorArray) {
   });
 }
 
-router.get("/findJobs/:phone", async (req, res) =>{
+router.get("/findJobs/:phone", async (req, res) => {
   try {
     const candidate = await DSR.findOne({ phone: req.params.phone });
-    if(!candidate) {
-      return res.status(404).send({success:false,message:"No candidates found"});
+    if (!candidate) {
+      return res
+        .status(404)
+        .send({ success: false, message: "No candidates found" });
     }
-    
+
     const suitableJobs = await Jobs.find({
-      $or:[
-        { City  : candidate.currentLocation },
-        { State : candidate.currentLocation }
+      $or: [
+        { City: candidate.currentLocation },
+        { State: candidate.currentLocation },
       ],
       JobStatus: "Active",
-      MaxSalary:{
-        $gte: (candidate.currentCTC),
-        $lte: (candidate.currentCTC * 1.5),
+      MaxSalary: {
+        $gte: candidate.currentCTC,
+        $lte: candidate.currentCTC * 1.5,
       },
     });
-    res.status(200).json({ success:true,suitableJobs, candidateName: candidate.candidateName });
+    res.status(200).json({
+      success: true,
+      suitableJobs,
+      candidateName: candidate.candidateName,
+    });
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -976,191 +980,170 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
   });
 };
 
-
 router.get("/find-bulk-jobs", async (req, res) => {
   try {
     const { recipientEmail, fromDate, toDate, location, ctcStart, ctcEnd } =
-      req.query; 
-   
+      req.query;
+
     if (!fromDate || !toDate) {
       return res.status(400).send("Please provide fromDate and toDate");
     }
 
-   
-
-  
- 
-    const candidates = await DSR.aggregate(
-      [
-        {
-          $match:{
-             currentLocation: { $in: location },
-             currentCTC: { 
-                           $gte: parseFloat(ctcStart), 
-                           $lte : parseFloat(ctcEnd)
-                         },
-             currentDate : {
-               $gte : new Date(fromDate),
-               $lte : new Date(toDate),
-             }            
-          }
-        }
-      ]
-    );
-
-
-
-    
+    const candidates = await DSR.aggregate([
+      {
+        $match: {
+          currentLocation: { $in: location },
+          currentCTC: {
+            $gte: parseFloat(ctcStart),
+            $lte: parseFloat(ctcEnd),
+          },
+          currentDate: {
+            $gte: new Date(fromDate),
+            $lte: new Date(toDate),
+          },
+        },
+      },
+    ]);
 
     if (!candidates.length) {
       return res.status(404).send("No candidates found");
     }
-    
 
     // console.log(candidates)
-    
 
-    const citiesOfCandidates    = []
-    const channelsOfCandidates  = []
-    
+    const citiesOfCandidates = [];
+    const channelsOfCandidates = [];
 
-    candidates.forEach((candidate) => {      
-      citiesOfCandidates.push(candidate.currentLocation)
-    })
+    candidates.forEach((candidate) => {
+      citiesOfCandidates.push(candidate.currentLocation);
+    });
 
     const allJobs = await Jobs.find({
       $or: [
-        { City: { $in: citiesOfCandidates } }, 
-        { State: { $in: citiesOfCandidates } }
+        { City: { $in: citiesOfCandidates } },
+        { State: { $in: citiesOfCandidates } },
       ],
     });
 
-    console.log(allJobs)
- 
+    console.log(allJobs);
+
     const recommendations = [];
 
-
-    for (const candidate of candidates){
-
-      const suitableJobs = allJobs.filter((job)=>{
+    for (const candidate of candidates) {
+      const suitableJobs = allJobs.filter((job) => {
         return (
-             job.JobStatus == "Active" &&
-             (job.City===candidate.currentLocation || job.State===candidate.currentLocation) &&
-             (job.MaxSalary >= candidate.currentCTC &&
-             job.MaxSalary <= candidate.currentCTC * 1.5)
-        )
+          job.JobStatus == "Active" &&
+          (job.City === candidate.currentLocation ||
+            job.State === candidate.currentLocation) &&
+          job.MaxSalary >= candidate.currentCTC &&
+          job.MaxSalary <= candidate.currentCTC * 1.5
+        );
       });
 
-      
-      
       recommendations.push({
         candidate: candidate,
         jobs: suitableJobs,
-      });      
-    }
-    
-    console.log(recommendations.length)
-    if(recommendations.length==0){
-       res.status(200).json({
-        success:false,
-        message:'No jobs found for candidates of this region'
-       })
+      });
     }
 
+    console.log(recommendations.length);
+    if (recommendations.length == 0) {
+      res.status(200).json({
+        success: false,
+        message: "No jobs found for candidates of this region",
+      });
+    }
 
-    async function generateExcelFile(jobs){
-      const workbook = new Exceljs.Workbook()
-      const worksheet = workbook.addWorksheet('Jobs');
+    async function generateExcelFile(jobs) {
+      const workbook = new Exceljs.Workbook();
+      const worksheet = workbook.addWorksheet("Jobs");
 
-      
       worksheet.columns = [
-        { header: 'Candidate Name', key: 'candidateName', width: 30 },
-        { header: 'Candidate Phone no.', key: 'candidatePhoneNumber', width: 30 },
-        { header: 'Candidate Location', key: 'candidateLocation', width: 30 },
-        { header: 'Candidate Current CTC(LPA)', key: 'candidateCTC' , width:10},
-        { header: 'Company', key:'company', width: 25 },
-        { header: 'Job Title', key: 'title', width: 45 },
-        { header: 'City', key: 'city', width: 20 },
-        { header: 'Channel', key: 'channel', width: 20 },
-        { header: 'Job CTC(LPA)', key: 'jobCTC', width: 15 },
-        { header: 'Industry', key: 'industry', width:20},
-        { header: 'Zone' , key: 'zone' , width:15},
-        { header: 'State', key: 'state', width:15 }
-
+        { header: "Candidate Name", key: "candidateName", width: 30 },
+        {
+          header: "Candidate Phone no.",
+          key: "candidatePhoneNumber",
+          width: 30,
+        },
+        { header: "Candidate Location", key: "candidateLocation", width: 30 },
+        {
+          header: "Candidate Current CTC(LPA)",
+          key: "candidateCTC",
+          width: 10,
+        },
+        { header: "Company", key: "company", width: 25 },
+        { header: "Job Title", key: "title", width: 45 },
+        { header: "City", key: "city", width: 20 },
+        { header: "Channel", key: "channel", width: 20 },
+        { header: "Job CTC(LPA)", key: "jobCTC", width: 15 },
+        { header: "Industry", key: "industry", width: 20 },
+        { header: "Zone", key: "zone", width: 15 },
+        { header: "State", key: "state", width: 15 },
       ];
 
-      
-
-
-      jobs?.forEach((data)=>{
-
-           data?.jobs.forEach((job)=>{
-                worksheet.addRow({
-                  candidateName: data.candidate.candidateName,
-                  candidatePhoneNumber:data.candidate.phone,
-                  candidateLocation:data.candidate.currentLocation,
-                  candidateCTC: data.candidate.currentCTC,
-                  company: job.Company,
-                  title: job.JobTitle,
-                  city: job.City,
-                  channel: job.Channel,
-                  jobCTC: job.MaxSalary,
-                  industry : job.Industry,
-                  zone: job.Zone,
-                  state: job.State
-                });
-           })
-
-      })
-
-
-      worksheet.eachRow((row, rowNumber) => {
-        row.eachCell((cell) => {
-          cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+      jobs?.forEach((data) => {
+        data?.jobs.forEach((job) => {
+          worksheet.addRow({
+            candidateName: data.candidate.candidateName,
+            candidatePhoneNumber: data.candidate.phone,
+            candidateLocation: data.candidate.currentLocation,
+            candidateCTC: data.candidate.currentCTC,
+            company: job.Company,
+            title: job.JobTitle,
+            city: job.City,
+            channel: job.Channel,
+            jobCTC: job.MaxSalary,
+            industry: job.Industry,
+            zone: job.Zone,
+            state: job.State,
+          });
         });
       });
 
+      worksheet.eachRow((row, rowNumber) => {
+        row.eachCell((cell) => {
+          cell.alignment = {
+            horizontal: "center",
+            vertical: "middle",
+            wrapText: true,
+          };
+        });
+      });
 
-      const filePath = path.join(__dirname, 'suitableJobs.xlsx');
-      console.log(filePath)
+      const filePath = path.join(__dirname, "suitableJobs.xlsx");
+      console.log(filePath);
       await workbook.xlsx.writeFile(filePath);
-      return filePath; 
+      return filePath;
     }
-
 
     async function sendEmailWithAttachment(recipient, filePath) {
       await sendEmail({
         to: recipient,
-        subject: 'Suitable Jobs for Candidates',
-        text: 'Find attached the suitable jobs for candidates.',
+        subject: "Suitable Jobs for Candidates",
+        text: "Find attached the suitable jobs for candidates.",
         attachments: [
           {
-            filename: 'suitableJobs.xlsx',
+            filename: "suitableJobs.xlsx",
             path: filePath,
-            contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            contentType:
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           },
         ],
       });
       fs.unlinkSync(filePath);
     }
 
-     
     const recruiterMail = [];
-    
 
-                             
     const filePath = await generateExcelFile(recommendations);
     await sendEmailWithAttachment(recipientEmail, filePath);
-    
 
     res.status(200).json({
-      success:true,
-      message:'E-Mail Sent successFully'
+      success: true,
+      message: "E-Mail Sent successFully",
     });
-
-
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).send(error.message);
   }
 });
@@ -1169,27 +1152,24 @@ router.get("/find-bulk-jobs", async (req, res) => {
 
 router.get("/get-dsr-data", async (req, res) => {
   try {
-
     const uniqueData = await DSR.aggregate([
       {
         $group: {
           _id: null,
           uniqueRecruiters: { $addToSet: "$recruiterName" },
-          uniqueCities: { $addToSet: "$currentLocation" }
-        }
-      }
+          uniqueCities: { $addToSet: "$currentLocation" },
+        },
+      },
     ]);
 
     if (uniqueData.length > 0) {
       res.status(200).json({
         recruiters: uniqueData[0].uniqueRecruiters,
-        cities: uniqueData[0].uniqueCities
+        cities: uniqueData[0].uniqueCities,
       });
     } else {
       res.status(200).json({ recruiters: [], cities: [] });
     }
-
-
   } catch (error) {
     console.error("Error fetching DSR data:", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -1232,7 +1212,10 @@ router.post("/register-recruiter-kam", async (req, res) => {
 });
 
 // DELETE A REVIEW
-router.delete("/delete-review/:id", AdminAuthenticateToken, async (req, res) => {
+router.delete(
+  "/delete-review/:id",
+  AdminAuthenticateToken,
+  async (req, res) => {
     try {
       const { id } = req.params;
 
@@ -1248,9 +1231,6 @@ router.delete("/delete-review/:id", AdminAuthenticateToken, async (req, res) => 
     }
   }
 );
-
-
-
 
 // FETCHING ALL employees
 router.get("/all-employees", AdminAuthenticateToken, async (req, res) => {
@@ -1304,7 +1284,10 @@ router.get("/all-employees/:id", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
-router.delete("/delete/employee/:id",AdminAuthenticateToken,async (req, res, next) => {
+router.delete(
+  "/delete/employee/:id",
+  AdminAuthenticateToken,
+  async (req, res, next) => {
     try {
       const { id } = req.params;
       console.log(id);
@@ -1322,7 +1305,10 @@ router.delete("/delete/employee/:id",AdminAuthenticateToken,async (req, res, nex
   }
 );
 
-router.put("/update-status/employee/:id",AdminAuthenticateToken,async (req, res, next) => {
+router.put(
+  "/update-status/employee/:id",
+  AdminAuthenticateToken,
+  async (req, res, next) => {
     try {
       const { id } = req.params;
       const { status } = req.body;
@@ -1367,12 +1353,13 @@ const SendMailWhenEditEmployee = async (email, updatedFields) => {
   });
 };
 
-router.put("/all-employees-edit/:id",AdminAuthenticateToken,async (req, res) => {
+router.put(
+  "/all-employees-edit/:id",
+  AdminAuthenticateToken,
+  async (req, res) => {
     // console.log("request-accepted")
     try {
       const { id } = req.params;
-
-      
 
       const updatedFields = {};
 
@@ -1391,12 +1378,9 @@ router.put("/all-employees-edit/:id",AdminAuthenticateToken,async (req, res) => 
       if (req.body.doj) {
         updatedFields.doj = req.body.doj;
       }
-      if(req.body.kpiDesignation){
-        updatedFields.kpiDesignation = req.body.kpiDesignation
+      if (req.body.kpiDesignation) {
+        updatedFields.kpiDesignation = req.body.kpiDesignation;
       }
-
-  
-     
 
       updatedFields.accountHandler = req.body.accountHandler;
 
@@ -1585,7 +1569,10 @@ router.get("/leave-report/:id", AdminAuthenticateToken, async (req, res) => {
 });
 
 // GET PERFORMANCE REPORT OF AN EMPLOYEE
-router.get("/performance-report/:id",AdminAuthenticateToken,async (req, res) => {
+router.get(
+  "/performance-report/:id",
+  AdminAuthenticateToken,
+  async (req, res) => {
     try {
       const { id } = req.params;
       const { email } = req.user;
@@ -1613,7 +1600,10 @@ router.get("/performance-report/:id",AdminAuthenticateToken,async (req, res) => 
 );
 
 // CREATE A GOAL SHEET OF AN EMPLOYEE
-router.post("/create-goalsheet/:id",AdminAuthenticateToken,async (req, res) => {
+router.post(
+  "/create-goalsheet/:id",
+  AdminAuthenticateToken,
+  async (req, res) => {
     try {
       const { id } = req.params;
       const { year } = req.body;
@@ -1641,7 +1631,6 @@ router.post("/create-goalsheet/:id",AdminAuthenticateToken,async (req, res) => {
     }
   }
 );
-
 
 router.post("/set-goalSheet", async (req, res) => {
   const {
@@ -1715,13 +1704,10 @@ router.post("/set-goalSheet", async (req, res) => {
       )
     );
 
-   
-
     // Calculate necessary fields
 
     let target;
 
-    
     if (employee.empType === "Recruiter") {
       target = cost * 4;
     } else if (employee.empType === "SeniorRecruiter") {
@@ -1830,7 +1816,6 @@ router.get("/goalsheet/:id", AdminAuthenticateToken, async (req, res) => {
 
 // EDIT A GOALSHEET
 router.put("/edit-goalSheet", async (req, res) => {
-  
   const {
     empId,
     year,
@@ -1846,9 +1831,6 @@ router.put("/edit-goalSheet", async (req, res) => {
     selectedColor,
   } = req.body;
 
- 
-
-
   try {
     // Find the employee by empId
     const employee = await Employees.findOne({ _id: empId });
@@ -1862,16 +1844,12 @@ router.put("/edit-goalSheet", async (req, res) => {
       return res.status(404).json({ error: "GoalSheet not found" });
     }
 
-    const goalSheet =  goalSheetBeforeSort.goalSheetDetails.sort(
-      (a, b) => {
-        if (a.year !== b.year) {
-          return a.year - b.year;
-        }
-        return a.month - b.month;
+    const goalSheet = goalSheetBeforeSort.goalSheetDetails.sort((a, b) => {
+      if (a.year !== b.year) {
+        return a.year - b.year;
       }
-    );
-
-    
+      return a.month - b.month;
+    });
 
     const goalDetailIndex = goalSheet.findIndex(
       (data) => data?._id.toString() === sheetId.toString()
@@ -1909,8 +1887,6 @@ router.put("/edit-goalSheet", async (req, res) => {
 
       // let target;
 
-      
-
       if (employee.empType === "Recruiter") {
         goalDetail.target = parseInt(cost) * 4;
       } else if (employee.empType === "SeniorRecruiter") {
@@ -1926,7 +1902,6 @@ router.put("/edit-goalSheet", async (req, res) => {
     }
 
     if (revenue !== goalDetail?.revenue) {
-    
       // Calculate cumulativeRevenue based on the new revenue value
       const updatedCumulativeRevenue =
         previousCumulativeRevenue + parseInt(revenue);
@@ -1934,8 +1909,8 @@ router.put("/edit-goalSheet", async (req, res) => {
       goalDetail.revenue = parseInt(revenue);
       goalDetail.cumulativeRevenue = updatedCumulativeRevenue;
 
-      console.log(updatedCumulativeRevenue / goalDetail.cumulativeCost)
-     
+      console.log(updatedCumulativeRevenue / goalDetail.cumulativeCost);
+
       // Update achMTD and achYTD if revenue is provided
       goalDetail.achMTD = cost
         ? (revenue / cost).toFixed(2)
@@ -1961,16 +1936,14 @@ router.put("/edit-goalSheet", async (req, res) => {
       goalDetail.leakage = leakage;
     }
 
-    if(selectedColor !== null){
-         goalDetail.incentiveStatusColor = selectedColor
+    if (selectedColor !== null) {
+      goalDetail.incentiveStatusColor = selectedColor;
     }
 
-
     if (goalSheet.length > 1) {
-      
-      for (let i = goalDetailIndex ; i < goalSheet.length; i++) {
+      for (let i = goalDetailIndex; i < goalSheet.length; i++) {
         const detail = goalSheet[i];
-       
+
         detail.cumulativeCost = goalSheet[i - 1].cumulativeCost + detail.cost;
         detail.cumulativeRevenue =
           goalSheet[i - 1].cumulativeRevenue + detail.revenue;
@@ -1980,8 +1953,6 @@ router.put("/edit-goalSheet", async (req, res) => {
         detail.achMTD = (detail.revenue / detail.cost).toFixed(2);
       }
     }
-
-    
 
     // Save the updated GoalSheet
     await goalSheetBeforeSort.save();
@@ -1997,81 +1968,78 @@ router.put("/edit-goalSheet", async (req, res) => {
   }
 });
 
+router.delete(
+  "/delete-goalsheet/:empId/:sheetId",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { empId, sheetId } = req.params;
 
-router.delete("/delete-goalsheet/:empId/:sheetId",AdminAuthenticateToken,async (req, res) => {
-      try{
-
-          const { empId,sheetId } = req.params;
-
-          const employee = await Employees.findOne({ _id: empId });
-          if (!employee) {
-            return res.status(404).json({ error: "Employee not found" });
-          }
-
-          const goalSheetBeforeSort = await GoalSheet.findOne({ owner: employee._id });
-
-          
-          const goalSheetAfterSort =  goalSheetBeforeSort.goalSheetDetails.sort(
-            (a, b) => {
-              if (a.year !== b.year) {
-                return a.year - b.year;
-              }
-              return a.month - b.month;
-            }
-          );
-      
-          
-      
-          const goalDetailIndex = goalSheetAfterSort.findIndex(
-            (data) => data?._id.toString() === sheetId.toString()
-          );
-      
-          if (goalDetailIndex === -1) {
-            console.log(typeof goalDetailIndex);
-            return res
-              .status(404)
-              .json({ error: "GoalSheet for this month and year not found" });
-          }
-
-
-          goalSheetAfterSort.splice(goalDetailIndex, 1);
-
-       
-          if (goalSheetAfterSort.length >= 1 && goalDetailIndex >=1) {
-       
-      
-            for (let i = goalDetailIndex ; i < goalSheetAfterSort.length; i++) {
-              const detail = goalSheetAfterSort[i];
-
-              console.log(detail)
-             
-              detail.cumulativeCost = goalSheetAfterSort[i - 1].cumulativeCost + detail.cost;
-              detail.cumulativeRevenue =
-              goalSheetAfterSort[i - 1].cumulativeRevenue + detail.revenue;
-              detail.achYTD = (
-                detail.cumulativeRevenue / detail.cumulativeCost
-              ).toFixed(2);
-              detail.achMTD = (detail.revenue / detail.cost).toFixed(2);
-            }
-          }
-
-          await goalSheetBeforeSort.save();      
-
-
-
-          res.status(200).json({ message: "GoalSheet deleted successfully" });  
-            
+      const employee = await Employees.findOne({ _id: empId });
+      if (!employee) {
+        return res.status(404).json({ error: "Employee not found" });
       }
-      catch(error){
-        res
+
+      const goalSheetBeforeSort = await GoalSheet.findOne({
+        owner: employee._id,
+      });
+
+      const goalSheetAfterSort = goalSheetBeforeSort.goalSheetDetails.sort(
+        (a, b) => {
+          if (a.year !== b.year) {
+            return a.year - b.year;
+          }
+          return a.month - b.month;
+        }
+      );
+
+      const goalDetailIndex = goalSheetAfterSort.findIndex(
+        (data) => data?._id.toString() === sheetId.toString()
+      );
+
+      if (goalDetailIndex === -1) {
+        console.log(typeof goalDetailIndex);
+        return res
+          .status(404)
+          .json({ error: "GoalSheet for this month and year not found" });
+      }
+
+      goalSheetAfterSort.splice(goalDetailIndex, 1);
+
+      if (goalSheetAfterSort.length >= 1 && goalDetailIndex >= 1) {
+        for (let i = goalDetailIndex; i < goalSheetAfterSort.length; i++) {
+          const detail = goalSheetAfterSort[i];
+
+          console.log(detail);
+
+          detail.cumulativeCost =
+            goalSheetAfterSort[i - 1].cumulativeCost + detail.cost;
+          detail.cumulativeRevenue =
+            goalSheetAfterSort[i - 1].cumulativeRevenue + detail.revenue;
+          detail.achYTD = (
+            detail.cumulativeRevenue / detail.cumulativeCost
+          ).toFixed(2);
+          detail.achMTD = (detail.revenue / detail.cost).toFixed(2);
+        }
+      }
+
+      await goalSheetBeforeSort.save();
+
+      res.status(200).json({ message: "GoalSheet deleted successfully" });
+    } catch (error) {
+      res
         .status(500)
         .json({ error: "An error occurred", details: error.message });
-         console.log(error);
-      }
- })
+      console.log(error);
+    }
+  }
+);
 
 // GET ALL THE DUPLICATE PHONE NUMBER REQUESTS
-router.get("/duplicate-phone-requests",AdminAuthenticateToken,async (req, res) => {
+router.get(
+  "/duplicate-phone-requests",
+  AdminAuthenticateToken,
+  async (req, res) => {
     try {
       // Find all AccountHandling documents with non-empty requests
       const duplicatePhoneRequests = await AccountHandling.find({
@@ -2093,48 +2061,48 @@ router.get("/duplicate-phone-requests",AdminAuthenticateToken,async (req, res) =
 );
 
 const kpiScoreSchema = z.object({
-  owner:z.string(),
-  month:z.string(),
-  year:z.coerce.number(),
-  costVsRevenue:z.object({
-      target:z.coerce.number(),
-      actual:z.coerce.number()
-  }).optional(),
-  successfulDrives:z.object({
-      target:z.coerce.number(),
-      actual:z.coerce.number()
+  owner: z.string(),
+  month: z.string(),
+  year: z.coerce.number(),
+  costVsRevenue: z
+    .object({
+      target: z.coerce.number(),
+      actual: z.coerce.number(),
+    })
+    .optional(),
+  successfulDrives: z.object({
+    target: z.coerce.number(),
+    actual: z.coerce.number(),
   }),
-  accounts:z.object({
-      target:z.coerce.number(),
-      actual:z.coerce.number()
+  accounts: z.object({
+    target: z.coerce.number(),
+    actual: z.coerce.number(),
   }),
-  mentorship:z.object({
-      target:z.coerce.number(),
-      actual:z.coerce.number()
+  mentorship: z.object({
+    target: z.coerce.number(),
+    actual: z.coerce.number(),
   }),
-  processAdherence:z.object({
-      target:z.coerce.number(),
-      actual:z.coerce.number()
+  processAdherence: z.object({
+    target: z.coerce.number(),
+    actual: z.coerce.number(),
   }),
-  leakage:z.object({
-      target:z.coerce.number(),
-      actual:z.coerce.number()
+  leakage: z.object({
+    target: z.coerce.number(),
+    actual: z.coerce.number(),
   }),
-  noOfJoining:z.object({
-      target:z.coerce.number(),
-      actual:z.coerce.number()
-  })
-})
-
-
+  noOfJoining: z.object({
+    target: z.coerce.number(),
+    actual: z.coerce.number(),
+  }),
+});
 
 // SET KPI SCORE
-router.post("/set-kpi-score", AdminAuthenticateToken, async(req, res) => {
+router.post("/set-kpi-score", AdminAuthenticateToken, async (req, res) => {
   try {
+    if (!(req.user.role !== "superAdmin" || req.user.role !== "kpiAdmin"))
+      return res.status(403).json({ message: "Not authorized" });
 
-     if(!(req.user.role !== "superAdmin"|| req.user.role !== "kpiAdmin")) return res.status(403).json({ message: "Not authorized" });
-
-    const  {
+    const {
       owner,
       month,
       year,
@@ -2146,201 +2114,182 @@ router.post("/set-kpi-score", AdminAuthenticateToken, async(req, res) => {
       leakage,
     } = req.body;
 
-   
-    
+    const { success, error } = kpiScoreSchema.safeParse(req.body);
 
-
-    const {success, error} = kpiScoreSchema.safeParse(req.body)
-
-    if(error){
-      return res.status(422).json({message:"Validation failed of input fields"})
+    if (error) {
+      return res
+        .status(422)
+        .json({ message: "Validation failed of input fields" });
     }
-
-   
-
-   
 
     // Find the KPI document for the owner
     let kpi = await KPI.findOne({ owner: owner }).populate("owner");
 
-     if (!kpi) {
+    if (!kpi) {
       console.log("enter");
       kpi = new KPI({ owner: owner, kpis: [] });
 
-      
-      const ownerData = await Employees.findById(owner); 
+      const ownerData = await Employees.findById(owner);
       kpi.owner = ownerData;
     }
-  
-    if(!kpi.owner?.kpiDesignation){
-      return res.status(404).json({message:"Please first set the KPI designation of the employee"})
+
+    if (!kpi.owner?.kpiDesignation) {
+      return res.status(404).json({
+        message: "Please first set the KPI designation of the employee",
+      });
     }
 
     const weights = {
       "Recruiter/KAM/Mentor": {
         costVsRevenue: 25,
-        successfulDrives:15,
-        accounts:15,
-        mentorship:20,
-        processAdherence:10,
-        leakage:15
+        successfulDrives: 15,
+        accounts: 15,
+        mentorship: 20,
+        processAdherence: 10,
+        leakage: 15,
       },
-      "Recruiter" : {
+      Recruiter: {
         costVsRevenue: 60,
-        successfulDrives:15,
-        processAdherence:10,
-        leakage:15
+        successfulDrives: 15,
+        processAdherence: 10,
+        leakage: 15,
       },
       "Sr. Consultant": {
         costVsRevenue: 25,
-        successfulDrives:15,
-        accounts:15,
-        processAdherence:10,
-        leakage:15   
-      }
-    }
-    
-  
-
-   
+        successfulDrives: 15,
+        accounts: 15,
+        processAdherence: 10,
+        leakage: 15,
+      },
+    };
 
     // Helper function to calculate weight and kpiScore
     const calculateScore = (target, actual, weightPercentage) => {
-      if (target === 0||actual===0) return { weight: 0, kpiScore: 0 };
+      if (target === 0 || actual === 0) return { weight: 0, kpiScore: 0 };
       const weight = parseFloat((actual / target).toFixed(2));
-      const kpiScore = parseFloat(((weightPercentage / 100) * weight).toFixed(2));
+      const kpiScore = parseFloat(
+        ((weightPercentage / 100) * weight).toFixed(2)
+      );
 
       return { weight, kpiScore };
     };
-    console.log(1)
+    console.log(1);
 
-    let costVsRevenueScore =0;
-     
-    if(costVsRevenue){
-    
-        costVsRevenueScore = calculateScore(
+    let costVsRevenueScore = 0;
+
+    if (costVsRevenue) {
+      costVsRevenueScore = calculateScore(
         costVsRevenue.target,
         costVsRevenue.actual,
         weights[kpi.owner?.kpiDesignation]?.costVsRevenue
       );
     }
 
-    console.log(2)
-
-  
+    console.log(2);
 
     const successfulDrivesScore = calculateScore(
       successfulDrives.target,
       successfulDrives.actual,
       weights[kpi.owner?.kpiDesignation]?.successfulDrives
     );
-    
-    let accountsScore= null
-    if(accounts&&kpi.owner?.kpiDesignation==="Recruiter/KAM/Mentor"||kpi.owner?.kpiDesignation==="Sr. Consultant"){
-   
-       accountsScore = calculateScore(
+
+    let accountsScore = null;
+    if (
+      (accounts && kpi.owner?.kpiDesignation === "Recruiter/KAM/Mentor") ||
+      kpi.owner?.kpiDesignation === "Sr. Consultant"
+    ) {
+      accountsScore = calculateScore(
         accounts.target,
-        accounts.actual, 
+        accounts.actual,
         weights[kpi.owner?.kpiDesignation]?.accounts
-     );
-    }  
-   
-    let mentorshipScore =null
-    if(mentorship&&kpi.owner?.kpiDesignation==="Recruiter/KAM/Mentor"){    
-      mentorshipScore = calculateScore(
-      mentorship.target,
-      mentorship.actual,
-      weights[kpi.owner?.kpiDesignation]?.mentorship
-    );
+      );
     }
-    
+
+    let mentorshipScore = null;
+    if (mentorship && kpi.owner?.kpiDesignation === "Recruiter/KAM/Mentor") {
+      mentorshipScore = calculateScore(
+        mentorship.target,
+        mentorship.actual,
+        weights[kpi.owner?.kpiDesignation]?.mentorship
+      );
+    }
+
     const processAdherenceScore = calculateScore(
       processAdherence.target,
       processAdherence.actual,
       weights[kpi.owner?.kpiDesignation]?.processAdherence
     );
     const leakageScore = calculateScore(
-      leakage.target, 
-      leakage.actual, 
+      leakage.target,
+      leakage.actual,
       weights[kpi.owner?.kpiDesignation]?.leakage
     );
-  
-
 
     // Calculate total KPI score
     const totalKPIScore = parseFloat(
-      (
-        Number(costVsRevenueScore?.kpiScore||0) +
+      (Number(costVsRevenueScore?.kpiScore || 0) +
         Number(successfulDrivesScore?.kpiScore) +
         Number(accountsScore?.kpiScore || 0) +
         Number(mentorshipScore?.kpiScore || 0) +
         Number(processAdherenceScore?.kpiScore) +
-        Number(leakageScore?.kpiScore)
-      ) * 100
+        Number(leakageScore?.kpiScore)) *
+        100
     ).toFixed(3);
 
-    
     // Construct the new KPI month information
     const newKpiMonth = {
       kpiMonth: {
         month: month,
-        year: (year),
+        year: year,
         costVsRevenue: {
-          target:   (costVsRevenue?.target)||0,
-          actual:   (costVsRevenue?.actual)||0,
-          weight:   (costVsRevenueScore.weight)||0,
-          kpiScore: (costVsRevenueScore.kpiScore)||0,
+          target: costVsRevenue?.target || 0,
+          actual: costVsRevenue?.actual || 0,
+          weight: costVsRevenueScore.weight || 0,
+          kpiScore: costVsRevenueScore.kpiScore || 0,
         },
         successfulDrives: {
-          target:   (successfulDrives.target),
-          actual:   (successfulDrives.actual),
-          weight:   (successfulDrivesScore.weight),
-          kpiScore: (successfulDrivesScore.kpiScore),
+          target: successfulDrives.target,
+          actual: successfulDrives.actual,
+          weight: successfulDrivesScore.weight,
+          kpiScore: successfulDrivesScore.kpiScore,
         },
-        
-        processAdherence:{
-          target:   (processAdherence.target),
-          actual:   (processAdherence.actual),
-          weight:   (processAdherenceScore.weight),
-          kpiScore: (processAdherenceScore.kpiScore),
+
+        processAdherence: {
+          target: processAdherence.target,
+          actual: processAdherence.actual,
+          weight: processAdherenceScore.weight,
+          kpiScore: processAdherenceScore.kpiScore,
         },
         leakage: {
-          target:   (leakage.target),
-          actual:   (leakage.actual),
-          weight:   (leakageScore.weight),
-          kpiScore: (leakageScore.kpiScore),
+          target: leakage.target,
+          actual: leakage.actual,
+          weight: leakageScore.weight,
+          kpiScore: leakageScore.kpiScore,
         },
 
-        totalKPIScore: (totalKPIScore),
+        totalKPIScore: totalKPIScore,
       },
     };
-   
 
-    if(accounts&&accountsScore){
+    if (accounts && accountsScore) {
       newKpiMonth.kpiMonth.accounts = {
-        target:   (accounts.target),
-        actual:   (accounts.actual),
-        weight:   (accountsScore.weight),
-        kpiScore: (accountsScore.kpiScore),
-      }
+        target: accounts.target,
+        actual: accounts.actual,
+        weight: accountsScore.weight,
+        kpiScore: accountsScore.kpiScore,
+      };
     }
 
-  
-
-    if(mentorship&&mentorshipScore){
+    if (mentorship && mentorshipScore) {
       newKpiMonth.kpiMonth.mentorship = {
-        target:   (mentorship.target),
-        actual:   (mentorship.actual),
-        weight:   (mentorshipScore.weight),
-        kpiScore: (mentorshipScore.kpiScore),
-      }
-    } 
+        target: mentorship.target,
+        actual: mentorship.actual,
+        weight: mentorshipScore.weight,
+        kpiScore: mentorshipScore.kpiScore,
+      };
+    }
 
-    
-
-    
-
-    // Push the new KPI month information to the kpis array 
+    // Push the new KPI month information to the kpis array
     kpi.kpis.push(newKpiMonth);
 
     // Save the KPI document
@@ -2353,209 +2302,268 @@ router.post("/set-kpi-score", AdminAuthenticateToken, async(req, res) => {
   }
 });
 
-
-
 const editKpiScoreSchema = z.object({
   owner: z.string(),
   month: z.string().optional(),
   year: z.coerce.number().optional(),
-  costVsRevenue: z.object({
-    target: z.coerce.number(),
-    actual: z.coerce.number()
-  }).optional(),
-  successfulDrives: z.object({
-    target: z.coerce.number(),
-    actual: z.coerce.number()
-  }).optional(),
+  costVsRevenue: z
+    .object({
+      target: z.coerce.number(),
+      actual: z.coerce.number(),
+    })
+    .optional(),
+  successfulDrives: z
+    .object({
+      target: z.coerce.number(),
+      actual: z.coerce.number(),
+    })
+    .optional(),
   // Make all other fields optional similarly
-  accounts: z.object({
-    target: z.coerce.number(),
-    actual: z.coerce.number()
-  }).optional(),
-  mentorship: z.object({
-    target: z.coerce.number(),
-    actual: z.coerce.number()
-  }).optional(),
-  processAdherence: z.object({
-    target: z.coerce.number(),
-    actual: z.coerce.number()
-  }).optional(),
-  leakage: z.object({
-    target: z.coerce.number(),
-    actual: z.coerce.number()
-  }).optional(),
-  noOfJoining: z.object({
-    target: z.coerce.number(),
-    actual: z.coerce.number()
-  }).optional()
+  accounts: z
+    .object({
+      target: z.coerce.number(),
+      actual: z.coerce.number(),
+    })
+    .optional(),
+  mentorship: z
+    .object({
+      target: z.coerce.number(),
+      actual: z.coerce.number(),
+    })
+    .optional(),
+  processAdherence: z
+    .object({
+      target: z.coerce.number(),
+      actual: z.coerce.number(),
+    })
+    .optional(),
+  leakage: z
+    .object({
+      target: z.coerce.number(),
+      actual: z.coerce.number(),
+    })
+    .optional(),
+  noOfJoining: z
+    .object({
+      target: z.coerce.number(),
+      actual: z.coerce.number(),
+    })
+    .optional(),
 });
 
-router.put("/edit-kpi-score/:kpiId",AdminAuthenticateToken, async (req, res) => {
-  try {
-     if(!(req.user.role !== "superAdmin"|| req.user.role !== "kpiAdmin")) return res.status(403).json({ message: "Not authorized" });
+router.put(
+  "/edit-kpi-score/:kpiId",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      if (!(req.user.role !== "superAdmin" || req.user.role !== "kpiAdmin"))
+        return res.status(403).json({ message: "Not authorized" });
 
-    const parsed = editKpiScoreSchema.safeParse(req.body);
+      const parsed = editKpiScoreSchema.safeParse(req.body);
 
-    if (!parsed.success) {
-      return res.status(422).json({ message: "Validation failed", errors: parsed.error.errors });
-    }
-
-   const {
-      owner,
-      month,
-      year,
-      costVsRevenue,
-      successfulDrives,
-      accounts,
-      mentorship,
-      processAdherence,
-      leakage,
-    } = parsed.data;
-
-    const kpi = await KPI.findOne({ owner:owner }).populate("owner");
-    if (!kpi) return res.status(404).json({ message: "KPI not found" });
-
-    const monthIndex = kpi.kpis.findIndex(k => k._id.toString() === req.params.kpiId);
-    if (monthIndex === -1) return res.status(404).json({ message: "KPI month not found" });
-
-    const weights = {
-      "Recruiter/KAM/Mentor": {
-        costVsRevenue: 25, successfulDrives: 15, accounts: 15, mentorship: 20, processAdherence: 10, leakage: 15
-      },
-      "Recruiter": {
-        costVsRevenue: 60, successfulDrives: 15, processAdherence: 10, leakage: 15
-      },
-      "Sr. Consultant": {
-        costVsRevenue: 25, successfulDrives: 15, accounts: 15, processAdherence: 10, leakage: 15
+      if (!parsed.success) {
+        return res
+          .status(422)
+          .json({ message: "Validation failed", errors: parsed.error.errors });
       }
-    };
 
-    const calculateScore = (target, actual, weightPercentage) => {
-      if (target === 0 || actual === 0) return { weight: 0, kpiScore: 0 };
-      const weight = parseFloat((actual / target).toFixed(2));
-      
-      const kpiScore = parseFloat(((weightPercentage / 100) * weight).toFixed(2));
-      return { weight, kpiScore };
-    };
+      const {
+        owner,
+        month,
+        year,
+        costVsRevenue,
+        successfulDrives,
+        accounts,
+        mentorship,
+        processAdherence,
+        leakage,
+      } = parsed.data;
 
-    
-    const role = kpi.owner?.kpiDesignation;
-    const selectedMonth = kpi.kpis[monthIndex];
-    
-    if (month!==kpi.kpis[monthIndex].kpiMonth.month) selectedMonth.kpiMonth.month = month;
-    if (year!==kpi.kpis[monthIndex].kpiMonth.year) selectedMonth.kpiMonth.year = year;
+      const kpi = await KPI.findOne({ owner: owner }).populate("owner");
+      if (!kpi) return res.status(404).json({ message: "KPI not found" });
 
-    const updateField = (field, input, allowedRoles) => {
-      if (input ) {
-        console.log(field,input)
-        const { weight, kpiScore } = calculateScore(input.target, input.actual, weights[role][field]);
+      const monthIndex = kpi.kpis.findIndex(
+        (k) => k._id.toString() === req.params.kpiId
+      );
+      if (monthIndex === -1)
+        return res.status(404).json({ message: "KPI month not found" });
 
-        console.log(field,weight, kpiScore)
-        selectedMonth.kpiMonth[field] = {
-          target: input.target,
-          actual: input.actual,
-          weight,
-          kpiScore
-        };
-        console.log(kpiScore)
-        return kpiScore;
+      const weights = {
+        "Recruiter/KAM/Mentor": {
+          costVsRevenue: 25,
+          successfulDrives: 15,
+          accounts: 15,
+          mentorship: 20,
+          processAdherence: 10,
+          leakage: 15,
+        },
+        Recruiter: {
+          costVsRevenue: 60,
+          successfulDrives: 15,
+          processAdherence: 10,
+          leakage: 15,
+        },
+        "Sr. Consultant": {
+          costVsRevenue: 25,
+          successfulDrives: 15,
+          accounts: 15,
+          processAdherence: 10,
+          leakage: 15,
+        },
+      };
+
+      const calculateScore = (target, actual, weightPercentage) => {
+        if (target === 0 || actual === 0) return { weight: 0, kpiScore: 0 };
+        const weight = parseFloat((actual / target).toFixed(2));
+
+        const kpiScore = parseFloat(
+          ((weightPercentage / 100) * weight).toFixed(2)
+        );
+        return { weight, kpiScore };
+      };
+
+      const role = kpi.owner?.kpiDesignation;
+      const selectedMonth = kpi.kpis[monthIndex];
+
+      if (month !== kpi.kpis[monthIndex].kpiMonth.month)
+        selectedMonth.kpiMonth.month = month;
+      if (year !== kpi.kpis[monthIndex].kpiMonth.year)
+        selectedMonth.kpiMonth.year = year;
+
+      const updateField = (field, input, allowedRoles) => {
+        if (input) {
+          console.log(field, input);
+          const { weight, kpiScore } = calculateScore(
+            input.target,
+            input.actual,
+            weights[role][field]
+          );
+
+          console.log(field, weight, kpiScore);
+          selectedMonth.kpiMonth[field] = {
+            target: input.target,
+            actual: input.actual,
+            weight,
+            kpiScore,
+          };
+          console.log(kpiScore);
+          return kpiScore;
+        }
+        return 0;
+      };
+
+      const total = [
+        costVsRevenue
+          ? updateField("costVsRevenue", costVsRevenue)
+          : kpi.kpis[monthIndex].kpiMonth.costVsRevenue.kpiScore,
+        updateField("successfulDrives", successfulDrives),
+        role === "Recruiter/KAM/Mentor" || role === "Sr. Consultant"
+          ? updateField("accounts", accounts, [
+              "Recruiter/KAM/Mentor",
+              "Sr. Consultant",
+            ])
+          : 0,
+        role === "Recruiter/KAM/Mentor"
+          ? updateField("mentorship", mentorship, [
+              "Recruiter/KAM/Mentor",
+              "Sr. Consultant",
+            ])
+          : 0,
+        updateField("processAdherence", processAdherence),
+        updateField("leakage", leakage),
+      ].reduce((sum, val) => {
+        return val ? sum + val : sum;
+      }, 0);
+
+      selectedMonth.kpiMonth.totalKPIScore = (total * 100).toFixed(3);
+
+      await kpi.save();
+
+      res.status(200).json({ message: "KPI score updated successfully" });
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).json({ message: error.message });
+    }
+  }
+);
+
+router.delete(
+  "/delete-kpi-month/:kpiId/:owner",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      if (!(req.user.role !== "superAdmin" || req.user.role !== "kpiAdmin"))
+        return res.status(403).json({ message: "Not authorized" });
+
+      // Find KPI document containing the specific month record
+      const kpi = await KPI.findOne({ owner: req.params.owner });
+      if (!kpi) {
+        return res.status(404).json({ message: "KPI record not found" });
       }
-      return 0;
-    };
 
-    const total = [
-      costVsRevenue?updateField("costVsRevenue", costVsRevenue):kpi.kpis[monthIndex].kpiMonth.costVsRevenue.kpiScore,
-      updateField("successfulDrives", successfulDrives),
-      role === "Recruiter/KAM/Mentor" || role === "Sr. Consultant"? updateField("accounts", accounts, ["Recruiter/KAM/Mentor", "Sr. Consultant"]):0,
-      role === "Recruiter/KAM/Mentor"  ? updateField("mentorship", mentorship, ["Recruiter/KAM/Mentor", "Sr. Consultant"]):0,
-      updateField("processAdherence", processAdherence),
-      updateField("leakage", leakage)
-    ].reduce((sum, val) =>{
-     return val?sum+val:sum
-    }, 0);
-   
-    
+      // Find and remove only the specific month's data
+      const monthIndex = kpi.kpis.findIndex(
+        (k) => k._id.toString() === req.params.kpiId
+      );
+      if (monthIndex === -1) {
+        return res.status(404).json({ message: "KPI month data not found" });
+      }
 
-    selectedMonth.kpiMonth.totalKPIScore = (total * 100).toFixed(3);
+      // Remove just this month's entry from the kpis array
+      kpi.kpis.splice(monthIndex, 1);
 
-    await kpi.save();
+      // Save the updated document
+      await kpi.save();
 
-    res.status(200).json({ message: "KPI score updated successfully" });
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ message: error.message });
-  }
-});
-
-router.delete("/delete-kpi-month/:kpiId/:owner", AdminAuthenticateToken, async (req, res) => {
-  try {
-
-    if(!(req.user.role !== "superAdmin"|| req.user.role !== "kpiAdmin")) return res.status(403).json({ message: "Not authorized" });
-
-    // Find KPI document containing the specific month record
-    const kpi = await KPI.findOne({ owner:req.params.owner});
-    if (!kpi) {
-      return res.status(404).json({ message: "KPI record not found" });
+      res.status(200).json({
+        message: "KPI month data deleted successfully",
+        remainingMonths: kpi.kpis.length, // Optional: return count of remaining months
+      });
+    } catch (error) {
+      console.error("Error deleting KPI month:", error);
+      res.status(500).json({
+        message: "Failed to delete KPI month data",
+        error: error.message,
+      });
     }
-
-    // Find and remove only the specific month's data
-    const monthIndex = kpi.kpis.findIndex(k => k._id.toString() === req.params.kpiId);
-    if (monthIndex === -1) {
-      return res.status(404).json({ message: "KPI month data not found" });
-    }
-
-    // Remove just this month's entry from the kpis array
-    kpi.kpis.splice(monthIndex, 1);
-
-    // Save the updated document
-    await kpi.save();
-
-    res.status(200).json({ 
-      message: "KPI month data deleted successfully",
-      remainingMonths: kpi.kpis.length // Optional: return count of remaining months
-    });
-    
-  } catch (error) {
-    console.error("Error deleting KPI month:", error);
-    res.status(500).json({ 
-      message: "Failed to delete KPI month data",
-      error: error.message 
-    });
   }
-});
-
+);
 
 // EMPLOYEE'S KPI SCORE
-router.get("/employee-kpi-score/:id",AdminAuthenticateToken,async (req, res) => {
+router.get(
+  "/employee-kpi-score/:id",
+  AdminAuthenticateToken,
+  async (req, res) => {
     try {
-      const user= req.user
+      const user = req.user;
       const { id } = req.params;
 
       const myKPI = await KPI.findOne({ owner: id }).populate("owner");
 
-     
       if (!myKPI) {
-         const employeeData = await Employees.findOne({ _id: id });
-        return res.status(201).json({ employeeData,message: "No KPI found!!!" });
+        const employeeData = await Employees.findOne({ _id: id });
+        return res
+          .status(201)
+          .json({ employeeData, message: "No KPI found!!!" });
       }
 
-      myKPI.kpis.sort((a, b) => b._id.getTimestamp()-a._id.getTimestamp());
-     
-       if (user.role === "kpiAdmin"){
-      myKPI.kpis = myKPI.kpis.map((entry) => {
-        const cloned = JSON.parse(JSON.stringify(entry));
-        if (cloned.kpiMonth && cloned.kpiMonth.costVsRevenue) {
-          cloned.kpiMonth.costVsRevenue = {
-            target: 0,
-            actual: 0,
-            weight: 0,
-            kpiScore: 0,
-          };
-        }
-        return cloned;
-      });
-    }
- 
+      myKPI.kpis.sort((a, b) => b._id.getTimestamp() - a._id.getTimestamp());
+
+      if (user.role === "kpiAdmin") {
+        myKPI.kpis = myKPI.kpis.map((entry) => {
+          const cloned = JSON.parse(JSON.stringify(entry));
+          if (cloned.kpiMonth && cloned.kpiMonth.costVsRevenue) {
+            cloned.kpiMonth.costVsRevenue = {
+              target: 0,
+              actual: 0,
+              weight: 0,
+              kpiScore: 0,
+            };
+          }
+          return cloned;
+        });
+      }
+
       res.status(200).json(myKPI);
     } catch (error) {
       console.error(error.message);
@@ -2625,63 +2633,55 @@ router.post("/download-excel", AdminAuthenticateToken, async (req, res) => {
   }
 });
 
+router.post(
+  "/upload-joiningsheet/:id",
+  AdminAuthenticateToken,
+  excelUpload.single("myFileImage"),
+  async (req, res) => {
+    try {
+      const { id } = req.params;
 
+      const employee = await Employees.findById(id);
+      if (!employee) {
+        return res.status(404).json({ message: "Employee not found." });
+      }
 
+      if (employee?.joiningExcel) {
+        const upload = await deleteFile(employee.joiningExcel, "profilepics");
+      }
 
+      let joiningExcel = null;
 
-router.post("/upload-joiningsheet/:id",AdminAuthenticateToken ,excelUpload.single('myFileImage') , async (req, res) => {
-  try{
+      try {
+        joiningExcel = await uploadFile(req.file, "profilepics");
+      } catch (err) {
+        console.log(err);
+        return;
+      }
 
-  
+      if (joiningExcel) {
+        employee.joiningExcel = joiningExcel;
+      }
 
-    const { id } = req.params;
-    
-    
+      await employee.save();
 
-    const employee = await Employees.findById(id);
-    if (!employee) {
-      return res.status(404).json({ message: "Employee not found." });
-    }
-    
-    if(employee?.joiningExcel){
-           const upload= await deleteFile(employee.joiningExcel,"profilepics");
-           
-    }
-
-    let joiningExcel = null;
-
-    try{
-      joiningExcel = await uploadFile(req.file, "profilepics");
-     
-    }
-    catch(err){
-      console.log(err)
-      return
-    }
-    
-    if(joiningExcel){
-      employee.joiningExcel = joiningExcel;
-    }
-
-    await employee.save();
-
-    res.status(200).json({
-      message: "Joinings sheet URL uploaded Successfully",
-      employeeId: employee._id,
-      joiningExcel: employee.joiningExcel,
-    });
-  } catch (error) {
-    console.log("something went wrong ", error);
-    res
-      .status(500)
-      .json({ message: "Internal server error.", error: error.message });
-  }
-  finally{
-    if (req.file && req.file.path) {
-      fs.unlinkSync(req.file.path); 
+      res.status(200).json({
+        message: "Joinings sheet URL uploaded Successfully",
+        employeeId: employee._id,
+        joiningExcel: employee.joiningExcel,
+      });
+    } catch (error) {
+      console.log("something went wrong ", error);
+      res
+        .status(500)
+        .json({ message: "Internal server error.", error: error.message });
+    } finally {
+      if (req.file && req.file.path) {
+        fs.unlinkSync(req.file.path);
+      }
     }
   }
-});
+);
 
 // Fire Ticker when ytd is lesss then 2.5
 
@@ -2717,73 +2717,78 @@ router.post("/fire-ticker/:id", async (req, res) => {
   }
 });
 
+router.post(
+  "/upload-policies",
+  AdminAuthenticateToken,
+  pdfUpload.fields([
+    { name: "leave", maxCount: 1 },
+    { name: "performance", maxCount: 1 },
+    { name: "holiday", maxCount: 1 },
+  ]),
+  async (req, res) => {
+    try {
+      const existingPolicies = await Policies.findOne();
+      const uploadedFiles = {};
 
+      if (req.files.leave && existingPolicies?.Policies?.leave) {
+        await deleteFile(existingPolicies.Policies.leave, "profilepics");
+      }
+      if (
+        req.files.performance &&
+        existingPolicies?.Policies?.performanceManagement
+      ) {
+        await deleteFile(
+          existingPolicies.Policies.performanceManagement,
+          "profilepics"
+        );
+      }
+      if (req.files.holiday && existingPolicies?.Policies?.holidayCalendar) {
+        await deleteFile(
+          existingPolicies.Policies.holidayCalendar,
+          "profilepics"
+        );
+      }
 
-router.post("/upload-policies",AdminAuthenticateToken, pdfUpload.fields([
-  { name: 'leave', maxCount: 1 },
-  { name: 'performance', maxCount: 1 },
-  { name: 'holiday', maxCount: 1 }
-]), async (req, res) => {
-  
-  try {
-    const existingPolicies = await Policies.findOne();
-    const uploadedFiles = {};
+      if (req.files.leave) {
+        const result = await uploadFile(req.files.leave[0], "profilepics");
+        uploadedFiles.leave = result;
+      } else {
+        uploadedFiles.leave = existingPolicies?.Policies?.leave || "";
+      }
 
+      if (req.files.performance) {
+        const result = await uploadFile(
+          req.files.performance[0],
+          "profilepics"
+        );
+        uploadedFiles.performanceManagement = result;
+      } else {
+        uploadedFiles.performanceManagement =
+          existingPolicies?.Policies?.performanceManagement || "";
+      }
 
-    if (req.files.leave && existingPolicies?.Policies?.leave) {
-      
-      await deleteFile(existingPolicies.Policies.leave, 'profilepics');
+      if (req.files.holiday) {
+        const result = await uploadFile(req.files.holiday[0], "profilepics");
+        uploadedFiles.holidayCalendar = result;
+      } else {
+        uploadedFiles.holidayCalendar =
+          existingPolicies?.Policies?.holidayCalendar || "";
+      }
+
+      await Policies.updateOne(
+        {},
+        { Policies: uploadedFiles },
+        { upsert: true }
+      );
+
+      return res.status(200).send("Files uploaded successfully");
+    } catch (error) {
+      console.error("Error in /upload-policies route:", error);
+      res.status(500).send("Internal server error.");
+    } finally {
     }
-    if (req.files.performance && existingPolicies?.Policies?.performanceManagement) {
-    
-      await deleteFile(existingPolicies.Policies.performanceManagement, 'profilepics');
-    }
-    if (req.files.holiday && existingPolicies?.Policies?.holidayCalendar) {
-      
-      await deleteFile(existingPolicies.Policies.holidayCalendar, 'profilepics');
-    }
-
-   
-    if (req.files.leave) {
-     
-      const result = await uploadFile(req.files.leave[0], 'profilepics');
-      uploadedFiles.leave = result;
-    } else {
-      uploadedFiles.leave = existingPolicies?.Policies?.leave || '';
-    }
-
-    if (req.files.performance) {
-     
-      const result = await uploadFile(req.files.performance[0], 'profilepics');
-      uploadedFiles.performanceManagement = result;
-    } else {
-      uploadedFiles.performanceManagement = existingPolicies?.Policies?.performanceManagement || '';
-    }
-
-    if (req.files.holiday) {
-   
-      const result = await uploadFile(req.files.holiday[0], 'profilepics');
-      uploadedFiles.holidayCalendar = result;
-    } else {
-      uploadedFiles.holidayCalendar = existingPolicies?.Policies?.holidayCalendar || '';
-    }
-
- 
-    await Policies.updateOne(
-      {},
-      { Policies: uploadedFiles },
-      { upsert: true }
-    );
-
-    return res.status(200).send("Files uploaded successfully");
-
-  } catch (error) {
-    console.error("Error in /upload-policies route:", error);
-    res.status(500).send("Internal server error.");
   }
-  finally{
-  }
-});
+);
 
 // update account handling details
 
@@ -2844,8 +2849,13 @@ const sendMailToEmployee = async (email, emailContent) => {
 router.post("/send-mail/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { description, total_costs, total_revenue, expected_revenue,mailSelectedYear } =
-      req.body;
+    const {
+      description,
+      total_costs,
+      total_revenue,
+      expected_revenue,
+      mailSelectedYear,
+    } = req.body;
 
     if (!total_costs || !total_revenue || !expected_revenue) {
       return res
@@ -2866,9 +2876,9 @@ router.post("/send-mail/:id", async (req, res) => {
     }
 
     const formattedGoalSheetDetails = goalSheet.goalSheetDetails
-  .filter((detail) => detail.year == mailSelectedYear)
-  .map(
-    (detail) => `
+      .filter((detail) => detail.year == mailSelectedYear)
+      .map(
+        (detail) => `
       <tr>
         <td style="border:1px solid #ccc;">${detail.year || "N/A"}</td>
         <td style="border:1px solid #ccc;">${detail.month || "N/A"}</td>
@@ -2876,19 +2886,21 @@ router.post("/send-mail/:id", async (req, res) => {
         <td style="border:1px solid #ccc;">${detail.cost || "N/A"}</td>
         <td style="border:1px solid #ccc;">${detail.revenue || "N/A"}</td>
         <td style="border:1px solid #ccc;">${detail.target || "N/A"}</td>
-        <td style="border:1px solid #ccc;">${detail.cumulativeCost || "N/A"}</td>
-        <td style="border:1px solid #ccc;">${detail.cumulativeRevenue || "N/A"}</td>
+        <td style="border:1px solid #ccc;">${
+          detail.cumulativeCost || "N/A"
+        }</td>
+        <td style="border:1px solid #ccc;">${
+          detail.cumulativeRevenue || "N/A"
+        }</td>
         <td style="border:1px solid #ccc;">${detail.achYTD || "N/A"}</td>
         <td style="border:1px solid #ccc;">${detail.achMTD || "N/A"}</td>
         <td style="border:1px solid #ccc;">${detail.incentive || "N/A"}</td>
         <td style="border:1px solid #ccc;">${detail.leakage || "N/A"}</td>
       </tr>
     `
-  )
-  .join("");
+      )
+      .join("");
 
-
-   
     const achievement_ratio = (total_revenue / total_costs).toFixed(2);
     const emailContent = `
     <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
@@ -2940,8 +2952,6 @@ router.post("/send-mail/:id", async (req, res) => {
       </table>
     </div>
   `;
-
-  
 
     await sendMailToEmployee(employee.email, emailContent);
 
@@ -3123,126 +3133,101 @@ router.get("/get-team/:id", async (req, res) => {
   }
 });
 
+router.get("/accounts", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const allAccounts = await AccountHandling.find();
+    if (!allAccounts) {
+      return res.status(402).json({ message: "No account found!!!" });
+    }
 
+    const empAccounts = [];
+    for (let i = 0; i < allAccounts.length; i++) {
+      const empName = await Employees.findById(allAccounts[i].owner).select(
+        "name activeStatus"
+      );
 
+      if (empName) {
+        empAccounts.push({
+          ...allAccounts[i]._doc,
+          ownerName: empName.name,
+          activeStatus: empName.activeStatus,
+        });
+      }
+    }
 
+    res.status(200).json(empAccounts);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
 
+router.get("/incentive-tree-Data", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { userId } = req.query;
+    console.log(req.query);
 
-
-
-
-router.get('/accounts',AdminAuthenticateToken,async(req, res)=>{
-      try {
-          const allAccounts = await AccountHandling.find();
-          if (!allAccounts) {
-            return res.status(402).json({ message: "No account found!!!" });
-          }
-      
-        
-          const empAccounts = [];
-          for (let i = 0; i < allAccounts.length; i++) {
-            const empName = await Employees.findById(allAccounts[i].owner).select('name activeStatus');
-           
-            if (empName) {
-              
-              empAccounts.push({ ...allAccounts[i]._doc, ownerName: empName.name, activeStatus: empName.activeStatus });
-            }
-      
-          }
-      
-         
-      
-          res.status(200).json(empAccounts);
-        } catch (error) {
-          console.error(error.message);
-          res.status(500).json({ message: error.message });
-        }
-})
-
-router.get('/incentive-tree-Data',AdminAuthenticateToken, async(req,res) =>{
-  try{
-    const { userId } =req.query;
-    console.log(req.query)
-    
     const goalsheet = await GoalSheet.findOne({ owner: userId });
 
-   const colors = 
-{
+    const colors = {
       Orange: "#FFA500",
-      Green: "#008000" }
-    
+      Green: "#008000",
+    };
 
-   
+    let white = 0;
+    let orange = 0;
+    let green = 0;
 
-    let white =0;
-    let orange=0;
-    let green=0;
+    goalsheet.goalSheetDetails.forEach((goalsheet) => {
+      if (goalsheet.incentiveStatusColor) {
+        const colorCode = goalsheet.incentiveStatusColor;
 
-    goalsheet.goalSheetDetails.forEach((goalsheet)=>{
-       if(goalsheet.incentiveStatusColor){
+        if (colorCode == colors.Orange) {
+          orange += goalsheet.incentive || 0;
+        } else if (colorCode == colors.Green) {
+          green += goalsheet.incentive || 0;
+        } else {
+          white += goalsheet.incentive || 0;
+        }
+      }
+    });
 
-         const colorCode = goalsheet.incentiveStatusColor;
-          
-
-
-          if (colorCode == colors.Orange) {
-            orange += goalsheet.incentive || 0;
-          }
-          else if (colorCode == colors.Green) {
-            green += goalsheet.incentive || 0;
-          }
-          else{
-            white += goalsheet.incentive || 0
-          }
-}
-    })
-
-  
-   
     return res.status(200).json({
       success: true,
       message: "Incentive tree data",
-        white,
-        orange,
-        green
+      white,
+      orange,
+      green,
     });
-
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Internal server error" });
   }
-  catch(err){
-       console.log(err)
-       return res.status(500).json({ message: "Internal server error" });
-  }
+});
 
-})
-
-
-
-router.get('/policies', AdminAuthenticateToken, async (req, res) => {
+router.get("/policies", AdminAuthenticateToken, async (req, res) => {
   try {
     const existingPolicies = await Policies.findOne();
 
     if (!existingPolicies) {
-      return res.status(404).json({ success: false,
-         message: "No policies found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "No policies found" });
     }
 
-    return res.status(200).json({ success: true,
-       Policies: existingPolicies });
+    return res.status(200).json({ success: true, Policies: existingPolicies });
   } catch (err) {
     console.error("Error fetching policies:", err);
-    return res.status(500).json({ success:false,
-      message:"Internal server error" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
 });
 
-
-
-
-
-router.get('/fetch-all-admins',AdminAuthenticateToken,async(req, res)=>{
+router.get("/fetch-all-admins", AdminAuthenticateToken, async (req, res) => {
   try {
     const allAdmins = await Admin.find();
-    if (allAdmins.length==0) {
+    if (allAdmins.length == 0) {
       return res.status(402).json({ message: "No admin found!!!" });
     }
     res.status(200).json(allAdmins);
@@ -3250,19 +3235,19 @@ router.get('/fetch-all-admins',AdminAuthenticateToken,async(req, res)=>{
     console.error(error.message);
     res.status(500).json({ message: error.message });
   }
-})
+});
 
-
-router.delete("/delete/admin/:id",AdminAuthenticateToken,async (req, res, next) => {
+router.delete(
+  "/delete/admin/:id",
+  AdminAuthenticateToken,
+  async (req, res, next) => {
     try {
       const { id } = req.params;
       console.log(id);
 
       await Admin.deleteOne({ _id: id });
 
-      return res
-        .status(201)
-        .json({ message: "Admin deleted successfully!" });
+      return res.status(201).json({ message: "Admin deleted successfully!" });
     } catch (e) {
       return res
         .status(500)
@@ -3270,9 +3255,5 @@ router.delete("/delete/admin/:id",AdminAuthenticateToken,async (req, res, next) 
     }
   }
 );
-
-
-
-
 
 export default router;

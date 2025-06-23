@@ -166,7 +166,7 @@ const Homemain = () => {
             className="absolute right-0 w-40 mt-0 bg-gradient-to-r from-blue-900 to-gray-900 text-white text-center pb-6 pt-4 cursor-pointer pointer-events-auto shadow-lg transform transition-transform duration-300 hover:scale-105 mb-6 ribbon-2"
             onClick={() => setShowPopup(true)}
           >
-            <div className="flex">
+            <div className="flex py-2">
               <span className="ml-2"> Get a call</span>
               <svg
                 class="h-6 w-6 text-gray-100 ml-2"

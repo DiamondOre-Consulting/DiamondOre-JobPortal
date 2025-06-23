@@ -9,6 +9,8 @@ import nodemailer from "nodemailer";
  * @param {string} [options.text]
  * @param {Array} [options.attachments]
  */
+
+console.log("id", process.env.EMAIL_USER, process.env.EMAIL_PASS);
 export async function sendEmail({ to, subject, html, text, attachments, cc }) {
   const transporter = nodemailer.createTransport({
     service: process.env.EMAIL_SERVICE || "gmail",
@@ -54,7 +56,13 @@ export function forgotPasswordOtpTemplate(otp) {
 /**
  * Job Status Notification Email Template
  */
-export function jobStatusTemplate({ type, candidateName, jobTitle, company, extra }) {
+export function jobStatusTemplate({
+  type,
+  candidateName,
+  jobTitle,
+  company,
+  extra,
+}) {
   let subject = "";
   let html = "";
   switch (type) {
@@ -77,10 +85,16 @@ export function jobStatusTemplate({ type, candidateName, jobTitle, company, extr
 /**
  * Client Form Notification Email Template
  */
-export function clientFormTemplate({ name, email, phone, designation, company }) {
+export function clientFormTemplate({
+  name,
+  email,
+  phone,
+  designation,
+  company,
+}) {
   return {
     subject: `DOC_LABZ - New Client: New Message Received from ${name}`,
-    html: `<h4 style='font-size:1rem; display:flex; justify-content: center;'>A new message has been submitted by ${name}</h4><br/><h4 style='font-size:1rem; display:flex; justify-content: center;'>Email Id: ${email}</h4><br/><h4 style='font-size:1rem; display:flex; justify-content: center;'>Phone No: ${phone}</h4><br/><h4 style='font-size:1rem; display:flex; justify-content: center;'>Designation: ${designation}</h4><br/><h4 style='font-size:1rem; display:flex; justify-content: center;'>Company: ${company}</h4>`
+    html: `<h4 style='font-size:1rem; display:flex; justify-content: center;'>A new message has been submitted by ${name}</h4><br/><h4 style='font-size:1rem; display:flex; justify-content: center;'>Email Id: ${email}</h4><br/><h4 style='font-size:1rem; display:flex; justify-content: center;'>Phone No: ${phone}</h4><br/><h4 style='font-size:1rem; display:flex; justify-content: center;'>Designation: ${designation}</h4><br/><h4 style='font-size:1rem; display:flex; justify-content: center;'>Company: ${company}</h4>`,
   };
 }
 
@@ -90,7 +104,7 @@ export function clientFormTemplate({ name, email, phone, designation, company })
 export function jobRecommendationTemplate({ candidateName, jobsTableHtml }) {
   return {
     subject: "Recommended Jobs",
-    html: `<h1 style='color: blue; text-align: center; font-size: 2rem'>DiamondOre Consulting Pvt. Ltd.</h1><h3 style='color: black; font-size: 1.3rem; text-align: center;'>Jobs for candidate: ${candidateName}</h3>${jobsTableHtml}`
+    html: `<h1 style='color: blue; text-align: center; font-size: 2rem'>DiamondOre Consulting Pvt. Ltd.</h1><h3 style='color: black; font-size: 1.3rem; text-align: center;'>Jobs for candidate: ${candidateName}</h3>${jobsTableHtml}`,
   };
 }
 
@@ -100,7 +114,13 @@ export function jobRecommendationTemplate({ candidateName, jobsTableHtml }) {
 export function employeeEditTemplate(updatedFields) {
   return {
     subject: "Updated Details Notification",
-    html: `<h3>Your details have been updated:</h3><ul>${Object.entries(updatedFields).map(([key, value]) => `<li><strong>${key}:</strong> ${value}</li>`).join("")}</ul><p>If you have any questions, please contact HR.</p><h1 style='color: blue; text-align: center; font-size: 1rem'>Diamond Consulting Pvt.Ltd.</h1>`
+    html: `<h3>Your details have been updated:</h3><ul>${Object.entries(
+      updatedFields
+    )
+      .map(([key, value]) => `<li><strong>${key}:</strong> ${value}</li>`)
+      .join(
+        ""
+      )}</ul><p>If you have any questions, please contact HR.</p><h1 style='color: blue; text-align: center; font-size: 1rem'>Diamond Consulting Pvt.Ltd.</h1>`,
   };
 }
 
@@ -110,7 +130,10 @@ export function employeeEditTemplate(updatedFields) {
 export function goalSheetTemplate(emailContent) {
   return {
     subject: "Your Goal Sheet Analysis",
-    html: `<h1 style='color: blue; text-align: center; font-size: 1rem'>Diamond Consulting Pvt.Ltd.</h1><p style='font-size: 1.2rem;'>${emailContent.replace(/\n/g, "<br/>")}</p>`
+    html: `<h1 style='color: blue; text-align: center; font-size: 1rem'>Diamond Consulting Pvt.Ltd.</h1><p style='font-size: 1.2rem;'>${emailContent.replace(
+      /\n/g,
+      "<br/>"
+    )}</p>`,
   };
 }
 
@@ -120,7 +143,7 @@ export function goalSheetTemplate(emailContent) {
 export function welcomeEmailTemplate(name) {
   return {
     subject: "Welcome to Diamond Ore Pvt. Ltd!",
-    html: `<p>Congratulations, ${name}! We are thrilled to have you as a new member of our community. By joining us, you've taken the first step towards unlocking a world of opportunities.</p>`
+    html: `<p>Congratulations, ${name}! We are thrilled to have you as a new member of our community. By joining us, you've taken the first step towards unlocking a world of opportunities.</p>`,
   };
 }
 
@@ -130,7 +153,7 @@ export function welcomeEmailTemplate(name) {
 export function notificationEmailTemplate(subject, message) {
   return {
     subject,
-    html: `<p>${message}</p>`
+    html: `<p>${message}</p>`,
   };
 }
 
@@ -146,7 +169,7 @@ export function jobAddedTemplate({ candidateName }) {
       <p>We are thrilled to announce that a new job opportunity has just been added to our platform at Diamond Ore Pvt. Ltd! We believe that this job could be a perfect fit for your skills and experience.</p>
       <p>Visit <a href="https://www.diamondore.in/" style="color:blue;">Diamond Ore Pvt. Ltd</a> to explore more details and apply.</p>
       <p>Best regards,<br/>Diamond Ore Pvt. Ltd Team</p>
-    `
+    `,
   };
 }
 
@@ -159,14 +182,18 @@ export function employeeWelcomeTemplate({ name, empType }) {
     html: `
       <h1 style="color: blue; text-align: center; font-size: 2rem">Diamond Consulting Pvt. Ltd.</h1>
       <h3 style="color: black; font-size: 1.3rem; text-align: center;">Dear ${name}, Welcome to the DOC-ERP system as <b>${empType}</b>. Stay Connected.</h3>
-    `
+    `,
   };
 }
 
 /**
  * Duplicate Phone Number Request Email Template
  */
-export function duplicatePhoneRequestTemplate({ employeeName, hrName, hrPhone }) {
+export function duplicatePhoneRequestTemplate({
+  employeeName,
+  hrName,
+  hrPhone,
+}) {
   return `
     <h2>Duplicate Phone Number Request</h2>
     <p><strong>Employee:</strong> ${employeeName}</p>
@@ -175,4 +202,4 @@ export function duplicatePhoneRequestTemplate({ employeeName, hrName, hrPhone })
     <p>This is an automated notification that an employee has requested to use a phone number already in use by another account. Please review and take appropriate action.</p>
     <p>Regards,<br/>Diamond Ore Pvt. Ltd. System</p>
   `;
-} 
+}

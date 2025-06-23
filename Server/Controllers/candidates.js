@@ -24,7 +24,12 @@ import { uploadImage } from "../Middlewares/multer.middleware.js";
 import { skipMiddlewareFunction } from "mongoose";
 import { uploadFile } from "../utils/fileUpload.utils.js";
 import { deleteFile } from "../utils/fileUpload.utils.js";
-import { sendEmail, otpEmailTemplate, forgotPasswordOtpTemplate, welcomeEmailTemplate } from "../utils/email.js";
+import {
+  sendEmail,
+  otpEmailTemplate,
+  forgotPasswordOtpTemplate,
+  welcomeEmailTemplate,
+} from "../utils/email.js";
 import { generateOtp, storeOtp, validateOtp, clearOtp } from "../utils/otp.js";
 dotenv.config();
 
@@ -32,7 +37,6 @@ const router = express.Router();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 
 const credentials = {
   accessKeyId: "wRc04Y5sYocX6Aec",
@@ -56,9 +60,6 @@ const s3ClientResumes = new S3Client({
   credentials: credentialsResumes,
   region: "global",
 });
-
-
-
 
 // FETCHING USER DATA
 router.get("/user-data", CandidateAuthenticateToken, async (req, res) => {
@@ -163,7 +164,9 @@ router.get("/all-jobs", async (req, res) => {
 });
 
 // JOB RECOMMENDATIONS
-router.get("/recommended-jobs",CandidateAuthenticateToken,
+router.get(
+  "/recommended-jobs",
+  CandidateAuthenticateToken,
   async (req, res) => {
     try {
       const { userId, email } = req.user;
@@ -176,7 +179,6 @@ router.get("/recommended-jobs",CandidateAuthenticateToken,
       const prefFormData = await PreferenceForm.findOne({
         candidateId: userId,
       });
-
 
       if (user.preferredFormStatus === true) {
         const mini = parseFloat(prefFormData.minExpectedCTC);
@@ -386,11 +388,11 @@ router.get("/all-jobs/:id", CandidateAuthenticateToken, async (req, res) => {
     }
 
     const oneJob = await Jobs.findById({ _id: id });
-    console.log(oneJob);
+    // console.log(oneJob);
 
     return res.status(201).json(oneJob);
   } catch (error) {
-    console.log(error);
+    console.log("error in single", error);
     return res.status(500).json({ message: "Something went wrong!!!" });
   }
 });
@@ -411,7 +413,7 @@ function jobAppliedTemplate(job) {
       </ul>
       <p style="color:green;">Thank you for applying!</p>
       <p style="text-align: left; ">Regards,</p>
-    `
+    `,
   };
 }
 
@@ -427,7 +429,7 @@ function jobAppliedAdminTemplate(job, candidate) {
         <li><strong>Resume/CV:</strong> ${candidate.resume}</li>
       </ul>
       <p style="text-align: left;">Regards,</p>
-    `
+    `,
   };
 }
 
@@ -443,15 +445,23 @@ function accountDeletionTemplate(user) {
       <p>Thank you for considering opportunities with us, and we wish you the best in your future endeavors</p>
       <p>Best regards</p>
       <p style="color:green;">Diamond Ore pvt.Ltd</p>
-    `
+    `,
+  };
+}
+
+// Contact us notification template
+function requestContactTemplate(Name, Email, Message, queryFor) {
+  return {
+    subject: `Contact Details FROM DOC: New Message Received from ${Name}`,
+    html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${Name}</h4><br/><h4 style="font-size:1rem; display:flex; justify-content: center;">Email: ${Email}</h4><br/><h4 style="font-size:1rem; display:flex; justify-content: center;">Query For:${queryFor}</h4> </br><h4 style="font-size:1rem; display:flex; justify-content: center;">Message:${Message}</h4>`,
   };
 }
 
 // Request call notification template
-function requestCallTemplate(name, phone) {
+function requestCallTemplate(name, phone, queryFor) {
   return {
     subject: `CALL REQUEST FROM DOC: New Message Received from ${name}`,
-    html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${name}</h4><br/><h4 style="font-size:1rem; display:flex; justify-content: center;">Phone No: ${phone}</h4><br/><h4 style="font-size:1rem; display:flex; justify-content: center;">Query For:${queryFor}</h4>`
+    html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${name}</h4><br/><h4 style="font-size:1rem; display:flex; justify-content: center;">Phone No: ${phone}</h4><br/><h4 style="font-size:1rem; display:flex; justify-content: center;">Query For:${queryFor}</h4>`,
   };
 }
 
@@ -464,7 +474,10 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    const checkApplied = await Status.findOne({ candidateId: userId, jobId: id });
+    const checkApplied = await Status.findOne({
+      candidateId: userId,
+      jobId: id,
+    });
     if (checkApplied?.check) {
       return res.status(401).json({ message: "Applied to this job already" });
     } else {
@@ -487,60 +500,79 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
       await sendEmail({ to: email, subject, html });
       // Send notification email to admin
       const CandidateUser = await Candidates.findById({ _id: userId });
-      const { subject: adminSubject, html: adminHtml } = jobAppliedAdminTemplate(job, CandidateUser);
+      const { subject: adminSubject, html: adminHtml } =
+        jobAppliedAdminTemplate(job, CandidateUser);
       await sendEmail({
         to: "hr@diamondore.in",
-        cc: ["rahul@rasonline.in", "rahul@diamondore.in", "zoya.rasonline@gmail.com"],
+        cc: [
+          "rahul@rasonline.in",
+          "rahul@diamondore.in",
+          "zoya.rasonline@gmail.com",
+        ],
         subject: adminSubject,
         html: adminHtml,
       });
       return res.status(200).json({ message: "Job applied successfully!" });
     }
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: "Something went wrong!!!" });
   }
 });
 
 // STATUS OF A JOB
-router.get(
-  "/status/:id1/:id2",
-  CandidateAuthenticateToken,
-  async (req, res) => {
-    try {
-      const { userId, email } = req.user;
-      const { id1, id2 } = req.params;
+router.get("/status/:id2", CandidateAuthenticateToken, async (req, res) => {
+  try {
+    const { userId, email } = req.user;
+    const { id2 } = req.params;
+    // console.log("data", id1, "email ", id2);
 
-      const user = await Candidates.findOne({ email });
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      const allStatus = await Status.findOne({ candidateId: id1, jobId: id2 });
-      console.log(allStatus);
-
-      res.status(201).json(allStatus);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: "Something went wrong!!!" });
+    const user = await Candidates.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    const allStatus = await Status.findOne({ candidateId: userId, jobId: id2 });
+    console.log("hgdy", allStatus);
+
+    res.status(201).json(allStatus);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong!!!" });
   }
-);
+});
 
 // HELP CONTACT
 router.post("/help-contact", async (req, res) => {
   try {
-    const { Name, Email, Message } = req.body;
+    const { Name, Email, Message, queryFor } = req.body;
 
     const newMsg = new CandidateContact({
       Name,
       Email,
       Message,
+      queryFor,
     });
 
     await newMsg.save();
     console.log(newMsg);
 
-    // await sendMsgByEmail(name, email, Message );
+    const { subject, html } = requestContactTemplate(
+      Name,
+      Email,
+      Message,
+      queryFor
+    );
+    await sendEmail({
+      to: "helpdesk2.rasonline@gmail.com",
+      cc: [
+        "rahul@rasonline.in",
+        "zoya.rasonline@gmail.com",
+        "hr@diamondore.in",
+      ],
+      subject,
+      html,
+    });
 
     res.status(201).json({ message: "Message sent successfully!!!" });
   } catch (error) {
@@ -715,38 +747,43 @@ router.get("/get-pref-data", CandidateAuthenticateToken, async (req, res) => {
 });
 
 // Refactor account deletion route
-router.delete("/remove-account", CandidateAuthenticateToken, async (req, res) => {
-  try {
-    const { email, userId } = req.user;
-    const user = await Candidates.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+router.delete(
+  "/remove-account",
+  CandidateAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { email, userId } = req.user;
+      const user = await Candidates.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      const deletedUser = new RemovedCandidates({
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        password: user.password,
+        profilePic: user.profilePic,
+        resume: user.resume,
+        preferredFormStatus: user.preferredFormStatus,
+        allAppliedJobs: user.allAppliedJobs,
+        allShortlistedJobs: user.allShortlistedJobs,
+      });
+      await deletedUser.save();
+      if (deletedUser) {
+        await Candidates.findByIdAndDelete({ _id: userId });
+      }
+      // Send account deletion email
+      const { subject, html } = accountDeletionTemplate(deletedUser);
+      await sendEmail({ to: deletedUser.email, subject, html });
+      res.status(200).json({
+        message:
+          "Candidate has been removed from Candidates DB and Transferred to DeletedCandidates Schema!!!",
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Internal Server Error" });
     }
-    const deletedUser = new RemovedCandidates({
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      password: user.password,
-      profilePic: user.profilePic,
-      resume: user.resume,
-      preferredFormStatus: user.preferredFormStatus,
-      allAppliedJobs: user.allAppliedJobs,
-      allShortlistedJobs: user.allShortlistedJobs,
-    });
-    await deletedUser.save();
-    if (deletedUser) {
-      await Candidates.findByIdAndDelete({ _id: userId });
-    }
-    // Send account deletion email
-    const { subject, html } = accountDeletionTemplate(deletedUser);
-    await sendEmail({ to: deletedUser.email, subject, html });
-    res.status(200).json({
-      message: "Candidate has been removed from Candidates DB and Transferred to DeletedCandidates Schema!!!",
-    });
-  } catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
   }
-});
+);
 
 // Refactor forgot password OTP route
 router.post("/forgot-password", async (req, res) => {
@@ -770,10 +807,11 @@ router.post("/forgot-password", async (req, res) => {
 router.post("/request-call", async (req, res) => {
   try {
     const { name, phone, queryFor } = req.body;
-    if (!name || !phone||!queryFor) {
+    console.log(name, phone, queryFor);
+    if (!name || !phone || !queryFor) {
       return res.status(401).json({ message: "Both fields are required!!!" });
     }
-    const { subject, html } = requestCallTemplate(name, phone,queryFor);
+    const { subject, html } = requestCallTemplate(name, phone, queryFor);
     await sendEmail({
       to: "helpdesk2.rasonline@gmail.com",
       cc: ["rahul@rasonline.in"],
@@ -782,6 +820,7 @@ router.post("/request-call", async (req, res) => {
     });
     res.status(200).json("Email sent successfully!!!");
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Something went wrong!!!", error });
   }
 });
@@ -912,7 +951,6 @@ router.post("/free-resume", async (req, res) => {
       })
     );
 
- 
     const getObjectCommand = new GetObjectCommand({
       Bucket: "freeresumesbuild",
       Key: `${full_name}_free_resume.docx`,
@@ -978,7 +1016,5 @@ router.post("/free-resume", async (req, res) => {
     res.status(500).json({ message: "Something went wrong!!!", error });
   }
 });
-
-
 
 export default router;

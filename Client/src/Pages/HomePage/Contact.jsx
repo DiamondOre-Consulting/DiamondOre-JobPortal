@@ -32,11 +32,14 @@ const Contact = () => {
           Name,
           Email,
           Message,
+          queryFor: queryFor.map((q) => q.label).join(", "),
         }
       );
 
       if (response.status === 201) {
-        setsucess("Data Sent Sucessfully");
+        setsucess(
+          "Contact Details has been Sent Sucessfully We will reach out to soon "
+        );
         setName("");
         setEmail("");
         setMsg("");
@@ -246,22 +249,23 @@ const Contact = () => {
                   Filling all the fields are mandatory.
                   <span className="text-red-500 text-2xl mb-2">*</span>
                 </p>
-                <div>
-                  <label className="sr-only" htmlFor="name">
-                    Name
-                  </label>
-                  <input
-                    className="w-full rounded-lg border-gray-200 bg-gray-50 p-3 text-sm"
-                    placeholder="Name"
-                    type="text"
-                    id="name"
-                    value={Name || ""}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                </div>
 
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div>
+                <div className="flex w-full gap-x-2">
+                  <div className="w-full">
+                    <label className="sr-only" htmlFor="name">
+                      Name
+                    </label>
+                    <input
+                      className="w-full rounded-lg border-gray-200 bg-gray-50 p-3 text-sm "
+                      placeholder="Name"
+                      type="text"
+                      id="name"
+                      value={Name || ""}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="w-full">
                     <label className="sr-only" htmlFor="email">
                       Email
                     </label>
@@ -276,6 +280,24 @@ const Contact = () => {
                   </div>
                 </div>
 
+                <div className="*:not-first:mt-2  mb-3 ">
+                  <Label className="text-white"> Query For</Label>
+                  <MultipleSelector
+                    className=" w-full border-gray-100 bg-white"
+                    commandProps={{
+                      label: "Select Query",
+                    }}
+                    defaultOptions={frameworks}
+                    value={queryFor}
+                    onChange={setQueryFor}
+                    placeholder="Select Query"
+                    emptyIndicator={
+                      <p className="text-center text-sm  border-0">
+                        No results found
+                      </p>
+                    }
+                  />
+                </div>
                 <div>
                   <label className="sr-only" htmlFor="message">
                     Message
@@ -338,7 +360,7 @@ const Contact = () => {
           className="absolute right-0 w-40 mt-0 bg-gradient-to-r from-blue-900 to-gray-900 text-white text-center pb-6 pt-4 cursor-pointer pointer-events-auto shadow-lg transform transition-transform duration-300 hover:scale-105 mb-6 ribbon-2"
           onClick={() => setShowPopup(true)}
         >
-          <div className="flex">
+          <div className="flex py-2">
             <span className="ml-2"> Get a call</span>
             <svg
               class="h-6 w-6 text-gray-100 ml-2"

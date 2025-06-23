@@ -11,6 +11,10 @@ const candidateContactSchema = new mongoose.Schema({
     required: true,
     // unique : true,
   },
+  queryFor: {
+    type: [],
+    required: true,
+  },
   Message: {
     type: String,
     default: "N/A",
@@ -19,7 +23,7 @@ const candidateContactSchema = new mongoose.Schema({
   },
   Status: {
     type: Boolean,
-    default: false
+    default: false,
   },
   createdAt: {
     type: Date,
