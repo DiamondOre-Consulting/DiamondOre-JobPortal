@@ -57,4 +57,4 @@ const candidateSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("Candiates", candidateSchema);
+export default mongoose.model("Candidates", candidateSchema);

@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import "./App.css";
 import Homemain from "./Pages/HomePage/Homemain";
 import Signup from "./Pages/CandidatePage/Signup";
 import Login from "./Pages/CandidatePage/Login";
@@ -150,7 +149,6 @@ function App() {
               path="/admin/forgot-password"
               element={<Adminforgotpassword />}
             />
-            {/* <Route path="/admin-dashboard" element={<AdminDashboard />} /> */}
             <Route element={<AuthVerify />}>
               <Route
                 path="/admin-dashboard/*"
@@ -196,7 +194,6 @@ function App() {
             <Route path="/employee-signup" element={<Employeesignup />} />
 
             <Route path="/employee-login" element={<Employeelogin />} />
-            {/* <Route path='/employee-dashboard' element={<Employeedashboard/>}/> */}
             <Route element={<EmpAuthVerify />}>
               <Route path="/employee-leaves" element={<EmployeeLeaves />} />
               <Route

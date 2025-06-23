@@ -8,19 +8,15 @@ const jobsSchema = new mongoose.Schema({
   JobTitle: {
     type: String,
     required: true,
-    // unique: true,
   },
   Industry: {
     type: String,
     required: true,
-    // unique: true,
   },
   Channel: {
     type: String,
     default: "N/A",
     lowercase:true
-    // required: true,
-    // unique: true,
   },
   Vacancies: {
     type: Number,
@@ -28,7 +24,6 @@ const jobsSchema = new mongoose.Schema({
   },
   Zone: {
     type: String,
-    // required: true,
     lowercase:true
   },
   City: {
@@ -42,11 +37,9 @@ const jobsSchema = new mongoose.Schema({
   },
   MinExperience: {
     type: String,
-    // required: true,
   },
   MaxSalary: {
     type: Number,
-    // required: true,
   },
   JobStatus: {
     type: String,

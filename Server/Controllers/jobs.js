@@ -2,21 +2,13 @@ import express, { Router } from "express";
 import dotenv from "dotenv";
 import path from "path";
 import { S3Client } from "@aws-sdk/client-s3";
-import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { v4 as uuidv4 } from "uuid";
-import node_xj from "xls-to-json";
 import fs from "fs";
 import { fileURLToPath } from 'url';
-import axios from "axios";
 import Admin from "../Models/Admin.js";
 import AdminAuthenticateToken from "../Middlewares/AdminAuthenticateToken.js";
 import Jobs from "../Models/Jobs.js";
-import Candidates from "../Models/Candidates.js";
-import nodemailer from "nodemailer";
 import {excelUpload} from "../Middlewares/multer.middleware.js";
 import xlsx from "xlsx";
-
 dotenv.config();
 
 const secretKey = process.env.JWT_SECRET_ADMIN;
@@ -35,114 +27,6 @@ const s3ClientResumes = new S3Client({
   credentials: credentialsResumes,
   region: "global"
 });
-// mail to all candidate added to job
-
-
-const addedJobsMailToAllTheCandidates = async (candidateEmail, candidateName) => {
-  try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "tech@diamondore.in",
-        pass: "zlnbcvnhzdddzrqn",
-      },
-    });
-
-    const mailOptions = {
-      from: "Diamondore.in <tech@diamondore.in>",
-      to: `Recipient <${candidateEmail}>`,
-      subject: "Exciting New Job Opportunity at Diamond Ore .Pvt Ltd",
-      text: `Congratulations! We are thrilled to have you as a new member of our community. By joining us, you've taken the first step towards unlocking a world of opportunities.`,
-      html: `
-      <p>Dear ${candidateName},</p>
-      <p>We are thrilled to announce that a new job opportunity has just been added to our platform at Diamond Ore Pvt Ltd! We believe that these jobs could be a perfect fit for with your skills and experience.</p>
-      <p>Best regards</p>
-      <a href="https://www.diamondore.in/" style="color:blue;">Diamond Ore pvt.Ltd</p>
-      // <p style="text-align: left;"><img src="cid:logo" alt="Company Logo" style="width:200px;height:auto;"/></p>
-            `,
-      // attachments: [{
-      //   filename: 'logo.png',
-      //   path: 'C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/Logo.png',
-      //   cid: 'logo'
-      // }]
-    };
-
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent: " + info.response);
-
-    // console.log(info);
-  } catch (error) {
-    console.error("Error sending Mail:", error);
-    throw error;
-  }
-};
-
-
-
-
-const downloadFile = async (url, outputFilePath) => {
-  const writer = fs.createWriteStream(outputFilePath);
-
-  const response = await axios({
-    url: url,
-    method: 'GET',
-    responseType: 'stream',
-  });
-
-  response.data.pipe(writer);
-
-  return new Promise((resolve, reject) => {
-    writer.on('finish', resolve);
-    writer.on('error', reject);
-  });
-};
-
-// router.post("/upload-job-excel", AdminAuthenticateToken, async (req, res) => {
-//   const { url } = req.body;
-//   const outputFilePath = path.join(__dirname, 'tempFile.xlsx');
-//   try {
-//     console.log(url);
-//     await downloadFile(url, outputFilePath);
-//     node_xj(
-//       {
-//         input:
-//           outputFilePath,
-//         output: null,
-//         lowerCaseHeaders: true,
-//         allowEmptyKey: false,
-//       },
-//       async (err, result) => {
-//         if (err) {
-//           return res
-//             .status(500)
-//             .json({ error: "Error converting Excel to JSON", err });
-//         }
-//         console.log(result);
-
-//         // Assuming the result is an array of job objects
-//         const jobsAdd = await Jobs.insertMany(result);
-//         console.log(jobsAdd);
-//         if (jobsAdd) {
-//           // jobaddmail to all the candidatees are in our db
-//           const allCandidates = await Candidates.find({}, { password: 0 });
-//           for (const candidate of allCandidates) {
-//             await addedJobsMailToAllTheCandidates(candidate.email, candidate.name);
-//           }
-//           return res
-//             .status(200)
-//             .json({ message: "Jobs Added successfully!!!" });
-//         } else {
-//           return res.status(500).json({ message: "Something went wrong!!" });
-//         }
-//       }
-//     );
-//   } catch (err) {
-//     return res.status(400).json({ message: "Something went wrong!!!" });
-//   } finally {
-//     // Clean up: Delete the temporary file
-//     fs.unlinkSync(outputFilePath);
-//   }
-// });
 
 router.post("/upload-job-excel", AdminAuthenticateToken, excelUpload.single('myFile') , async (req, res) => {
   console.log(req.user)
@@ -169,55 +53,6 @@ router.post("/upload-job-excel", AdminAuthenticateToken, excelUpload.single('myF
  
      let errorArray = [];
 
-    // for (const job of result) {
-    //   const {
-    //     Company,
-    //     JobTitle,
-    //     Industry,
-    //     Channel,
-    //     Zone,
-    //     City,
-    //     State,
-    //     JobStatus,
-    //     DateAdded,
-    //     MinExperience,
-    //     MaxSalary
-    //   } = job;          
-          
-    //   const formattedDateAdded = new Date(DateAdded);
-    //   const existingJob = await Jobs.findOne({
-    //     JobTitle: JobTitle,
-    //     City: City,
-    //     DateAdded: formattedDateAdded,
-    //     Company,
-    //     Industry,
-    //     Channel,
-    //     Zone,
-    //     State,
-    //     MinExperience,
-    //     MaxSalary
-    //   });
-
-
-    //   if (existingJob){
-    //     if(existingJob.JobStatus !== (JobStatus === "Active")){
-    //       existingJob.JobStatus = JobStatus === "Active";
-    //       await existingJob.save();
-    //       jobsUpdated.push(existingJob);
-    //     }
-    //   }else{
-    //     const newJob = new Jobs({
-    //       ...job,
-    //       JobStatus: JobStatus === "Active",
-    //       DateAdded: formattedDateAdded,
-    //     });
-
-    //     await newJob.save();
-
-    //     jobsAdded.push(newJob);
-    //   }
-    // }
-
     try{
       const bulkOps = [
           {deleteMany : {filter : {}}},
@@ -236,7 +71,6 @@ router.post("/upload-job-excel", AdminAuthenticateToken, excelUpload.single('myF
       message: "OPS uploaded successfully",
     });
   } catch(err){
-    console.log({message: err.message})
     return res.status(400).json({message : "Internal server error"});
   } finally {
       fs.unlinkSync(filePath);

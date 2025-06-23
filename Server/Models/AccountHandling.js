@@ -1,51 +1,5 @@
 import mongoose from "mongoose";
 
-// const accountHandlingSchema = new mongoose.Schema({
-//   owner: {
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: "Employees",
-//   },
-//   accountHandlingStatus: {
-//     type: Boolean,
-//     default: false,
-//   },
-//   accountDetails: {
-//     type: [
-//       {
-
-//         zone: {
-//           type: String,
-//           required: true,
-//         },
-//       },
-//     ],
-//     default: [],
-//   },
-//   requests: {
-//     type: [
-//       {
-//         reqDetail: {
-//           employee: {
-//             type: mongoose.Schema.Types.ObjectId,
-//             ref: "Employees"
-//           },
-//           accountPhone: {
-//             type: String,
-//           },
-//           status: {
-//             type: Boolean,
-//             default: null
-//           }
-//         }
-//       }
-//     ],
-//     default: []
-//   },
-//   createdAt: {
-//     type: Date,
-//     default: Date.now
-//   }
-// });
 
 // Define the HR details schema
 const hrDetailSchema = new mongoose.Schema({
@@ -90,16 +44,13 @@ const zoneSchema = new mongoose.Schema({
     default: []
   }],
   joinings: {
-    type: String, // Number may be more appropriate
-    default: "0",
+    type: Number,
+    default: 0,
   },
   amount: {
-    type: String, // Number may be more appropriate
-    default: "0",
+    type: Number,
+    default: 0,
   }
-
-
-
 });
 
 // Define the request schema

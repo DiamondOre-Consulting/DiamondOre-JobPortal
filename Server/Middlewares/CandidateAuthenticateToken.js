@@ -1,4 +1,7 @@
 import jwt from 'jsonwebtoken';
+import { config } from 'dotenv';
+
+config();
 
 const CandidateAuthenticateToken = (req, res, next) => {
     // Get the JWT token from the request headers
@@ -18,7 +21,6 @@ const CandidateAuthenticateToken = (req, res, next) => {
       // Proceed to the next middleware or route handler
       next();
     } catch (error) {
-      console.error('Error verifying token:', error);
       return res.status(401).json({ message: 'Invalid token' });
     }
   };

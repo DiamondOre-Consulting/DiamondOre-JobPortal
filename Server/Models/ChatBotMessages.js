@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const chatbotSchema = new mongoose.Schema({
   name: {
-    type: String, // Assuming you have an Employee model
+    type: String,
   },
   email: {
     type: String,

@@ -2,12 +2,10 @@ import express, { Router } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import nodemailer from "nodemailer";
-import { otpStore, storeOtp } from "../server.js";
-// import forgotOtp from "../server.js";
-import { InventoryConfigurationFilterSensitiveLog, S3Client } from "@aws-sdk/client-s3";
-import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { otpStore } from "../utils/otp.js";
+import { S3Client } from '@aws-sdk/client-s3';
+// import nodemailer from "nodemailer";
+
 import mongoose from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 import Candidates from "../Models/Candidates.js";
@@ -21,7 +19,6 @@ import LeaveReport from "../Models/LeaveReport.js";
 import PerformanceReport from "../Models/PerformanceReport.js";
 import ChatBotMessages from "../Models/ChatBotMessages.js";
 import ClientForm from "../Models/ClientForm.js";
-// import { Team } from "../Models/Employees.js";
 import multer from "multer";
 import path from "path";
 import fs, { stat } from "fs";
@@ -48,6 +45,22 @@ import {deleteFile} from '../utils/fileUpload.utils.js';
 import Policies from '../Models/Policies.js'
 import {pdfUpload} from '../Middlewares/multer.middleware.js'
 
+import {
+  generateOtp,
+  storeOtp,
+  validateOtp,
+  clearOtp,
+} from "../utils/otp.js";
+import {
+  sendEmail,
+  otpEmailTemplate,
+  forgotPasswordOtpTemplate,
+  jobStatusTemplate,
+  clientFormTemplate,
+  jobRecommendationTemplate,
+  employeeEditTemplate,
+  goalSheetTemplate,
+} from "../utils/email.js";
 
 dotenv.config();
 
@@ -55,68 +68,10 @@ const secretKey = process.env.JWT_SECRET_ADMIN;
 
 const router = express.Router();
 
-// Generate a random OTP
-const generateOTP = () => {
-  return Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
-};
 
-// Send OTP via email using Nodemailer
-const sendOTPByEmail = async (email, otp) => {
-  try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "tech@diamondore.in",
-        pass: "zlnbcvnhzdddzrqn",
-      },
-    });
 
-    const mailOptions = {
-      from: "Diamondore.in <tech@diamondore.in>",
-      to: `Recipient <${email}>`,
-      subject: "One Time Password",
-      text: `Your OTP is: ${otp}`,
-      html: `<h1 style="color: blue; text-align: center; font-size: 2rem">Diamond Consulting Pvt. Ltd.</h1> </br> <h3 style="color: black; font-size: 1.3rem; text-align: center;">Your OTP is: ${otp}</h3>`,
-    };
-
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent: " + info.response);
-
-    // console.log(info);
-  } catch (error) {
-    console.error("Error sending OTP:", error);
-    throw error;
-  }
-};
 
 // Initiate OTP sending
-router.post("/send-otp", async (req, res) => {
-  try {
-    const { email } = req.body;
-   
-
-    const userExists = await Admin.exists({ email });
-    if (userExists) {
-      return res.status(409).json({ message: "User already exists" });
-    }
-
-    // Generate and store OTP
-    const otp = generateOTP();
-   
-    storeOtp(email, otp); // Store OTP for the email
-    console.log(email,otp)
- 
-    // Send OTP via email
-    await sendOTPByEmail(email, otp);
-
-    
-
-    res.status(201).json({ message: "OTP sent successfully" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "An error occurred" });
-  }
-});
 
 const credentials = {
   accessKeyId: "wRc04Y5sYocX6Aec",
@@ -132,177 +87,6 @@ const s3Client = new S3Client({
 
 
 
-// SIGNUP AS ADMIN
-router.post("/signup-admin",AdminAuthenticateToken ,uploadImage.single('myFileImage'), async (req, res) => {
-  const { name, email, password, otp, adminType } = 
-  req.body;
-
-  
-  try {
-    // Verify OTP
-
-    if (!otpStore[email] || otpStore[email].expires < Date.now()) {
-      return res.status(400).json({ message: "OTP expired or not found" });
-    }
-    
-
-    if (otpStore[email].otp == otp) {
-      const userExists = await Admin.exists({ email });
-      if (userExists) {
-        return res.status(409).json({ message: "User already exists" });
-      }
-
-     
-      // Hash the password
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      const newProfilePic = await uploadFile(req.file, "profilepics");
-
-      console.log(newProfilePic)
-
-      // Create a new user object
-      const newUser = new Admin({
-        name,
-        email,
-        otp: null,
-        password: hashedPassword,
-        profilePic:newProfilePic,
-        adminType,
-      });
-
-
-      // Save the user to the database
-      await newUser.save();
-
-      delete otpStore[email];
-
-
-      return res
-        .status(201)
-        .json({ message: "Admin User created successfully" });
-    } else {
-      return res.status(400).json({ message: "Something went wrong!!!" });
-    }
-    // Check if user already exists
-  } catch (error) {
-    console.error("Error creating user:", error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-
-});
-
-const adminLoginSchema = z.object({
-  email: z.string().email(),
-  password: z.string(),
-});
-
-// LOGIN AS ADMIN
-router.post("/login-admin", async (req, res) => {
-
-  const { email, password } = req.body;
-   
-  const {success,error} = adminLoginSchema.safeParse({email,password})
-    if (!success) {
-        return res.status(400).json({message: "Invalid credentials"});
-    }
-
-  try {
-    // Find the user in the database
-    const user = await Admin.findOne({ email });
-    if(user.adminType=="kpiAdmin"){
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
-    if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
-
-    // Compare the passwords
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
-
-    
-
-    // Generate JWT token
-
-    function signJwt(payload,secretKey,expiresIn = '10h'){
-      try{
-             return jwt.sign(payload,secretKey,{expiresIn})
-      }
-      catch(err){
-        console.log("enter")
-        console.log(err) 
-      }
-            
-    }
-    const token = signJwt(
-      { userId: user._id, name: user.name, email: user.email, role: "admin" },
-      secretKey
-    );
-    
-
-    return res.status(200).json({ token });
-  } catch (error) {
-    console.error("Error logging in:", error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-});
-
-
-// Admin Login for Kpi Admin
-
-router.post("/login-kpi-admin", async (req, res) => {
-
-  const { email, password } = req.body;
-
-  const {success,error} = adminLoginSchema.safeParse({email,password})
-    if (!success) {
-        return res.status(400).json({message: "Invalid credentials"});
-    }
-
-    console.log(req.body)
-
-  try {
-    // Find the user in the database
-    const admin = await Admin.findOne({ email });
-    if (!admin) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
-    const passwordMatch = await bcrypt.compare(password, admin.password);
-    if (!passwordMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
-    
-    if(!(admin.adminType == "kpiAdmin"|| admin.adminType == "superAdmin")){
-      return res.status(401).json({ message: "Unauthorized access" });
-    }
-
-
-    // Generate JWT token
-
-    function signJwt(payload,secretKey,expiresIn = '24h'){
-      try{
-             return jwt.sign(payload,secretKey,{expiresIn})
-      }
-      catch(err){
-        
-        console.log(err) 
-      }
-            
-    }
-    const token = signJwt(
-      { userId: admin._id, name: admin.name, email: admin.email, role: admin.adminType },
-      secretKey
-    );
-    
-
-    return res.status(200).json({ token });
-  } catch (error) {
-    console.error("Error logging in:", error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-});
 
 
 // FETCHING USER DATA
@@ -351,14 +135,16 @@ router.get("/all-jobs", async (req, res) => {
     const page  = data.page || 0;
     const limit = data.limit || 20;
 
+    
+
     const skip = (page) * limit;
 
     const allJobsCount = await Jobs.countDocuments({JobStatus:"Active"});
-    console.log(allJobsCount)
+    
 
     const allJobs = await Jobs.find({JobStatus:"Active"}).limit(limit).skip(skip);
-    console.log(allJobs)
-    
+   
+ 
 
     return res.status(200).json({
         totalPages: Math.ceil(allJobsCount/limit),
@@ -463,17 +249,20 @@ router.get("/all-candidates", AdminAuthenticateToken, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+  
     const page= data.page || 0;
     const limit = data.limit || 20;
 
     const skip = page * limit;
     const totalPages = await Candidates.countDocuments();
+    
     const allCandidates = await Candidates.find().skip(skip).limit(limit).select({password:0});
 
-  
-
+    console.log(skip)
+    console.log(allCandidates) 
+    
     return res.status(200).json({
-      allCandidates:allCandidates.reverse(),
+      allCandidates:allCandidates,
       totalPages: Math.ceil(totalPages/limit),
       currentPage: page
     }
@@ -703,517 +492,69 @@ router.get("/get-status/:id1/:id2",AdminAuthenticateToken, async (req, res) => {
 
 // UPDATE CV SHORTLISTED
 router.put("/update-cv-shortlisted/:id1/:id2", AdminAuthenticateToken, async (req, res) => {
-    try {
-      const { id1, id2 } = req.params;
-      console.log(id1, id2);
-      const { email } = req.user;
-      // console.log(email, id1, id2);
-
-      const user = await Admin.findOne({ email });
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      const current = await Status.findOne({ candidateId: id1, jobId: id2 });
-      if (!current) {
-        return res.status(402).json({ message: "Status not found" });
-      }
-      // console.log(current);
-
-      const cvShortlistedStatus = await Status.findOneAndUpdate(
-        { candidateId: id1, jobId: id2 },
-        {
-          $set: { status: { Applied: true, CvShortlisted: true } },
-        },
-        { new: true }
-      );
-
-      console.log(cvShortlistedStatus);
-
-      const cvShortlistedJob = await Jobs.findByIdAndUpdate(
-        { _id: id2 },
-        {
-          $push: { shortlistedResumeApplicants: id1 },
-        }
-      );
-
-      console.log(cvShortlistedJob);
-      const CandidateUser = await Candidates.findById({ _id: id1 });
-      // cv shorlisted confirmation mail
-
-      const CvShortlistedSucessfully = async (
-        CandidateUser,
-        cvShortlistedJob,
-        user
-      ) => {
-        try {
-          const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-              user: "tech@diamondore.in",
-              pass: "zlnbcvnhzdddzrqn",
-            },
-          });
-
-          const mailOptions = {
-            from: "Diamondore.in <tech@diamondore.in>",
-            to: `Recipient <${CandidateUser.email}>`,
-            subject: "Congratulation! Your CV has been shorlisted",
-            html: `
-            <p style="color:black; text-align:left; font-size: 20px; font-style: bold;">Congratulations🎊🎉✨!</p>
-            <p>Your CV has been successfully shortlisted for ${cvShortlistedJob.JobTitle}.</p>
-            <p>We will contact you soon with further details.</p>
-            <p style="color:black; text-align:left;">Thank you!</p>
-            <p style="text-align: left;  ">Regards,</p>
-            <p style="text-align: left;"><img src="cid:logo" alt="Company Logo" style="width:200px;height:auto;"/></p>
-            `,
-            attachments: [
-              {
-                filename: "logo.png",
-                path: "C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png",
-                cid: "logo",
-              },
-            ],
-          };
-
-          const info = await transporter.sendMail(mailOptions);
-          console.log("Email sent: " + info.response);
-
-          // console.log(info);
-        } catch (error) {
-          console.error("Error sending Mail:", error);
-          throw error;
-        }
-      };
-      await CvShortlistedSucessfully(CandidateUser, cvShortlistedJob, user);
-
-      return res
-        .status(201)
-        .json({ message: "CV Shortlisted status updated sucessfully!!!" });
-    } catch (error) {
-      return res
-        .status(500)
-        .json({ error, message: "Something went wrong!!!" });
+  try {
+    const { id1, id2 } = req.params;
+    const { email } = req.user;
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+    await Status.findOneAndUpdate(
+      { candidateId: id1, jobId: id2 },
+      { $set: { status: { Applied: true, CvShortlisted: true } } },
+      { new: true }
+    );
+    const cvShortlistedJob = await Jobs.findById({ _id: id2 });
+    await Jobs.findByIdAndUpdate(
+      { _id: id2 },
+      { $push: { shortlistedResumeApplicants: id1 } }
+    );
+    const CandidateUser = await Candidates.findById({ _id: id1 });
+    // Send notification email
+    const { subject, html } = jobStatusTemplate({
+      type: "cvShortlisted",
+      candidateName: CandidateUser.name,
+      jobTitle: cvShortlistedJob.JobTitle,
+    });
+    await sendEmail({ to: CandidateUser.email, subject, html });
+    return res.status(201).json({ message: "CV Shortlisted status updated sucessfully!!!" });
+  } catch (error) {
+    return res.status(500).json({ message: "Something went wrong!!!", error });
   }
-);
+});
 
 // UPDATE Screening
-router.put("/update-screening/:id1/:id2",AdminAuthenticateToken,async (req, res) => {
-    try {
-      const { email } = req.user;
-      const { id1, id2 } = req.params;
-
-      const user = await Admin.findOne({ email });
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      const screeningStatus = await Status.findOneAndUpdate(
-        { candidateId: id1, jobId: id2 },
-        {
-          $set: {
-            status: { Applied: true, CvShortlisted: true, Screening: true },
-          },
-        },
-        { new: true }
-      );
-
-      const screeningJob = await Jobs.findByIdAndUpdate(
-        { _id: id2 },
-        {
-          $push: { screeningShortlistedApplicants: id1 },
-        }
-      );
-
-      const CandidateUser = await Candidates.findById({ _id: id1 });
-
-      // CV Screening mail
-      const CvScreeningSucessfully = async (
-        CandidateUser,
-        screeningJob,
-        user
-      ) => {
-        try {
-          const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-              user: "tech@diamondore.in",
-              pass: "zlnbcvnhzdddzrqn",
-            },
-          });
-
-          const mailOptions = {
-            from: "Diamondore.in <tech@diamondore.in>",
-            to: `Recipient <${CandidateUser.email}>`,
-            subject: "Congratulation! Your CV passed the screening process",
-            html: `
-          <p style="color:black; text-align:left; font-size: 20px; font-style: bold;">Congratulations🎊🎉✨!</p>
-            <p>Your CV has successfully passed the screening process.</p>
-            <p>We are pleased to inform you that you have passed the screening process for ${screeningJob.JobTitle}.</p>
-            <p>We will contact you soon with further details.</p>
-            <p style="color:black; text-align:left;">Thank you!</p>
-              <p style="text-align: left;  ">Regards,</p>
-            <p style="text-align: left;"><img src="cid:logo" alt="Company Logo" style="width:200px;height:auto;"/></p>
-            `,
-            attachments: [
-              {
-                filename: "logo.png",
-                path: "C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png",
-                cid: "logo",
-              },
-            ],
-          };
-
-          const info = await transporter.sendMail(mailOptions);
-          console.log("Email sent: " + info.response);
-
-          // console.log(info);
-        } catch (error) {
-          console.error("Error sending Mail:", error);
-          throw error;
-        }
-      };
-      await CvScreeningSucessfully(CandidateUser, screeningJob, user);
-      return res
-        .status(201)
-        .json({ message: "Screening status updated sucessfully!!!" });
-    } catch (error) {
-      return res
-        .status(500)
-        .json({ message: "Something went wrong!!!", error });
+router.put("/update-screening/:id1/:id2", AdminAuthenticateToken, async (req, res) => {
+  try {
+    const { email } = req.user;
+    const { id1, id2 } = req.params;
+    const user = await Admin.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+    await Status.findOneAndUpdate(
+      { candidateId: id1, jobId: id2 },
+      { $set: { status: { Applied: true, CvShortlisted: true, Screening: true } } },
+      { new: true }
+    );
+    const screeningJob = await Jobs.findById({ _id: id2 });
+    await Jobs.findByIdAndUpdate(
+      { _id: id2 },
+      { $push: { joinedApplicants: id1 }, $inc: { Vacancies: -1 } }
+    );
+    const CandidateUser = await Candidates.findById({ _id: id1 });
+    // Send notification email
+    const { subject, html } = jobStatusTemplate({
+      type: "joined",
+      candidateName: CandidateUser.name,
+      company: JoinedJob.Company,
+    });
+    await sendEmail({ to: CandidateUser.email, subject, html });
+    return res.status(201).json({ message: "Joined status updated sucessfully!!!" });
+  } catch (error) {
+    return res.status(500).json({ message: "Something went wrong!!!", error });
   }
-);
-
-// UPDATE Interview Scheduled
-router.put("/update-interviewscheduled/:id1/:id2",AdminAuthenticateToken,async (req, res) => {
-    try {
-      const { email } = req.user;
-      const { id1, id2 } = req.params;
-
-      const user = await Admin.findOne({ email });
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      const interviewScheduledStatus = await Status.findOneAndUpdate(
-        { candidateId: id1, jobId: id2 },
-        {
-          $set: {
-            status: {
-              Applied: true,
-              CvShortlisted: true,
-              Screening: true,
-              InterviewScheduled: true,
-            },
-          },
-        },
-        { new: true }
-      );
-
-      const interviewScheduledJob = await Jobs.findByIdAndUpdate(
-        { _id: id2 },
-        {
-          $push: { interviewedScheduledApplicants: id1 },
-        }
-      );
-
-      const CandidateUser = await Candidates.findById({ _id: id1 });
-
-      // Interview Shedule
-      const InterviewScheduledSucessfully = async (
-        CandidateUser,
-        interviewScheduledJob,
-        user
-      ) => {
-        try {
-          const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-              user: "tech@diamondore.in",
-              pass: "zlnbcvnhzdddzrqn",
-            },
-          });
-
-          const mailOptions = {
-            from: "Diamondore.in <tech@diamondore.in>",
-            to: `Recipient <${CandidateUser.email}>`,
-            subject: "Congratulation! Your Interview has been Scheduled",
-            html: `
-             <p style="color:black; text-align:left; font-size: 20px; font-style: bold;">Congratulations🎊🎉✨!</p>
-            <p>We are pleased to inform you that your Interview has been  Scheduled for  ${interviewScheduledJob.JobTitle}.</p>
-            <p>We will contact you soon with further details.</p>
-            <p style="color:black; text-align:left;">Thank you!</p>
-            <p style="text-align: left;  ">Regards,</p>
-            <p style="text-align: left;"><img src="cid:logo" alt="Company Logo" style="width:200px;height:auto;"/></p>
-            `,
-            attachments: [
-              {
-                filename: "logo.png",
-                path: "C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png",
-                cid: "logo",
-              },
-            ],
-          };
-
-          const info = await transporter.sendMail(mailOptions);
-          console.log("Email sent: " + info.response);
-
-          // console.log(info);
-        } catch (error) {
-          console.error("Error sending Mail:", error);
-          throw error;
-        }
-      };
-      await InterviewScheduledSucessfully(
-        CandidateUser,
-        interviewScheduledJob,
-        user
-      );
-      return res
-        .status(201)
-        .json({ message: "Interview scheduled status updated sucessfully!!!" });
-    } catch (error) {
-      return res
-        .status(500)
-        .json({ message: "Something went wrong!!!", error });
-    }
-  }
-);
-
-// UPDATE Interviewed
-router.put("/update-interviewed/:id1/:id2",AdminAuthenticateToken,async (req, res) => {
-    try {
-      const { email } = req.user;
-      const { id1, id2 } = req.params;
-
-      const user = await Admin.findOne({ email });
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      const interviewedStatus = await Status.findOneAndUpdate(
-        { candidateId: id1, jobId: id2 },
-        {
-          $set: {
-            status: {
-              Applied: true,
-              CvShortlisted: true,
-              Screening: true,
-              InterviewScheduled: true,
-              Interviewed: true,
-            },
-          },
-        },
-        { new: true }
-      );
-
-      const interviewedJob = await Jobs.findByIdAndUpdate(
-        { _id: id2 },
-        {
-          $push: { interviewedApplicants: id1 },
-        }
-      );
-
-      return res
-        .status(201)
-        .json({ message: "Interviewed status updated sucessfully!!!" });
-    } catch (error) {
-      return res
-        .status(500)
-        .json({ message: "Something went wrong!!!", error });
-    }
-  }
-);
-
-// UPDATE Shortlisted
-router.put("/update-shortlisted/:id1/:id2",AdminAuthenticateToken,async (req, res) => {
-    try {
-      const { email } = req.user;
-      const { id1, id2 } = req.params;
-
-      const user = await Admin.findOne({ email });
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      const shortlistedStatus = await Status.findOneAndUpdate(
-        { candidateId: id1, jobId: id2 },
-        {
-          $set: {
-            status: {
-              Applied: true,
-              CvShortlisted: true,
-              Screening: true,
-              InterviewScheduled: true,
-              Interviewed: true,
-              Shortlisted: true,
-            },
-          },
-        },
-        { new: true }
-      );
-
-      const shortlistedJob = await Jobs.findByIdAndUpdate(
-        { _id: id2 },
-        {
-          $push: { shortlistedApplicants: id1 },
-        }
-      );
-
-      const CandidateUser = await Candidates.findById({ _id: id1 });
-      // Shrtlisted for job mail
-
-      const shortlistedforjob = async (CandidateUser, shortlistedJob, user) => {
-        try {
-          const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-              user: "tech@diamondore.in",
-              pass: "zlnbcvnhzdddzrqn",
-            },
-          });
-
-          const mailOptions = {
-            from: "Diamondore.in <tech@diamondore.in>",
-            to: `Recipient <${CandidateUser.email}>`,
-            subject: "Congratulation! You are Shortlisted!",
-            html: `
-            <p style="color:black; text-align:left; font-size: 20px; font-style: bold;">Congratulations🎊🎉✨!</p>
-            <p>You have been shortlisted for the position of ${shortlistedJob.JobTitle}.</p>
-            <p>This is a significant achievement, and we are excited to consider you for this role.</p>
-            <p>We will be in touch shortly with the next steps in the hiring process.</p>
-            <p style="color:black; text-align:left;">Thank you!</p>
-            <p style="text-align: left;  ">Regards,</p>
-            <p style="text-align: left;"><img src="cid:logo" alt="Company Logo" style="width:200px;height:auto;"/></p>
-            `,
-            attachments: [
-              {
-                filename: "logo.png",
-                path: "C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png",
-                cid: "logo",
-              },
-            ],
-          };
-          const info = await transporter.sendMail(mailOptions);
-          console.log("Email sent: " + info.response);
-
-          // console.log(info);
-        } catch (error) {
-          console.error("Error sending Mail:", error);
-          throw error;
-        }
-      };
-      await shortlistedforjob(CandidateUser, shortlistedJob, user);
-
-      return res
-        .status(201)
-        .json({ message: "Shortlisted status updated sucessfully!!!" });
-    } catch (error) {
-      return res
-        .status(500)
-        .json({ message: "Something went wrong!!!", error });
-    }
-  }
-);
-
-// UPDATE Joined
-router.put("/update-joined/:id1/:id2",AdminAuthenticateToken,async (req, res) => {
-    try {
-      const { email } = req.user;
-      const { id1, id2 } = req.params;
-
-      const user = await Admin.findOne({ email });
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      const joinedStatus = await Status.findOneAndUpdate(
-        { candidateId: id1, jobId: id2 },
-        {
-          $set: {
-            status: {
-              Applied: true,
-              CvShortlisted: true,
-              Screening: true,
-              InterviewScheduled: true,
-              Interviewed: true,
-              Shortlisted: true,
-              Joined: true,
-            },
-          },
-        },
-        { new: true }
-      );
-
-      const JoinedJob = await Jobs.findByIdAndUpdate(
-        { _id: id2 },
-        {
-          $push: { joinedApplicants: id1 },
-          $inc: { Vacancies: -1 },
-        }
-      );
-
-      const CandidateUser = await Candidates.findById({ _id: id1 });
-      // Shrtlisted for job mail
-
-      const Joiningstatusmail = async (CandidateUser, JoinedJob, user) => {
-        try {
-          const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-              user: "tech@diamondore.in",
-              pass: "zlnbcvnhzdddzrqn",
-            },
-          });
-
-          const mailOptions = {
-            from: "Diamondore.in <tech@diamondore.in>",
-            to: `Recipient <${CandidateUser.email}>`,
-            subject:
-              "Congratulations on Successfully Joining Your New Company!",
-            html: `
-           <p style="color:black; text-align:left; font-size: 20px; font-style: bold;">Congratulations🎊🎉✨!</p>
-             <p>Dear ${CandidateUser?.name},</p>
-            <p>We are thrilled to inform you that you have successfully joined  ${JoinedJob?.Company} through Diamond Ore pvt.Ltd!</p>
-            <p>This marks the beginning of an exciting journey in your career, and we couldn't be happier to have played a part in your success.</p>
-            <p>We wish you all the best as you embark on this new chapter. May it bring you growth, fulfillment, and endless opportunities.</p>
-            <p>If you have any questions or need assistance during your transition, please don't hesitate to reach out to us. We're here to support you every step of the way.</p>
-            <p>Once again, congratulations on your new role at ${JoinedJob?.Company}!</p>
-            <p style="text-align: left;  ">Regards,</p>
-            <p style="text-align: left;"><img src="cid:logo" alt="Company Logo" style="width:200px;height:auto;"/></p>
-            `,
-            attachments: [
-              {
-                filename: "logo.png",
-                path: "C:/Users/ACER/Documents/RAS/DiamondOre-JobPortal/Client/src/assets/logo.png",
-                cid: "logo",
-              },
-            ],
-          };
-
-          const info = await transporter.sendMail(mailOptions);
-          console.log("Email sent: " + info.response);
-
-          // console.log(info);
-        } catch (error) {
-          console.error("Error sending Mail:", error);
-          throw error;
-        }
-      };
-      await Joiningstatusmail(CandidateUser, JoinedJob, user);
-
-      return res
-        .status(201)
-        .json({ message: "Joined status updated sucessfully!!!" });
-    } catch (error) {
-      return res
-        .status(500)
-        .json({ message: "Something went wrong!!!", error });
-    }
-  }
-);
+});
 
 // FETCH ALL MESSAGES OF CANDIDATES
 router.get("/all-messages", AdminAuthenticateToken, async (req, res) => {
@@ -1312,20 +653,12 @@ router.put("/edit-profile", AdminAuthenticateToken,uploadImage.single('profilePi
 // CHATBOT MESSAGE RECIEVE
 router.post("/send-chatbot", async (req, res) => {
   try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "tech@diamondore.in",
-        pass: "zlnbcvnhzdddzrqn",
-      },
-    });
     const userName = req.body.name;
-    const userEmailAddress = req.body.email; // Assuming the form has an email input
+    const userEmailAddress = req.body.email;
     const userPhone = req.body.phone;
     const userPreferredCity = req.body.preferredCity;
     const userPreferredChannel = req.body.preferredChannel;
     const userCurrentCTC = req.body.currentCTC;
-
     const newChatBotMsg = new ChatBotMessages({
       name: userName,
       email: userEmailAddress,
@@ -1334,32 +667,16 @@ router.post("/send-chatbot", async (req, res) => {
       preferredChannel: userPreferredChannel,
       currentCTC: userCurrentCTC,
     });
-
     await newChatBotMsg.save();
-
-    // Compose the email
-    const mailOptions = {
-      from: "DOC_Labz <tech@diamondore.in>",
+    // Send notification email
+    await sendEmail({
       to: "rahul@rasonline.in",
       cc: "tech@diamondore.in",
       subject: `ROBO_RECRUITER: New Message Received from ${userName}`,
-      text: `A new message has been submitted by ${userName}.`,
-      html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${userName}</h4> </br>
-                <h4 style="font-size:1rem; display:flex; justify-content: center;">Email Id: ${userEmailAddress}</h4> </br>
-                <h4 style="font-size:1rem; display:flex; justify-content: center;">Phone No: ${userPhone}</h4> </br>
-                <h4 style="font-size:1rem; display:flex; justify-content: center;">Preferred City: ${userPreferredCity}</h4> </br>
-                <h4 style="font-size:1rem; display:flex; justify-content: center;">Preferred Channel: ${userPreferredChannel}</h4> </br>
-                <h4 style="font-size:1rem; display:flex; justify-content: center;">Current CTC: ${userCurrentCTC}</h4> </br>`,
-    };
-
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent: " + info.response);
-
-    res
-      .status(201)
-      .json({ message: "ROBO_RECRUITER Sent message successfully!!!" });
+      html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${userName}</h4><br/><h4 style="font-size:1rem; display:flex; justify-content: center;">Email Id: ${userEmailAddress}</h4><br/><h4 style="font-size:1rem; display:flex; justify-content: center;">Phone No: ${userPhone}</h4><br/><h4 style="font-size:1rem; display:flex; justify-content: center;">Preferred City: ${userPreferredCity}</h4><br/><h4 style="font-size:1rem; display:flex; justify-content: center;">Preferred Channel: ${userPreferredChannel}</h4><br/><h4 style="font-size:1rem; display:flex; justify-content: center;">Current CTC: ${userCurrentCTC}</h4>`
+    });
+    res.status(201).json({ message: "ROBO_RECRUITER Sent message successfully!!!" });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "An error occurred" });
   }
 });
@@ -1367,19 +684,11 @@ router.post("/send-chatbot", async (req, res) => {
 // CLIENT MESSAGE RECIEVE
 router.post("/client-form", async (req, res) => {
   try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "tech@diamondore.in",
-        pass: "zlnbcvnhzdddzrqn",
-      },
-    });
     const userName = req.body.name;
-    const userEmail = req.body.email; // Assuming the form has an email input
+    const userEmail = req.body.email;
     const userPhone = req.body.phone;
     const userDesignation = req.body.designation;
     const userCompany = req.body.company;
-
     const newClientMsg = new ClientForm({
       name: userName,
       email: userEmail,
@@ -1387,122 +696,46 @@ router.post("/client-form", async (req, res) => {
       designation: userDesignation,
       company: userCompany,
     });
-
     await newClientMsg.save();
-
-    // Compose the email
-    const mailOptions = {
-      from: "DOC_Labz <tech@diamondore.in>",
+    // Send notification email
+    const { subject, html } = clientFormTemplate({
+      name: userName,
+      email: userEmail,
+      phone: userPhone,
+      designation: userDesignation,
+      company: userCompany,
+    });
+    await sendEmail({
       to: "hr@diamondore.in",
       cc: ["zoyas3423@gmail.com", "zoya.rasonline@gmail.com"],
-      subject: `DOC_LABZ - New Client: New Message Received from ${userName}`,
-      text: `A new message has been submitted by ${userName}.`,
-      html: `<h4 style="font-size:1rem; display:flex; justify-content: center;">A new message has been submitted by ${userName}</h4> </br>
-                <h4 style="font-size:1rem; display:flex; justify-content: center;">Email Id: ${userEmail}</h4> </br>
-                <h4 style="font-size:1rem; display:flex; justify-content: center;">Phone No: ${userPhone}</h4> </br>
-                <h4 style="font-size:1rem; display:flex; justify-content: center;">Designation: ${userDesignation}</h4> </br>
-                <h4 style="font-size:1rem; display:flex; justify-content: center;">Company: ${userCompany}</h4> </br>`,
-    };
-
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent: " + info.response);
-
+      subject,
+      html,
+    });
     res.status(201).json({ message: "Client Sent message successfully!!!" });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "An error occurred" });
   }
 });
 
 // FORGOT PASSWORD
-// Send OTP via email using Nodemailer For Forgot Password
-const sendOTPByEmailForgotPassword = async (email, otp) => {
-  try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "tech@diamondore.in",
-        pass: "zlnbcvnhzdddzrqn",
-      },
-    });
-
-    const mailOptions = {
-      from: "Diamondore.in <tech@diamondore.in>",
-      to: `Recipient <${email}>`,
-      subject: "Forgot Password - OTP",
-      text: `Your OTP is: ${otp}`,
-      html: `<h1 style="color: blue; text-align: center; font-size: 2rem">Diamond Consulting Pvt. Ltd.</h1> </br> <h3 style="color: black; font-size: 1.3rem; text-align: center;">Your OTP for forget password is: ${otp}</h3>`,
-    };
-
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent: " + info.response);
-
-    // console.log(info);
-  } catch (error) {
-    console.error("Error sending OTP:", error);
-    throw error;
-  }
-};
-
-// SEND-OTP
 router.post("/forgot-password", async (req, res) => {
   try {
     const { email } = req.body;
-
-    // Check affiliate exists
     const userExists = await Admin.exists({ email });
     if (!userExists) {
-      return res.status(409).json({ message: "Admin does not exists" });
+      return res.status(409).json({ message: "Admin does not exist" });
     }
-
-    // Generate and store OTP
-    const otp = generateOTP();
-    otpStore[email] = otp; // Store OTP for the email
-
-    // Send OTP via email
-    await sendOTPByEmailForgotPassword(email, otp);
-
-    console.log("otpStore:", otpStore[email]);
-
+    const otp = generateOtp();
+    storeOtp(email, otp);
+    const { subject, html, text } = forgotPasswordOtpTemplate(otp);
+    await sendEmail({ to: email, subject, html, text });
     res.status(201).json({ message: "OTP sent successfully" });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "An error occurred" });
   }
 });
 
 // VERIFY AND UPDATE PASSWORD
-router.put("/update-password", async (req, res) => {
-  const { email, otp, password } = req.body;
-
-  console.log(otpStore[email]);
-
-  try {
-    // const { id } = req.params;
-    if (otpStore[email] == otp) {
-      console.log("stored: ", otpStore[email]);
-      console.log("Entered: ", otp);
-
-      // Find the user in the database
-      const user = await Admin.findOne({ email: email });
-      if (!user) {
-        return res.status(404).json({ message: "admin not found" });
-      }
-
-      const hashedPassword = await bcrypt.hash(password, 10);
-      user.password = hashedPassword;
-
-      await user.save();
-
-      delete otpStore[email];
-
-      res.status(200).json({ message: "Password Updated Successfully!!" });
-    }
-  } catch (error) {
-    console.error("Error updating Admin Password:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -1612,37 +845,17 @@ router.post("/upload-dsr-excel", AdminAuthenticateToken , excelUpload.single('my
 
 // Function to send error email to admin
 async function sendErrorEmailToAdmin(errorArray) {
-  // Configure your email service, replace with your email settings
-  const transporter = nodemailer.createTransport({
-    service: "gmail", // or any other email service you're using
-    auth: {
-      user: "tech@diamondore.in",
-      pass: "zlnbcvnhzdddzrqn",
-    },
-  });
-
   const errorDetails = errorArray
     .map(
       (error, index) =>
-        `Entry #${error.index + 1}: ${JSON.stringify(error.entry)}\nError: ${
-          error.error
-        }\n\n`
+        `Entry #${error.index + 1}: ${JSON.stringify(error.entry)}\nError: ${error.error}\n\n`
     )
     .join("\n");
-
-  const mailOptions = {
-    from: "tech@diamondore.in",
+  await sendEmail({
     to: "tech@diamondore.in",
     subject: "DSR Upload Errors",
     text: `The following entries had errors during the DSR upload process:\n\n${errorDetails}`,
-  };
-
-  try {
-    await transporter.sendMail(mailOptions);
-    console.log("Error email sent to admin.");
-  } catch (emailError) {
-    console.error("Error sending email:", emailError.message);
-  }
+  });
 }
 
 router.get("/findJobs/:phone", async (req, res) =>{
@@ -1672,18 +885,9 @@ router.get("/findJobs/:phone", async (req, res) =>{
 // BULK
 // Send OTP via email using Nodemailer
 const sendJobsToRecByEmail = async (eMailIdRec, candidate, suitableJobs) => {
-  try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "tech@diamondore.in",
-        pass: "zlnbcvnhzdddzrqn",
-      },
-    });
-
-    const jobRows = suitableJobs
-      .map(
-        (job) => `
+  const jobRows = suitableJobs
+    .map(
+      (job) => `
       <tr>
         <td style="border: 1px solid #ddd; padding: 8px;">${job.Company}</td>
         <td style="border: 1px solid #ddd; padding: 8px;">${job.JobTitle}</td>
@@ -1694,60 +898,40 @@ const sendJobsToRecByEmail = async (eMailIdRec, candidate, suitableJobs) => {
         <td style="border: 1px solid #ddd; padding: 8px;">${job.State}</td>
       </tr>
     `
-      )
-      .join("");
-
-    const htmlContent = `
-      <h1 style="color: blue; text-align: center; font-size: 2rem">DiamondOre Consulting Pvt. Ltd.</h1>
-      <h3 style="color: black; font-size: 1.3rem; text-align: center;">Jobs for candidate: ${candidate.candidateName}</h3>
-      <table style="border-collapse: collapse; width: 100%;">
-        <thead>
-          <tr style="background-color: #f2f2f2;">
-            <th style="border: 1px solid #ddd; padding: 8px;">Company</th>
-            <th style="border: 1px solid #ddd; padding: 8px;">Job Title</th>
-            <th style="border: 1px solid #ddd; padding: 8px;">Industry</th>
-            <th style="border: 1px solid #ddd; padding: 8px;">Channel</th>
-            <th style="border: 1px solid #ddd; padding: 8px;">Zone</th>
-            <th style="border: 1px solid #ddd; padding: 8px;">City</th>
-            <th style="border: 1px solid #ddd; padding: 8px;">State</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${jobRows}
-        </tbody>
-      </table>
-    `;
-
-    const mailOptions = {
-      from: "Diamondore.in <tech@diamondore.in>",
-      to: `Recipient <${eMailIdRec}>`,
-      subject: "Recommended Jobs",
-      text: `Jobs for candidate: ${candidate.name}`,
-      html: htmlContent,
-    };
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent: " + info.response);
-
-    // console.log(info);
-  } catch (error) {
-    console.error("Error sending OTP:", error);
-    throw error;
-  }
+    )
+    .join("");
+  const htmlContent = `
+    <h1 style="color: blue; text-align: center; font-size: 2rem">DiamondOre Consulting Pvt. Ltd.</h1>
+    <h3 style="color: black; font-size: 1.3rem; text-align: center;">Jobs for candidate: ${candidate.candidateName}</h3>
+    <table style="border-collapse: collapse; width: 100%;">
+      <thead>
+        <tr style="background-color: #f2f2f2;">
+          <th style="border: 1px solid #ddd; padding: 8px;">Company</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">Job Title</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">Industry</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">Channel</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">Zone</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">City</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">State</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${jobRows}
+      </tbody>
+    </table>
+  `;
+  await sendEmail({
+    to: eMailIdRec,
+    subject: "Recommended Jobs",
+    html: htmlContent,
+    text: `Jobs for candidate: ${candidate.name}`,
+  });
 };
 
 const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
-  try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "tech@diamondore.in",
-        pass: "zlnbcvnhzdddzrqn",
-      },
-    });
-
-    const jobRows = suitableJobs
-      .map(
-        (job) => `
+  const jobRows = suitableJobs
+    .map(
+      (job) => `
       <tr>
         <td style="border: 1px solid #ddd; padding: 8px;">${job.Company}</td>
         <td style="border: 1px solid #ddd; padding: 8px;">${job.JobTitle}</td>
@@ -1759,49 +943,37 @@ const sendJobsToKamByEmail = async (eMailIdKam, candidate, suitableJobs) => {
         <td style="border: 1px solid #ddd; padding: 8px;">${job.State}</td>
       </tr>
     `
-      )
-      .join("");
-
-    const htmlContent = `
-      <h1 style="color: blue; text-align: center; font-size: 2rem">DiamondOre Consulting Pvt. Ltd.</h1>
-      <h3 style="color: black; font-size: 1.3rem; text-align: center;">Jobs for candidate: ${candidate.candidateName}</h3>
-      <h3 style="color: black; font-size: 1.1rem; text-align: center;">Phone: ${candidate.phone}</h3> 
-      <h3 style="color: black; font-size: 1.1rem; text-align: center;">Email: ${candidate.email}</h3>
-      <table style="border-collapse: collapse; width: 100%;">
-        <thead>
-          <tr style="background-color: #f2f2f2;">
-            <th style="border: 1px solid #ddd; padding: 8px;">Company</th>
-            <th style="border: 1px solid #ddd; padding: 8px;">Job Title</th>
-            <th style="border: 1px solid #ddd; padding: 8px;">Industry</th>
-            <th style="border: 1px solid #ddd; padding: 8px;">Channel</th>
-            <th style="border: 1px solid #ddd; padding: 8px;">MaxSalary</th>
-            <th style="border: 1px solid #ddd; padding: 8px;">Zone</th>
-            <th style="border: 1px solid #ddd; padding: 8px;">City</th>
-            <th style="border: 1px solid #ddd; padding: 8px;">State</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${jobRows}
-        </tbody>
-      </table>
-    `;
-
-    const mailOptions = {
-      from: "Diamondore.in <tech@diamondore.in>",
-      to: `Recipient <${eMailIdKam}>`,
-      subject: "Recommended Jobs",
-      text: `Jobs for candidate: ${candidate.candidateName}`,
-      html: htmlContent,
-    };
-
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent: " + info.response);
-
-    // console.log(info);
-  } catch (error) {
-    console.error("Error sending OTP:", error);
-    throw error;
-  }
+    )
+    .join("");
+  const htmlContent = `
+    <h1 style="color: blue; text-align: center; font-size: 2rem">DiamondOre Consulting Pvt. Ltd.</h1>
+    <h3 style="color: black; font-size: 1.3rem; text-align: center;">Jobs for candidate: ${candidate.candidateName}</h3>
+    <h3 style="color: black; font-size: 1.1rem; text-align: center;">Phone: ${candidate.phone}</h3> 
+    <h3 style="color: black; font-size: 1.1rem; text-align: center;">Email: ${candidate.email}</h3>
+    <table style="border-collapse: collapse; width: 100%;">
+      <thead>
+        <tr style="background-color: #f2f2f2;">
+          <th style="border: 1px solid #ddd; padding: 8px;">Company</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">Job Title</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">Industry</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">Channel</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">MaxSalary</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">Zone</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">City</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">State</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${jobRows}
+      </tbody>
+    </table>
+  `;
+  await sendEmail({
+    to: eMailIdKam,
+    subject: "Recommended Jobs",
+    html: htmlContent,
+    text: `Jobs for candidate: ${candidate.candidateName}`,
+  });
 };
 
 
@@ -1957,16 +1129,7 @@ router.get("/find-bulk-jobs", async (req, res) => {
 
 
     async function sendEmailWithAttachment(recipient, filePath) {
-      const transporter = nodemailer.createTransport({
-        service: 'gmail', 
-        auth: {
-          user : "tech@diamondore.in",
-          pass : "zlnbcvnhzdddzrqn", 
-        },
-      });
-    
-      const mailOptions = {
-        from: 'tech@diamondore.in',
+      await sendEmail({
         to: recipient,
         subject: 'Suitable Jobs for Candidates',
         text: 'Find attached the suitable jobs for candidates.',
@@ -1977,19 +1140,9 @@ router.get("/find-bulk-jobs", async (req, res) => {
             contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           },
         ],
-      };
-
-
-      try {
-        await transporter.sendMail(mailOptions);
-        console.log('Email sent successfully');
-      } catch (error) {
-        console.error('Error sending email:', error);
-      } finally {
-        fs.unlinkSync(filePath);
-      }
-     
-   }
+      });
+      fs.unlinkSync(filePath);
+    }
 
      
     const recruiterMail = [];
@@ -2197,38 +1350,21 @@ router.put("/update-status/employee/:id",AdminAuthenticateToken,async (req, res,
 // will send mail to the employee the your emailid is changed
 
 const SendMailWhenEditEmployee = async (email, updatedFields) => {
-  try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "tech@diamondore.in",
-        pass: "zlnbcvnhzdddzrqn", // Use environment variables for security
-      },
-    });
-
-    const mailOptions = {
-      from: "Diamondore.in <tech@diamondore.in>",
-      to: email,
-      subject: "Updated Details Notification",
-      html: `
-        <h3>Your details have been updated:</h3>
-        <ul>
-          ${Object.entries(updatedFields)
-            .map(([key, value]) => `<li><strong>${key}:</strong> ${value}</li>`)
-            .join("")}
-        </ul>
-        <p>If you have any questions, please contact HR.</p>
-        <h1 style="color: blue; text-align: center; font-size: 1rem">Diamond Consulting Pvt.Ltd.</h1>
-      `,
-    };
-
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent: " + info.response);
-    return info;
-  } catch (error) {
-    console.error("Error sending email:", error);
-    throw error;
-  }
+  const html = `
+    <h3>Your details have been updated:</h3>
+    <ul>
+      ${Object.entries(updatedFields)
+        .map(([key, value]) => `<li><strong>${key}:</strong> ${value}</li>`)
+        .join("")}
+    </ul>
+    <p>If you have any questions, please contact HR.</p>
+    <h1 style="color: blue; text-align: center; font-size: 1rem">Diamond Consulting Pvt.Ltd.</h1>
+  `;
+  await sendEmail({
+    to: email,
+    subject: "Updated Details Notification",
+    html,
+  });
 };
 
 router.put("/all-employees-edit/:id",AdminAuthenticateToken,async (req, res) => {
@@ -2506,163 +1642,7 @@ router.post("/create-goalsheet/:id",AdminAuthenticateToken,async (req, res) => {
   }
 );
 
-// SET GOAL SHEET OF AN EMPLOYEE
-// router.put("/set-goalsheet", async (req, res) => {
-//   try {
-//     const { empId, year, month, noOfJoinings, revenue, cost } = req.body;
 
-//     // Convert year and month to numbers
-//     // const yearMain = parseInt(year);
-//     const yearMain = year;
-//     const monthMain = parseInt(month);
-//     console.log(yearMain, monthMain);
-
-//     // Find the employee by empId
-//     const employee = await Employees.findById(empId);
-//     if (!employee) {
-//       return res.status(404).json({ message: "Employee not found" });
-//     }
-
-//     // Find the goal sheet for the specified empId and year
-//     let goalSheet = await GoalSheet.findOne({ owner: empId, year: yearMain });
-//     if (!goalSheet) {
-//       goalSheet = new GoalSheet({
-//         owner: empId,
-//         year: yearMain,
-//         goalSheetDetails: [],
-//       });
-//     }
-
-//     // Calculate target
-//     const target = cost * 4;
-
-//     // Calculate cumulativeCost
-//     let cumulativeCost = cost;
-//     const [joinDay, joinMonth, joinYear] = employee.doj.split("/").map(Number);
-//     // const [joinYear, joinMonth, joinDay] = employee.doj.split("/").map(Number);
-//     console.log(joinYear, joinMonth, joinDay);
-//     if (joinMonth !== monthMain || joinYear !== yearMain) {
-//       if (monthMain === 1) {
-//         console.log(joinYear, yearMain);
-
-//         // January
-//         const lastYearGoalSheet = await GoalSheet.findOne({
-//           owner: empId,
-//           year: yearMain - 1,
-//         });
-//         if (lastYearGoalSheet) {
-//           const lastYearDecemberDetails =
-//             lastYearGoalSheet.goalSheetDetails.find(
-//               (detail) => detail.goalSheet.monthMain === 12
-//             );
-//           if (lastYearDecemberDetails) {
-//             cumulativeCost += lastYearDecemberDetails.goalSheet.cumulativeCost;
-//           }
-//         }
-//       } else {
-//         const previousMonthDetails = goalSheet.goalSheetDetails.find(
-//           (detail) => detail.goalSheet.month === monthMain - 1
-//         );
-//         if (previousMonthDetails) {
-//           cumulativeCost += previousMonthDetails.goalSheet.cumulativeCost;
-//         }
-//       }
-//     }
-
-//     // Calculate cumulativeRevenue
-//     let cumulativeRevenue = revenue;
-//     if (joinMonth !== monthMain || joinYear !== yearMain) {
-//       if (monthMain === 1) {
-//         // January
-//         const lastYearGoalSheet = await GoalSheet.findOne({
-//           owner: empId,
-//           year: yearMain - 1,
-//         });
-//         if (lastYearGoalSheet) {
-//           const lastYearDecemberDetails =
-//             lastYearGoalSheet.goalSheetDetails.find(
-//               (detail) => detail.goalSheet.month === 12
-//             );
-//           if (lastYearDecemberDetails) {
-//             cumulativeRevenue +=
-//               lastYearDecemberDetails.goalSheet.cumulativeRevenue;
-//           }
-//         }
-//       } else {
-//         const previousMonthDetails = goalSheet.goalSheetDetails.find(
-//           (detail) => detail.goalSheet.month === monthMain - 1
-//         );
-//         if (previousMonthDetails) {
-//           cumulativeRevenue += previousMonthDetails.goalSheet.cumulativeRevenue;
-//         }
-//       }
-//     }
-
-//     // Calculate achYTD and achMTD
-//     const achYTD = cumulativeRevenue / cumulativeCost;
-//     const achMTD = revenue / cost;
-
-//     // Incentive plans
-//     let noOfJoiningIncentive = 0;
-//     let mtdIncentive = 0;
-//     if (noOfJoinings === 3) {
-//       noOfJoiningIncentive = 1000;
-//     } else if (noOfJoinings === 4) {
-//       noOfJoiningIncentive = 1500;
-//     } else if (noOfJoinings >= 5) {
-//       noOfJoiningIncentive = 2000;
-//     }
-
-//     if (achMTD === 4) {
-//       mtdIncentive = 1000;
-//     } else if (achMTD >= 5) {
-//       mtdIncentive = 2000;
-//     }
-
-//     const totalIncentive = noOfJoiningIncentive + mtdIncentive;
-
-//     // Calculate variableIncentive based on achYTD and achMTD
-//     let variableIncentive = 0;
-//     if (achYTD >= 3) {
-//       goalSheet.goalSheetDetails.forEach((detail) => {
-//         const { achMTD: detailAchMTD, revenue: detailRevenue } =
-//           detail.goalSheet;
-//         if (detailAchMTD >= 3 && detailAchMTD <= 3.4) {
-//           variableIncentive += detailRevenue * 0.02;
-//         } else if (detailAchMTD >= 3.5 && detailAchMTD <= 3.9) {
-//           variableIncentive += detailRevenue * 0.04;
-//         } else if (detailAchMTD >= 4) {
-//           variableIncentive += detailRevenue * 0.06;
-//         }
-//       });
-//     }
-
-//     // Push new details to goalSheetDetails array
-//     goalSheet.goalSheetDetails.push({
-//       goalSheet: {
-//         month: monthMain,
-//         noOfJoining: noOfJoinings,
-//         cost: cost,
-//         revenue: revenue,
-//         target: target,
-//         cumulativeCost: cumulativeCost,
-//         cumulativeRevenue: cumulativeRevenue,
-//         achYTD: achYTD,
-//         achMTD: achMTD,
-//         incentive: totalIncentive,
-//         variableIncentive: variableIncentive,
-//       },
-//     });
-
-//     // Save the updated goal sheet
-//     await goalSheet.save();
-
-//     res.status(200).json({ message: "Goal sheet updated successfully" });
-//   } catch (error) {
-//     console.error(error.message);
-//     res.status(500).json({ message: error.message });
-//   }
-// });
 router.post("/set-goalSheet", async (req, res) => {
   const {
     empId,
@@ -3105,182 +2085,6 @@ router.get("/duplicate-phone-requests",AdminAuthenticateToken,async (req, res) =
       }
 
       res.status(200).json(duplicatePhoneRequests);
-    } catch (error) {
-      console.error(error.message);
-      res.status(500).json({ message: error.message });
-    }
-  }
-);
-
-const transporter = nodemailer.createTransport({
-  service: "Gmail",
-  auth: {
-    user: "tech@diamondore.in",
-    pass: "zlnbcvnhzdddzrqn",
-  },
-});
-
-
-router.put("/account-handling/:id",AdminAuthenticateToken,async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { status } = req.body;
-
-      const accountHandling = await AccountHandling.findById(id).populate(
-        "owner"
-      );
-      if (!accountHandling) {
-        return res
-          .status(404)
-          .json({ message: "No account found with this id!!!" });
-      }
-
-      const requestToUpdate = accountHandling.requests.find(
-        (req) => req.status === "pending"
-      );
-      if (!requestToUpdate) {
-        return res
-          .status(400)
-          .json({ message: "No pending request found to update!" });
-      }
-
-      if (status === "approved") {
-        const previousOwnerEmail = accountHandling.owner.email;
-        const newOwnerId = requestToUpdate.employee;
-        const accountPhone = requestToUpdate.accountPhone;
-
-        // Move the account detail from the previous owner to the new owner
-        let accountDetail = null;
-        for (const zone of accountHandling.accountDetails) {
-          for (const channel of zone.channels) {
-            const hrIndex = channel.hrDetails.findIndex(
-              (hr) => hr.hrPhone === accountPhone
-            );
-            if (hrIndex !== -1) {
-              accountDetail = channel.hrDetails[hrIndex];
-              channel.hrDetails.splice(hrIndex, 1);
-              break;
-            }
-          }
-          if (accountDetail) break;
-        }
-
-        if (!accountDetail) {
-          return res.status(404).json({
-            message:
-              "Account detail not found in previous owner's accountDetails!",
-          });
-        }
-
-        let newOwnerAccountHandling = await AccountHandling.findOne({
-          owner: newOwnerId,
-        });
-        if (!newOwnerAccountHandling) {
-          newOwnerAccountHandling = new AccountHandling({
-            owner: newOwnerId,
-            accountHandlingStatus: true,
-            accountDetails: [],
-          });
-        }
-
-        // Check if the zone already exists
-        let zone = newOwnerAccountHandling.accountDetails.find(
-          (z) => z.zoneName === accountHandling.zoneName
-        );
-        if (!zone) {
-          zone = { zoneName: accountHandling.zoneName, channels: [] };
-          newOwnerAccountHandling.accountDetails.push(zone);
-        }
-
-        // Check if the channel already exists within the zone
-        let channel = zone.channels.find(
-          (c) => c.channelName === accountHandling.channelName
-        );
-        if (!channel) {
-          channel = { channelName: accountHandling.channelName, hrDetails: [] };
-          zone.channels.push(channel);
-        }
-
-        // Add HR details to the channel
-        channel.hrDetails.push(accountDetail);
-
-        requestToUpdate.status = "approved";
-        await accountHandling.save();
-        await newOwnerAccountHandling.save();
-
-        // Send email to the previous owner
-        transporter.sendMail(
-          {
-            from: "tech@diamondore.in",
-            to: previousOwnerEmail,
-            subject: "Account Handling Ownership Update",
-            text: `The AccountHandling with phone: ${accountPhone} has been removed from your list.`,
-          },
-          (error, info) => {
-            if (error) {
-              console.error("Error sending email to previous owner:", error);
-            } else {
-              console.log("Email sent to previous owner:", info.response);
-            }
-          }
-        );
-
-        // Fetch new owner's email
-        const newOwner = await Employees.findById(newOwnerId);
-        if (!newOwner) {
-          return res.status(404).json({ message: "New owner not found!" });
-        }
-
-        // Send email to the new owner
-        transporter.sendMail(
-          {
-            from: "tech@diamondore.in",
-            to: newOwner.email,
-            subject: "New Account Handling Ownership",
-            text: `You have been assigned the AccountHandling with phone: ${accountPhone}.`,
-          },
-          (error, info) => {
-            if (error) {
-              console.error("Error sending email to new owner:", error);
-            } else {
-              console.log("Email sent to new owner:", info.response);
-            }
-          }
-        );
-
-        return res.status(200).json({
-          message: "AccountHandling updated successfully and emails sent.",
-        });
-      }
-
-      if (status === "rejected") {
-        const previousOwnerEmail = accountHandling.owner.email;
-        requestToUpdate.status = "rejected";
-
-        await accountHandling.save();
-
-        transporter.sendMail(
-          {
-            from: "tech@diamondore.in",
-            to: previousOwnerEmail,
-            subject: "Account Handling Ownership Update",
-            text: `The AccountHandling request for phone: ${accountPhone} has been denied by the Admin.`,
-          },
-          (error, info) => {
-            if (error) {
-              console.error("Error sending email to previous owner:", error);
-            } else {
-              console.log("Email sent to previous owner:", info.response);
-            }
-          }
-        );
-
-        return res
-          .status(200)
-          .json({ message: "AccountHandling access denied and email sent." });
-      }
-
-      res.status(400).json({ message: "Invalid status value provided." });
     } catch (error) {
       console.error(error.message);
       res.status(500).json({ message: error.message });
@@ -4025,36 +2829,16 @@ router.put("/updateAccounts/:accountId/:accountDetailsId", async (req, res) => {
 
 // Goal sheet
 const sendMailToEmployee = async (email, emailContent) => {
-  try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "tech@diamondore.in",
-        pass: "zlnbcvnhzdddzrqn",
-      },
-    });
-
-    const mailOptions = {
-      from: "Diamondore.in <tech@diamondore.in>",
-      to: `Recipient <${email}>`,
-      subject: "Your Goal Sheet Analysis",
-      text: emailContent,
-      html: `
-          <h1 style="color: blue; text-align: center; font-size: 1rem">Diamond Consulting Pvt.Ltd.</h1>
-          <p style="font-size: 1.2rem;">${emailContent.replace(
-            /\n/g,
-            "<br/>"
-          )}</p>
-        `,
-    };
-
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent: " + info.response);
-    return info;
-  } catch (error) {
-    console.error("Error sending email:", error);
-    throw error;
-  }
+  const html = `
+    <h1 style="color: blue; text-align: center; font-size: 1rem">Diamond Consulting Pvt.Ltd.</h1>
+    <p style="font-size: 1.2rem;">${emailContent.replace(/\n/g, "<br/>")}</p>
+  `;
+  await sendEmail({
+    to: email,
+    subject: "Your Goal Sheet Analysis",
+    html,
+    text: emailContent,
+  });
 };
 // Route to send email
 router.post("/send-mail/:id", async (req, res) => {
@@ -4452,29 +3236,7 @@ router.get('/policies', AdminAuthenticateToken, async (req, res) => {
 });
 
 
-router.get('/validate-token-for-kpi-admin',(req, res) => {
 
-   const token = req.headers.authorization?.split(' ')[1]; 
-  
-
-  if (!token) {
-    return res.status(401).json({ message: 'No token provided' });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_ADMIN);
-    console.log(decoded)
-    if (!(decoded.role == 'kpiAdmin'||decoded.role=="superAdmin")) {
-      return res.status(403).json({ message: 'Access denied: Not a KPI admin' });
-    }
-
-    res.status(200).json({ message: 'Token valid for KPI admin', user: decoded });
-  } catch (err) {
-    console.log(err)
-    res.status(401).json({ message: 'Invalid or expired token' });
-  }
- 
-})
 
 
 router.get('/fetch-all-admins',AdminAuthenticateToken,async(req, res)=>{

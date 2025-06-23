@@ -14,44 +14,34 @@ const goalSheetSchema = new mongoose.Schema({
           },
           month: {
             type: Number,
-            // required: true,
           },
           noOfJoinings: {
             type: Number,
-            // required: true,
           },
           cost: {
             type: Number,
-            // required: true,
           },
           revenue: {
             type: Number,
-            // required: true,
           },
           target: {
             type: Number,
-            // required: true,
           },
           cumulativeCost: {
             type: Number,
-            // required: true,
           },
           cumulativeRevenue: {
             type: Number,
-            // required: true,
           },
           achYTD: {
             type: Number,
-            // required: true,
           },
           achMTD: {
             type: Number,
-            // required: true,
           },
           incentive: {
             type: Number
           },
-          // UM INCENTIVE   variable insentive will change to leakage
           leakage: { 
             type: Number
           },

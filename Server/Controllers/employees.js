@@ -2,7 +2,6 @@ import express from "express";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
 import Employees from "../Models/Employees.js";
 import EmployeeAuthenticateToken from "../Middlewares/EmployeeAuthenticateToken.js";
 import ERP from "../Models/ERP.js";
@@ -20,6 +19,8 @@ import { uploadFile } from "../utils/fileUpload.utils.js";
 import {deleteFile} from '../utils/fileUpload.utils.js';
 import fs from "fs/promises";
 import DSR from "../Models/DSR.js";
+import { sendEmail, employeeWelcomeTemplate, duplicatePhoneRequestTemplate } from "../utils/email.js";
+
 
 dotenv.config();
 
@@ -57,86 +58,20 @@ router.post("/add-emp", AdminAuthenticateToken, async (req, res) => {
 
     await newEmp.save();
 
-
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "tech@diamondore.in",
-        pass: "zlnbcvnhzdddzrqn",
-      },
-    });
-
-    const mailOptions = {
-      from: "Diamondore.in <tech@diamondore.in>",
-      to: `Recipient <${email}>`,
-      subject: "Congratulations!!! You are added to DOC-ERP",
-      text: `Welcome to the team, ${name}`,
-      html: `<h1 style="color: blue; text-align: center; font-size: 2rem">Diamond Consulting Pvt. Ltd.</h1> </br> <h3 style="color: black; font-size: 1.3rem; text-align: center;">Dear ${name}, Welcome to the DOC-ERP system as ${empType}. Stay Connected.</h3>`,
-    };
-
-    const info = await transporter.sendMail(mailOptions);
-    console.log(info);
-
+    // Send welcome email
+    const { subject, html } = employeeWelcomeTemplate({ name, empType });
+    await sendEmail({ to: email, subject, html });
 
     res
       .status(201)
       .json({ message: "New Employee registered successfully!!! ", newEmp });
   } catch (error) {
-    console.log(error, "Something went wrong!!!");
     res.status(500).json("Something went wrong!!!", error);
   }
 });
 
-const EmployeeLoginSchema = z.object({
-  email: z.string().email(),
-  password: z.string(),
-})
-
-// EMPLOYEE LOGIN
-router.post("/login", async (req, res) => {
-  try {
-     
-    
 
 
-    const { email, password } = req.body;
-
-    const parsedData = EmployeeLoginSchema.safeParse(req.body);
-    if (!parsedData.success) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
- 
-    // Find the user in the database
-    const user = await Employees.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
-    // Compare the passwords
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
-
-    // Generate JWT token
-    const token = jwt.sign(
-      {
-        userId: user._id,
-        name: user.name,
-        email: user.email,
-        role: "Employee",
-      },
-      secretKey,
-      {
-        expiresIn: "1h",
-      }
-    );
-
-    return res.status(200).json({ token });
-  } catch (error) {
-    console.error("Error logging in:", error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-});
 
 // EMPLOYEE USER_DATA
 router.get("/user-data", EmployeeAuthenticateToken, async (req, res) => {
@@ -162,7 +97,6 @@ router.get("/user-data", EmployeeAuthenticateToken, async (req, res) => {
       isTeamLead,
     });
   } catch (error) {
-    console.error("Error logging in:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -191,7 +125,6 @@ router.get("/all-erp-data", EmployeeAuthenticateToken, async (req, res) => {
        // 5. Send response
        res.status(200).json(response);
   } catch (error) {
-    console.log(error, "Something went wrong!!!");
     res.status(500).json("Something went wrong!!!", error);
   }
 });
@@ -215,16 +148,12 @@ router.get("/leave-report", EmployeeAuthenticateToken, async (req, res) => {
 
     res.status(200).json(latestData);
   } catch (error) {
-    console.log(error, "Something went wrong!!!");
     res.status(500).json("Something went wrong!!!", error);
   }
 });
 
 // GET PERFORMANCE REPORT
-router.get(
-  "/performance-report",
-  EmployeeAuthenticateToken,
-  async (req, res) => {
+router.get("/performance-report",EmployeeAuthenticateToken,async (req, res) => {
     try {
       const { userId, email } = req.user;
 
@@ -244,37 +173,16 @@ router.get(
 
       res.status(200).json(latestData);
     } catch (error) {
-      console.error(err);
       res.status(500).json({ error: "Internal server error" });
     }
   }
 );
 
 // SET ACCOUNT HANDLING
-const transporter = nodemailer.createTransport({
-  service: "Gmail",
-  auth: {
-    user: "tech@diamondore.in",
-    pass: "zlnbcvnhzdddzrqn",
-  },
-});
-
-
-// FETCH ALL ACCOUNT HANDLING
-
-
-
-
-
-router.post(
-  "/set-account-handling",
-  EmployeeAuthenticateToken,
-  async (req, res) => {
+router.post("/set-account-handling",EmployeeAuthenticateToken,async (req, res) => {
     try {
       const { userId } = req.user;
       const { hrName, hrPhone, clientName, channelName, zoneName } = req.body;
-      console.log(hrName);
-      console.log(req.body)
 
       // Find the employee by userId
       const employee = await Employees.findById(userId);
@@ -289,28 +197,15 @@ router.post(
       });
 
       if (duplicatePhone) {
-        // Update the requests field of the duplicatePhone document
-        duplicatePhone.requests.push({
-          employee: userId,
-          accountPhone: hrPhone,
-        });
-
-        await duplicatePhone.save();
-
         // Send email notification to admin
-        const mailOptions = {
-          from: "tech@diamondore.in",
+        await sendEmail({
           to: "hr@diamondore.in",
           subject: "Duplicate Phone Number Request",
-          text: `An employee (${employee.name}) has requested to use a duplicate phone number: ${hrPhone}.`,
-        };
-
-        transporter.sendMail(mailOptions, (error, info) => {
-          if (error) {
-            console.error("Error sending email:", error);
-          } else {
-            console.log("Email sent:", info.response);
-          }
+          html: duplicatePhoneRequestTemplate({
+            employeeName: employee.name,
+            hrName,
+            hrPhone,
+          }),
         });
 
         return res.status(400).json({
@@ -329,91 +224,32 @@ router.post(
         });
       }
 
-      // Add the clientName if not already present
-
-      // let clinetName= accountHandling.accountDetails.find((c)=> c.clientName===clientName)
-      // if (!clientName) {
-      //   clientName = {clientName};
-      //   // accountHandling.accountDetail s.push(zone);
-      // }
-
+     
 
       await accountHandling.save()
 
-      // Find or create the zone
-      // let zone = accountHandling.accountDetails.find((z) => z.zoneName === zoneName);
+
       let zone = { zoneName, channels: [] };
-      // if (!zone) {
-      //   zone = { zoneName, channels: []};
-      //   // accountHandling.accountDetail s.push(zone);
-      // }
 
-      // console.log(zone);
-
-      // Find or create the channel within the zone
       zone.clientName = clientName
-      // let channel = zone.channels.find((c) => c.channelName === channelName);
+
       let channel = { channelName, hrDetails: [] };
-      // console.log("channel",channel)
-      // if (!channel) {
-      // channel = { hrDetails: []};
-      // zone.channels.push(channel);
-      // accountHandling.accountDetails.push(zone);
-
-      // }
-      // console.log("zone", zone);
-
-      // Add HR details to the channel
-      //  channel.channelName=channelName;
+     
       channel.hrDetails.push({ hrName, hrPhone });
 
-      // console.log("channel2",channel)
 
       zone.channels.push(channel);
       accountHandling.accountDetails.push(zone);
-      // console.log("hrName", zone.channels[0]);
       await accountHandling.save()
 
-      // Save the updated account handling details
-      // await AccountHandling.updateOne(
-      //   { 
-      //     owner: new mongoose.Types.ObjectId(userId), // Ensure userId is cast to ObjectId
-      //     "accountDetails.zoneName": zoneName, 
-      //     "accountDetails.channels.channelName": channelName, 
-      //   },
-      //   { 
-      //     $push: {
-      //       "accountDetails.$.channels.$[channel].hrDetails": { hrName, hrPhone },
-      //     }
-      //   },
-      //   { 
-      //     arrayFilters: [{ "channel.channelName": channelName }]
-      //   }
-      // );
-
-
-
-
-      // Update the account handling document with the new accountDetails
-
-
-      // console.log("res",response)
-
-      // console.log(accountHandling);
+ 
 
       res.status(200).json({ message: "Account details updated successfully", "accountHandling": accountHandling });
     } catch (error) {
-      console.error(error.message);
       res.status(500).json({ message: error.message });
     }
   }
 );
-
-
-
-
-
-
 
 router.get("/accounts",EmployeeAuthenticateToken, async (req, res) => {
   try {
@@ -434,12 +270,8 @@ router.get("/accounts",EmployeeAuthenticateToken, async (req, res) => {
 
     }
 
-    console.log(empNames);
-    // console.log(empAccounts);
-
     res.status(200).json(empAccounts);
   } catch (error) {
-    console.error(error.message);
     res.status(500).json({ message: error.message });
   }
 });
@@ -470,12 +302,8 @@ router.get("/all-AccountsforIntern/:passcode", async (req, res) => {
 
     }
 
-    console.log(empNames);
-    // console.log(empAccounts);
-
     res.status(200).json(empAccounts);
   } catch (error) {
-    console.error(error.message);
     res.status(500).json({ message: error.message });
   }
 });
@@ -492,7 +320,6 @@ router.get("/accounts/:id", async (req, res) => {
 
     res.status(200).json({ findAccount });
   } catch (error) {
-    // console.error(error.message);
     res.status(500).json({ message: error.message });
   }
 });
@@ -502,13 +329,10 @@ router.delete("/accounts/delete/:id/:deleteId", async (req, res) => {
   try {
     const { id, deleteId } = req.params;
 
-    console.log(req.params)
     const result = await AccountHandling.updateOne(
       { owner: id },
       { $pull: { accountDetails: { _id: deleteId } } }
     );
-
-    console.log(result)
 
     if (result.modifiedCount > 0) {
       res.status(200).json({ message: "Account handling details deleted successfully" });
@@ -516,7 +340,6 @@ router.delete("/accounts/delete/:id/:deleteId", async (req, res) => {
       res.status(401).json({ message: "Failed to delete!!!" });
     }
   } catch (error) {
-    console.error(error.message);
     res.status(500).json({ message: error.message });
   }
 })
@@ -562,15 +385,12 @@ router.put("/accounts/change-owner/:currentOwner/:futureOwner/:updateId", async 
       { $push: { accountDetails: itemToMove } }
     );
 
-    console.log(addResult)
-
     if (addResult.modifiedCount === 0) {
       return res.status(400).json({ message: "Failed to add the item to future owner's accountDetails." });
     }
 
     return res.status(200).json({ message: "Item successfully moved to future owner's accountDetails." });
   } catch (error) {
-    console.error("An error occurred:", error);
     return res.status(500).json({ message: "An error occurred during the operation." });
   }
 
@@ -582,12 +402,6 @@ router.get("/my-goalsheet", EmployeeAuthenticateToken, async (req, res) => {
     const { userId } = req.user;
     const {year}= req.query
     
-
- 
-
-  
-    
-
 
     const allGoalSheets = await GoalSheet.find({ owner: userId });
 
@@ -627,7 +441,6 @@ router.get("/my-goalsheet", EmployeeAuthenticateToken, async (req, res) => {
 
     res.status(200).json(goalSheet);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: error.message });
   }
 });
@@ -646,7 +459,6 @@ router.get("/my-kpi", EmployeeAuthenticateToken, async (req, res) => {
 
     res.status(200).json(myKPI);
   } catch (error) {
-    console.error(error.message);
     res.status(500).json({ message: error.message });
   }
 })
@@ -679,7 +491,6 @@ router.get('/rnr-Leaderborad/:passcode', async (req, res) => {
 
   }
   catch (error) {
-    console.error(error.message);
     res.status(500).json({ message: error.message });
   }
 
@@ -714,7 +525,6 @@ router.get('/rnr-leaderboraddetails/:passcode', async (req, res) => {
        res.status(200).json(response);
   }
   catch (error) {
-    console.error(error.message);
     res.status(500).json({ message: error.message });
   }
 
@@ -772,7 +582,6 @@ router.get('/incentive-tree-Data',EmployeeAuthenticateToken, async(req,res) =>{
 
     }
     catch(err){
-         console.log(err)
          return res.status(500).json({ message: "Internal server error" });
     }
 
@@ -795,7 +604,6 @@ router.get("/goalsheet/:id", EmployeeAuthenticateToken, async (req, res) => {
 
     res.status(200).json(findGoalSheets);
   } catch (error) {
-    console.error(error.message);
     res.status(500).json({ message: error.message });
   }
 });
@@ -813,7 +621,6 @@ router.get('/policies', EmployeeAuthenticateToken, async (req, res) => {
     return res.status(200).json({ success: true,
        Policies: existingPolicies });
   } catch (err) {
-    console.error("Error fetching policies:", err);
     return res.status(500).json({ success:false,
       message:"Internal server error" });
   }
@@ -824,8 +631,6 @@ router.get('/policies', EmployeeAuthenticateToken, async (req, res) => {
 router.post("/upload-shortlistedsheet/:id",EmployeeAuthenticateToken ,excelUpload.single('ShortlistedCandidatesExcel'), async (req, res) => {
   try {
 
-    console.log(req.file)
-    
     const { id } = req.params;
 
     const employee = await Employees.findById(id);
@@ -835,16 +640,13 @@ router.post("/upload-shortlistedsheet/:id",EmployeeAuthenticateToken ,excelUploa
 
     if(employee.shortlistedCandidates){
       const upload= await deleteFile(employee.shortlistedCandidates,"profilepics");
-      console.log(upload)
     }
 
     let shortlistedCandidatesExcel = null;
     try{
           shortlistedCandidatesExcel = await uploadFile(req.file, "profilepics");   
-          console.log(shortlistedCandidatesExcel)       
     }
     catch(err){
-        console.log(err)
         return
     }
 
@@ -862,7 +664,6 @@ router.post("/upload-shortlistedsheet/:id",EmployeeAuthenticateToken ,excelUploa
     });
 
   } catch (error) {
-    console.log("Error:", error);
     res
       .status(500)
       .json({ message: "Internal server error.", error: error.message });
@@ -870,7 +671,6 @@ router.post("/upload-shortlistedsheet/:id",EmployeeAuthenticateToken ,excelUploa
   finally{
     if (req.file && req.file.path) {
       await fs.unlink(req.file.path); 
-      console.log(`Deleted local file: ${req.file.path}`);
     }
   }
 });
@@ -899,10 +699,6 @@ router.post("/upload-dsr-by-employee",EmployeeAuthenticateToken,async(req,res)=>
      
       if (error) {
 
-        console.log(error.errors.map((err) => ({
-          path: err.path.join("."),
-          message: err.message,
-        })))
         return res.status(400).json({
           success: false,
           message: "Some fields are missing or erroneous" ,
@@ -931,7 +727,6 @@ router.post("/upload-dsr-by-employee",EmployeeAuthenticateToken,async(req,res)=>
 
 }
 catch(err){
-   console.log(err)
    res.status(500).send({
     success:false,
     message:"Internal server error"
@@ -939,8 +734,6 @@ catch(err){
 }
 
 })
-
-
 
 
 
