@@ -10,7 +10,6 @@ import nodemailer from "nodemailer";
  * @param {Array} [options.attachments]
  */
 
-console.log("id", process.env.EMAIL_USER, process.env.EMAIL_PASS);
 export async function sendEmail({ to, subject, html, text, attachments, cc }) {
   const transporter = nodemailer.createTransport({
     service: process.env.EMAIL_SERVICE || "gmail",
@@ -56,32 +55,74 @@ export function forgotPasswordOtpTemplate(otp) {
 /**
  * Job Status Notification Email Template
  */
-export function jobStatusTemplate({
-  type,
-  candidateName,
-  jobTitle,
-  company,
-  extra,
-}) {
+export function jobStatusTemplate({ type, candidateName, jobTitle, company }) {
   let subject = "";
   let html = "";
+  
   switch (type) {
+    case "CV-shortlisted":
+      subject = "CV Shortlisted for Next Round";
+      html = `<p style='font-size:20px;font-weight:bold;'>Application Progress Update</p>
+              <p>Dear ${candidateName},</p>
+              <p>Your application for <b>${jobTitle}</b> has been shortlisted for the next stage.</p>
+              <p>Our team will contact you shortly regarding further details.</p>
+              <p>Best regards,</p>`;
+      break;
+
+    case "screening":
+      subject = "Screening Round Completed";
+      html = `<p style='font-size:20px;font-weight:bold;'>Screening Update</p>
+              <p>Dear ${candidateName},</p>
+              <p>Congratulations on clearing the screening round for <b>${jobTitle}</b>.</p>
+              <p>Next steps will be communicated soon.</p>
+              <p>Best regards,</p>`;
+      break;
+
+    case "interviewScheduled":
+      subject = "Interview Scheduled";
+      html = `<p style='font-size:20px;font-weight:bold;'>Interview Invitation</p>
+              <p>Dear ${candidateName},</p>
+              <p>Your interview for <b>${jobTitle}</b> has been scheduled.</p>
+              <p>Details will be shared shortly via email.</p>
+              <p>Best regards,</p>`;
+      break;
+
+    case "interviewed":
+      subject = "Interview Process Completed";
+      html = `<p style='font-size:20px;font-weight:bold;'>Thank You</p>
+              <p>Dear ${candidateName},</p>
+              <p>We appreciate your time for the <b>${jobTitle}</b> interview.</p>
+              <p>Results will be announced after evaluation.</p>
+              <p>Best regards,</p>`;
+      break;
+
     case "shortlisted":
-      subject = "Congratulations! You are Shortlisted!";
-      html = `<p style='color:black; text-align:left; font-size: 20px; font-style: bold;'>Congratulations🎊🎉✨!</p><p>You have been shortlisted for the position of <b>${jobTitle}</b>.</p><p>This is a significant achievement, and we are excited to consider you for this role.</p><p>We will be in touch shortly with the next steps in the hiring process.</p><p style='color:black; text-align:left;'>Thank you!</p><p style='text-align: left;'>Regards,</p>`;
+      subject = "Congratulations! You've Been Shortlisted";
+      html = `<p style='font-size:20px;font-weight:bold;'>Selection Update</p>
+              <p>Dear ${candidateName},</p>
+              <p>We're pleased to inform you've been shortlisted for <b>${jobTitle}</b>.</p>
+              <p>HR will contact you with offer details shortly.</p>
+              <p>Best regards,</p>`;
       break;
+
     case "joined":
-      subject = "Congratulations on Successfully Joining Your New Company!";
-      html = `<p style='color:black; text-align:left; font-size: 20px; font-style: bold;'>Congratulations🎊🎉✨!</p><p>Dear ${candidateName},</p><p>We are thrilled to inform you that you have successfully joined <b>${company}</b> through Diamond Ore Pvt. Ltd!</p><p>This marks the beginning of an exciting journey in your career, and we couldn't be happier to have played a part in your success.</p><p>We wish you all the best as you embark on this new chapter. May it bring you growth, fulfillment, and endless opportunities.</p><p>If you have any questions or need assistance during your transition, please don't hesitate to reach out to us. We're here to support you every step of the way.</p><p>Once again, congratulations on your new role at <b>${company}</b>!</p><p style='text-align: left;'>Regards,</p>`;
+      subject = "Welcome to the Team";
+      html = `<p style='font-size:20px;font-weight:bold;'>Onboarding Confirmation</p>
+              <p>Dear ${candidateName},</p>
+              <p>Welcome to <b>${company}</b> as our new <b>${jobTitle}</b>!</p>
+              <p>Onboarding details will be shared soon.</p>
+              <p>Best regards,</p>`;
       break;
-    // Add more cases as needed
+
     default:
-      subject = "Job Status Update";
-      html = `<p>${extra || "Job status updated."}</p>`;
+      subject = "Application Status Update";
+      html = `<p>Dear ${candidateName},</p>
+              <p>There's an update regarding your application.</p>
+              <p>Best regards,</p>`;
   }
+  
   return { subject, html };
 }
-
 /**
  * Client Form Notification Email Template
  */
