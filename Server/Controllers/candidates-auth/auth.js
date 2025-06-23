@@ -43,7 +43,9 @@ const candidateSignupSchema = z.object({
 });
 
 // Signup
-candidateAuthRouter.post("/signup",uploadImage.fields([
+
+
+candidateAuthRouter.post("/signup", uploadImage.fields([
     { name: "myFileImage", maxCount: 1 },
     { name: "myFileResume", maxCount: 1 },
   ]),
@@ -60,23 +62,28 @@ candidateAuthRouter.post("/signup",uploadImage.fields([
       profilePic,
       resume,
     });
+    
     if (!success) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
+
     try {
       if (validateOtp(email, otp)) {
         const userExists = await Candidates.exists({ email });
         if (userExists) {
           return res.status(409).json({ message: "User already exists" });
         }
+
         let uploadProfilePic = null;
         let uploadResume = null;
+        
         if (profilePic) {
           uploadProfilePic = await uploadFile(profilePic, "profilepics");
         }
         if (resume) {
-          uploadResume = await uploadFile(resume, "profilepics");
+          uploadResume = await uploadFile(resume, "resumes");
         }
+
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new Candidates({
           name,
@@ -87,19 +94,42 @@ candidateAuthRouter.post("/signup",uploadImage.fields([
           profilePic: uploadProfilePic,
           resume: uploadResume,
         });
+
         await newUser.save();
         clearOtp(email);
+
+        // Generate JWT token
+        const token = jwt.sign(
+          { userId: newUser._id, email: newUser.email, role: 'candidate' },
+          process.env.JWT_SECRET,
+          { expiresIn: '24h' }
+        );
+
+        // Send welcome email
         const { subject, html } = welcomeEmailTemplate(name);
         await sendEmail({ to: email, subject, html });
+
         return res.status(200).json({
           success: true,
           message: "Candidate User created successfully",
+          token,
+          user: {
+            id: newUser._id,
+            name: newUser.name,
+            email: newUser.email,
+            profilePic: newUser.profilePic,
+            role: 'candidate'
+          }
         });
       } else {
         return res.status(400).json({ message: "OTP expired or invalid" });
       }
     } catch (error) {
-      return res.status(500).json({ message: "Internal server error" });
+      console.error("Signup error:", error);
+      return res.status(500).json({ 
+        message: "Internal server error",
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
     }
   }
 );

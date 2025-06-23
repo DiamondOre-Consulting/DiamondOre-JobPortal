@@ -2195,7 +2195,6 @@ router.put("/edit-goalSheet", async (req, res) => {
       goalDetail.revenue = parseInt(revenue);
       goalDetail.cumulativeRevenue = updatedCumulativeRevenue;
 
-      console.log(updatedCumulativeRevenue / goalDetail.cumulativeCost);
 
       // Update achMTD and achYTD if revenue is provided
       goalDetail.achMTD = cost
@@ -2205,11 +2204,11 @@ router.put("/edit-goalSheet", async (req, res) => {
         ? (updatedCumulativeRevenue / goalDetail.cumulativeCost).toFixed(2)
         : goalDetail.achYTD;
     }
-
+    console.log(month)
     if (month) {
       goalDetail.month = month;
     }
-
+   console.log(year)
     if (year) {
       goalDetail.year = year;
     }
@@ -2226,7 +2225,7 @@ router.put("/edit-goalSheet", async (req, res) => {
       goalDetail.incentiveStatusColor = selectedColor;
     }
 
-    if (goalSheet.length > 1) {
+    if (goalSheet.length > 1&& goalDetailIndex >0) {
       for (let i = goalDetailIndex; i < goalSheet.length; i++) {
         const detail = goalSheet[i];
 
@@ -2239,6 +2238,8 @@ router.put("/edit-goalSheet", async (req, res) => {
         detail.achMTD = (detail.revenue / detail.cost).toFixed(2);
       }
     }
+
+    console.log(goalDetail)
 
     // Save the updated GoalSheet
     await goalSheetBeforeSort.save();
