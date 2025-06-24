@@ -121,8 +121,8 @@ function App() {
             <Route path="/cv-form" element={<Cvform />} />
             <Route path="/be-our-client" element={<Beourclient />} />
             <Route path="/fAQ" element={<FAQ />} />
-            <Route path="/terms-of-services" element={<Termsofservices />} />
-            <Route path="/privicy-policy" element={<Privicypolicy />} />
+            <Route path="/terms-and-conditions" element={<Termsofservices />} />
+            <Route path="/privacy-policy" element={<Privicypolicy />} />
             <Route path="/prefrence-form" element={<PrefrenceForm />} />
             <Route
               path="/edit-prefrence-form"

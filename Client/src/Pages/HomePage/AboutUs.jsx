@@ -83,6 +83,10 @@ const AboutUs = () => {
     };
   }, []);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const frameworks = [
     {
       value: "Management Consulting",
