@@ -577,13 +577,16 @@ const Signup = ({ toggleForm }) => {
 
               {/* Profile Image upload feild starts  */}
 
-              <div className="mt-1 ">
-                <label
-                  className="block mb-2 text-md font-medium text-gray-900  font-bold text-2xl mb-4"
-                  for="file_input"
-                >
-                  Upload File
-                </label>
+              <div className=" ">
+                <div className="flex items-center gap-x-2 mb-3">
+                  <label
+                    className="block  text-md font-medium text-gray-900  font-bold text-2xl "
+                    for="file_input"
+                  >
+                    Upload File
+                  </label>
+                  <p className="text-red-500">(optional)</p>
+                </div>
                 <div className="flex mb-8">
                   <input
                     className="w-[60%] rounded-md border-0 pe-12 text-sm shadow-sm "

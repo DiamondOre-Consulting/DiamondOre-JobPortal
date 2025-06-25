@@ -1,20 +1,16 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import simg from '../../assets/loginimg.svg';
+import simg from "../../assets/loginimg.svg";
 import PropagateLoader from "react-spinners/PropagateLoader";
-import {z} from 'zod'
+import { z } from "zod";
 
 const candidateLoginSchema = z.object({
-  email:z.string().email(),
-  password:z.string()
-})
-
-
-
+  email: z.string().email(),
+  password: z.string(),
+});
 
 const Login = () => {
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -25,26 +21,31 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    if(!email || !password){
-        setError("Please fill all the fields")
-        return
+    if (!email || !password) {
+      setError("Please fill all the fields");
+      return;
     }
-    const {success,error} = candidateLoginSchema.safeParse({password,email})
-       if (!success) {
-          error.errors.forEach((err) => {
-            setError(err.message);
-          });
-          return;
-      }
+    const { success, error } = candidateLoginSchema.safeParse({
+      password,
+      email,
+    });
+    if (!success) {
+      error.errors.forEach((err) => {
+        setError(err.message);
+      });
+      return;
+    }
     setLoading(true);
     setError(null);
     // Perform login logic here
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/candidates/login`,
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/candidates/login`,
         {
           email,
-          password
-        });
+          password,
+        }
+      );
 
       if (response.status === 200) {
         const token = response.data.token;
@@ -56,22 +57,21 @@ const Login = () => {
           navigate("/dashboard");
         }, 1000);
       }
-
     } catch (error) {
       console.error("Error logging in:", error);
       if (error.response) {
         const status = error.response.status;
         if (status === 401) {
           setError("Email or Password Does not Match");
-
         } else {
-          setError("An error occurred while logging in. Please try again later.");
+          setError(
+            "An error occurred while logging in. Please try again later."
+          );
         }
       } else {
         setError("An error occurred while logging in. Please try again later.");
       }
-    }
-    finally {
+    } finally {
       setTimeout(() => {
         setLoading(false);
       }, 1000); // Turn off loading after 2 seconds
@@ -82,7 +82,6 @@ const Login = () => {
     return setShowPass(!showPass);
   };
 
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 ">
       <div className="max-w-screen-xl sm:max-w-screen-lg md:max-w-screen-md lg:max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 shadow-lg bg-white rounded-md  w-full sm:w-full lg:min-w-screen m-8">
@@ -92,9 +91,6 @@ const Login = () => {
             onSubmit={handleLogin}
             className="mb-0 mt-6 space-y-4 rounded-lg p-4  sm:p-6 lg:p-8 "
           >
-
-
-
             {loading && (
               <div className="absolute inset-0 bg-gray-800 text-gray-300 text-5xl font-bold opacity-75 flex items-center justify-center">
                 <svg
@@ -117,9 +113,7 @@ const Login = () => {
                 <span className="sr-only">Loading...</span>
               </div>
             )}
-            <h1 className=" text-2xl font-bold sm:text-3xl">
-              Welcome Back!
-            </h1>
+            <h1 className=" text-2xl font-bold sm:text-3xl">Welcome Back!</h1>
 
             <p className="text-lg font-medium text-gray-400 !mt-0">
               login to continue
@@ -134,13 +128,28 @@ const Login = () => {
                 <input
                   className="w-full bg-white rounded-lg border-2 p-4 pe-12 text-sm shadow-sm"
                   type="email"
-                  placeholder="Useremail@gmail.com"
+                  placeholder="Enter Your Email Id"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
 
                 <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
-                  <svg className="h-6 w-6 text-gray-500" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <rect x="3" y="5" width="18" height="14" rx="2" />  <polyline points="3 7 12 13 21 7" /></svg>
+                  <svg
+                    className="h-6 w-6 text-gray-500"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    {" "}
+                    <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                    <rect x="3" y="5" width="18" height="14" rx="2" />{" "}
+                    <polyline points="3 7 12 13 21 7" />
+                  </svg>
                 </span>
               </div>
             </div>
@@ -152,7 +161,7 @@ const Login = () => {
               <div className="relative">
                 <input
                   className="w-full rounded-lg border-2 p-4 pe-12 text-sm shadow-sm"
-                  type={showPass ? 'password' : 'text'}
+                  type={showPass ? "password" : "text"}
                   placeholder="Enter your Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -245,7 +254,7 @@ const Login = () => {
 
             <p className="text-center text-gray-500 my-10">
               No account?
-              <Link to={'/signup'} className="underline cursor-pointer">
+              <Link to={"/signup"} className="underline cursor-pointer">
                 Sign up
               </Link>
             </p>

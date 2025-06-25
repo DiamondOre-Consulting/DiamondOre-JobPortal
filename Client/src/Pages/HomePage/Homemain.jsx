@@ -12,6 +12,7 @@ import { FaArrowDown } from "react-icons/fa";
 import { Label } from "@/Components/ui/label";
 import MultipleSelector from "@/Components/ui/multiselect";
 import { toast } from "sonner";
+import AwardsAndAchievements from "./AwardsAndAchievements";
 
 const Homemain = () => {
   const [latestJobs, setLatestJobs] = useState([]);
@@ -156,6 +157,7 @@ const Homemain = () => {
         <StatsPartners />
         <PathSearch latestJobs={latestJobs} />
         {/* <CvSection /> */}
+        <AwardsAndAchievements />
         <JobsReviews />
         <Footer />
         <Chatboot />
