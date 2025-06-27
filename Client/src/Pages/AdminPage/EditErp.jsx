@@ -6,7 +6,8 @@ import { FaCamera, FaSpinner } from "react-icons/fa";
 import { toast } from "sonner";
 
 const EditErp = () => {
-    const [erpData, setErpData] = useState({
+    // Initial state with all required fields
+    const initialState = {
         EmpOfMonth: "",
         recognitionType: "",
         EmpOfMonthDesc: "",
@@ -15,8 +16,18 @@ const EditErp = () => {
         RnRInterns: [{ title: "", name: "", count: 0, percentage: 0 }],
         RnRRecruiters: [{ title: "", name: "", count: 0, percentage: 0 }],
         BreakingNews: [{ news: "" }],
-        JoningsForWeek: [{ names: "", noOfJoinings: 0 }],
-    });
+        JoningsForWeek: [{ 
+            names: "", 
+            noOfJoinings: 0,
+            client: "",
+            location: "",
+            ctc: "",
+            recruiterName: "",
+            teamLeaderName: ""
+        }],
+    };
+
+    const [erpData, setErpData] = useState(initialState);
     const [employees, setEmployees] = useState([]);
     const [profilePic, setProfilePic] = useState(null);
     const [preview, setPreview] = useState("");
@@ -41,17 +52,34 @@ const EditErp = () => {
     };
 
     const handleAddItem = (field) => {
-        setErpData(prev => ({
-            ...prev,
-            [field]: [...prev[field], field.includes("RnR") ? 
-                { title: "", name: "", count: 0, percentage: 0 } : 
-                field === "JoningsForWeek" ? 
-                { names: "", noOfJoinings: 0 } : 
-                { name: "" }]
-        }));
+        setErpData(prev => {
+            const template = {
+                RnRInterns: { title: "", name: "", count: 0, percentage: 0 },
+                RnRRecruiters: { title: "", name: "", count: 0, percentage: 0 },
+                JoningsForWeek: { 
+                    names: "", 
+                    noOfJoinings: 0,
+                    client: "",
+                    location: "",
+                    ctc: "",
+                    recruiterName: "",
+                    teamLeaderName: ""
+                }
+            };
+            
+            return {
+                ...prev,
+                [field]: [...prev[field], template[field] || { name: "" }]
+            };
+        });
     };
 
     const handleRemoveItem = (field, index) => {
+        if (erpData[field].length <= 1) {
+            toast.warning(`At least one item is required`);
+            return;
+        }
+        
         setErpData(prev => ({
             ...prev,
             [field]: prev[field].filter((_, i) => i !== index)
@@ -101,6 +129,13 @@ const EditErp = () => {
                     return;
                 }
 
+                // Check token expiration
+                if (decodedToken && decodedToken.exp * 1000 < Date.now()) {
+                    localStorage.removeItem("token");
+                    navigate("/admin-login");
+                    return;
+                }
+
                 const response = await axios.get(
                     `${import.meta.env.VITE_BASE_URL}/admin-confi/erp/erp-data/${erpId}`,
                     { headers: { Authorization: `Bearer ${token}` } }
@@ -110,15 +145,14 @@ const EditErp = () => {
                     const lastData = response.data;
                     setPreview(lastData.profilePic || "");
                     setErpData({
-                        EmpOfMonth: lastData.EmpOfMonth || "",
-                        recognitionType: lastData.recognitionType || "",
-                        EmpOfMonthDesc: lastData.EmpOfMonthDesc || "",
-                        Top5HRs: lastData.Top5HRs || [{ name: "" }],
-                        Top5Clients: lastData.Top5Clients || [{ name: "" }],
-                        RnRInterns: lastData.RnRInterns || [{ title: "", name: "", count: 0, percentage: 0 }],
-                        RnRRecruiters: lastData.RnRRecruiters || [{ title: "", name: "", count: 0, percentage: 0 }],
-                        BreakingNews: lastData.BreakingNews || [{ news: "" }],
-                        JoningsForWeek: lastData.JoningsForWeek || [{ names: "", noOfJoinings: 0 }],
+                        ...initialState,
+                        ...lastData,
+                        Top5HRs: lastData.Top5HRs || initialState.Top5HRs,
+                        Top5Clients: lastData.Top5Clients || initialState.Top5Clients,
+                        RnRInterns: lastData.RnRInterns || initialState.RnRInterns,
+                        RnRRecruiters: lastData.RnRRecruiters || initialState.RnRRecruiters,
+                        BreakingNews: lastData.BreakingNews || initialState.BreakingNews,
+                        JoningsForWeek: lastData.JoningsForWeek || initialState.JoningsForWeek,
                     });
                 }
             } catch (error) {
@@ -135,6 +169,13 @@ const EditErp = () => {
     // Submit handler
     const handleFormSubmit = async () => {
         if (isSubmitting) return;
+        
+        // Basic validation
+        if (!erpData.EmpOfMonth) {
+            toast.error("Please select an Employee of the Month");
+            return;
+        }
+
         setIsSubmitting(true);
 
         const formData = new FormData();
@@ -165,6 +206,58 @@ const EditErp = () => {
         }
     };
 
+    // Field configurations for dynamic sections
+    const fieldConfigurations = [
+        { 
+            title: "Top 5 HRs", 
+            field: "Top5HRs", 
+            fields: [{ name: "name", type: "text", placeholder: "HR Name" }] 
+        },
+        { 
+            title: "Top 5 Clients", 
+            field: "Top5Clients", 
+            fields: [{ name: "name", type: "text", placeholder: "Client Name" }] 
+        },
+        { 
+            title: "RnR Interns", 
+            field: "RnRInterns", 
+            fields: [
+                { name: "title", type: "text", placeholder: "Title" },
+                { name: "name", type: "text", placeholder: "Name" },
+                { name: "count", type: "number", placeholder: "Count" },
+                { name: "percentage", type: "number", placeholder: "Percentage" }
+            ] 
+        },
+        { 
+            title: "RnR Recruiters", 
+            field: "RnRRecruiters", 
+            fields: [
+                { name: "title", type: "text", placeholder: "Title" },
+                { name: "name", type: "text", placeholder: "Name" },
+                { name: "count", type: "number", placeholder: "Count" },
+                { name: "percentage", type: "number", placeholder: "Percentage" }
+            ] 
+        },
+        { 
+            title: "Breaking News", 
+            field: "BreakingNews", 
+            fields: [{ name: "news", type: "text", placeholder: "News" }] 
+        },
+        { 
+            title: "Joinings for the Week", 
+            field: "JoningsForWeek", 
+            fields: [
+                { name: "names", type: "text", placeholder: "Channel" },
+                { name: "client", type: "text", placeholder: "Client" },
+                { name: "location", type: "text", placeholder: "Location" },
+                { name: "ctc", type: "text", placeholder: "CTC" },
+                { name: "recruiterName", type: "text", placeholder: "Recruiter" },
+                { name: "teamLeaderName", type: "text", placeholder: "Team Leader" },
+                { name: "noOfJoinings", type: "number", placeholder: "No. of Joinings" }
+            ] 
+        },
+    ];
+
     if (isLoading) {
         return (
             <div className="flex items-center justify-center min-h-screen">
@@ -189,6 +282,7 @@ const EditErp = () => {
                             className="w-full p-2 border rounded-md"
                             value={erpData.EmpOfMonth}
                             onChange={(e) => handleInputChange("EmpOfMonth", e.target.value)}
+                            required
                         >
                             <option value="">Select Employee</option>
                             {employees.map((emp) => (
@@ -241,37 +335,19 @@ const EditErp = () => {
                         className="w-full p-2 border rounded-md"
                         value={erpData.EmpOfMonthDesc}
                         onChange={(e) => handleInputChange("EmpOfMonthDesc", e.target.value)}
+                        required
                     />
                 </div>
 
                 {/* Dynamic List Sections */}
-                {[
-                    { title: "Top 5 HRs", field: "Top5HRs", fields: ["name"] },
-                    { title: "Top 5 Clients", field: "Top5Clients", fields: ["name"] },
-                    { 
-                        title: "RnR Interns", 
-                        field: "RnRInterns", 
-                        fields: ["title", "name", "count", "percentage"] 
-                    },
-                    { 
-                        title: "RnR Recruiters", 
-                        field: "RnRRecruiters", 
-                        fields: ["title", "name", "count", "percentage"] 
-                    },
-                    { title: "Breaking News", field: "BreakingNews", fields: ["news"] },
-                    { 
-                        title: "Joinings for the Week", 
-                        field: "JoningsForWeek", 
-                        fields: ["names", "noOfJoinings"] 
-                    },
-                ].map((section) => (
+                {fieldConfigurations.map((section) => (
                     <div key={section.field} className="mb-8">
                         <div className="flex justify-between items-center mb-2">
                             <h3 className="text-lg font-medium">{section.title}*</h3>
                             <button
                                 type="button"
                                 onClick={() => handleAddItem(section.field)}
-                                className="px-3 py-1 bg-blue-500 text-white rounded text-sm"
+                                className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600 transition"
                             >
                                 Add +
                             </button>
@@ -282,20 +358,21 @@ const EditErp = () => {
                                 <div key={index} className="flex flex-col md:flex-row gap-2 items-end">
                                     <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
                                         {section.fields.map((field) => (
-                                            <div key={field} className="flex-1">
+                                            <div key={`${section.field}-${index}-${field.name}`} className="flex-1">
                                                 <input
-                                                    type={field === "count" || field === "percentage" || field === "noOfJoinings" ? "number" : "text"}
-                                                    placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                                                    type={field.type}
+                                                    placeholder={field.placeholder}
                                                     className="w-full p-2 border rounded-md"
-                                                    value={item[field] || ""}
+                                                    value={item[field.name] || ""}
                                                     onChange={(e) => 
                                                         handleItemInputChange(
                                                             section.field, 
                                                             index, 
-                                                            field, 
+                                                            field.name, 
                                                             e.target.value
                                                         )
                                                     }
+                                                    required={index === 0 && field.name === "name"}
                                                 />
                                             </div>
                                         ))}
@@ -303,7 +380,7 @@ const EditErp = () => {
                                     <button
                                         type="button"
                                         onClick={() => handleRemoveItem(section.field, index)}
-                                        className="px-3 py-2 bg-red-500 text-white rounded-md text-sm"
+                                        className="px-3 py-2 bg-red-500 text-white rounded-md text-sm hover:bg-red-600 transition"
                                     >
                                         Remove
                                     </button>
@@ -321,7 +398,7 @@ const EditErp = () => {
                         disabled={isSubmitting}
                         className={`w-full py-3 px-4 rounded-md text-white font-medium flex items-center justify-center ${
                             isSubmitting ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
-                        }`}
+                        } transition`}
                     >
                         {isSubmitting ? (
                             <>
