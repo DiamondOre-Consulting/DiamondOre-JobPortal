@@ -16,7 +16,7 @@ const candidateSchema = new mongoose.Schema({
   },
   otp: {
     type: String,
-    default: null
+    default: null,
   },
   password: {
     type: String,
@@ -27,11 +27,56 @@ const candidateSchema = new mongoose.Schema({
   },
   resume: {
     type: String,
+  },
+  pan: {
+    type: String,
+  },
+  gender: {
+    type: String,
+  },
+  role: {
+    type: String,
+  },
+  age: {
+    type: String,
+  },
+  location: {
+    type: String,
+  },
+  experience: {
+    type: String,
+  },
+  currentCTC: {
+    type: String,
+  },
+  expectedCTC: {
+    type: String,
+  },
+  education: {
+    type: [
+      {
+        institute: { type: String, required: true },
+        degree: { type: String, required: true },
+        fieldOfStudy: { type: String },
+        startYear: { type: Number },
+        endYear: { type: Number },
+      },
+    ],
+    default: [],
+  },
+  noticePeriod: {
+    type: String,
+  },
 
+  currentCompany: {
+    type: String,
+  },
+  recency: {
+    type: Date,
   },
   preferredFormStatus: {
     type: Boolean,
-    default: false
+    default: false,
   },
   allAppliedJobs: {
     type: [

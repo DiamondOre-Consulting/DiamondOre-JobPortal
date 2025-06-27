@@ -122,7 +122,7 @@ router.get("/all-jobs", async (req, res) => {
 
     const { Channel, City, minCTC, maxCTC } = data;
 
-    const page = data.page || 1;
+    const page = data.page || 0;
     const limit = data.limit || 20;
 
     const skip = page * limit;
@@ -139,9 +139,10 @@ router.get("/all-jobs", async (req, res) => {
           Channel ? { Channel } : null,
         ].filter(Boolean),
       };
-
+      console.log("queryyy", query);
       totalCount = await Jobs.countDocuments(query);
       queryData = await Jobs.find(query).skip(skip).limit(limit);
+      // console.log("query data", queryData);
     } else {
       totalCount = await Jobs.countDocuments();
       queryData = await Jobs.find({}).skip(skip).limit(limit);

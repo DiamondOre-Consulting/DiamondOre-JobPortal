@@ -112,7 +112,7 @@ const Footer = () => {
                 <nav className="flex flex-col gap-4">
                   <div>
                     <Link
-                      to={"/all-jobs"}
+                      to={"/all-jobs-page"}
                       href="#"
                       className="text-gray-500 transition duration-100 hover:text-blue-950 active:text-bg blue-950 "
                     >
@@ -120,7 +120,7 @@ const Footer = () => {
                     </Link>
                   </div>
 
-                  <div>
+                  {/* <div>
                     <a
                       href="https://www.cvgenie.in/"
                       target="_blank"
@@ -138,7 +138,7 @@ const Footer = () => {
                     >
                       DOC-Labz
                     </a>
-                  </div>
+                  </div> */}
 
                   <div>
                     <Link

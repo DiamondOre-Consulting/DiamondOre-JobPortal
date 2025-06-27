@@ -130,6 +130,7 @@ const AllJobs = () => {
     }
   };
 
+  // console.log("daataaaa", selectedCity, selectedChannel, selectedCtcRange);
   const handleClearFilters = () => {
     setSelectedCity(null);
     setSelectedChannel(null);
@@ -152,6 +153,7 @@ const AllJobs = () => {
   return (
     <>
       <Navbar />
+
       <div className="sm:py-8 mt-24">
         <div className="flex flex-wrap items-center justify-center mx-auto  mb-16">
           <div className="relative">
