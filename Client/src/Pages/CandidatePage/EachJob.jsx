@@ -132,6 +132,7 @@ const EachJob = () => {
         }
       );
       if (apply.status === 200) {
+        console.log(apply)
         setApplyRes("Congratulations!!! Applied to this job successfully.");
         alert("Congratulations You have Applied For this Job sucessfully");
         setLoader(false);
