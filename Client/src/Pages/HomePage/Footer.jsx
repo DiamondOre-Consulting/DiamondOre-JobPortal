@@ -42,16 +42,7 @@ const Footer = () => {
                         <p className="text-sm text-gray-700">DiamondOre</p>
                       </div>
 
-                      <div className="flex flex-col items-center hover:scale-105 transition">
-                        <a
-                          href="https://youtube.com/@diamondore-career?si=FTT-w0fUn63CuPX3"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <img src={youtubeicon} alt="" className="w-9" />
-                        </a>
-                        <p className="text-sm text-gray-700">YouTube</p>
-                      </div>
+
                     </div>
                   </div>
 
