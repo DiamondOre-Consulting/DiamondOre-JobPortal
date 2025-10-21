@@ -46,18 +46,7 @@ const FreeConsultation = () => {
 
                     <ul className="grid grid-cols-1 gap-4 lg:gap-6 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-4">
                         {[
-                            {
-                                name: 'Pinky',
-                                services: ['BM', 'PSU', 'Banca'],
-                                img: 'https://w7.pngwing.com/pngs/4/736/png-transparent-female-avatar-girl-face-woman-user-flat-classy-users-icon.png',
-                                link: 'https://meetpro.club/PinkyYadav'
-                            },
-                            {
-                                name: 'Amaan',
-                                services: ['Direct-FLS', 'FLM'],
-                                img: 'https://www.svgrepo.com/show/382105/male-avatar-boy-face-man-user-5.svg',
-                                link: 'https://meetpro.club/Amaan'
-                            },
+                           
                             // {
                             //     name: 'Sooraj',
                             //     services: ['Bank'],
@@ -113,3 +102,4 @@ const FreeConsultation = () => {
 }
 
 export default FreeConsultation
+
