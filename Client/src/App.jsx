@@ -79,7 +79,7 @@ function App() {
   useState(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 1000);
+    }, 200);
   }, []);
   return (
     <>

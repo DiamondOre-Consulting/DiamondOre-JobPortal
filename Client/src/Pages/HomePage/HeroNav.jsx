@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import heroImage from "../../assets/home-page-image.jpg";
 import PopUpBox from "./PopUpBox";
 import { ScaleLoader } from "react-spinners";
 
 const HeroNav = () => {
   const [videoLoaded, setVideoLoaded] = useState(false);
+  const [videoError, setVideoError] = useState(false);
   const [showModal, setShowModal] = useState(() => {
     const isPopupShown = sessionStorage.getItem("isPopupShown");
     return !isPopupShown;
@@ -28,27 +30,39 @@ const HeroNav = () => {
       )}
       <section className="relative overflow-hidden flex items-center h-screen bg-cover bg-center">
         <div className="absolute inset-0 bg-black/40 z-10"></div>
-        <video
-          className="absolute inset-0 w-full  h-full object-cover pointer-events-none"
-          autoPlay
-          loop
-          muted
-          playsInline
-          disablePictureInPicture
-          controls={false}
-          onLoadedData={() => setVideoLoaded(true)}
-        >
-          <source
-            src="https://s3.tebi.io/general-pics/hero-section-video.webm"
-            type="video/webm"
+        {videoError ? (
+          <img
+            src={heroImage}
+            alt="Hero Background"
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
           />
-          Your browser does not support the video tag.
-        </video>
+        ) : (
+          <video
+            className="absolute inset-0 w-full  h-full object-cover pointer-events-none"
+            autoPlay
+            loop
+            muted
+            playsInline
+            disablePictureInPicture
+            controls={false}
+            onLoadedData={() => setVideoLoaded(true)}
+            onError={() => {
+              setVideoError(true);
+              setVideoLoaded(true);
+            }}
+          >
+            <source
+              src="https://s3.tebi.io/general-pics/hero-section-video.webm"
+              type="video/webm"
+            />
+            Your browser does not support the video tag.
+          </video>
+        )}
         {!videoLoaded && (
           <div className="inset-0 absolute z-[50000] flex flex-col items-center justify-center bg-white w-[100vw]  h-screen">
             <ScaleLoader size={150} color="#023E8A" />
             <p className="text-black text-center mt-2 font-bold text-2xl">
-              Loading opportunities...
+              Loading opportunitie...
             </p>
           </div>
         )}

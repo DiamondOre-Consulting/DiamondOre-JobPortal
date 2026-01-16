@@ -36,8 +36,9 @@ const Homemain = () => {
         const jobs = response?.data.allJobs.slice(0, 3);
         console.log("first", jobs);
         setLatestJobs(jobs);
-        const all = response.data;
-        const filteredJobs = all.filter((job) => job?.JobStatus === "true");
+        const all =response?.data ||response?.data?.allJobs;
+        console.log("all", all);
+        const filteredJobs = all?.filter((job) => job?.JobStatus === "true");
         const latest = filteredJobs.slice(-3).reverse();
       } catch (error) {
         console.error("Error fetching associates:", error);
