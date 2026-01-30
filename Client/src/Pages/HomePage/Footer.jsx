@@ -71,7 +71,7 @@ const Footer = () => {
                     <div className="flex flex-wrap gap-10 items-center">
                       <div className="flex flex-col items-center hover:scale-105 transition">
                         <a
-                          href="https://www.instagram.com/profile_genie_1?igsh=MW01amE5aHVwMTVpaw=="
+                          href="https://www.instagram.com/profilegenie.store/"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
