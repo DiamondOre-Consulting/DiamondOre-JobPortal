@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Logo from "../../assets/logoblue.png";
 import instalogo from "../../assets/instaicon.png";
-import { FaInstagram } from "react-icons/fa6";
+import { FaInstagram, FaFacebook, FaLinkedin } from "react-icons/fa6";
 import { LuYoutube } from "react-icons/lu";
 import instaicon from "../../assets/instaicon.png";
 import youtubeicon from "../../assets/youtubeicon.png";
@@ -31,14 +31,31 @@ const Footer = () => {
                     </h2>
                     <div className="flex gap-10 items-center">
                       <div className="flex flex-col items-center hover:scale-105 transition">
-                        <a
-                          href="https://www.instagram.com/diamondoreconsulting?igsh=ZXpwZWxpc2t0YTIz"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <img src={instaicon} alt="" className="w-8" />
-                          <instaicon className="text-pink-600 text-3xl mb-1" />
-                        </a>
+                        <div className="flex gap-2">
+                          <a
+                            href="https://www.instagram.com/diamondoreconsulting?igsh=ZXpwZWxpc2t0YTIz"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <img src={instaicon} alt="" className="w-8" />
+                          </a>
+                          <a
+                            href="https://www.facebook.com/share/1GCKBVhF5m/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#1877F2] text-3xl"
+                          >
+                            <FaFacebook />
+                          </a>
+                          <a
+                            href="https://www.linkedin.com/company/diamond-ore-consulting-pvt-ltd/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#0A66C2] text-3xl"
+                          >
+                            <FaLinkedin />
+                          </a>
+                        </div>
                         <p className="text-sm text-gray-700">DiamondOre</p>
                       </div>
 
@@ -88,6 +105,67 @@ const Footer = () => {
                         </a>
                         <p className="text-sm text-gray-700 text-center">
                           DOC LABZ
+                        </p>
+                      </div>
+                      <div className="flex flex-col items-center hover:scale-105 transition">
+                        <div className="flex gap-2">
+                          <a
+                            href="https://www.instagram.com/guruzkool/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <img src={instaicon} alt="" className="w-8" />
+                          </a>
+                          <a
+                            href="https://www.facebook.com/share/16q9e4hHdy/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#1877F2] text-3xl"
+                          >
+                            <FaFacebook />
+                          </a>
+                          <a
+                            href="https://www.linkedin.com/in/guruzkool-81bb2a3a5?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#0A66C2] text-3xl"
+                          >
+                            <FaLinkedin />
+                          </a>
+                        </div>
+                        <p className="text-sm text-gray-700 text-center">
+                          GURUZKOOL
+                        </p>
+                      </div>
+
+                      <div className="flex flex-col items-center hover:scale-105 transition">
+                        <div className="flex gap-2">
+                           <a
+                            href="https://www.instagram.com/reliablealliedservices"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <img src={instaicon} alt="" className="w-8" />
+                          </a>
+                          <a
+                            href="https://www.facebook.com/share/1bubs9NXBX/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#1877F2] text-3xl"
+                          >
+                            <FaFacebook />
+                          </a>
+                          <a
+                            href="https://www.linkedin.com/company/reliable-allied-services/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#0A66C2] text-3xl"
+                          >
+                            <FaLinkedin />
+                          </a>
+                        </div>
+                        <p className="text-sm text-gray-700 text-center">
+                          RELIABLE
                         </p>
                       </div>
                     </div>
@@ -149,8 +227,8 @@ const Footer = () => {
                 <nav className="flex flex-col gap-4">
                   <div>
                     <a
-                      href="https://www.cvgenie.in/"
-                      target="_blank"
+                    href="https://www.cvgenie.in/"                      
+                    target="_blank"
                       className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600"
                     >
                       CV-Genie
@@ -164,6 +242,36 @@ const Footer = () => {
                       className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600"
                     >
                       DOC-Labz
+                    </a>
+                  </div>
+
+                  <div>
+                    <a
+                      href="https://profilegenie.in/"
+                      target="_blank"
+                      className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600"
+                    >
+                      Profile Genie
+                    </a>
+                  </div>
+
+                  <div>
+                    <a
+                      href="https://guruzkool.com/"
+                      target="_blank"
+                      className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600"
+                    >
+                      Guruzkool
+                    </a>
+                  </div>
+
+                  <div>
+                    <a
+                      href="https://rasonline.in/"
+                      target="_blank"
+                      className="text-gray-500 transition duration-100 hover:text-indigo-500 active:text-indigo-600"
+                    >
+                      Reliable
                     </a>
                   </div>
                 </nav>

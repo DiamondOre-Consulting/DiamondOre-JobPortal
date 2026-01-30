@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Marquee from "react-marquee-slider";
 import certificate from "../../assets/startup.png";
 import certificat2 from "../../assets/certificate2.jpg";
+import certificateofappreciation from "../../assets/certificateofappreciation.jpg";
 
 
 
@@ -9,7 +10,7 @@ const awards = [
   "https://res.cloudinary.com/dmpkp9ux2/image/upload/v1750828089/img2_u0dmjt.jpg",
   "https://res.cloudinary.com/dmpkp9ux2/image/upload/v1750828089/img1_cesor6.jpg",
   certificate,
-  certificat2,
+  certificateofappreciation,
   "https://res.cloudinary.com/dmpkp9ux2/image/upload/v1750831138/ChatGPT_Image_Jun_25_2025_11_27_02_AM_erkiul.png",
   "https://res.cloudinary.com/dmpkp9ux2/image/upload/v1750831587/ChatGPT_Image_Jun_25_2025_11_36_07_AM_ymmxy8.png",
 ];
