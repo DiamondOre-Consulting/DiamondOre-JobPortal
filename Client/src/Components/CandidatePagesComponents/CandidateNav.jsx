@@ -73,7 +73,7 @@ const CandidateNav = () => {
         window.alert("Your account has been deleted");
         navigate("/login");
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const toggleDropdown = () => {
@@ -233,33 +233,29 @@ const CandidateNav = () => {
             </button>
           </header>
           <ul
-            className={`gap-10 ${
-              menuOpen ? "block" : "hidden"
-            } w-full flex flex-col items-center justify-center mb-14`}
+            className={`gap-10 ${menuOpen ? "block" : "hidden"
+              } w-full flex flex-col items-center justify-center mb-14`}
           >
             <Link to={"/dashboard"}>
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } transition ease-in-out delay-150 px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } transition ease-in-out delay-150 px-2 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Home
               </li>
             </Link>
             <Link to={"/all-jobs"}>
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-2 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 All jobs
               </li>
             </Link>
             <Link to={"/all-applied-jobs"}>
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } px-24 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-24 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Applied jobs
               </li>
@@ -276,18 +272,16 @@ const CandidateNav = () => {
 
             <a href="https://referbiz.in/" target="_blank">
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } px-16 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-16 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Reffer & Earn
               </li>
             </a>
             <Link to={"/edit/profile-page"}>
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } px-24 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-24 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Edit Profile
               </li>
@@ -295,9 +289,8 @@ const CandidateNav = () => {
 
             <Link to={"/edit-prefrence-form"}>
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } px-24 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-24 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Edit Prefrence
               </li>
@@ -315,16 +308,15 @@ const CandidateNav = () => {
 
             <a
               href="#"
-              className="px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250"
+              className="px-2 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250"
               onClick={handleLogout}
             >
               Logout
             </a>
             <a href={"/signup"}>
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-lg font-semibold bg-blue-900 text-white hover:bg-blue-950 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-2 py-3 text-lg font-semibold bg-blue-900 text-white hover:bg-blue-950 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Signin
               </li>
@@ -335,9 +327,8 @@ const CandidateNav = () => {
 
       {showPopup ? (
         <div
-          className={`fixed inset-0 flex items-center z-10 justify-center ${
-            showPopup ? "visible" : "hidden"
-          }`}
+          className={`fixed inset-0 flex items-center z-10 justify-center ${showPopup ? "visible" : "hidden"
+            }`}
         >
           <section className="rounded-3xl shadow-xl bg-white">
             <div className="p-4 text-center sm:p-12">
