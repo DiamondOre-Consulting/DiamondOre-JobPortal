@@ -366,7 +366,7 @@ const Homemain = () => {
 
       <div
         onClick={handleScrollDown}
-        className=" cursor-pointer md:block hidden fixed bottom-8 z-40 right-28 bg-white rounded-full shadow-xl p-4 text-gray-700 animate-bounce"
+        className=" cursor-pointer md:block hidden fixed bottom-8 z-40 right-44 bg-white rounded-full shadow-xl p-4 text-gray-700 animate-bounce"
       >
         <FaArrowDown />
       </div>

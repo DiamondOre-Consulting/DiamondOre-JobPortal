@@ -167,7 +167,7 @@ const Chatboot = () => {
   return (
     <div>
       <div
-        className={`fixed bottom-60 md:bottom-56 z-10 right-8 ${
+        className={`fixed bottom-60 md:bottom-56 z-10 right-14 sm:right-16 ${
           welcomeopen ? "block" : "hidden"
         }`}
       >
@@ -181,7 +181,7 @@ const Chatboot = () => {
       </div>
 
       <div
-        className={`fixed bottom-32 z-10 sm:bottom-28 right-8 w-1/2 sm:w-1/4 md:w-1/4 bg-white shadow-lg p-3 ${
+        className={`fixed bottom-32 z-10 sm:bottom-28 right-14 sm:right-16 w-[70%] sm:w-1/4 md:w-1/4 bg-white shadow-lg p-3 ${
           welcomeopen ? "block" : "hidden"
         }`}
       >
@@ -205,7 +205,7 @@ const Chatboot = () => {
         </p>
       </div>
 
-      <div className="fixed bottom-12 sm:bottom-8 right-8 z-10">
+      <div className="fixed bottom-12 sm:bottom-8 right-14 sm:right-16 z-10">
         <div
           className="chat-icon w-16 float-right cursor-pointer"
           onClick={toggleChatbox}
