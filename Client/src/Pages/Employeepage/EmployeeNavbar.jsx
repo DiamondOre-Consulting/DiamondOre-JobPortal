@@ -185,7 +185,7 @@ const EmployeeNavbar = () => {
             <Link to={"/employee-dashboard"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
-                  } transition ease-in-out delay-150 px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white hover:-translate-y-1 hover:scale-110 duration-250`}
+                  } transition ease-in-out delay-150 px-2 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Home
               </li>
@@ -193,7 +193,7 @@ const EmployeeNavbar = () => {
             <Link to={"/employee-leaves"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                  } px-2 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Leaves
               </li>
@@ -201,7 +201,7 @@ const EmployeeNavbar = () => {
             <Link href={"/employee-performence"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                  } px-2 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Performence
               </li>
@@ -210,14 +210,14 @@ const EmployeeNavbar = () => {
             <a href="https://referbiz.in/" target="_blank">
               <li
                 className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                  } px-2 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Refer & Earn
               </li>
             </a>
             <Link
               to="#"
-              className="px-32 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250"
+              className="px-2 py-3 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250"
               onClick={handleLogout}
             >
               Logout

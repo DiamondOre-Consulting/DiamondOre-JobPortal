@@ -215,7 +215,7 @@ const AdminNav = () => {
 
             {isDropdownOpen && (
               <div className="absolute right-8 top-6 mt-12 py-2 w-lg bg-white shadow-gray-200 rounded-md shadow-lg">
-                
+
                 <Link
                   to={'/employee-signup'}
                   className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
@@ -303,7 +303,7 @@ const AdminNav = () => {
             <Link to={"/admin/all-jobs"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                  } px-2 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 All Jobs
               </li>
@@ -319,7 +319,7 @@ const AdminNav = () => {
             <Link to={"/admin/erp-dashboard"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                  } px-2 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Erp
               </li>
@@ -328,7 +328,7 @@ const AdminNav = () => {
             <Link to={"/employee-signup"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                  } px-2 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 AddEmployee
               </li>
@@ -337,7 +337,7 @@ const AdminNav = () => {
             <Link to={"/admin/add-jobs"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                  } px-2 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Add Jobs
               </li>
@@ -377,11 +377,11 @@ const AdminNav = () => {
             </Link>
 
 
-           
+
 
             <Link
               to="#"
-              className="px-32 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250"
+              className="px-2 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250"
               onClick={handleLogout}
             >
               Logout
@@ -389,7 +389,7 @@ const AdminNav = () => {
             <Link to={"/admin-signup"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
-                  } px-32 py-1 text-lg font-semibold bg-blue-900 text-white hover:bg-blue-950 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                  } px-2 py-1 text-lg font-semibold bg-blue-900 text-white hover:bg-blue-950 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Signin
               </li>

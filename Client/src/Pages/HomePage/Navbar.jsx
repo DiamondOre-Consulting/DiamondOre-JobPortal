@@ -121,42 +121,37 @@ const Navbar = () => {
             </button>
           </header>
           <ul
-            className={`gap-10 ${
-              menuOpen ? "block" : "hidden"
-            } w-full flex flex-col items-center justify-center mb-14`}
+            className={`gap-3 ${menuOpen ? "block" : "hidden"
+              } w-full flex flex-col items-center justify-center mb-14`}
           >
             <Link to={"/"}>
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } transition ease-in-out delay-150 px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } transition ease-in-out delay-150 px-2 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Home
               </li>
             </Link>
             <Link to={"/about"}>
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-2 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 About Us
               </li>
             </Link>
             <Link to={"/services"}>
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-2 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Services
               </li>
             </Link>
             <Link to={"/contact"}>
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-2 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Contact Us
               </li>
@@ -164,9 +159,8 @@ const Navbar = () => {
 
             <Link to={"/search-job"}>
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-2 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Search By Phone No.
               </li>
@@ -174,9 +168,8 @@ const Navbar = () => {
 
             <Link to={"/post-review"}>
               <li
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-2 py-3 text-white text-md font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Post Reviews
               </li>
@@ -185,9 +178,8 @@ const Navbar = () => {
             <a href="#">
               <li
                 onClick={handleSignup}
-                className={`${
-                  menuOpen ? "block" : "hidden"
-                } px-32 py-3 text-md font-semibold bg-blue-900 text-white hover:bg-blue-950 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
+                className={`${menuOpen ? "block" : "hidden"
+                  } px-2 py-3 text-md font-semibold bg-blue-900 text-white hover:bg-blue-950 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
                 Signin
               </li>

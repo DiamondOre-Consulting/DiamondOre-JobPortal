@@ -167,9 +167,8 @@ const Chatboot = () => {
   return (
     <div>
       <div
-        className={`fixed bottom-60 md:bottom-56 z-10 right-8 ${
-          welcomeopen ? "block" : "hidden"
-        }`}
+        className={`fixed bottom-60 md:bottom-56 z-10 right-2 sm:right-8 ${welcomeopen ? "block" : "hidden"
+          }`}
       >
         <img
           id="certificateImage"
@@ -181,9 +180,8 @@ const Chatboot = () => {
       </div>
 
       <div
-        className={`fixed bottom-32 z-10 sm:bottom-28 right-8 w-1/2 sm:w-1/4 md:w-1/4 bg-white shadow-lg p-3 ${
-          welcomeopen ? "block" : "hidden"
-        }`}
+        className={`fixed bottom-32 z-10 sm:bottom-28 right-2 sm:right-8 w-[70%] sm:w-1/4 md:w-1/4 bg-white shadow-lg p-3 ${welcomeopen ? "block" : "hidden"
+          }`}
       >
         <div className="flex justify-center items-center">
           <div className="w-16 h-16 border border-0 rounded-full overflow-hidden -mt-8">
@@ -205,7 +203,7 @@ const Chatboot = () => {
         </p>
       </div>
 
-      <div className="fixed bottom-12 sm:bottom-8 right-8 z-10">
+      <div className="fixed bottom-12 sm:bottom-8 right-2 sm:right-8 z-10">
         <div
           className="chat-icon w-16 float-right cursor-pointer"
           onClick={toggleChatbox}
@@ -231,14 +229,13 @@ const Chatboot = () => {
               {messages.map((message, index) => (
                 <div
                   key={index}
-                  className={`chat-message ${
-                    message.sender === "user"
-                      ? "text-right mb-2 text-xs"
-                      : "text-left mb-2 text-xs"
-                  }`}
+                  className={`chat-message ${message.sender === "user"
+                    ? "text-right mb-2 text-xs"
+                    : "text-left mb-2 text-xs"
+                    }`}
                 >
                   {message.sender === "chatbot" &&
-                  questions.includes(message.text) ? (
+                    questions.includes(message.text) ? (
                     <span className="font-bold italic text-blue-950">
                       {message.text}
                     </span>
@@ -259,11 +256,10 @@ const Chatboot = () => {
               />
               <button
                 onClick={handleSendMessage}
-                className={`bg-blue-950 text-white px-2 py-2 rounded-r-lg ${
-                  isSendButtonDisabled
-                    ? "opapreferredCity-50 cursor-not-allowed"
-                    : ""
-                }`}
+                className={`bg-blue-950 text-white px-2 py-2 rounded-r-lg ${isSendButtonDisabled
+                  ? "opapreferredCity-50 cursor-not-allowed"
+                  : ""
+                  }`}
                 disabled={isSendButtonDisabled}
               >
                 Send
