@@ -1010,7 +1010,11 @@ router.post("/client-form", async (req, res) => {
     });
     await sendEmail({
       to: "hr@diamondore.in",
-      cc: ["zoyas3423@gmail.com", "zoya.rasonline@gmail.com"],
+    cc: [
+              "rahul@rasonline.in",
+              "rahul@diamondore.in",
+              "utsav@diamondore.in",
+            ],
       subject,
       html,
     });

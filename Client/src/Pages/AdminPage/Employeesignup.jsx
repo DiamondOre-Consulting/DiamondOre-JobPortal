@@ -130,7 +130,6 @@ const Employeesignup = () => {
                             onChange={(e) => setEmpType(e.target.value)}
                         >
                             <option value="">Select Designation</option>
-                            <option value="">Select Designation</option>
                             <option value="Recruiter">Recruiter</option>
                             <option value="SeniorRecruiter"> Senior Recruiter</option>
                             <option value="TeamLeader">Team Leader</option>

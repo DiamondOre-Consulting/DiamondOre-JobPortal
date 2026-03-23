@@ -508,7 +508,7 @@ router.post("/apply-job/:id", CandidateAuthenticateToken, async (req, res) => {
         cc: [
           "rahul@rasonline.in",
           "rahul@diamondore.in",
-          "zoya.rasonline@gmail.com",
+          "utsav@diamondore.in",
         ],
         subject: adminSubject,
         html: adminHtml,
@@ -568,7 +568,7 @@ router.post("/help-contact", async (req, res) => {
       to: "helpdesk2.rasonline@gmail.com",
       cc: [
         "rahul@rasonline.in",
-        "zoya.rasonline@gmail.com",
+        "utsav@diamondore.in",
         "hr@diamondore.in",
       ],
       subject,
