@@ -8,14 +8,14 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "./popover"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "./select"
 
 const formatRangeLabel = ({ value, monthNames }) => {
   const { fromMonth, fromYear, toMonth, toYear } = value

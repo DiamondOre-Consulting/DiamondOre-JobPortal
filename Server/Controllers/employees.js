@@ -28,7 +28,7 @@ const secretKey = process.env.JWT_SECRET_EMPLOYEE;
 
 const router = express.Router();
 const GOALSHEET_REQUEST_NOTIFICATION_EMAIL =
-  process.env.GOALSHEET_REQUEST_NOTIFICATION_EMAIL || "itsakash18.06@gmail.com";
+  process.env.GOALSHEET_REQUEST_NOTIFICATION_EMAIL || "hr@diamondore.in";
 
 // EMPLOYEE SIGNUP
 router.post("/add-emp", AdminAuthenticateToken, async (req, res) => {
