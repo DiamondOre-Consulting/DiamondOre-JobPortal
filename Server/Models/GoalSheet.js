@@ -52,6 +52,40 @@ const goalSheetSchema = new mongoose.Schema({
       },
     ],
   },
+  changeRequests: {
+    type: [
+      {
+        message: {
+          type: String,
+          trim: true,
+          required: true,
+        },
+        status: {
+          type: String,
+          enum: ["pending", "in_review", "approved", "rejected"],
+          default: "pending",
+        },
+        adminRemark: {
+          type: String,
+          trim: true,
+          default: "",
+        },
+        requestedAt: {
+          type: Date,
+          default: Date.now,
+        },
+        updatedAt: {
+          type: Date,
+          default: Date.now,
+        },
+        resolvedAt: {
+          type: Date,
+          default: null,
+        },
+      },
+    ],
+    default: [],
+  },
 
   // Ticker will Run if YTD is less then 2.5 then it will save here
 

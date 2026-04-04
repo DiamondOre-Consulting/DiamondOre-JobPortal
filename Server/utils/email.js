@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import dns from "node:dns/promises";
 
 /**
  * Send an email using nodemailer
@@ -10,24 +11,232 @@ import nodemailer from "nodemailer";
  * @param {Array} [options.attachments]
  */
 
-export async function sendEmail({ to, subject, html, text, attachments, cc }) {
-  const transporter = nodemailer.createTransport({
-    service: process.env.EMAIL_SERVICE || "gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+const DEFAULT_CONNECTION_TIMEOUT = 15000;
+const DEFAULT_GREETING_TIMEOUT = 10000;
+const DEFAULT_SOCKET_TIMEOUT = 20000;
+
+const gmailIpv6Cache = new Map();
+
+const toBoolean = (value, fallbackValue = false) => {
+  if (typeof value === "boolean") return value;
+  if (typeof value !== "string") return fallbackValue;
+  const normalizedValue = value.trim().toLowerCase();
+  return normalizedValue === "true" || normalizedValue === "1";
+};
+
+const toNumber = (value, fallbackValue) => {
+  const parsedValue = Number(value);
+  return Number.isFinite(parsedValue) ? parsedValue : fallbackValue;
+};
+
+const resolveIpv6Address = async (hostname) => {
+  if (gmailIpv6Cache.has(hostname)) {
+    return gmailIpv6Cache.get(hostname);
+  }
+
+  try {
+    const ipv6Addresses = await dns.resolve6(hostname);
+    const selectedAddress =
+      Array.isArray(ipv6Addresses) && ipv6Addresses.length > 0
+        ? ipv6Addresses[0]
+        : null;
+    gmailIpv6Cache.set(hostname, selectedAddress);
+    return selectedAddress;
+  } catch {
+    gmailIpv6Cache.set(hostname, null);
+    return null;
+  }
+};
+
+const createTransportAttempts = async () => {
+  const smtpHost = process.env.SMTP_HOST;
+  const smtpPort = toNumber(process.env.SMTP_PORT, 0);
+  const smtpSecure = toBoolean(process.env.SMTP_SECURE, smtpPort === 465);
+  const emailService = process.env.EMAIL_SERVICE || "gmail";
+
+  const commonAuthConfig = {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  };
+
+  const commonTimeoutConfig = {
+    connectionTimeout: toNumber(
+      process.env.SMTP_CONNECTION_TIMEOUT,
+      DEFAULT_CONNECTION_TIMEOUT
+    ),
+    greetingTimeout: toNumber(
+      process.env.SMTP_GREETING_TIMEOUT,
+      DEFAULT_GREETING_TIMEOUT
+    ),
+    socketTimeout: toNumber(
+      process.env.SMTP_SOCKET_TIMEOUT,
+      DEFAULT_SOCKET_TIMEOUT
+    ),
+  };
+
+  const attempts = [];
+
+  if (smtpHost) {
+    attempts.push({
+      name: `custom-smtp-${smtpHost}:${smtpPort || (smtpSecure ? 465 : 587)}`,
+      config: {
+        host: smtpHost,
+        port: smtpPort || (smtpSecure ? 465 : 587),
+        secure: smtpSecure,
+        requireTLS: !smtpSecure,
+        auth: commonAuthConfig,
+        ...commonTimeoutConfig,
+      },
+    });
+  }
+
+  attempts.push({
+    name: `service-${emailService}`,
+    config: {
+      service: emailService,
+      auth: commonAuthConfig,
+      ...commonTimeoutConfig,
     },
   });
-  const mailOptions = {
-    from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
-    to,
-    subject,
-    html,
-    text,
-    attachments,
-    cc,
-  };
-  return transporter.sendMail(mailOptions);
+
+  // Gmail IPv6 fallbacks.
+  // In some environments IPv4 SMTP paths timeout while IPv6 works.
+  const gmailHosts = ["smtp.gmail.com", "smtp.googlemail.com"];
+  for (const host of gmailHosts) {
+    const ipv6Address = await resolveIpv6Address(host);
+    if (!ipv6Address) {
+      continue;
+    }
+
+    attempts.push({
+      name: `${host}-ipv6-587`,
+      config: {
+        host: ipv6Address,
+        port: 587,
+        secure: false,
+        requireTLS: true,
+        auth: commonAuthConfig,
+        tls: {
+          servername: host,
+        },
+        ...commonTimeoutConfig,
+      },
+    });
+
+    attempts.push({
+      name: `${host}-ipv6-465`,
+      config: {
+        host: ipv6Address,
+        port: 465,
+        secure: true,
+        auth: commonAuthConfig,
+        tls: {
+          servername: host,
+        },
+        ...commonTimeoutConfig,
+      },
+    });
+  }
+
+  // Gmail explicit fallbacks:
+  // 1) STARTTLS on 587 (smtp.gmail.com, smtp.googlemail.com)
+  // 2) SSL/TLS on 465 (smtp.gmail.com, smtp.googlemail.com)
+  // (Many environments route differently per host alias/IP.)
+  attempts.push({
+    name: "gmail-587",
+    config: {
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
+      requireTLS: true,
+      auth: commonAuthConfig,
+      ...commonTimeoutConfig,
+    },
+  });
+
+  attempts.push({
+    name: "googlemail-587",
+    config: {
+      host: "smtp.googlemail.com",
+      port: 587,
+      secure: false,
+      requireTLS: true,
+      auth: commonAuthConfig,
+      ...commonTimeoutConfig,
+    },
+  });
+
+  attempts.push({
+    name: "gmail-465",
+    config: {
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: commonAuthConfig,
+      ...commonTimeoutConfig,
+    },
+  });
+
+  attempts.push({
+    name: "googlemail-465",
+    config: {
+      host: "smtp.googlemail.com",
+      port: 465,
+      secure: true,
+      auth: commonAuthConfig,
+      ...commonTimeoutConfig,
+    },
+  });
+
+  return attempts;
+};
+
+const isRetryableMailError = (error) => {
+  const retryableCodes = new Set([
+    "ETIMEDOUT",
+    "ESOCKET",
+    "ECONNREFUSED",
+    "EHOSTUNREACH",
+    "ENOTFOUND",
+    "EAI_AGAIN",
+  ]);
+  return retryableCodes.has(error?.code);
+};
+
+export async function sendEmail({ to, subject, html, text, attachments, cc }) {
+  const transportAttempts = await createTransportAttempts();
+  let lastError = null;
+
+  for (let index = 0; index < transportAttempts.length; index += 1) {
+    const { config, name } = transportAttempts[index];
+    try {
+      const transporter = nodemailer.createTransport(config);
+      const mailOptions = {
+        from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+        to,
+        subject,
+        html,
+        text,
+        attachments,
+        cc,
+      };
+
+      return await transporter.sendMail(mailOptions);
+    } catch (error) {
+      lastError = error;
+
+      const isLastAttempt = index === transportAttempts.length - 1;
+      if (!isRetryableMailError(error) || isLastAttempt) {
+        break;
+      }
+
+      console.warn(
+        `[email] send attempt failed via ${name} (${error.code || "UNKNOWN"}). Retrying with next config...`
+      );
+    }
+  }
+
+  throw lastError;
 }
 
 /**

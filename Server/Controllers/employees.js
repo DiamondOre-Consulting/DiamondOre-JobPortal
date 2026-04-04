@@ -27,6 +27,8 @@ dotenv.config();
 const secretKey = process.env.JWT_SECRET_EMPLOYEE;
 
 const router = express.Router();
+const GOALSHEET_REQUEST_NOTIFICATION_EMAIL =
+  process.env.GOALSHEET_REQUEST_NOTIFICATION_EMAIL || "itsakash18.06@gmail.com";
 
 // EMPLOYEE SIGNUP
 router.post("/add-emp", AdminAuthenticateToken, async (req, res) => {
@@ -410,6 +412,11 @@ router.get("/my-goalsheet", EmployeeAuthenticateToken, async (req, res) => {
       return res.status(402).json({ message: "No goal sheet found!!!" });
     }
     const goalSheet = allGoalSheets[0].toObject();
+    goalSheet.changeRequests = (goalSheet.changeRequests || []).sort(
+      (a, b) =>
+        new Date(b?.updatedAt || b?.requestedAt || 0).getTime() -
+        new Date(a?.updatedAt || a?.requestedAt || 0).getTime()
+    );
    
     let minYear
     let maxYear
@@ -444,6 +451,84 @@ router.get("/my-goalsheet", EmployeeAuthenticateToken, async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+router.post(
+  "/my-goalsheet/request-change",
+  EmployeeAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { userId } = req.user;
+      const message = (req.body?.message || "").trim();
+
+      if (!message || message.length < 5) {
+        return res.status(400).json({
+          message: "Please enter at least 5 characters in your request message",
+        });
+      }
+
+      const [employee, goalSheet] = await Promise.all([
+        Employees.findById(userId).select("name email"),
+        GoalSheet.findOne({ owner: userId }),
+      ]);
+
+      if (!employee) {
+        return res.status(404).json({ message: "Employee not found" });
+      }
+
+      if (!goalSheet) {
+        return res.status(404).json({ message: "No goal sheet found for this employee" });
+      }
+
+      const now = new Date();
+      goalSheet.changeRequests.push({
+        message,
+        status: "pending",
+        requestedAt: now,
+        updatedAt: now,
+      });
+
+      await goalSheet.save();
+
+      const createdRequest =
+        goalSheet.changeRequests[goalSheet.changeRequests.length - 1];
+
+      let emailDelivered = true;
+      try {
+        const safeMessage = message.replace(/[<>]/g, "");
+        await sendEmail({
+          to: GOALSHEET_REQUEST_NOTIFICATION_EMAIL,
+          subject: `Goal Sheet Change Request - ${employee.name || "Employee"}`,
+          html: `
+            <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+              <h2 style="margin: 0 0 12px;">Goal Sheet Change Request</h2>
+              <p><strong>Employee:</strong> ${employee.name || "N/A"}</p>
+              <p><strong>Email:</strong> ${employee.email || "N/A"}</p>
+              <p><strong>Requested At:</strong> ${now.toISOString()}</p>
+              <p><strong>Request Message:</strong></p>
+              <p style="white-space: pre-wrap; background: #f7f7f7; padding: 10px; border-radius: 8px;">
+                ${safeMessage}
+              </p>
+            </div>
+          `,
+          text: `Goal Sheet Change Request\nEmployee: ${employee.name || "N/A"}\nEmail: ${employee.email || "N/A"}\nRequested At: ${now.toISOString()}\nMessage: ${message}`,
+        });
+      } catch (emailError) {
+        emailDelivered = false;
+        console.error("Goal sheet request notification email failed:", emailError);
+      }
+
+      return res.status(201).json({
+        message: emailDelivered
+          ? "Request submitted successfully"
+          : "Request submitted successfully, but notification email failed",
+        request: createdRequest,
+        emailDelivered,
+      });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+);
 
 // MY KPI SCORE
 router.get("/my-kpi", EmployeeAuthenticateToken, async (req, res) => {

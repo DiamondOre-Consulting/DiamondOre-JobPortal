@@ -2087,22 +2087,539 @@ router.post("/set-goalSheet", async (req, res) => {
   }
 });
 
+const goalSheetMonthNames = {
+  1: "January",
+  2: "February",
+  3: "March",
+  4: "April",
+  5: "May",
+  6: "June",
+  7: "July",
+  8: "August",
+  9: "September",
+  10: "October",
+  11: "November",
+  12: "December",
+};
+
+const parseGoalSheetRangeQuery = (query) => {
+  const { fromMonth, fromYear, toMonth, toYear } = query;
+  const hasFromMonth = fromMonth !== undefined && fromMonth !== "";
+  const hasFromYear = fromYear !== undefined && fromYear !== "";
+  const hasToMonth = toMonth !== undefined && toMonth !== "";
+  const hasToYear = toYear !== undefined && toYear !== "";
+
+  if (hasFromMonth !== hasFromYear) {
+    return {
+      error: "Please provide both fromMonth and fromYear",
+      status: 400,
+    };
+  }
+
+  if (hasToMonth !== hasToYear) {
+    return {
+      error: "Please provide both toMonth and toYear",
+      status: 400,
+    };
+  }
+
+  const hasRangeFilter = (hasFromMonth && hasFromYear) || (hasToMonth && hasToYear);
+  const parsedFromMonth = hasFromMonth ? Number(fromMonth) : null;
+  const parsedFromYear = hasFromYear ? Number(fromYear) : null;
+  const parsedToMonth = hasToMonth ? Number(toMonth) : null;
+  const parsedToYear = hasToYear ? Number(toYear) : null;
+
+  const isValidMonth = (value) =>
+    Number.isInteger(value) && value >= 1 && value <= 12;
+  const isValidYear = (value) => Number.isInteger(value) && value > 0;
+
+  if (hasFromMonth && (!isValidMonth(parsedFromMonth) || !isValidYear(parsedFromYear))) {
+    return {
+      error: "Invalid from month or year supplied",
+      status: 400,
+    };
+  }
+
+  if (hasToMonth && (!isValidMonth(parsedToMonth) || !isValidYear(parsedToYear))) {
+    return {
+      error: "Invalid to month or year supplied",
+      status: 400,
+    };
+  }
+
+  const fromRangeValue =
+    hasFromMonth && hasFromYear ? parsedFromYear * 12 + parsedFromMonth : null;
+  const toRangeValue =
+    hasToMonth && hasToYear ? parsedToYear * 12 + parsedToMonth : null;
+
+  if (
+    fromRangeValue !== null &&
+    toRangeValue !== null &&
+    fromRangeValue > toRangeValue
+  ) {
+    return {
+      error: "From month-year cannot be after to month-year",
+      status: 400,
+    };
+  }
+
+  return {
+    error: null,
+    status: 200,
+    hasRangeFilter,
+    fromRangeValue,
+    toRangeValue,
+  };
+};
+
+const filterGoalSheetDetailsByRange = (
+  goalSheetDetails = [],
+  fromRangeValue,
+  toRangeValue
+) => {
+  return goalSheetDetails.filter((detail) => {
+    const detailRangeValue = Number(detail.year) * 12 + Number(detail.month);
+
+    if (fromRangeValue !== null && detailRangeValue < fromRangeValue) {
+      return false;
+    }
+
+    if (toRangeValue !== null && detailRangeValue > toRangeValue) {
+      return false;
+    }
+
+    return true;
+  });
+};
+
+const calculateRevenueAchievedPercentage = (revenue, target) => {
+  const parsedRevenue = Number(revenue) || 0;
+  const parsedTarget = Number(target) || 0;
+
+  if (!parsedTarget) {
+    return 0;
+  }
+
+  return (parsedRevenue / parsedTarget) * 100;
+};
+
 // GET AN EMPLOYEE's GOAL SHEETS
 router.get("/goalsheet/:id", AdminAuthenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
+    const rangeFilterResult = parseGoalSheetRangeQuery(req.query);
+
+    if (rangeFilterResult.error) {
+      return res.status(rangeFilterResult.status).json({
+        message: rangeFilterResult.error,
+      });
+    }
+
+    const { hasRangeFilter, fromRangeValue, toRangeValue } = rangeFilterResult;
 
     const findGoalSheets = await GoalSheet.find({ owner: id });
-    if (!findGoalSheets) {
+    if (!findGoalSheets || findGoalSheets.length === 0) {
       return res.status(402).json({ message: "No goalsheet found!!!" });
     }
 
-    res.status(200).json(findGoalSheets);
+    const allGoalSheets = findGoalSheets.map((goalSheet) => goalSheet.toObject());
+    const overallTotals = allGoalSheets
+      .flatMap((goalSheet) => goalSheet.goalSheetDetails || [])
+      .reduce(
+        (acc, detail) => {
+          acc.noOfJoinings += Number(detail.noOfJoinings) || 0;
+          acc.revenue += Number(detail.revenue) || 0;
+          acc.cost += Number(detail.cost) || 0;
+          acc.target += Number(detail.target) || 0;
+          return acc;
+        },
+        { noOfJoinings: 0, revenue: 0, cost: 0, target: 0 }
+      );
+    const changeRequests = allGoalSheets
+      .flatMap((goalSheet) =>
+        (goalSheet.changeRequests || []).map((request) => ({
+          ...request,
+          goalSheetId: goalSheet._id,
+        }))
+      )
+      .sort(
+        (a, b) =>
+          new Date(b?.updatedAt || b?.requestedAt || 0).getTime() -
+          new Date(a?.updatedAt || a?.requestedAt || 0).getTime()
+      );
+
+    if (!hasRangeFilter) {
+      return res.status(200).json({
+        goalSheets: allGoalSheets,
+        overallTotals,
+        changeRequests,
+        currentYear: new Date().getFullYear(),
+      });
+    }
+
+    const filteredGoalSheets = allGoalSheets.map((goalSheet) => ({
+      ...goalSheet,
+      goalSheetDetails: filterGoalSheetDetailsByRange(
+        goalSheet.goalSheetDetails || [],
+        fromRangeValue,
+        toRangeValue
+      ),
+    }));
+
+    res.status(200).json({
+      goalSheets: filteredGoalSheets,
+      overallTotals,
+      changeRequests,
+      currentYear: new Date().getFullYear(),
+    });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
   }
 });
+
+router.put(
+  "/goalsheet/:id/request/:requestId/status",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { id, requestId } = req.params;
+      const nextStatus = (req.body?.status || "").trim();
+      const adminRemark = (req.body?.adminRemark || "").trim();
+
+      const allowedStatuses = new Set([
+        "pending",
+        "in_review",
+        "approved",
+        "rejected",
+      ]);
+      if (!allowedStatuses.has(nextStatus)) {
+        return res.status(400).json({
+          message: "Invalid request status",
+        });
+      }
+
+      const goalSheet = await GoalSheet.findOne({
+        owner: id,
+        "changeRequests._id": requestId,
+      });
+
+      if (!goalSheet) {
+        return res.status(404).json({
+          message: "Goal sheet request not found",
+        });
+      }
+
+      const requestToUpdate = goalSheet.changeRequests.id(requestId);
+      if (!requestToUpdate) {
+        return res.status(404).json({
+          message: "Goal sheet request not found",
+        });
+      }
+
+      const now = new Date();
+      requestToUpdate.status = nextStatus;
+      requestToUpdate.updatedAt = now;
+      requestToUpdate.adminRemark = adminRemark;
+      requestToUpdate.resolvedAt =
+        nextStatus === "approved" || nextStatus === "rejected" ? now : null;
+
+      await goalSheet.save();
+
+      const employee = await Employees.findById(id).select("name email");
+      let emailDelivered = false;
+
+      if (employee?.email) {
+        try {
+          const safeRemark = adminRemark.replace(/[<>]/g, "");
+          const safeMessage = String(requestToUpdate.message || "").replace(
+            /[<>]/g,
+            ""
+          );
+          await sendEmail({
+            to: employee.email,
+            subject: "Goal Sheet Request Status Updated",
+            html: `
+              <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+                <h2 style="margin: 0 0 12px;">Goal Sheet Request Status Updated</h2>
+                <p>Hi ${employee.name || "Employee"},</p>
+                <p>Your goal sheet request status is now: <strong>${nextStatus
+                  .replace("_", " ")
+                  .toUpperCase()}</strong>.</p>
+                <p><strong>Your Request:</strong></p>
+                <p style="white-space: pre-wrap; background: #f7f7f7; padding: 10px; border-radius: 8px;">
+                  ${safeMessage}
+                </p>
+                ${
+                  safeRemark
+                    ? `<p><strong>Admin Remark:</strong> ${safeRemark}</p>`
+                    : ""
+                }
+              </div>
+            `,
+            text: `Your goal sheet request status is now ${nextStatus}. Request: ${requestToUpdate.message}${
+              adminRemark ? ` | Admin Remark: ${adminRemark}` : ""
+            }`,
+          });
+          emailDelivered = true;
+        } catch (mailError) {
+          console.error("Failed to send goal sheet request status email:", mailError);
+        }
+      }
+
+      return res.status(200).json({
+        message: "Goal sheet request status updated successfully",
+        request: requestToUpdate,
+        emailDelivered,
+      });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+);
+
+router.get(
+  "/goalsheet/:id/download-excel",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const mode = (req.query.mode || "filtered").toString().toLowerCase();
+      const isFullDownload = mode === "all";
+      const isFilteredDownload = mode === "filtered";
+
+      if (!isFullDownload && !isFilteredDownload) {
+        return res.status(400).json({
+          message: "Invalid mode supplied. Use mode=all or mode=filtered",
+        });
+      }
+
+      const rangeFilterResult = parseGoalSheetRangeQuery(req.query);
+      if (rangeFilterResult.error) {
+        return res.status(rangeFilterResult.status).json({
+          message: rangeFilterResult.error,
+        });
+      }
+
+      const { hasRangeFilter, fromRangeValue, toRangeValue } = rangeFilterResult;
+      if (isFilteredDownload && !hasRangeFilter) {
+        return res.status(400).json({
+          message:
+            "Filtered download requires at least one valid month-year range",
+        });
+      }
+
+      const findGoalSheets = await GoalSheet.find({ owner: id });
+      if (!findGoalSheets || findGoalSheets.length === 0) {
+        return res.status(404).json({ message: "No goalsheet found!!!" });
+      }
+
+      const employee = await Employees.findById(id).select("name");
+      const safeEmployeeName = (employee?.name || "employee")
+        .trim()
+        .replace(/\s+/g, "-")
+        .replace(/[\\/:*?"<>|]+/g, "");
+
+      const selectedGoalSheets = findGoalSheets
+        .map((goalSheet) => goalSheet.toObject())
+        .map((goalSheet) => ({
+          ...goalSheet,
+          goalSheetDetails: isFullDownload
+            ? goalSheet.goalSheetDetails || []
+            : filterGoalSheetDetailsByRange(
+                goalSheet.goalSheetDetails || [],
+                fromRangeValue,
+                toRangeValue
+              ),
+        }));
+
+      const exportRows = selectedGoalSheets.flatMap((goalSheet) =>
+        (goalSheet.goalSheetDetails || []).map((detail) => ({
+          Year: detail.year,
+          Month: goalSheetMonthNames[detail.month] || detail.month,
+          "No. of Joinings": Number(detail.noOfJoinings) || 0,
+          "Overall Revenue": Number(detail.revenue) || 0,
+          Cost: Number(detail.cost) || 0,
+          Target: Number(detail.target) || 0,
+          "Cumulative Cost": Number(detail.cumulativeCost) || 0,
+          "Cumulative Revenue": Number(detail.cumulativeRevenue) || 0,
+          "YTD (Year-to-Date)": Number(detail.achYTD) || 0,
+          MTD: Number(detail.achMTD) || 0,
+          "Revenue Achieved (%)": Number(
+            calculateRevenueAchievedPercentage(
+              detail.revenue,
+              detail.target
+            ).toFixed(2)
+          ),
+          Incentive:
+            detail.incentive !== null && detail.incentive !== undefined
+              ? Number(detail.incentive)
+              : "",
+          Leakage:
+            detail.leakage !== null && detail.leakage !== undefined
+              ? Number(detail.leakage)
+              : "",
+        }))
+      );
+
+      if (!exportRows.length) {
+        return res.status(404).json({
+          message: "No goal sheet data available for the selected download mode",
+        });
+      }
+
+      const grandTotal = exportRows.reduce(
+        (acc, row) => {
+          acc.noOfJoinings += Number(row["No. of Joinings"]) || 0;
+          acc.revenue += Number(row["Overall Revenue"]) || 0;
+          acc.cost += Number(row.Cost) || 0;
+          acc.target += Number(row.Target) || 0;
+          acc.incentive += Number(row.Incentive) || 0;
+          return acc;
+        },
+        { noOfJoinings: 0, revenue: 0, cost: 0, target: 0, incentive: 0 }
+      );
+
+      const workbook = new Exceljs.Workbook();
+      const worksheet = workbook.addWorksheet("Goal Sheet");
+
+      const columnHeaders = [
+        "Year",
+        "Month",
+        "No. of Joinings",
+        "Overall Revenue",
+        "Cost",
+        "Target",
+        "Cumulative Cost",
+        "Cumulative Revenue",
+        "YTD (Year-to-Date)",
+        "MTD",
+        "Revenue Achieved (%)",
+        "Incentive",
+        "Leakage",
+      ];
+
+      const columnWidths = [10, 14, 18, 18, 14, 14, 20, 22, 18, 12, 22, 14, 14];
+
+      worksheet.columns = columnHeaders.map((header, index) => ({
+        header,
+        key: `col${index + 1}`,
+        width: columnWidths[index],
+      }));
+
+      exportRows.forEach((row) => {
+        worksheet.addRow([
+          row.Year,
+          row.Month,
+          row["No. of Joinings"],
+          row["Overall Revenue"],
+          row.Cost,
+          row.Target,
+          row["Cumulative Cost"],
+          row["Cumulative Revenue"],
+          row["YTD (Year-to-Date)"],
+          row.MTD,
+          row["Revenue Achieved (%)"],
+          row.Incentive,
+          row.Leakage,
+        ]);
+      });
+
+      const grandTotalRow = worksheet.addRow([
+        "Grand Total",
+        "",
+        grandTotal.noOfJoinings,
+        grandTotal.revenue,
+        grandTotal.cost,
+        grandTotal.target,
+        "",
+        "",
+        grandTotal.cost ? Number((grandTotal.revenue / grandTotal.cost).toFixed(2)) : 0,
+        "",
+        Number(
+          calculateRevenueAchievedPercentage(
+            grandTotal.revenue,
+            grandTotal.target
+          ).toFixed(2)
+        ),
+        grandTotal.incentive,
+        "",
+      ]);
+
+      worksheet.views = [{ state: "frozen", ySplit: 1 }];
+
+      const headerRow = worksheet.getRow(1);
+      headerRow.height = 22;
+      headerRow.eachCell({ includeEmpty: true }, (cell) => {
+        cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FF1E3A8A" },
+        };
+        cell.alignment = { vertical: "middle", horizontal: "center" };
+      });
+
+      grandTotalRow.height = 22;
+      grandTotalRow.eachCell({ includeEmpty: true }, (cell) => {
+        cell.font = { bold: true, color: { argb: "FF1E293B" } };
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFE0F2FE" },
+        };
+        cell.alignment = { vertical: "middle", horizontal: "center" };
+      });
+
+      worksheet.eachRow((row, rowNumber) => {
+        row.eachCell({ includeEmpty: true }, (cell) => {
+          cell.border = {
+            top: { style: "thin", color: { argb: "FFD1D5DB" } },
+            left: { style: "thin", color: { argb: "FFD1D5DB" } },
+            bottom: { style: "thin", color: { argb: "FFD1D5DB" } },
+            right: { style: "thin", color: { argb: "FFD1D5DB" } },
+          };
+
+          if (rowNumber > 1) {
+            cell.alignment = { vertical: "middle", horizontal: "center" };
+          }
+        });
+      });
+
+      for (let rowIndex = 2; rowIndex <= worksheet.rowCount; rowIndex += 1) {
+        worksheet.getRow(rowIndex).getCell(9).numFmt = "0.00";
+        worksheet.getRow(rowIndex).getCell(10).numFmt = "0.00";
+        worksheet.getRow(rowIndex).getCell(11).numFmt = "0.00";
+      }
+
+      const fileBuffer = await workbook.xlsx.writeBuffer();
+
+      const fromLabel =
+        req.query.fromMonth && req.query.fromYear
+          ? `${goalSheetMonthNames[Number(req.query.fromMonth)] || req.query.fromMonth}-${req.query.fromYear}`
+          : "all";
+      const toLabel =
+        req.query.toMonth && req.query.toYear
+          ? `${goalSheetMonthNames[Number(req.query.toMonth)] || req.query.toMonth}-${req.query.toYear}`
+          : "all";
+
+      const fileName = isFullDownload
+        ? `${safeEmployeeName}-goal-sheet-all-records.xlsx`
+        : `${safeEmployeeName}-goal-sheet-${fromLabel}_to_${toLabel}.xlsx`;
+
+      res.setHeader(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      );
+      res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+      res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+      return res.status(200).send(fileBuffer);
+    } catch (error) {
+      console.error(error.message);
+      return res.status(500).json({ message: error.message });
+    }
+  }
+);
 
 // EDIT A GOALSHEET
 router.put("/edit-goalSheet", async (req, res) => {
@@ -3136,6 +3653,63 @@ const sendMailToEmployee = async (email, emailContent) => {
     text: emailContent,
   });
 };
+
+const sendGoalSheetUpdatedNotification = async (email, employeeName) => {
+  const safeName = employeeName || "Employee";
+  const textMessage =
+    "Your goal sheet has been updated. You can check by logging into your account.";
+  const htmlMessage = `
+    <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+      <h1 style="color: #1d4ed8; text-align: center; font-size: 1rem;">Diamond Consulting Pvt.Ltd.</h1>
+      <p style="font-size: 1rem;">Hi ${safeName},</p>
+      <p style="font-size: 1rem;">
+        Your goal sheet has been updated. You can check it by logging into your account.
+      </p>
+    </div>
+  `;
+
+  await sendEmail({
+    to: email,
+    subject: "Goal Sheet Updated",
+    html: htmlMessage,
+    text: textMessage,
+  });
+};
+
+router.post(
+  "/send-goalsheet-update-mail/:id",
+  AdminAuthenticateToken,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const employee = await Employees.findById(id).select("name email");
+
+      if (!employee) {
+        return res.status(404).json({ error: "Employee not found" });
+      }
+
+      if (!employee.email) {
+        return res
+          .status(400)
+          .json({ error: "Employee does not have an email address" });
+      }
+
+      await sendGoalSheetUpdatedNotification(employee.email, employee.name);
+
+      return res
+        .status(200)
+        .json({ message: "Goal sheet update email sent successfully" });
+    } catch (error) {
+      console.error("Error sending goal sheet update email:", error);
+      return res.status(500).json({
+        error:
+          error?.code === "ETIMEDOUT"
+            ? "Mail server timeout. Please try again in a moment."
+            : "Failed to send goal sheet update email. Please try again later.",
+      });
+    }
+  }
+);
 // Route to send email
 router.post("/send-mail/:id", async (req, res) => {
   try {
