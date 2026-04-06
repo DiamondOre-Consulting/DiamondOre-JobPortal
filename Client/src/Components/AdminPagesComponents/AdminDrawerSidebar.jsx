@@ -65,6 +65,8 @@ import EditErp from '../../Pages/AdminPage/EditErp';
 import AdminIncentiveForEmployee from './AdminIncentiveForEmployee';
 import AdminEmployeePolicies from './AdminEmployeePolicies';
 import AllAdmins from '@/Pages/AdminPage/AllAdmins';
+import AdminEmployeeAttendence from './AdminEmployeeAttendence';
+import AdminEditAttendence from './AdminEditAttendence';
 
 
 const drawerWidth = 240;
@@ -276,6 +278,7 @@ const AdminDrawerSidebar = () => {
                         { text: 'ERP', icon: <img src={erpicon} className='w-6 h-6' />, path: '/erp-dashboard' },
                         { text: 'All Reviews', icon: <ReviewsIcon />, path: '/all-reviews' },
                         ...(userData?.adminType == "superAdmin" ? [{ text: 'All Employees', icon: <BadgeIcon />, path: '/all-employees' }] : []),
+                        { text: 'Attendance', icon: <TaskOutlinedIcon />, path: '/attendance' },
                         ...(userData?.adminType == "superAdmin" ? [{ text: 'Add Employee', icon: <PersonAddIcon />, path: '/add-employee' }] : []),
                         ...(userData?.adminType == "superAdmin" ? [{ text: 'Make Admin', icon: <AdminPanelSettingsIcon />, path: '/make-admin' }] : []),
                         ...(userData?.adminType == "superAdmin" ? [{ text: 'All Admins', icon: <AdminPanelSettingsIcon />, path: '/all-admins' }] : []),
@@ -307,7 +310,7 @@ const AdminDrawerSidebar = () => {
                     ))}
                 </List>
             </Drawer>
-            <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
+            <Box component='main' sx={{ flexGrow: 1, p: 3, minWidth: 0 }}>
                 <DrawerHeader />
                 <Routes>
                     <Route path='/' element={<AdminDashboard />} />
@@ -323,6 +326,8 @@ const AdminDrawerSidebar = () => {
                     <Route path='/add-jobs' element={<AddJobs />} />
                     <Route path='/all-reviews' element={<AllReviews />} />
                     <Route path='/all-employees' element={<AllEmployee />} />
+                    <Route path='/attendance' element={<AdminEmployeeAttendence embedded />} />
+                    <Route path='/attendance/:id' element={<AdminEditAttendence embedded />} />
                     <Route path='/employee/:id' element={<EmployeeBranchesPage />} />
                     <Route path='/goal-sheet/:id/:employeename' element={<EachEmployeeGoalSheet />} />
                     <Route path='/each-account/:id' element={<EachEmployeeAccounts />} />

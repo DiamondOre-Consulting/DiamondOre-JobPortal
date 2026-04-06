@@ -225,11 +225,11 @@ const AdminNav = () => {
                 </Link>
 
                 <Link
-                  to={'/admin-all-employee'}
+                  to={'/admin-dashboard/attendance'}
                   className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
 
                 >
-                  All Employee
+                  Attendance
                 </Link>
                 <Link to={'/admin/edit-profile'}
                   className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100"
@@ -342,12 +342,12 @@ const AdminNav = () => {
                 Add Jobs
               </li>
             </Link>
-            <Link to={"/admin-all-employee"}>
+            <Link to={"/admin-dashboard/attendance"}>
               <li
                 className={`${menuOpen ? "block" : "hidden"
                   } px-24 py-1 text-gray-600 text-lg font-semibold hover:bg-blue-950 hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-250`}
               >
-                All Employees
+                Attendance
               </li>
             </Link>
             <Link to={"/admin/all-reviews"}>

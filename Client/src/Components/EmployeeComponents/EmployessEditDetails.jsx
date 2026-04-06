@@ -163,6 +163,13 @@ const EmployessEditDetails = ({ id, handleEditEmployeeBack }) => {
             }))
     }
 
+    const handleEditProbation = (e) => {
+        setEmployeeData((prevDetails) => ({
+            ...prevDetails,
+            probation: e.target.value === "true",
+        }));
+    };
+
 
     const handleEditEmployeeDob = (e) => {
         setEmployeeData(prevDetails => (
@@ -298,6 +305,21 @@ const EmployessEditDetails = ({ id, handleEditEmployeeBack }) => {
 
 
 
+                        </select>
+                    </div>
+
+                    <div>
+                        <label htmlFor="probation" className="block text-sm font-medium text-gray-700">
+                            Probation
+                        </label>
+                        <select
+                            id="probation"
+                            className="py-2 w-full px-2 rounded-md mt-1"
+                            value={String(editEmployee?.probation ?? true)}
+                            onChange={handleEditProbation}
+                        >
+                            <option value="true">Active</option>
+                            <option value="false">Inactive</option>
                         </select>
                     </div>
 

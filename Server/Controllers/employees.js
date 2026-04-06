@@ -14,12 +14,21 @@ import GoalSheet from "../Models/GoalSheet.js";
 import KPI from "../Models/KPI.js";
 import {z} from 'zod'
 import Policies from "../Models/Policies.js";
+import LeaveBalance from "../Models/LeaveBalance.js";
+import LeaveRequest from "../Models/LeaveRequest.js";
+import LeaveLedger from "../Models/LeaveLedger.js";
+import Attendance from "../Models/Attendance.js";
 import { excelUpload } from "../Middlewares/multer.middleware.js";
 import { uploadFile } from "../utils/fileUpload.utils.js";
 import {deleteFile} from '../utils/fileUpload.utils.js';
 import fs from "fs/promises";
 import DSR from "../Models/DSR.js";
 import { sendEmail, employeeWelcomeTemplate, duplicatePhoneRequestTemplate } from "../utils/email.js";
+import {
+  applyLeaveImpact,
+  ensureLeaveBalance,
+  getLeaveYear,
+} from "../utils/leaveManagement.js";
 
 
 dotenv.config();
@@ -33,7 +42,16 @@ const GOALSHEET_REQUEST_NOTIFICATION_EMAIL =
 // EMPLOYEE SIGNUP
 router.post("/add-emp", AdminAuthenticateToken, async (req, res) => {
   try {
-    const { empType, name, email, password, dob, doj, accountHandler } = req.body;
+    const {
+      empType,
+      name,
+      email,
+      password,
+      dob,
+      doj,
+      accountHandler,
+      probation,
+    } = req.body;
     const { userId } = req.user;
 
     const user = await Admin.findById({ _id: userId });
@@ -55,10 +73,13 @@ router.post("/add-emp", AdminAuthenticateToken, async (req, res) => {
       password: hashedPassword,
       dob,
       doj,
-      accountHandler
+      accountHandler,
+      probation:
+        typeof probation === "boolean" ? probation : probation === "false" ? false : true,
     });
 
     await newEmp.save();
+    await ensureLeaveBalance(newEmp._id, getLeaveYear());
 
     // Send welcome email
     const { subject, html } = employeeWelcomeTemplate({ name, empType });
@@ -151,6 +172,226 @@ router.get("/leave-report", EmployeeAuthenticateToken, async (req, res) => {
     res.status(200).json(latestData);
   } catch (error) {
     res.status(500).json("Something went wrong!!!", error);
+  }
+});
+
+router.get("/leave/balance", EmployeeAuthenticateToken, async (req, res) => {
+  try {
+    const { userId } = req.user;
+    const requestedYear = Number(req.query.year);
+    const year = Number.isInteger(requestedYear) && requestedYear > 0
+      ? requestedYear
+      : getLeaveYear();
+
+    const [leaveBalance, employee] = await Promise.all([
+      ensureLeaveBalance(userId, year),
+      Employees.findById(userId).select("name email probation"),
+    ]);
+
+    return res.status(200).json({
+      year,
+      leaveBalance,
+      probation: Boolean(employee?.probation),
+      employee: {
+        id: employee?._id,
+        name: employee?.name,
+        email: employee?.email,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+router.get("/leave/requests", EmployeeAuthenticateToken, async (req, res) => {
+  try {
+    const { userId } = req.user;
+    const { status, year } = req.query;
+    const filter = { employeeId: userId };
+
+    if (status && ["pending", "approved", "rejected", "modified"].includes(status)) {
+      filter.status = status;
+    }
+
+    if (year !== undefined && year !== "") {
+      const parsedYear = Number(year);
+      if (Number.isInteger(parsedYear) && parsedYear > 0) {
+        filter.leaveYear = parsedYear;
+      }
+    }
+
+    const leaveRequests = await LeaveRequest.find(filter).sort({ createdAt: -1 });
+    return res.status(200).json({ leaveRequests });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+router.get("/leave/attendance", EmployeeAuthenticateToken, async (req, res) => {
+  try {
+    const { userId } = req.user;
+    const parsedYear = Number(req.query.year);
+    const parsedMonth = Number(req.query.month);
+    const year =
+      Number.isInteger(parsedYear) && parsedYear > 0 ? parsedYear : getLeaveYear();
+
+    let startDate = new Date(year, 0, 1);
+    let endDate = new Date(year, 11, 31);
+
+    if (Number.isInteger(parsedMonth) && parsedMonth >= 1 && parsedMonth <= 12) {
+      startDate = new Date(year, parsedMonth - 1, 1);
+      endDate = new Date(year, parsedMonth, 0);
+    }
+
+    startDate.setHours(0, 0, 0, 0);
+    endDate.setHours(23, 59, 59, 999);
+
+    const attendance = await Attendance.find({
+      employeeId: userId,
+      date: { $gte: startDate, $lte: endDate },
+    }).sort({ date: 1 });
+
+    return res.status(200).json({
+      year,
+      month: Number.isInteger(parsedMonth) ? parsedMonth : null,
+      attendance,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+router.get("/leave/ledger", EmployeeAuthenticateToken, async (req, res) => {
+  try {
+    const { userId } = req.user;
+    const { year } = req.query;
+    const filter = { employeeId: userId };
+    if (year !== undefined && year !== "") {
+      const parsedYear = Number(year);
+      if (Number.isInteger(parsedYear) && parsedYear > 0) {
+        filter.leaveYear = parsedYear;
+      }
+    }
+
+    const ledgerEntries = await LeaveLedger.find(filter).sort({ createdAt: -1 });
+    return res.status(200).json({ ledgerEntries });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+router.post("/leave/apply", EmployeeAuthenticateToken, async (req, res) => {
+  try {
+    const { userId } = req.user;
+    const {
+      leaveType: rawLeaveType,
+      startDate: rawStartDate,
+      endDate: rawEndDate,
+      durationType: rawDurationType,
+      reason,
+    } = req.body;
+
+    const leaveType = String(rawLeaveType || "").toUpperCase();
+    if (!["CL", "EL"].includes(leaveType)) {
+      return res.status(400).json({ message: "Leave type must be CL or EL" });
+    }
+
+    const durationType = String(rawDurationType || "full_day").toLowerCase();
+    if (!["half_day", "full_day", "multiple_days"].includes(durationType)) {
+      return res.status(400).json({
+        message: "Duration type must be half_day, full_day, or multiple_days",
+      });
+    }
+
+    const startDate = new Date(rawStartDate);
+    const endDate = rawEndDate ? new Date(rawEndDate) : new Date(rawStartDate);
+
+    if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
+      return res.status(400).json({ message: "Invalid leave date range" });
+    }
+
+    startDate.setHours(0, 0, 0, 0);
+    endDate.setHours(0, 0, 0, 0);
+
+    if (durationType === "full_day") {
+      endDate.setTime(startDate.getTime());
+    }
+
+    if (durationType === "multiple_days" && endDate < startDate) {
+      return res.status(400).json({ message: "End date cannot be before start date" });
+    }
+
+    if (durationType === "half_day" && endDate.getTime() !== startDate.getTime()) {
+      return res.status(400).json({
+        message: "Half-day leave must have same start and end date",
+      });
+    }
+
+    const leaveYear = startDate.getFullYear();
+    let leaveRequest = await LeaveRequest.create({
+      employeeId: userId,
+      leaveYear,
+      leaveType,
+      durationType,
+      startDate,
+      endDate,
+      reason: reason || "",
+      status: "pending",
+      impactApplied: false,
+      totalUnits: 0,
+      appliedDeduction: { cl: 0, el: 0, lop: 0 },
+      attendanceSnapshot: [],
+    });
+
+    try {
+      const impactResult = await applyLeaveImpact({
+        employeeId: userId,
+        leaveType,
+        durationType,
+        startDateValue: startDate,
+        endDateValue: endDate,
+        requestId: leaveRequest._id,
+      });
+
+      leaveRequest.leaveYear = impactResult.leaveYear;
+      leaveRequest.totalUnits = impactResult.totalUnits;
+      leaveRequest.appliedDeduction = impactResult.appliedDeduction;
+      leaveRequest.attendanceSnapshot = impactResult.attendanceSnapshot;
+      leaveRequest.impactApplied = true;
+      await leaveRequest.save();
+
+      await LeaveLedger.create({
+        employeeId: userId,
+        leaveYear: impactResult.leaveYear,
+        entryType: "deduction",
+        leaveType: "MIXED",
+        amount: impactResult.totalUnits,
+        requestId: leaveRequest._id,
+        metadata: {
+          leaveType,
+          durationType,
+          reason: reason || "",
+          appliedDeduction: impactResult.appliedDeduction,
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString(),
+        },
+        effectiveDate: new Date(),
+      });
+    } catch (impactError) {
+      await LeaveRequest.deleteOne({ _id: leaveRequest._id });
+      throw impactError;
+    }
+
+    const updatedLeaveBalance = await ensureLeaveBalance(userId, leaveRequest.leaveYear);
+
+    return res.status(201).json({
+      message:
+        "Leave applied successfully. Status is pending and attendance has been updated.",
+      leaveRequest,
+      leaveBalance: updatedLeaveBalance,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 });
 

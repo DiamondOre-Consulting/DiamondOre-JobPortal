@@ -16,6 +16,7 @@ import employeeAuthRouter from './Controllers/employees-auth/auth.js'
 import adminAuthRouter from './Controllers/admin-auth/auth.js'
 
 import candidateAuthRouter from './Controllers/candidates-auth/auth.js'
+import { initializeLeaveScheduler } from "./utils/leaveScheduler.js";
 
 const app = express();
 dotenv.config();
@@ -33,6 +34,7 @@ mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("Connected to MongoDB");
+    initializeLeaveScheduler();
   })
   .catch((error) => {
     console.error("MongoDB connection error:", error);

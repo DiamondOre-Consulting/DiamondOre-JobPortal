@@ -41,6 +41,7 @@ import EmployeePolicies from './EmployeePolicies';
 import MappedEmployee from './MappedEmployee';
 import Shortlisting from './Shortlisting';
 import Prompt from './Prompt';
+import EmployeeLeaves from '../../Pages/Employeepage/EmployeeLeaves';
 
 
 const drawerWidth = 240;
@@ -286,6 +287,7 @@ export default function EmpDrawerSidebar() {
             { text: 'Goal Sheet', icon: <img src={goalsheeticon} className='w-8 h-8' />, path: '/goal-sheet' },
             { text: 'Incentive', icon: <img src={incentiveicon} className='w-8 h-8' />, path: '/incentive' },
             { text: 'KPI-Score', icon: <img src={kpiicon} className='w-8 h-8' />, path: '/kpi-score' },
+            { text: 'Attendance', icon: <TaskOutlinedIcon sx={{ fontSize: 30 }} />, path: '/attendance' },
             { text: 'Account Handling', icon: <AccountCircleIcon sx={{ fontSize: 30 }} />, path: '/acount-handling' },
             { text: 'All Accounts', icon: <ManageAccountsIcon sx={{ fontSize: 30 }} />, path: '/all-accounts' },
             { text: 'Policies', icon: <ManageAccountsIcon sx={{ fontSize: 30 }} />, path: '/all-policies' },
@@ -337,6 +339,7 @@ export default function EmpDrawerSidebar() {
           <Route path='/mapped-emp' element={<MappedEmployee userData={userData}/>}/>
           <Route path='/prompt' element={<Prompt/>} />
           <Route path='/shortlisted' element={<Shortlisting userData={userData}/>}/>
+          <Route path='/attendance' element={<EmployeeLeaves embedded />} />
         </Routes>
       </Box>
     </Box>

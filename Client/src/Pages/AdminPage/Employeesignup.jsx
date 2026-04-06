@@ -32,6 +32,7 @@ const Employeesignup = () => {
     const [showPass, setShowPass] = useState(false);
     const [added, setAdded] = useState(null);
     const [accoutHandlerValue, setaccoutHandlerValue] = useState(false)
+    const [probationValue, setProbationValue] = useState(true);
 
 
     const handleSignup = async (e) => {
@@ -48,7 +49,8 @@ const Employeesignup = () => {
                     empType,
                     dob,
                     doj,
-                    accountHandler: accoutHandlerValue
+                    accountHandler: accoutHandlerValue,
+                    probation: probationValue,
                 },
                 {
                     headers: {
@@ -78,6 +80,10 @@ const Employeesignup = () => {
         setaccoutHandlerValue(e.target.value === "true")
 
     }
+
+    const handleProbationChange = (e) => {
+        setProbationValue(e.target.value === "true");
+    };
 
     return (
         <div className="mx-auto max-w-screen-xl  px-4 py-16 sm:px-6 lg:px-8">
@@ -158,6 +164,21 @@ const Employeesignup = () => {
 
 
 
+                        </select>
+                    </div>
+
+                    <div>
+                        <label htmlFor="probation" className="block text-sm font-medium text-gray-700">
+                            Probation
+                        </label>
+                        <select
+                            id="probation"
+                            className="py-2 w-full px-2 rounded-md mt-1"
+                            value={String(probationValue)}
+                            onChange={handleProbationChange}
+                        >
+                            <option value="true">Active</option>
+                            <option value="false">Inactive</option>
                         </select>
                     </div>
 

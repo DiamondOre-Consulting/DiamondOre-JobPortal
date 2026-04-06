@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Homemain from "./Pages/HomePage/Homemain";
 import Signup from "./Pages/CandidatePage/Signup";
 import Login from "./Pages/CandidatePage/Login";
@@ -179,11 +179,11 @@ function App() {
               <Route path="/admin/erp-dashboard/add" element={<AddNewERP />} />
               <Route
                 path="/admin-all-employee"
-                element={<AdminEmployeeAttendence />}
+                element={<Navigate to="/admin-dashboard/attendance" replace />}
               />
               <Route
                 path="/admin-all-employee/attendence/:id"
-                element={<AdminEditAttendence />}
+                element={<Navigate to="/admin-dashboard/attendance" replace />}
               />
               <Route
                 path="/admin-all-employee/performence/:id"

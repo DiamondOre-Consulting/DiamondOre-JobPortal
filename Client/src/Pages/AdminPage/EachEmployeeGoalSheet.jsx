@@ -81,7 +81,12 @@ const EachEmployeeGoalSheet = () => {
   const [allGoalSheetData, setAllGoalSheetData] = useState([]);
   const [trigger, setTrigger] = useState(0);
   const [deletePopup,setDeletePopup] = useState(false)
-  const joiningFileInputRef = useRef(null);
+  const topTableScrollRef = useRef(null);
+  const bottomTableScrollRef = useRef(null);
+  const goalSheetTableRef = useRef(null);
+  const isTableScrollSyncingRef = useRef(false);
+  const [topScrollbarWidth, setTopScrollbarWidth] = useState(0);
+  const [hasHorizontalTableOverflow, setHasHorizontalTableOverflow] = useState(false);
 
   const [mailYearSelectData,setMailYearSelectData] = useState([])
   const [mailSelectedYear,setMailSelectedYear] = useState(null)
@@ -746,65 +751,6 @@ const EachEmployeeGoalSheet = () => {
     );
   }, [goalSheetRequests]);
 
-  // for uploading joining Excel
-  const [loading, setLoading] = useState(false);
-
-  const resetJoiningFileInput = () => {
-    if (joiningFileInputRef.current) {
-      joiningFileInputRef.current.value = "";
-    }
-  };
-
-  const handleUploadJoinings = async (selectedFile) => {
-    if (!selectedFile) {
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const formData = new FormData();
-      formData.append("myFileImage", selectedFile);
-
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/admin-confi/upload-joiningsheet/${id}`,
-        formData,
-        {
-          headers:{
-             Authorization : `Bearer ${localStorage.getItem("token")}`
-          }
-        }
-      );
-
-      if (response.status === 200) {
-        toast.success("File Uploaded Successfully");
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error("Error in uploading File");
-    } finally {
-      setLoading(false);
-      resetJoiningFileInput();
-    }
-  };
-
-  const handleFileChange = async (e) => {
-    const selectedFile = e.target.files?.[0];
-
-    if (!selectedFile) {
-      return;
-    }
-
-    await handleUploadJoinings(selectedFile);
-  };
-
-  const handleUploadJoiningsClick = () => {
-    if (loading) {
-      return;
-    }
-
-    joiningFileInputRef.current?.click();
-  };
-
   const [updateTicker, setUpdateTicker] = useState(false);
   const [tickerMessage, setTickerMessage] = useState("");
 
@@ -1077,6 +1023,72 @@ const EachEmployeeGoalSheet = () => {
     );
   };
 
+  const syncHorizontalTableScroll = (sourceRef, targetRef) => {
+    const sourceElement = sourceRef.current;
+    const targetElement = targetRef.current;
+
+    if (!sourceElement || !targetElement || isTableScrollSyncingRef.current) {
+      return;
+    }
+
+    isTableScrollSyncingRef.current = true;
+    targetElement.scrollLeft = sourceElement.scrollLeft;
+    requestAnimationFrame(() => {
+      isTableScrollSyncingRef.current = false;
+    });
+  };
+
+  const handleTopTableScroll = () => {
+    syncHorizontalTableScroll(topTableScrollRef, bottomTableScrollRef);
+  };
+
+  const handleBottomTableScroll = () => {
+    syncHorizontalTableScroll(bottomTableScrollRef, topTableScrollRef);
+  };
+
+  useEffect(() => {
+    const topElement = topTableScrollRef.current;
+    const bottomElement = bottomTableScrollRef.current;
+    const tableElement = goalSheetTableRef.current;
+
+    if (!topElement || !bottomElement || !tableElement) {
+      return;
+    }
+
+    const updateHorizontalScrollState = () => {
+      const tableScrollWidth = tableElement.scrollWidth || 0;
+      const containerWidth = bottomElement.clientWidth || 0;
+      const hasOverflow = tableScrollWidth > containerWidth + 1;
+
+      setTopScrollbarWidth(Math.max(tableScrollWidth, containerWidth));
+      setHasHorizontalTableOverflow(hasOverflow);
+
+      if (!hasOverflow) {
+        topElement.scrollLeft = 0;
+        bottomElement.scrollLeft = 0;
+      }
+    };
+
+    updateHorizontalScrollState();
+
+    let resizeObserver;
+
+    if (typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(() => {
+        updateHorizontalScrollState();
+      });
+      resizeObserver.observe(bottomElement);
+      resizeObserver.observe(tableElement);
+    }
+
+    window.addEventListener("resize", updateHorizontalScrollState);
+
+    return () => {
+      window.removeEventListener("resize", updateHorizontalScrollState);
+      resizeObserver?.disconnect();
+    };
+  }, [filteredData]);
+
   return (
     <>
       <ToastContainer position="top-right" autoClose={5000} />
@@ -1093,7 +1105,7 @@ const EachEmployeeGoalSheet = () => {
         </div>
       )}
 
-      <div className="px-4 pt-2 pb-6 md:px-4">
+      <div className="w-full min-w-0 max-w-full px-4 pt-2 pb-6 md:px-4">
         <Sheet open={goalsheetform} onOpenChange={setGoalSheetForm}>
           <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <h1 className="text-2xl font-bold text-blue-950 md:text-4xl">
@@ -1499,7 +1511,7 @@ const EachEmployeeGoalSheet = () => {
           </Alert>
         </Snackbar>
 
-        <div className="w-full">
+        <div className="w-full min-w-0 max-w-full">
           <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
             <div className="border-b border-gray-200 bg-slate-50/85 px-4 py-3">
               <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
@@ -1514,20 +1526,6 @@ const EachEmployeeGoalSheet = () => {
                 />
 
                 <div className="flex flex-wrap items-center gap-3">
-                  <button
-                    type="button"
-                    className="h-10 cursor-pointer rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-gray-100 transition hover:bg-slate-800"
-                    onClick={handleUploadJoiningsClick}
-                    disabled={loading}
-                  >
-                    {loading ? "Uploading..." : "Upload Joinings"}
-                  </button>
-                  <input
-                    ref={joiningFileInputRef}
-                    className="hidden"
-                    onChange={handleFileChange}
-                    type="file"
-                  />
                   <button
                     type="button"
                     className="h-10 cursor-pointer rounded-lg bg-blue-900 px-3 py-2 text-sm font-medium text-white transition hover:bg-blue-800"
@@ -1563,8 +1561,23 @@ const EachEmployeeGoalSheet = () => {
               </div>
             </div>
 
-            <div className="relative w-full overflow-x-auto">
-              <table id="example" className="min-w-full table-auto">
+            {hasHorizontalTableOverflow ? (
+              <div
+                ref={topTableScrollRef}
+                onScroll={handleTopTableScroll}
+                className="w-full overflow-x-auto border-b border-gray-200"
+                aria-label="Goal sheet horizontal scrollbar"
+              >
+                <div style={{ width: topScrollbarWidth, height: 1 }} />
+              </div>
+            ) : null}
+
+            <div
+              ref={bottomTableScrollRef}
+              onScroll={handleBottomTableScroll}
+              className="relative w-full max-w-full overflow-x-auto"
+            >
+              <table ref={goalSheetTableRef} id="example" className="w-max min-w-full table-auto">
                 <thead className="sticky top-0 text-xs text-gray-100 bg-blue-900 shadow">
                 <tr className="">
                   <th className="px-2 py-2">Year</th>

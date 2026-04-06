@@ -6,6 +6,7 @@ import Employees from "../../Models/Employees.js";
 import Admin from "../../Models/Admin.js";
 import AdminAuthenticateToken from "../../Middlewares/AdminAuthenticateToken.js";
 import { sendEmail, employeeWelcomeTemplate } from "../../utils/email.js";
+import { ensureLeaveBalance, getLeaveYear } from "../../utils/leaveManagement.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -16,7 +17,16 @@ const secretKey = process.env.JWT_SECRET_EMPLOYEE;
 // EMPLOYEE SIGNUP
 employeeAuthRouter.post("/add-emp", AdminAuthenticateToken, async (req, res) => {
   try {
-    const { empType, name, email, password, dob, doj, accountHandler } = req.body;
+    const {
+      empType,
+      name,
+      email,
+      password,
+      dob,
+      doj,
+      accountHandler,
+      probation,
+    } = req.body;
     const { userId } = req.user;
 
     const user = await Admin.findById({ _id: userId });
@@ -38,10 +48,13 @@ employeeAuthRouter.post("/add-emp", AdminAuthenticateToken, async (req, res) => 
       password: hashedPassword,
       dob,
       doj,
-      accountHandler
+      accountHandler,
+      probation:
+        typeof probation === "boolean" ? probation : probation === "false" ? false : true,
     });
 
     await newEmp.save();
+    await ensureLeaveBalance(newEmp._id, getLeaveYear());
 
     // Send welcome email
     const { subject, html } = employeeWelcomeTemplate({ name, empType });
