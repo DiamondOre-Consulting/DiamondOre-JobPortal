@@ -66,8 +66,8 @@ const leaveRequestSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected", "modified"],
-      default: "pending",
+      enum: ["approved", "rejected"],
+      default: "approved",
       index: true,
     },
     impactApplied: {
@@ -78,6 +78,8 @@ const leaveRequestSchema = new mongoose.Schema(
       cl: { type: Number, default: 0 },
       el: { type: Number, default: 0 },
       lop: { type: Number, default: 0 },
+      clCarry: { type: Number, default: 0 },
+      elCarry: { type: Number, default: 0 },
     },
     attendanceSnapshot: {
       type: [attendanceSnapshotSchema],
@@ -115,4 +117,3 @@ const leaveRequestSchema = new mongoose.Schema(
 );
 
 export default mongoose.model("LeaveRequest", leaveRequestSchema);
-

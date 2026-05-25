@@ -21,6 +21,14 @@ const leaveBalanceSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    carryForwardCL: {
+      type: Number,
+      default: 0,
+    },
+    carryForwardEL: {
+      type: Number,
+      default: 0,
+    },
     lopUsed: {
       type: Number,
       default: 0,
@@ -33,6 +41,10 @@ const leaveBalanceSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    lastCarryForwardFromYear: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,
@@ -42,4 +54,3 @@ const leaveBalanceSchema = new mongoose.Schema(
 leaveBalanceSchema.index({ employeeId: 1, year: 1 }, { unique: true });
 
 export default mongoose.model("LeaveBalance", leaveBalanceSchema);
-

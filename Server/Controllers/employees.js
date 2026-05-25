@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { randomUUID } from "crypto";
 import Employees from "../Models/Employees.js";
 import EmployeeAuthenticateToken from "../Middlewares/EmployeeAuthenticateToken.js";
 import ERP from "../Models/ERP.js";
@@ -26,8 +27,14 @@ import DSR from "../Models/DSR.js";
 import { sendEmail, employeeWelcomeTemplate, duplicatePhoneRequestTemplate } from "../utils/email.js";
 import {
   applyLeaveImpact,
+  executeWithOptionalTransaction,
+  formatDateKey,
+  getYearlyLeaveOverview,
+  hasOverlappingApprovedLeave,
   ensureLeaveBalance,
   getLeaveYear,
+  normalizeDateOnly,
+  restoreLeaveImpact,
 } from "../utils/leaveManagement.js";
 
 
@@ -38,6 +45,20 @@ const secretKey = process.env.JWT_SECRET_EMPLOYEE;
 const router = express.Router();
 const GOALSHEET_REQUEST_NOTIFICATION_EMAIL =
   process.env.GOALSHEET_REQUEST_NOTIFICATION_EMAIL || "hr@diamondore.in";
+const buildLeaveLedgerTransactionKey = ({ action, employeeId, requestId, leaveYear }) =>
+  `employee-${action}-${employeeId}-${requestId || "na"}-${leaveYear}-${Date.now()}-${randomUUID()}`;
+const createLeaveLedgerEntry = async (payload, session = null) => {
+  if (!session) {
+    return LeaveLedger.create(payload);
+  }
+  const [entry] = await LeaveLedger.create([payload], { session });
+  return entry;
+};
+const createHttpError = (statusCode, message) => {
+  const error = new Error(message);
+  error.statusCode = statusCode;
+  return error;
+};
 
 // EMPLOYEE SIGNUP
 router.post("/add-emp", AdminAuthenticateToken, async (req, res) => {
@@ -183,14 +204,59 @@ router.get("/leave/balance", EmployeeAuthenticateToken, async (req, res) => {
       ? requestedYear
       : getLeaveYear();
 
-    const [leaveBalance, employee] = await Promise.all([
+    const [leaveBalance, employee, allYearBalances, carryForwardEntries] = await Promise.all([
       ensureLeaveBalance(userId, year),
       Employees.findById(userId).select("name email probation"),
+      LeaveBalance.find({ employeeId: userId }).select("year clBalance elBalance lopUsed"),
+      LeaveLedger.find({ employeeId: userId, entryType: "carry_forward" }).select(
+        "amount metadata"
+      ),
     ]);
+
+    const overallBalanceTotals = allYearBalances.reduce(
+      (accumulator, row) => ({
+        clBalance: accumulator.clBalance + Number(row?.clBalance || 0),
+        elBalance: accumulator.elBalance + Number(row?.elBalance || 0),
+        lopUsed: accumulator.lopUsed + Number(row?.lopUsed || 0),
+      }),
+      { clBalance: 0, elBalance: 0, lopUsed: 0 }
+    );
+
+    const carryTotals = carryForwardEntries.reduce(
+      (accumulator, entry) => {
+        const clToCarry = Number(entry?.metadata?.clToCarry || 0);
+        const elToCarry = Number(entry?.metadata?.elToCarry || 0);
+        const amount = Number(entry?.amount || 0);
+        if (clToCarry > 0 || elToCarry > 0) {
+          accumulator.cl += clToCarry;
+          accumulator.el += elToCarry;
+        } else {
+          accumulator.cl += amount;
+        }
+        return accumulator;
+      },
+      { cl: 0, el: 0 }
+    );
+
+    const overallBalance = {
+      clBalance: Number(Math.max(0, overallBalanceTotals.clBalance - carryTotals.cl).toFixed(2)),
+      elBalance: Number(Math.max(0, overallBalanceTotals.elBalance - carryTotals.el).toFixed(2)),
+      lopUsed: Number(overallBalanceTotals.lopUsed.toFixed(2)),
+    };
+    const overallRemaining = Number(
+      (overallBalance.clBalance + overallBalance.elBalance).toFixed(2)
+    );
+    const availableYears = allYearBalances
+      .map((row) => Number(row?.year))
+      .filter((value) => Number.isInteger(value) && value > 0)
+      .sort((a, b) => b - a);
 
     return res.status(200).json({
       year,
       leaveBalance,
+      overallBalance,
+      overallRemaining,
+      availableYears,
       probation: Boolean(employee?.probation),
       employee: {
         id: employee?._id,
@@ -203,13 +269,38 @@ router.get("/leave/balance", EmployeeAuthenticateToken, async (req, res) => {
   }
 });
 
+router.get("/leave/overview", EmployeeAuthenticateToken, async (req, res) => {
+  try {
+    const { userId } = req.user;
+    const requestedYear = Number(req.query.year);
+    const year =
+      Number.isInteger(requestedYear) && requestedYear > 0
+        ? requestedYear
+        : getLeaveYear();
+    const recompute = req.query.recompute !== "false";
+
+    const overview = await getYearlyLeaveOverview({
+      employeeId: userId,
+      year,
+      recompute,
+    });
+
+    return res.status(200).json(overview);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
 router.get("/leave/requests", EmployeeAuthenticateToken, async (req, res) => {
   try {
     const { userId } = req.user;
     const { status, year } = req.query;
-    const filter = { employeeId: userId };
+    const filter = {
+      employeeId: userId,
+      status: { $in: ["approved", "rejected"] },
+    };
 
-    if (status && ["pending", "approved", "rejected", "modified"].includes(status)) {
+    if (status && ["approved", "rejected"].includes(status)) {
       filter.status = status;
     }
 
@@ -221,7 +312,16 @@ router.get("/leave/requests", EmployeeAuthenticateToken, async (req, res) => {
     }
 
     const leaveRequests = await LeaveRequest.find(filter).sort({ createdAt: -1 });
-    return res.status(200).json({ leaveRequests });
+    const leaveRequestsWithDateKeys = leaveRequests.map((request) => {
+      const row = request.toObject();
+      return {
+        ...row,
+        startDateKey: formatDateKey(row.startDate),
+        endDateKey: formatDateKey(row.endDate),
+      };
+    });
+
+    return res.status(200).json({ leaveRequests: leaveRequestsWithDateKeys });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -232,28 +332,38 @@ router.get("/leave/attendance", EmployeeAuthenticateToken, async (req, res) => {
     const { userId } = req.user;
     const parsedYear = Number(req.query.year);
     const parsedMonth = Number(req.query.month);
+    const month =
+      Number.isInteger(parsedMonth) && parsedMonth >= 1 && parsedMonth <= 12
+        ? parsedMonth
+        : null;
     const year =
       Number.isInteger(parsedYear) && parsedYear > 0 ? parsedYear : getLeaveYear();
 
     let startDate = new Date(year, 0, 1);
     let endDate = new Date(year, 11, 31);
 
-    if (Number.isInteger(parsedMonth) && parsedMonth >= 1 && parsedMonth <= 12) {
-      startDate = new Date(year, parsedMonth - 1, 1);
-      endDate = new Date(year, parsedMonth, 0);
+    if (month) {
+      startDate = new Date(year, month - 1, 1);
+      endDate = new Date(year, month, 0);
     }
 
     startDate.setHours(0, 0, 0, 0);
     endDate.setHours(23, 59, 59, 999);
 
-    const attendance = await Attendance.find({
+    const attendanceRows = await Attendance.find({
       employeeId: userId,
       date: { $gte: startDate, $lte: endDate },
-    }).sort({ date: 1 });
+    })
+      .sort({ date: 1 })
+      .lean();
+    const attendance = attendanceRows.map((row) => ({
+      ...row,
+      dateKey: formatDateKey(row.date),
+    }));
 
     return res.status(200).json({
       year,
-      month: Number.isInteger(parsedMonth) ? parsedMonth : null,
+      month,
       attendance,
     });
   } catch (error) {
@@ -303,94 +413,192 @@ router.post("/leave/apply", EmployeeAuthenticateToken, async (req, res) => {
       });
     }
 
-    const startDate = new Date(rawStartDate);
-    const endDate = rawEndDate ? new Date(rawEndDate) : new Date(rawStartDate);
+    const startDate = normalizeDateOnly(rawStartDate);
+    const endDate = normalizeDateOnly(rawEndDate || rawStartDate);
 
-    if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
+    if (!startDate || !endDate) {
       return res.status(400).json({ message: "Invalid leave date range" });
     }
 
-    startDate.setHours(0, 0, 0, 0);
-    endDate.setHours(0, 0, 0, 0);
-
+    let finalEndDate = new Date(endDate);
     if (durationType === "full_day") {
-      endDate.setTime(startDate.getTime());
+      finalEndDate = new Date(startDate);
     }
 
-    if (durationType === "multiple_days" && endDate < startDate) {
+    if (durationType === "multiple_days" && finalEndDate < startDate) {
       return res.status(400).json({ message: "End date cannot be before start date" });
     }
 
-    if (durationType === "half_day" && endDate.getTime() !== startDate.getTime()) {
+    if (durationType === "half_day" && finalEndDate.getTime() !== startDate.getTime()) {
       return res.status(400).json({
         message: "Half-day leave must have same start and end date",
       });
     }
 
-    const leaveYear = startDate.getFullYear();
-    let leaveRequest = await LeaveRequest.create({
-      employeeId: userId,
-      leaveYear,
-      leaveType,
-      durationType,
-      startDate,
-      endDate,
-      reason: reason || "",
-      status: "pending",
-      impactApplied: false,
-      totalUnits: 0,
-      appliedDeduction: { cl: 0, el: 0, lop: 0 },
-      attendanceSnapshot: [],
-    });
-
-    try {
-      const impactResult = await applyLeaveImpact({
-        employeeId: userId,
-        leaveType,
-        durationType,
-        startDateValue: startDate,
-        endDateValue: endDate,
-        requestId: leaveRequest._id,
+    const today = normalizeDateOnly(new Date());
+    if (startDate < today) {
+      return res.status(400).json({
+        message: "You cannot apply leave for past dates. Please contact admin.",
       });
-
-      leaveRequest.leaveYear = impactResult.leaveYear;
-      leaveRequest.totalUnits = impactResult.totalUnits;
-      leaveRequest.appliedDeduction = impactResult.appliedDeduction;
-      leaveRequest.attendanceSnapshot = impactResult.attendanceSnapshot;
-      leaveRequest.impactApplied = true;
-      await leaveRequest.save();
-
-      await LeaveLedger.create({
-        employeeId: userId,
-        leaveYear: impactResult.leaveYear,
-        entryType: "deduction",
-        leaveType: "MIXED",
-        amount: impactResult.totalUnits,
-        requestId: leaveRequest._id,
-        metadata: {
-          leaveType,
-          durationType,
-          reason: reason || "",
-          appliedDeduction: impactResult.appliedDeduction,
-          startDate: startDate.toISOString(),
-          endDate: endDate.toISOString(),
-        },
-        effectiveDate: new Date(),
-      });
-    } catch (impactError) {
-      await LeaveRequest.deleteOne({ _id: leaveRequest._id });
-      throw impactError;
     }
 
-    const updatedLeaveBalance = await ensureLeaveBalance(userId, leaveRequest.leaveYear);
+    const overlapsExistingLeave = await hasOverlappingApprovedLeave({
+      employeeId: userId,
+      startDateValue: startDate,
+      endDateValue: finalEndDate,
+    });
+    if (overlapsExistingLeave) {
+      return res.status(409).json({
+        message:
+          "An approved leave already exists for the selected date range. Please modify existing leave from admin panel.",
+      });
+    }
+
+    const result = await executeWithOptionalTransaction(async (session) => {
+      const leaveYear = startDate.getFullYear();
+      let leaveRequest = null;
+      let impactResult = null;
+
+      try {
+        const overlapWithinOperation = await hasOverlappingApprovedLeave({
+          employeeId: userId,
+          startDateValue: startDate,
+          endDateValue: finalEndDate,
+          session,
+        });
+        if (overlapWithinOperation) {
+          throw createHttpError(
+            409,
+            "An approved leave already exists for the selected date range. Please modify existing leave from admin panel."
+          );
+        }
+
+        if (session) {
+          const [createdRequest] = await LeaveRequest.create(
+            [
+              {
+                employeeId: userId,
+                leaveYear,
+                leaveType,
+                durationType,
+                startDate,
+                endDate: finalEndDate,
+                reason: reason || "",
+                status: "approved",
+                impactApplied: false,
+                totalUnits: 0,
+                appliedDeduction: { cl: 0, el: 0, lop: 0 },
+                attendanceSnapshot: [],
+              },
+            ],
+            { session }
+          );
+          leaveRequest = createdRequest;
+        } else {
+          leaveRequest = await LeaveRequest.create({
+            employeeId: userId,
+            leaveYear,
+            leaveType,
+            durationType,
+            startDate,
+            endDate: finalEndDate,
+            reason: reason || "",
+            status: "approved",
+            impactApplied: false,
+            totalUnits: 0,
+            appliedDeduction: { cl: 0, el: 0, lop: 0 },
+            attendanceSnapshot: [],
+          });
+        }
+
+        impactResult = await applyLeaveImpact({
+          employeeId: userId,
+          leaveType,
+          durationType,
+          startDateValue: startDate,
+          endDateValue: finalEndDate,
+          requestId: leaveRequest._id,
+          session,
+        });
+
+        leaveRequest.leaveYear = impactResult.leaveYear;
+        leaveRequest.totalUnits = impactResult.totalUnits;
+        leaveRequest.appliedDeduction = impactResult.appliedDeduction;
+        leaveRequest.attendanceSnapshot = impactResult.attendanceSnapshot;
+        leaveRequest.impactApplied = true;
+        await leaveRequest.save(session ? { session } : {});
+
+        await createLeaveLedgerEntry(
+          {
+            employeeId: userId,
+            leaveYear: impactResult.leaveYear,
+            entryType: "deduction",
+            leaveType: "MIXED",
+            amount: impactResult.totalUnits,
+            requestId: leaveRequest._id,
+            transactionKey: buildLeaveLedgerTransactionKey({
+              action: "apply-deduction",
+              employeeId: userId,
+              requestId: leaveRequest._id,
+              leaveYear: impactResult.leaveYear,
+            }),
+            metadata: {
+              leaveType,
+              durationType,
+              reason: reason || "",
+              appliedDeduction: impactResult.appliedDeduction,
+              startDate: startDate.toISOString(),
+              endDate: finalEndDate.toISOString(),
+            },
+            effectiveDate: new Date(),
+          },
+          session
+        );
+
+        const updatedLeaveBalance = await ensureLeaveBalance(
+          userId,
+          leaveRequest.leaveYear,
+          session
+        );
+
+        return {
+          leaveRequest,
+          leaveBalance: updatedLeaveBalance,
+        };
+      } catch (transactionError) {
+        if (!session && impactResult) {
+          try {
+            await restoreLeaveImpact({
+              employeeId: userId,
+              leaveYear: impactResult.leaveYear,
+              appliedDeduction: impactResult.appliedDeduction,
+              attendanceSnapshot: impactResult.attendanceSnapshot,
+            });
+          } catch (rollbackError) {
+            console.error("leave/apply rollback failed:", rollbackError);
+          }
+        }
+        if (!session && leaveRequest?._id) {
+          try {
+            await LeaveRequest.deleteOne({ _id: leaveRequest._id });
+          } catch (cleanupError) {
+            console.error("leave/apply cleanup failed:", cleanupError);
+          }
+        }
+        throw transactionError;
+      }
+    });
 
     return res.status(201).json({
       message:
-        "Leave applied successfully. Status is pending and attendance has been updated.",
-      leaveRequest,
-      leaveBalance: updatedLeaveBalance,
+        "Leave applied successfully. Status is approved and attendance has been updated.",
+      leaveRequest: result.leaveRequest,
+      leaveBalance: result.leaveBalance,
     });
   } catch (error) {
+    if (error?.statusCode) {
+      return res.status(error.statusCode).json({ message: error.message });
+    }
     return res.status(500).json({ message: error.message });
   }
 });

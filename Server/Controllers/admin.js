@@ -2,6 +2,7 @@ import express, { Router } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { randomUUID } from "crypto";
 import { otpStore } from "../utils/otp.js";
 import { S3Client } from "@aws-sdk/client-s3";
 // import nodemailer from "nodemailer";
@@ -51,11 +52,15 @@ import { pdfUpload } from "../Middlewares/multer.middleware.js";
 import {
   addCompensationLeave,
   applyLeaveImpact,
+  executeWithOptionalTransaction,
+  formatDateKey,
   getYearlyLeaveOverview,
+  hasOverlappingApprovedLeave,
   ensureLeaveBalance,
   getStoredMonthlyAttendanceSummary,
   getLeaveYear,
   manualAdjustLeaveBalance,
+  normalizeDateOnly,
   recomputeMonthlyAttendanceSummary,
   restoreLeaveImpact,
   runCarryForwardForEmployee,
@@ -80,6 +85,20 @@ dotenv.config();
 const secretKey = process.env.JWT_SECRET_ADMIN;
 
 const router = express.Router();
+const buildLeaveLedgerTransactionKey = ({ action, employeeId, requestId, leaveYear }) =>
+  `admin-${action}-${employeeId}-${requestId || "na"}-${leaveYear}-${Date.now()}-${randomUUID()}`;
+const createLeaveLedgerEntry = async (payload, session = null) => {
+  if (!session) {
+    return LeaveLedger.create(payload);
+  }
+  const [entry] = await LeaveLedger.create([payload], { session });
+  return entry;
+};
+const createHttpError = (statusCode, message) => {
+  const error = new Error(message);
+  error.statusCode = statusCode;
+  return error;
+};
 
 // Initiate OTP sending
 
@@ -1897,8 +1916,61 @@ router.get(
       const year =
         Number.isInteger(parsedYear) && parsedYear > 0 ? parsedYear : getLeaveYear();
 
-      const leaveBalance = await ensureLeaveBalance(id, year);
-      return res.status(200).json({ year, leaveBalance });
+      const [leaveBalance, allYearBalances] = await Promise.all([
+        ensureLeaveBalance(id, year),
+        LeaveBalance.find({ employeeId: id }).select("year clBalance elBalance lopUsed"),
+      ]);
+
+      const carryForwardEntries = await LeaveLedger.find({
+        employeeId: id,
+        entryType: "carry_forward",
+      }).select("amount metadata");
+
+      const overallBalanceTotals = allYearBalances.reduce(
+        (accumulator, row) => ({
+          clBalance: accumulator.clBalance + Number(row?.clBalance || 0),
+          elBalance: accumulator.elBalance + Number(row?.elBalance || 0),
+          lopUsed: accumulator.lopUsed + Number(row?.lopUsed || 0),
+        }),
+        { clBalance: 0, elBalance: 0, lopUsed: 0 }
+      );
+
+      const carryTotals = carryForwardEntries.reduce(
+        (accumulator, entry) => {
+          const clToCarry = Number(entry?.metadata?.clToCarry || 0);
+          const elToCarry = Number(entry?.metadata?.elToCarry || 0);
+          const amount = Number(entry?.amount || 0);
+          if (clToCarry > 0 || elToCarry > 0) {
+            accumulator.cl += clToCarry;
+            accumulator.el += elToCarry;
+          } else {
+            accumulator.cl += amount;
+          }
+          return accumulator;
+        },
+        { cl: 0, el: 0 }
+      );
+
+      const overallBalance = {
+        clBalance: Number(Math.max(0, overallBalanceTotals.clBalance - carryTotals.cl).toFixed(2)),
+        elBalance: Number(Math.max(0, overallBalanceTotals.elBalance - carryTotals.el).toFixed(2)),
+        lopUsed: Number(overallBalanceTotals.lopUsed.toFixed(2)),
+      };
+      const overallRemaining = Number(
+        (overallBalance.clBalance + overallBalance.elBalance).toFixed(2)
+      );
+      const availableYears = allYearBalances
+        .map((row) => Number(row?.year))
+        .filter((value) => Number.isInteger(value) && value > 0)
+        .sort((a, b) => b - a);
+
+      return res.status(200).json({
+        year,
+        leaveBalance,
+        overallBalance,
+        overallRemaining,
+        availableYears,
+      });
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }
@@ -1974,12 +2046,14 @@ router.put(
 router.get("/leave/requests", AdminAuthenticateToken, async (req, res) => {
   try {
     const { employeeId, status, year } = req.query;
-    const filter = {};
+    const filter = {
+      status: { $in: ["approved", "rejected"] },
+    };
 
     if (employeeId) {
       filter.employeeId = employeeId;
     }
-    if (status && ["pending", "approved", "rejected", "modified"].includes(status)) {
+    if (status && ["approved", "rejected"].includes(status)) {
       filter.status = status;
     }
     if (year !== undefined && year !== "") {
@@ -1992,8 +2066,16 @@ router.get("/leave/requests", AdminAuthenticateToken, async (req, res) => {
     const leaveRequests = await LeaveRequest.find(filter)
       .populate("employeeId", "name email probation")
       .sort({ createdAt: -1 });
+    const leaveRequestsWithDateKeys = leaveRequests.map((request) => {
+      const row = request.toObject();
+      return {
+        ...row,
+        startDateKey: formatDateKey(row.startDate),
+        endDateKey: formatDateKey(row.endDate),
+      };
+    });
 
-    return res.status(200).json({ leaveRequests });
+    return res.status(200).json({ leaveRequests: leaveRequestsWithDateKeys });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -2007,32 +2089,38 @@ router.get(
       const { id } = req.params;
       const parsedYear = Number(req.query.year);
       const parsedMonth = Number(req.query.month);
+      const month =
+        Number.isInteger(parsedMonth) && parsedMonth >= 1 && parsedMonth <= 12
+          ? parsedMonth
+          : null;
       const year =
         Number.isInteger(parsedYear) && parsedYear > 0 ? parsedYear : getLeaveYear();
 
       let startDate = new Date(year, 0, 1);
       let endDate = new Date(year, 11, 31);
 
-      if (
-        Number.isInteger(parsedMonth) &&
-        parsedMonth >= 1 &&
-        parsedMonth <= 12
-      ) {
-        startDate = new Date(year, parsedMonth - 1, 1);
-        endDate = new Date(year, parsedMonth, 0);
+      if (month) {
+        startDate = new Date(year, month - 1, 1);
+        endDate = new Date(year, month, 0);
       }
 
       startDate.setHours(0, 0, 0, 0);
       endDate.setHours(23, 59, 59, 999);
 
-      const attendance = await Attendance.find({
+      const attendanceRows = await Attendance.find({
         employeeId: id,
         date: { $gte: startDate, $lte: endDate },
-      }).sort({ date: 1 });
+      })
+        .sort({ date: 1 })
+        .lean();
+      const attendance = attendanceRows.map((row) => ({
+        ...row,
+        dateKey: formatDateKey(row.date),
+      }));
 
       return res.status(200).json({
         year,
-        month: Number.isInteger(parsedMonth) ? parsedMonth : null,
+        month,
         attendance,
       });
     } catch (error) {
@@ -2087,7 +2175,7 @@ router.put(
   async (req, res) => {
     try {
       const { id } = req.params;
-      const { date, status, note } = req.body;
+      const { date, status, note, leaveType } = req.body;
 
       const normalizedStatus = String(status || "").trim();
       if (!["Present", "Absent", "Half Day"].includes(normalizedStatus)) {
@@ -2096,36 +2184,327 @@ router.put(
         });
       }
 
-      const attendanceDate = new Date(date);
-      if (Number.isNaN(attendanceDate.getTime())) {
+      const normalizedLeaveType = String(leaveType || "")
+        .trim()
+        .toUpperCase();
+      const requiresLeaveType = normalizedStatus === "Absent" || normalizedStatus === "Half Day";
+      if (requiresLeaveType && !["CL", "EL", "LOP"].includes(normalizedLeaveType)) {
+        return res.status(400).json({
+          message: "Leave type must be one of: CL, EL, LOP",
+        });
+      }
+
+      const attendanceDate = normalizeDateOnly(date);
+      if (!attendanceDate) {
         return res.status(400).json({ message: "Invalid attendance date" });
       }
-      attendanceDate.setHours(0, 0, 0, 0);
 
-      const attendanceRecord = await Attendance.findOneAndUpdate(
-        { employeeId: id, date: attendanceDate },
-        {
+      const responsePayload = await executeWithOptionalTransaction(async (session) => {
+        const attendanceQuery = Attendance.findOne({ employeeId: id, date: attendanceDate });
+        const existingAttendance = session
+          ? await attendanceQuery.session(session)
+          : await attendanceQuery;
+
+        if (existingAttendance?.leaveRequestId) {
+          throw createHttpError(
+            409,
+            "This date is linked with an approved leave request. Please modify/reject that leave request instead."
+          );
+        }
+
+        const attendanceYear = attendanceDate.getFullYear();
+        const attendanceMonth = attendanceDate.getMonth() + 1;
+
+        const previousManualDeduction = {
+          cl: Number(existingAttendance?.manualDeduction?.cl || 0),
+          el: Number(existingAttendance?.manualDeduction?.el || 0),
+          lop: Number(existingAttendance?.manualDeduction?.lop || 0),
+          clCarry: Number(existingAttendance?.manualDeduction?.clCarry || 0),
+          elCarry: Number(existingAttendance?.manualDeduction?.elCarry || 0),
+          units: Number(existingAttendance?.manualDeduction?.units || 0),
+          leaveType: String(existingAttendance?.manualDeduction?.leaveType || ""),
+          priorYearUsage: Array.isArray(existingAttendance?.manualDeduction?.priorYearUsage)
+            ? existingAttendance.manualDeduction.priorYearUsage
+                .map((usage) => ({
+                  year: Number(usage?.year),
+                  cl: Number(usage?.cl || 0),
+                  el: Number(usage?.el || 0),
+                }))
+                .filter(
+                  (usage) =>
+                    Number.isInteger(usage.year) &&
+                    usage.year > 0 &&
+                    (usage.cl > 0 || usage.el > 0)
+                )
+            : [],
+        };
+        const hadPreviousManualImpact =
+          previousManualDeduction.cl > 0 ||
+          previousManualDeduction.el > 0 ||
+          previousManualDeduction.lop > 0 ||
+          previousManualDeduction.priorYearUsage.length > 0;
+
+        if (hadPreviousManualImpact) {
+          if (
+            previousManualDeduction.cl > 0 ||
+            previousManualDeduction.el > 0 ||
+            previousManualDeduction.lop > 0 ||
+            previousManualDeduction.clCarry > 0 ||
+            previousManualDeduction.elCarry > 0
+          ) {
+            await manualAdjustLeaveBalance({
+              employeeId: id,
+              year: attendanceYear,
+              mode: "delta",
+              clValue: previousManualDeduction.cl,
+              elValue: previousManualDeduction.el,
+              lopValue: -previousManualDeduction.lop,
+              carryForwardCLDelta: previousManualDeduction.clCarry,
+              carryForwardELDelta: previousManualDeduction.elCarry,
+              reason: "manual-attendance-restore-previous-impact",
+              updatedBy: req.user?.userId || null,
+              runDate: attendanceDate,
+              session,
+            });
+          }
+
+          for (const usage of previousManualDeduction.priorYearUsage) {
+            const usageYear = Number(usage?.year);
+            const usageCL = Number(usage?.cl || 0);
+            const usageEL = Number(usage?.el || 0);
+            if (
+              !Number.isInteger(usageYear) ||
+              usageYear <= 0 ||
+              usageYear >= attendanceYear ||
+              (usageCL <= 0 && usageEL <= 0)
+            ) {
+              continue;
+            }
+
+            await manualAdjustLeaveBalance({
+              employeeId: id,
+              year: usageYear,
+              mode: "delta",
+              clValue: usageCL,
+              elValue: usageEL,
+              lopValue: 0,
+              reason: "manual-attendance-restore-prior-year-impact",
+              updatedBy: req.user?.userId || null,
+              runDate: attendanceDate,
+              session,
+            });
+          }
+        }
+
+        const nextManualDeduction = {
+          cl: 0,
+          el: 0,
+          lop: 0,
+          clCarry: 0,
+          elCarry: 0,
+          units: 0,
+          leaveType: requiresLeaveType ? normalizedLeaveType : "",
+          priorYearUsage: [],
+        };
+
+        if (requiresLeaveType) {
+          const requestedUnits = normalizedStatus === "Half Day" ? 0.5 : 1;
+          nextManualDeduction.units = requestedUnits;
+
+          if (normalizedLeaveType === "LOP") {
+            nextManualDeduction.lop = requestedUnits;
+          } else {
+            let remainingUnits = requestedUnits;
+
+            const priorBalancesQuery = LeaveBalance.find({
+              employeeId: id,
+              year: { $lt: attendanceYear },
+            })
+              .select("year clBalance elBalance")
+              .sort({ year: -1 });
+            const priorBalances = session
+              ? await priorBalancesQuery.session(session)
+              : await priorBalancesQuery;
+
+            for (const balanceRow of priorBalances) {
+              if (remainingUnits <= 0) {
+                break;
+              }
+
+              const priorYear = Number(balanceRow?.year);
+              if (!Number.isInteger(priorYear) || priorYear <= 0) {
+                continue;
+              }
+
+              const availableFromYear =
+                normalizedLeaveType === "CL"
+                  ? Math.max(0, Number(balanceRow?.clBalance || 0))
+                  : Math.max(0, Number(balanceRow?.elBalance || 0));
+              if (availableFromYear <= 0) {
+                continue;
+              }
+
+              const consumeFromYear = Number(
+                Math.min(availableFromYear, remainingUnits).toFixed(2)
+              );
+              if (consumeFromYear <= 0) {
+                continue;
+              }
+
+              if (normalizedLeaveType === "CL") {
+                await manualAdjustLeaveBalance({
+                  employeeId: id,
+                  year: priorYear,
+                  mode: "delta",
+                  clValue: -consumeFromYear,
+                  elValue: 0,
+                  lopValue: 0,
+                  reason: "manual-attendance-apply-prior-year-impact",
+                  updatedBy: req.user?.userId || null,
+                  runDate: attendanceDate,
+                  session,
+                });
+                nextManualDeduction.priorYearUsage.push({
+                  year: priorYear,
+                  cl: consumeFromYear,
+                  el: 0,
+                });
+              } else if (normalizedLeaveType === "EL") {
+                await manualAdjustLeaveBalance({
+                  employeeId: id,
+                  year: priorYear,
+                  mode: "delta",
+                  clValue: 0,
+                  elValue: -consumeFromYear,
+                  lopValue: 0,
+                  reason: "manual-attendance-apply-prior-year-impact",
+                  updatedBy: req.user?.userId || null,
+                  runDate: attendanceDate,
+                  session,
+                });
+                nextManualDeduction.priorYearUsage.push({
+                  year: priorYear,
+                  cl: 0,
+                  el: consumeFromYear,
+                });
+              }
+
+              remainingUnits = Number(Math.max(0, remainingUnits - consumeFromYear).toFixed(2));
+            }
+
+            const leaveBalance = await ensureLeaveBalance(id, attendanceYear, session);
+            if (normalizedLeaveType === "CL") {
+              const availableCL = Math.max(0, Number(leaveBalance?.clBalance || 0));
+              nextManualDeduction.cl = Math.min(availableCL, remainingUnits);
+              const availableCarryCL = Math.min(
+                Math.max(0, Number(leaveBalance?.carryForwardCL || 0)),
+                availableCL
+              );
+              nextManualDeduction.clCarry = Math.min(
+                availableCarryCL,
+                nextManualDeduction.cl
+              );
+            } else if (normalizedLeaveType === "EL") {
+              const availableEL = Math.max(0, Number(leaveBalance?.elBalance || 0));
+              nextManualDeduction.el = Math.min(availableEL, remainingUnits);
+              const availableCarryEL = Math.min(
+                Math.max(0, Number(leaveBalance?.carryForwardEL || 0)),
+                availableEL
+              );
+              nextManualDeduction.elCarry = Math.min(
+                availableCarryEL,
+                nextManualDeduction.el
+              );
+            }
+            nextManualDeduction.lop = remainingUnits - (nextManualDeduction.cl + nextManualDeduction.el);
+          }
+
+          nextManualDeduction.cl = Number(Math.max(0, nextManualDeduction.cl).toFixed(2));
+          nextManualDeduction.el = Number(Math.max(0, nextManualDeduction.el).toFixed(2));
+          nextManualDeduction.lop = Number(Math.max(0, nextManualDeduction.lop).toFixed(2));
+          nextManualDeduction.clCarry = Number(
+            Math.max(0, nextManualDeduction.clCarry).toFixed(2)
+          );
+          nextManualDeduction.elCarry = Number(
+            Math.max(0, nextManualDeduction.elCarry).toFixed(2)
+          );
+          nextManualDeduction.units = Number(Math.max(0, nextManualDeduction.units).toFixed(2));
+          nextManualDeduction.priorYearUsage = (nextManualDeduction.priorYearUsage || [])
+            .map((usage) => ({
+              year: Number(usage?.year),
+              cl: Number(Math.max(0, Number(usage?.cl || 0)).toFixed(2)),
+              el: Number(Math.max(0, Number(usage?.el || 0)).toFixed(2)),
+            }))
+            .filter(
+              (usage) =>
+                Number.isInteger(usage.year) &&
+                usage.year > 0 &&
+                (usage.cl > 0 || usage.el > 0)
+            );
+
+          if (
+            nextManualDeduction.cl > 0 ||
+            nextManualDeduction.el > 0 ||
+            nextManualDeduction.lop > 0
+          ) {
+            await manualAdjustLeaveBalance({
+              employeeId: id,
+              year: attendanceYear,
+              mode: "delta",
+              clValue: -nextManualDeduction.cl,
+              elValue: -nextManualDeduction.el,
+              lopValue: nextManualDeduction.lop,
+              carryForwardCLDelta: -nextManualDeduction.clCarry,
+              carryForwardELDelta: -nextManualDeduction.elCarry,
+              reason: "manual-attendance-apply-impact",
+              updatedBy: req.user?.userId || null,
+              runDate: attendanceDate,
+              session,
+            });
+          }
+        }
+
+        const attendanceRecord = await Attendance.findOneAndUpdate(
+          { employeeId: id, date: attendanceDate },
+          {
+            employeeId: id,
+            date: attendanceDate,
+            status: normalizedStatus,
+            leaveType: requiresLeaveType ? normalizedLeaveType : "",
+            note: String(note || "").trim(),
+            leaveRequestId: null,
+            manualDeduction: nextManualDeduction,
+          },
+          { upsert: true, new: true, setDefaultsOnInsert: true, session }
+        );
+
+        const summary = await recomputeMonthlyAttendanceSummary({
           employeeId: id,
-          date: attendanceDate,
-          status: normalizedStatus,
-          note: String(note || "").trim(),
-          leaveRequestId: null,
-        },
-        { upsert: true, new: true, setDefaultsOnInsert: true }
-      );
+          year: attendanceYear,
+          month: attendanceMonth,
+          session,
+        });
+        const leaveBalance = await ensureLeaveBalance(id, attendanceYear, session);
 
-      const summary = await recomputeMonthlyAttendanceSummary({
-        employeeId: id,
-        year: attendanceDate.getFullYear(),
-        month: attendanceDate.getMonth() + 1,
+        return {
+          attendanceRecord,
+          monthlySummary: summary,
+          leaveBalance,
+          appliedDeduction: nextManualDeduction,
+        };
       });
 
       return res.status(200).json({
         message: "Attendance updated successfully",
-        attendanceRecord,
-        monthlySummary: summary,
+        attendanceRecord: responsePayload.attendanceRecord,
+        monthlySummary: responsePayload.monthlySummary,
+        leaveBalance: responsePayload.leaveBalance,
+        appliedDeduction: responsePayload.appliedDeduction,
       });
     } catch (error) {
+      if (error?.statusCode) {
+        return res.status(error.statusCode).json({ message: error.message });
+      }
       return res.status(500).json({ message: error.message });
     }
   }
@@ -2166,193 +2545,405 @@ router.put(
           message: "Action must be one of: approve, reject, modify",
         });
       }
-
-      const leaveRequest = await LeaveRequest.findById(requestId);
-      if (!leaveRequest) {
-        return res.status(404).json({ message: "Leave request not found" });
-      }
-
-      const admin = await Admin.findOne({ email: req.user?.email }).select("_id");
-      const reviewedBy = admin?._id || null;
-
-      if (action === "approve") {
-        leaveRequest.status = "approved";
-        leaveRequest.adminReview = {
-          ...leaveRequest.adminReview,
-          reviewedBy,
-          reviewedAt: new Date(),
-          action,
-          remark,
-        };
-        await leaveRequest.save();
-
-        return res.status(200).json({
-          message: "Leave request approved. No balance/attendance change required.",
-          leaveRequest,
-        });
-      }
-
-      if (action === "reject") {
-        if (leaveRequest.impactApplied) {
-          await restoreLeaveImpact({
-            employeeId: leaveRequest.employeeId,
-            leaveYear: leaveRequest.leaveYear,
-            appliedDeduction: leaveRequest.appliedDeduction,
-            attendanceSnapshot: leaveRequest.attendanceSnapshot,
-          });
-
-          await LeaveLedger.create({
-            employeeId: leaveRequest.employeeId,
-            leaveYear: leaveRequest.leaveYear,
-            entryType: "restore",
-            leaveType: "MIXED",
-            amount: Number(leaveRequest.totalUnits) || 0,
-            requestId: leaveRequest._id,
-            metadata: {
-              reason: "admin-reject",
-              restoredDeduction: leaveRequest.appliedDeduction,
-            },
-            effectiveDate: new Date(),
-          });
+      const responsePayload = await executeWithOptionalTransaction(async (session) => {
+        const leaveRequestQuery = LeaveRequest.findById(requestId);
+        const leaveRequest = session
+          ? await leaveRequestQuery.session(session)
+          : await leaveRequestQuery;
+        if (!leaveRequest) {
+          throw createHttpError(404, "Leave request not found");
         }
 
-        leaveRequest.status = "rejected";
-        leaveRequest.impactApplied = false;
-        leaveRequest.adminReview = {
-          ...leaveRequest.adminReview,
-          reviewedBy,
-          reviewedAt: new Date(),
-          action,
-          remark,
+        const adminQuery = Admin.findOne({ email: req.user?.email }).select("_id");
+        const admin = session ? await adminQuery.session(session) : await adminQuery;
+        const reviewedBy = admin?._id || null;
+
+        const reapplyImpactIfNeeded = async (reapplyReason) => {
+          if (leaveRequest.impactApplied) {
+            return { reapplied: false };
+          }
+
+          const hasOverlap = await hasOverlappingApprovedLeave({
+            employeeId: leaveRequest.employeeId,
+            startDateValue: leaveRequest.startDate,
+            endDateValue: leaveRequest.endDate,
+            excludeRequestId: leaveRequest._id,
+            session,
+          });
+          if (hasOverlap) {
+            throw createHttpError(
+              409,
+              "Another approved leave already exists for this date range. Resolve overlap before approving."
+            );
+          }
+
+          const reappliedImpact = await applyLeaveImpact({
+            employeeId: leaveRequest.employeeId,
+            leaveType: leaveRequest.leaveType,
+            durationType: leaveRequest.durationType,
+            startDateValue: leaveRequest.startDate,
+            endDateValue: leaveRequest.endDate,
+            requestId: leaveRequest._id,
+            session,
+          });
+
+          leaveRequest.leaveYear = reappliedImpact.leaveYear;
+          leaveRequest.totalUnits = reappliedImpact.totalUnits;
+          leaveRequest.appliedDeduction = reappliedImpact.appliedDeduction;
+          leaveRequest.attendanceSnapshot = reappliedImpact.attendanceSnapshot;
+          leaveRequest.impactApplied = true;
+
+          await createLeaveLedgerEntry(
+            {
+              employeeId: leaveRequest.employeeId,
+              leaveYear: leaveRequest.leaveYear,
+              entryType: "deduction",
+              leaveType: "MIXED",
+              amount: Number(leaveRequest.totalUnits) || 0,
+              requestId: leaveRequest._id,
+              transactionKey: buildLeaveLedgerTransactionKey({
+                action: reapplyReason || "approve-reapply",
+                employeeId: leaveRequest.employeeId,
+                requestId: leaveRequest._id,
+                leaveYear: leaveRequest.leaveYear,
+              }),
+              metadata: {
+                reason: reapplyReason,
+                leaveType: leaveRequest.leaveType,
+                durationType: leaveRequest.durationType,
+                appliedDeduction: leaveRequest.appliedDeduction,
+              },
+              effectiveDate: new Date(),
+            },
+            session
+          );
+
+          return { reapplied: true };
         };
-        await leaveRequest.save();
+
+        if (action === "approve") {
+          const { reapplied } = await reapplyImpactIfNeeded("admin-approve-reapply");
+
+          leaveRequest.status = "approved";
+          leaveRequest.adminReview = {
+            ...leaveRequest.adminReview,
+            reviewedBy,
+            reviewedAt: new Date(),
+            action,
+            remark,
+          };
+          await leaveRequest.save(session ? { session } : {});
+
+          const leaveBalance = await ensureLeaveBalance(
+            leaveRequest.employeeId,
+            leaveRequest.leaveYear,
+            session
+          );
+
+          return {
+            message: reapplied
+              ? "Leave request approved. Balance and attendance deducted again."
+              : "Leave request approved. No balance/attendance change required.",
+            leaveRequest,
+            leaveBalance,
+          };
+        }
+
+        if (action === "reject") {
+          if (leaveRequest.impactApplied) {
+            await restoreLeaveImpact({
+              employeeId: leaveRequest.employeeId,
+              leaveYear: leaveRequest.leaveYear,
+              appliedDeduction: leaveRequest.appliedDeduction,
+              attendanceSnapshot: leaveRequest.attendanceSnapshot,
+              restoreAttendanceToPresent: true,
+              session,
+            });
+
+            await createLeaveLedgerEntry(
+              {
+                employeeId: leaveRequest.employeeId,
+                leaveYear: leaveRequest.leaveYear,
+                entryType: "restore",
+                leaveType: "MIXED",
+                amount: Number(leaveRequest.totalUnits) || 0,
+                requestId: leaveRequest._id,
+                transactionKey: buildLeaveLedgerTransactionKey({
+                  action: "reject-restore",
+                  employeeId: leaveRequest.employeeId,
+                  requestId: leaveRequest._id,
+                  leaveYear: leaveRequest.leaveYear,
+                }),
+                metadata: {
+                  reason: "admin-reject",
+                  restoredDeduction: leaveRequest.appliedDeduction,
+                },
+                effectiveDate: new Date(),
+              },
+              session
+            );
+          }
+
+          leaveRequest.status = "rejected";
+          leaveRequest.impactApplied = false;
+          leaveRequest.adminReview = {
+            ...leaveRequest.adminReview,
+            reviewedBy,
+            reviewedAt: new Date(),
+            action,
+            remark,
+          };
+          await leaveRequest.save(session ? { session } : {});
+
+          const leaveBalance = await ensureLeaveBalance(
+            leaveRequest.employeeId,
+            leaveRequest.leaveYear,
+            session
+          );
+          return {
+            message: "Leave request rejected. Balance and attendance restored.",
+            leaveRequest,
+            leaveBalance,
+          };
+        }
+
+        const nextLeaveType = String(
+          updatedRequest.leaveType || leaveRequest.leaveType
+        ).toUpperCase();
+        const nextDurationType = String(
+          updatedRequest.durationType || leaveRequest.durationType
+        ).toLowerCase();
+        const nextStartDate = normalizeDateOnly(
+          updatedRequest.startDate || leaveRequest.startDate
+        );
+        const nextEndDate = normalizeDateOnly(
+          updatedRequest.endDate || leaveRequest.endDate
+        );
+
+        if (!["CL", "EL"].includes(nextLeaveType)) {
+          throw createHttpError(400, "Leave type must be CL or EL");
+        }
+        if (!["half_day", "full_day", "multiple_days"].includes(nextDurationType)) {
+          throw createHttpError(
+            400,
+            "Duration type must be half_day, full_day, or multiple_days"
+          );
+        }
+
+        if (
+          !nextStartDate ||
+          !nextEndDate
+        ) {
+          throw createHttpError(400, "Invalid date supplied for modification");
+        }
+
+        if (nextDurationType === "full_day") {
+          nextEndDate.setTime(nextStartDate.getTime());
+        }
+
+        if (nextEndDate < nextStartDate) {
+          throw createHttpError(400, "End date cannot be before start date");
+        }
+
+        if (nextDurationType === "half_day" && nextStartDate.getTime() !== nextEndDate.getTime()) {
+          throw createHttpError(400, "Half-day leave must have same start and end date");
+        }
+
+        const hasOverlap = await hasOverlappingApprovedLeave({
+          employeeId: leaveRequest.employeeId,
+          startDateValue: nextStartDate,
+          endDateValue: nextEndDate,
+          excludeRequestId: leaveRequest._id,
+          session,
+        });
+        if (hasOverlap) {
+          throw createHttpError(
+            409,
+            "Another approved leave already exists for this date range. Please choose different dates."
+          );
+        }
+
+        const previousState = {
+          leaveType: leaveRequest.leaveType,
+          durationType: leaveRequest.durationType,
+          startDate: new Date(leaveRequest.startDate),
+          endDate: new Date(leaveRequest.endDate),
+          leaveYear: leaveRequest.leaveYear,
+          totalUnits: leaveRequest.totalUnits,
+          reason: String(leaveRequest.reason || ""),
+          appliedDeduction: {
+            cl: Number(leaveRequest?.appliedDeduction?.cl || 0),
+            el: Number(leaveRequest?.appliedDeduction?.el || 0),
+            lop: Number(leaveRequest?.appliedDeduction?.lop || 0),
+          },
+          attendanceSnapshot: (leaveRequest.attendanceSnapshot || []).map((snapshot) => ({
+            date: snapshot.date,
+            hadRecord: Boolean(snapshot.hadRecord),
+            previousStatus: snapshot.previousStatus,
+            appliedStatus: snapshot.appliedStatus,
+          })),
+          impactApplied: Boolean(leaveRequest.impactApplied),
+          status: leaveRequest.status,
+          adminReview: JSON.parse(JSON.stringify(leaveRequest.adminReview || {})),
+        };
+
+        let updatedImpact = null;
+
+        try {
+          if (leaveRequest.impactApplied) {
+            await restoreLeaveImpact({
+              employeeId: leaveRequest.employeeId,
+              leaveYear: leaveRequest.leaveYear,
+              appliedDeduction: leaveRequest.appliedDeduction,
+              attendanceSnapshot: leaveRequest.attendanceSnapshot,
+              session,
+            });
+
+            await createLeaveLedgerEntry(
+              {
+                employeeId: leaveRequest.employeeId,
+                leaveYear: leaveRequest.leaveYear,
+                entryType: "restore",
+                leaveType: "MIXED",
+                amount: Number(leaveRequest.totalUnits) || 0,
+                requestId: leaveRequest._id,
+                transactionKey: buildLeaveLedgerTransactionKey({
+                  action: "modify-restore",
+                  employeeId: leaveRequest.employeeId,
+                  requestId: leaveRequest._id,
+                  leaveYear: leaveRequest.leaveYear,
+                }),
+                metadata: {
+                  reason: "admin-modify-before-reapply",
+                  restoredDeduction: leaveRequest.appliedDeduction,
+                },
+                effectiveDate: new Date(),
+              },
+              session
+            );
+          }
+
+          updatedImpact = await applyLeaveImpact({
+            employeeId: leaveRequest.employeeId,
+            leaveType: nextLeaveType,
+            durationType: nextDurationType,
+            startDateValue: nextStartDate,
+            endDateValue: nextEndDate,
+            requestId: leaveRequest._id,
+            session,
+          });
+
+          leaveRequest.leaveType = nextLeaveType;
+          leaveRequest.durationType = nextDurationType;
+          leaveRequest.startDate = nextStartDate;
+          leaveRequest.endDate = nextEndDate;
+          leaveRequest.leaveYear = updatedImpact.leaveYear;
+          leaveRequest.totalUnits = updatedImpact.totalUnits;
+          leaveRequest.reason = String(updatedRequest.reason || leaveRequest.reason || "").trim();
+          leaveRequest.appliedDeduction = updatedImpact.appliedDeduction;
+          leaveRequest.attendanceSnapshot = updatedImpact.attendanceSnapshot;
+          leaveRequest.impactApplied = true;
+          leaveRequest.status = "approved";
+          leaveRequest.adminReview = {
+            ...leaveRequest.adminReview,
+            reviewedBy,
+            reviewedAt: new Date(),
+            action,
+            remark,
+            modificationCount: (leaveRequest.adminReview?.modificationCount || 0) + 1,
+          };
+          await leaveRequest.save(session ? { session } : {});
+
+          await createLeaveLedgerEntry(
+            {
+              employeeId: leaveRequest.employeeId,
+              leaveYear: leaveRequest.leaveYear,
+              entryType: "deduction",
+              leaveType: "MIXED",
+              amount: Number(leaveRequest.totalUnits) || 0,
+              requestId: leaveRequest._id,
+              transactionKey: buildLeaveLedgerTransactionKey({
+                action: "modify-deduction",
+                employeeId: leaveRequest.employeeId,
+                requestId: leaveRequest._id,
+                leaveYear: leaveRequest.leaveYear,
+              }),
+              metadata: {
+                reason: "admin-modify-reapply",
+                leaveType: leaveRequest.leaveType,
+                durationType: leaveRequest.durationType,
+                appliedDeduction: leaveRequest.appliedDeduction,
+              },
+              effectiveDate: new Date(),
+            },
+            session
+          );
+        } catch (modifyError) {
+          if (!session) {
+            try {
+              if (updatedImpact) {
+                await restoreLeaveImpact({
+                  employeeId: leaveRequest.employeeId,
+                  leaveYear: updatedImpact.leaveYear,
+                  appliedDeduction: updatedImpact.appliedDeduction,
+                  attendanceSnapshot: updatedImpact.attendanceSnapshot,
+                });
+              }
+
+              if (previousState.impactApplied) {
+                const rollbackImpact = await applyLeaveImpact({
+                  employeeId: leaveRequest.employeeId,
+                  leaveType: previousState.leaveType,
+                  durationType: previousState.durationType,
+                  startDateValue: previousState.startDate,
+                  endDateValue: previousState.endDate,
+                  requestId: leaveRequest._id,
+                });
+
+                leaveRequest.leaveYear = rollbackImpact.leaveYear;
+                leaveRequest.totalUnits = rollbackImpact.totalUnits;
+                leaveRequest.appliedDeduction = rollbackImpact.appliedDeduction;
+                leaveRequest.attendanceSnapshot = rollbackImpact.attendanceSnapshot;
+                leaveRequest.impactApplied = true;
+              } else {
+                leaveRequest.appliedDeduction = previousState.appliedDeduction;
+                leaveRequest.attendanceSnapshot = previousState.attendanceSnapshot;
+                leaveRequest.impactApplied = false;
+              }
+
+              leaveRequest.leaveType = previousState.leaveType;
+              leaveRequest.durationType = previousState.durationType;
+              leaveRequest.startDate = previousState.startDate;
+              leaveRequest.endDate = previousState.endDate;
+              leaveRequest.reason = previousState.reason;
+              leaveRequest.status = previousState.status;
+              leaveRequest.adminReview = previousState.adminReview;
+              await leaveRequest.save();
+            } catch (rollbackError) {
+              console.error("leave/modify rollback failed:", rollbackError);
+            }
+          }
+          throw modifyError;
+        }
 
         const leaveBalance = await ensureLeaveBalance(
           leaveRequest.employeeId,
-          leaveRequest.leaveYear
+          leaveRequest.leaveYear,
+          session
         );
-        return res.status(200).json({
-          message: "Leave request rejected. Balance and attendance restored.",
+        return {
+          message:
+            "Leave request updated and approved. Previous impact restored and updated impact applied.",
           leaveRequest,
           leaveBalance,
-        });
-      }
-
-      const nextLeaveType = String(
-        updatedRequest.leaveType || leaveRequest.leaveType
-      ).toUpperCase();
-      const nextDurationType = String(
-        updatedRequest.durationType || leaveRequest.durationType
-      ).toLowerCase();
-      const nextStartDate = new Date(updatedRequest.startDate || leaveRequest.startDate);
-      const nextEndDate = new Date(updatedRequest.endDate || leaveRequest.endDate);
-
-      if (!["CL", "EL"].includes(nextLeaveType)) {
-        return res.status(400).json({ message: "Leave type must be CL or EL" });
-      }
-      if (!["half_day", "full_day", "multiple_days"].includes(nextDurationType)) {
-        return res.status(400).json({
-          message: "Duration type must be half_day, full_day, or multiple_days",
-        });
-      }
-
-      if (Number.isNaN(nextStartDate.getTime()) || Number.isNaN(nextEndDate.getTime())) {
-        return res.status(400).json({ message: "Invalid date supplied for modification" });
-      }
-
-      nextStartDate.setHours(0, 0, 0, 0);
-      nextEndDate.setHours(0, 0, 0, 0);
-
-      if (nextDurationType === "full_day") {
-        nextEndDate.setTime(nextStartDate.getTime());
-      }
-
-      if (nextDurationType === "half_day" && nextStartDate.getTime() !== nextEndDate.getTime()) {
-        return res.status(400).json({
-          message: "Half-day leave must have same start and end date",
-        });
-      }
-
-      if (leaveRequest.impactApplied) {
-        await restoreLeaveImpact({
-          employeeId: leaveRequest.employeeId,
-          leaveYear: leaveRequest.leaveYear,
-          appliedDeduction: leaveRequest.appliedDeduction,
-          attendanceSnapshot: leaveRequest.attendanceSnapshot,
-        });
-
-        await LeaveLedger.create({
-          employeeId: leaveRequest.employeeId,
-          leaveYear: leaveRequest.leaveYear,
-          entryType: "restore",
-          leaveType: "MIXED",
-          amount: Number(leaveRequest.totalUnits) || 0,
-          requestId: leaveRequest._id,
-          metadata: {
-            reason: "admin-modify-before-reapply",
-            restoredDeduction: leaveRequest.appliedDeduction,
-          },
-          effectiveDate: new Date(),
-        });
-      }
-
-      const updatedImpact = await applyLeaveImpact({
-        employeeId: leaveRequest.employeeId,
-        leaveType: nextLeaveType,
-        durationType: nextDurationType,
-        startDateValue: nextStartDate,
-        endDateValue: nextEndDate,
-        requestId: leaveRequest._id,
+        };
       });
 
-      leaveRequest.leaveType = nextLeaveType;
-      leaveRequest.durationType = nextDurationType;
-      leaveRequest.startDate = nextStartDate;
-      leaveRequest.endDate = nextEndDate;
-      leaveRequest.leaveYear = updatedImpact.leaveYear;
-      leaveRequest.totalUnits = updatedImpact.totalUnits;
-      leaveRequest.reason = String(updatedRequest.reason || leaveRequest.reason || "").trim();
-      leaveRequest.appliedDeduction = updatedImpact.appliedDeduction;
-      leaveRequest.attendanceSnapshot = updatedImpact.attendanceSnapshot;
-      leaveRequest.impactApplied = true;
-      leaveRequest.status = "modified";
-      leaveRequest.adminReview = {
-        ...leaveRequest.adminReview,
-        reviewedBy,
-        reviewedAt: new Date(),
-        action,
-        remark,
-        modificationCount: (leaveRequest.adminReview?.modificationCount || 0) + 1,
-      };
-      await leaveRequest.save();
-
-      await LeaveLedger.create({
-        employeeId: leaveRequest.employeeId,
-        leaveYear: leaveRequest.leaveYear,
-        entryType: "deduction",
-        leaveType: "MIXED",
-        amount: Number(leaveRequest.totalUnits) || 0,
-        requestId: leaveRequest._id,
-        metadata: {
-          reason: "admin-modify-reapply",
-          leaveType: leaveRequest.leaveType,
-          durationType: leaveRequest.durationType,
-          appliedDeduction: leaveRequest.appliedDeduction,
-        },
-        effectiveDate: new Date(),
-      });
-
-      const leaveBalance = await ensureLeaveBalance(
-        leaveRequest.employeeId,
-        leaveRequest.leaveYear
-      );
-      return res.status(200).json({
-        message:
-          "Leave request modified. Previous impact restored and updated impact applied.",
-        leaveRequest,
-        leaveBalance,
-      });
+      return res.status(200).json(responsePayload);
     } catch (error) {
+      if (error?.statusCode) {
+        return res.status(error.statusCode).json({ message: error.message });
+      }
       return res.status(500).json({ message: error.message });
     }
   }

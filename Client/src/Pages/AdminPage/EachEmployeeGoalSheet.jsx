@@ -1590,7 +1590,6 @@ const EachEmployeeGoalSheet = () => {
                   <th className="px-2 py-2">Cumulative Revenue</th>
                   <th className="px-2 py-2">YTD</th>
                   <th className="px-2 py-2">MTD</th>
-                  <th className="px-2 py-2">Target Achieved (%)</th>
                   <th className="px-2 py-2">Incentive</th>
                   <th className="px-2 py-2">Leakage</th>
                   <th className="px-2 py-2">Action</th>
@@ -1645,19 +1644,6 @@ const EachEmployeeGoalSheet = () => {
                                 maximumFractionDigits: 2,
                               })}
                             </td>
-                            <td className="px-2 py-2 border">
-                              {formatIndianNumber(
-                                calculateRevenueAchievedPercentage(
-                                  detail.revenue,
-                                  detail.target
-                                ),
-                                {
-                                  minimumFractionDigits: 2,
-                                  maximumFractionDigits: 2,
-                                }
-                              )}
-                              %
-                            </td>
                             <td 
                               className="px-2 py-2 border"
                               style={{ backgroundColor: detail?.incentiveStatusColor }}
@@ -1697,7 +1683,7 @@ const EachEmployeeGoalSheet = () => {
                         ))
                       ) : (
                         <tr key={data._id}>
-                          <td colSpan="14" className="px-2 py-2 text-center border">
+                          <td colSpan="13" className="px-2 py-2 text-center border">
                             No details available
                           </td>
                         </tr>
@@ -1738,13 +1724,6 @@ const EachEmployeeGoalSheet = () => {
                       })}
                     </td>
                     <td className="sticky bottom-0 z-10 border border-blue-200 bg-blue-100 px-2 py-3" />
-                    <td className="sticky bottom-0 z-10 border border-blue-200 bg-blue-100 px-2 py-3">
-                      {formatIndianNumber(grandTotalRevenueAchievedPercentage, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}
-                      %
-                    </td>
                     <td className="sticky bottom-0 z-10 border border-blue-200 bg-blue-100 px-2 py-3">
                       {formatIndianNumber(grandTotal?.incentive)}
                     </td>

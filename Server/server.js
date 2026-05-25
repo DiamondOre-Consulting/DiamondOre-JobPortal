@@ -17,6 +17,7 @@ import adminAuthRouter from './Controllers/admin-auth/auth.js'
 
 import candidateAuthRouter from './Controllers/candidates-auth/auth.js'
 import { initializeLeaveScheduler } from "./utils/leaveScheduler.js";
+import { ensureLeaveLedgerTransactionKeyIndex } from "./utils/leaveLedgerIndex.js";
 
 const app = express();
 dotenv.config();
@@ -32,8 +33,9 @@ const PORT = process.env.PORT || 5000;
 // Database connect
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => {
+  .then(async () => {
     console.log("Connected to MongoDB");
+    await ensureLeaveLedgerTransactionKeyIndex();
     initializeLeaveScheduler();
   })
   .catch((error) => {

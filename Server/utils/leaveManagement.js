@@ -5,6 +5,8 @@ import LeaveLedger from "../Models/LeaveLedger.js";
 import LeaveRequest from "../Models/LeaveRequest.js";
 import MonthlyAttendanceSummary from "../Models/MonthlyAttendanceSummary.js";
 import MonthlyLeaveSummary from "../Models/MonthlyLeaveSummary.js";
+import { randomUUID } from "crypto";
+import mongoose from "mongoose";
 
 export const CL_MONTHLY_CREDIT = Number(process.env.CL_MONTHLY_CREDIT || 1);
 export const EL_BIMONTHLY_CREDIT = Number(process.env.EL_BIMONTHLY_CREDIT || 1);
@@ -17,13 +19,79 @@ const EL_CARRY_FORWARD_CAP = Number(process.env.EL_CARRY_FORWARD_CAP || 0);
 
 const hasCarryCap = (value) => Number.isFinite(value) && value > 0;
 
+const isTransactionUnsupportedError = (error) => {
+  const message = String(error?.message || "").toLowerCase();
+  return (
+    message.includes("transaction numbers are only allowed on a replica set") ||
+    message.includes("replica set") ||
+    message.includes("transactions are not supported")
+  );
+};
+
+const withSession = (query, session) => (session ? query.session(session) : query);
+
+const createModelRecord = async (Model, payload, session = null) => {
+  if (!session) {
+    return Model.create(payload);
+  }
+
+  const [record] = await Model.create([payload], { session });
+  return record;
+};
+
+export const executeWithOptionalTransaction = async (operation) => {
+  const session = await mongoose.startSession();
+  try {
+    let result;
+    await session.withTransaction(async () => {
+      result = await operation(session);
+    });
+    return result;
+  } catch (error) {
+    if (isTransactionUnsupportedError(error)) {
+      return operation(null);
+    }
+    throw error;
+  } finally {
+    await session.endSession();
+  }
+};
+
 export const normalizeDateOnly = (dateValue) => {
-  const parsedDate = new Date(dateValue);
+  let parsedDate = null;
+
+  if (typeof dateValue === "string") {
+    const normalizedText = dateValue.trim();
+    const match = normalizedText.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (match) {
+      const year = Number(match[1]);
+      const month = Number(match[2]);
+      const day = Number(match[3]);
+      parsedDate = new Date(year, month - 1, day);
+    } else {
+      parsedDate = new Date(dateValue);
+    }
+  } else {
+    parsedDate = new Date(dateValue);
+  }
+
   if (Number.isNaN(parsedDate.getTime())) {
     return null;
   }
   parsedDate.setHours(0, 0, 0, 0);
   return parsedDate;
+};
+
+export const formatDateKey = (dateValue) => {
+  const normalizedDate = normalizeDateOnly(dateValue);
+  if (!normalizedDate) {
+    return null;
+  }
+
+  const year = normalizedDate.getFullYear();
+  const month = String(normalizedDate.getMonth() + 1).padStart(2, "0");
+  const day = String(normalizedDate.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 };
 
 export const getLeaveYear = (dateValue = new Date()) => {
@@ -59,17 +127,77 @@ export const buildMonthlyTransactionKey = ({
 export const buildCarryForwardKey = ({ employeeId, previousYear, nextYear }) =>
   `carry-forward-${employeeId}-${previousYear}-${nextYear}`;
 
-export const ensureLeaveBalance = async (employeeId, year) => {
-  let leaveBalance = await LeaveBalance.findOne({ employeeId, year });
+export const ensureLeaveBalance = async (employeeId, year, session = null) => {
+  let leaveBalance = await withSession(
+    LeaveBalance.findOne({ employeeId, year }),
+    session
+  );
   if (!leaveBalance) {
-    leaveBalance = await LeaveBalance.create({
-      employeeId,
-      year,
-      clBalance: 0,
-      elBalance: 0,
-      lopUsed: 0,
-    });
+    try {
+      leaveBalance = await createModelRecord(
+        LeaveBalance,
+        {
+          employeeId,
+          year,
+          clBalance: 0,
+          elBalance: 0,
+          carryForwardCL: 0,
+          carryForwardEL: 0,
+          lopUsed: 0,
+        },
+        session
+      );
+    } catch (error) {
+      if (Number(error?.code) !== 11000) {
+        throw error;
+      }
+      leaveBalance = await withSession(
+        LeaveBalance.findOne({ employeeId, year }),
+        session
+      );
+    }
   }
+
+  if (
+    leaveBalance &&
+    (leaveBalance.carryForwardCL === undefined ||
+      leaveBalance.carryForwardEL === undefined)
+  ) {
+    const carryEntries = await withSession(
+      LeaveLedger.find({
+        employeeId,
+        leaveYear: year,
+        entryType: "carry_forward",
+      }).select("amount metadata"),
+      session
+    );
+
+    let clCarryTotal = 0;
+    let elCarryTotal = 0;
+    for (const entry of carryEntries) {
+      const clToCarry = toFiniteNumber(entry?.metadata?.clToCarry, 0);
+      const elToCarry = toFiniteNumber(entry?.metadata?.elToCarry, 0);
+      const amount = toFiniteNumber(entry?.amount, 0);
+      if (clToCarry > 0 || elToCarry > 0) {
+        clCarryTotal += clToCarry;
+        elCarryTotal += elToCarry;
+      } else {
+        clCarryTotal += amount;
+      }
+    }
+
+    const clBalance = toFiniteNumber(leaveBalance?.clBalance, 0);
+    const elBalance = toFiniteNumber(leaveBalance?.elBalance, 0);
+    leaveBalance.carryForwardCL = roundTwo(
+      Math.min(clBalance, Math.max(0, clCarryTotal))
+    );
+    leaveBalance.carryForwardEL = roundTwo(
+      Math.min(elBalance, Math.max(0, elCarryTotal))
+    );
+    await leaveBalance.save(session ? { session } : {});
+  }
+
+  clampCarryForwardBuckets(leaveBalance);
   return leaveBalance;
 };
 
@@ -77,6 +205,7 @@ export const recomputeMonthlyAttendanceSummary = async ({
   employeeId,
   year,
   month,
+  session = null,
 }) => {
   if (!employeeId) {
     throw new Error("employeeId is required for monthly attendance summary");
@@ -99,10 +228,13 @@ export const recomputeMonthlyAttendanceSummary = async ({
     month: parsedMonth,
   });
 
-  const attendanceRows = await Attendance.find({
-    employeeId,
-    date: { $gte: startDate, $lte: endDate },
-  }).select("status");
+  const attendanceRows = await withSession(
+    Attendance.find({
+      employeeId,
+      date: { $gte: startDate, $lte: endDate },
+    }).select("status"),
+    session
+  );
 
   let presentDays = 0;
   let absentDays = 0;
@@ -133,7 +265,7 @@ export const recomputeMonthlyAttendanceSummary = async ({
       leaveUnits,
       totalMarkedDays,
     },
-    { upsert: true, new: true, setDefaultsOnInsert: true }
+    { upsert: true, new: true, setDefaultsOnInsert: true, session }
   );
 
   return summary;
@@ -143,6 +275,7 @@ export const getStoredMonthlyAttendanceSummary = async ({
   employeeId,
   year,
   recompute = true,
+  session = null,
 }) => {
   const parsedYear = Number(year);
   if (!Number.isInteger(parsedYear) || parsedYear <= 0) {
@@ -156,16 +289,20 @@ export const getStoredMonthlyAttendanceSummary = async ({
         employeeId,
         year: parsedYear,
         month,
+        session,
       });
       computedMonths.push(summary);
     }
     return computedMonths;
   }
 
-  const existingRows = await MonthlyAttendanceSummary.find({
-    employeeId,
-    year: parsedYear,
-  }).sort({ month: 1 });
+  const existingRows = await withSession(
+    MonthlyAttendanceSummary.find({
+      employeeId,
+      year: parsedYear,
+    }).sort({ month: 1 }),
+    session
+  );
 
   const byMonth = new Map(existingRows.map((row) => [row.month, row]));
   const months = [];
@@ -255,17 +392,260 @@ const parseAppliedBreakup = (breakup = {}) => ({
   cl: toFiniteNumber(breakup?.cl, 0),
   el: toFiniteNumber(breakup?.el, 0),
   lop: toFiniteNumber(breakup?.lop, 0),
+  clCarry: toFiniteNumber(breakup?.clCarry, 0),
+  elCarry: toFiniteNumber(breakup?.elCarry, 0),
 });
+
+const getCarryForwardBuckets = (leaveBalance) => {
+  const clBalance = toFiniteNumber(leaveBalance?.clBalance, 0);
+  const elBalance = toFiniteNumber(leaveBalance?.elBalance, 0);
+  const carryForwardCL = Math.min(
+    Math.max(0, toFiniteNumber(leaveBalance?.carryForwardCL, 0)),
+    clBalance
+  );
+  const carryForwardEL = Math.min(
+    Math.max(0, toFiniteNumber(leaveBalance?.carryForwardEL, 0)),
+    elBalance
+  );
+
+  return {
+    carryForwardCL: roundTwo(carryForwardCL),
+    carryForwardEL: roundTwo(carryForwardEL),
+  };
+};
+
+const clampCarryForwardBuckets = (leaveBalance) => {
+  const { carryForwardCL, carryForwardEL } = getCarryForwardBuckets(leaveBalance);
+  leaveBalance.carryForwardCL = carryForwardCL;
+  leaveBalance.carryForwardEL = carryForwardEL;
+};
 
 const buildEffectiveDateForLeaveYear = (year, date = new Date()) => {
   const normalizedDate = normalizeDateOnly(date) || new Date();
   return new Date(year, normalizedDate.getMonth(), normalizedDate.getDate());
 };
 
+const parseCarryBreakupFromEntry = (entry) => {
+  const clToCarry = toFiniteNumber(entry?.metadata?.clToCarry, 0);
+  const elToCarry = toFiniteNumber(entry?.metadata?.elToCarry, 0);
+  const amount = toFiniteNumber(entry?.amount, 0);
+
+  if (clToCarry > 0 || elToCarry > 0) {
+    return {
+      cl: roundTwo(clToCarry),
+      el: roundTwo(elToCarry),
+    };
+  }
+
+  return {
+    cl: roundTwo(amount),
+    el: 0,
+  };
+};
+
+const computeDesiredCarryFromBalance = (balance) => {
+  const rawCLCarry = toFiniteNumber(balance?.clBalance, 0);
+  const rawELCarry = toFiniteNumber(balance?.elBalance, 0);
+
+  const clToCarry = hasCarryCap(CL_CARRY_FORWARD_CAP)
+    ? Math.min(rawCLCarry, CL_CARRY_FORWARD_CAP)
+    : rawCLCarry;
+  const elToCarry = hasCarryCap(EL_CARRY_FORWARD_CAP)
+    ? Math.min(rawELCarry, EL_CARRY_FORWARD_CAP)
+    : rawELCarry;
+
+  return {
+    cl: roundTwo(Math.max(0, clToCarry)),
+    el: roundTwo(Math.max(0, elToCarry)),
+  };
+};
+
+const applyCarryDeltaToBalance = (leaveBalance, clDelta, elDelta) => {
+  const currentCL = toFiniteNumber(leaveBalance?.clBalance, 0);
+  const currentEL = toFiniteNumber(leaveBalance?.elBalance, 0);
+  const currentLOP = toFiniteNumber(leaveBalance?.lopUsed, 0);
+  const { carryForwardCL: currentCarryCL, carryForwardEL: currentCarryEL } =
+    getCarryForwardBuckets(leaveBalance);
+
+  let nextCL = roundTwo(currentCL + clDelta);
+  let nextEL = roundTwo(currentEL + elDelta);
+  let nextCarryCL = roundTwo(currentCarryCL + clDelta);
+  let nextCarryEL = roundTwo(currentCarryEL + elDelta);
+  let lopDeficit = 0;
+
+  if (nextCL < 0) {
+    lopDeficit += Math.abs(nextCL);
+    nextCL = 0;
+  }
+  if (nextEL < 0) {
+    lopDeficit += Math.abs(nextEL);
+    nextEL = 0;
+  }
+  if (nextCarryCL < 0) {
+    nextCarryCL = 0;
+  }
+  if (nextCarryEL < 0) {
+    nextCarryEL = 0;
+  }
+  if (nextCarryCL > nextCL) {
+    nextCarryCL = nextCL;
+  }
+  if (nextCarryEL > nextEL) {
+    nextCarryEL = nextEL;
+  }
+
+  leaveBalance.clBalance = roundTwo(nextCL);
+  leaveBalance.elBalance = roundTwo(nextEL);
+  leaveBalance.carryForwardCL = roundTwo(nextCarryCL);
+  leaveBalance.carryForwardEL = roundTwo(nextCarryEL);
+  leaveBalance.lopUsed = roundTwo(currentLOP + lopDeficit);
+};
+
+const syncSingleCarryForwardYear = async ({
+  employeeId,
+  nextYear,
+  runDate = new Date(),
+  session = null,
+}) => {
+  const normalizedNextYear = Number(nextYear);
+  if (!Number.isInteger(normalizedNextYear) || normalizedNextYear <= 0) {
+    throw new Error("nextYear must be a valid year");
+  }
+
+  const previousYear = normalizedNextYear - 1;
+  const effectiveDate = buildEffectiveDateForLeaveYear(normalizedNextYear, runDate);
+  const transactionKey = buildCarryForwardKey({
+    employeeId,
+    previousYear,
+    nextYear: normalizedNextYear,
+  });
+
+  const previousBalance = await withSession(
+    LeaveBalance.findOne({ employeeId, year: previousYear }),
+    session
+  );
+  const desiredCarry = previousBalance
+    ? computeDesiredCarryFromBalance(previousBalance)
+    : { cl: 0, el: 0 };
+
+  const existingCarryEntry = await withSession(
+    LeaveLedger.findOne({ transactionKey }),
+    session
+  );
+  const existingCarry = parseCarryBreakupFromEntry(existingCarryEntry);
+
+  const clDelta = roundTwo(desiredCarry.cl - existingCarry.cl);
+  const elDelta = roundTwo(desiredCarry.el - existingCarry.el);
+  const hasCarryDelta = Math.abs(clDelta) > 0 || Math.abs(elDelta) > 0;
+
+  const nextYearBalance = await ensureLeaveBalance(employeeId, normalizedNextYear, session);
+
+  if (hasCarryDelta) {
+    applyCarryDeltaToBalance(nextYearBalance, clDelta, elDelta);
+  }
+
+  clampCarryForwardBuckets(nextYearBalance);
+  nextYearBalance.lastCarryForwardFromYear = previousYear;
+  await nextYearBalance.save(session ? { session } : {});
+
+  const carryAmount = roundTwo(desiredCarry.cl + desiredCarry.el);
+  if (existingCarryEntry) {
+    existingCarryEntry.amount = carryAmount;
+    existingCarryEntry.metadata = {
+      ...(existingCarryEntry.metadata || {}),
+      previousYear,
+      nextYear: normalizedNextYear,
+      clToCarry: desiredCarry.cl,
+      elToCarry: desiredCarry.el,
+      syncMode: "auto",
+      syncedAt: new Date().toISOString(),
+    };
+    existingCarryEntry.effectiveDate = effectiveDate;
+    await existingCarryEntry.save(session ? { session } : {});
+  } else if (carryAmount > 0) {
+    await createLedgerEntry({
+      employeeId,
+      leaveYear: normalizedNextYear,
+      entryType: "carry_forward",
+      leaveType: "MIXED",
+      amount: carryAmount,
+      transactionKey,
+      metadata: {
+        previousYear,
+        nextYear: normalizedNextYear,
+        clToCarry: desiredCarry.cl,
+        elToCarry: desiredCarry.el,
+        syncMode: "auto",
+      },
+      effectiveDate,
+      session,
+    });
+  }
+
+  await recomputeMonthlyLeaveSummary({
+    employeeId,
+    year: normalizedNextYear,
+    month: effectiveDate.getMonth() + 1,
+    session,
+  });
+
+  return {
+    nextYear: normalizedNextYear,
+    previousYear,
+    desiredCarry,
+    existingCarry,
+    clDelta,
+    elDelta,
+    updated: hasCarryDelta,
+  };
+};
+
+export const syncCarryForwardChainFromYear = async ({
+  employeeId,
+  changedYear,
+  runDate = new Date(),
+  session = null,
+}) => {
+  const parsedChangedYear = Number(changedYear);
+  if (!Number.isInteger(parsedChangedYear) || parsedChangedYear <= 0) {
+    return { synced: false, reason: "invalid_year", updates: [] };
+  }
+
+  const currentYear = getLeaveYear(runDate);
+  if (parsedChangedYear >= currentYear) {
+    return { synced: false, reason: "not_old_year", updates: [] };
+  }
+
+  const highestBalanceYearRow = await withSession(
+    LeaveBalance.findOne({ employeeId }).sort({ year: -1 }).select("year"),
+    session
+  );
+  const highestBalanceYear = Number(highestBalanceYearRow?.year || 0);
+  const maxSyncYear = Math.max(currentYear, highestBalanceYear);
+
+  const updates = [];
+  for (let year = parsedChangedYear + 1; year <= maxSyncYear; year += 1) {
+    const row = await syncSingleCarryForwardYear({
+      employeeId,
+      nextYear: year,
+      runDate,
+      session,
+    });
+    updates.push(row);
+  }
+
+  return {
+    synced: true,
+    reason: "done",
+    updates,
+  };
+};
+
 export const recomputeMonthlyLeaveSummary = async ({
   employeeId,
   year,
   month,
+  session = null,
 }) => {
   if (!employeeId) {
     throw new Error("employeeId is required for monthly leave summary");
@@ -288,28 +668,36 @@ export const recomputeMonthlyLeaveSummary = async ({
       employeeId,
       year: parsedYear,
       month: parsedMonth,
+      session,
     }),
     (() => {
       const { startDate, endDate } = getMonthDateRange({
         year: parsedYear,
         month: parsedMonth,
       });
-      return LeaveRequest.find({
-        employeeId,
-        leaveYear: parsedYear,
-        createdAt: { $gte: startDate, $lte: endDate },
-      }).select("status");
+      return withSession(
+        LeaveRequest.find({
+          employeeId,
+          leaveYear: parsedYear,
+          startDate: { $lte: endDate },
+          endDate: { $gte: startDate },
+        }).select("status startDate endDate durationType appliedDeduction impactApplied"),
+        session
+      );
     })(),
     (() => {
       const { startDate, endDate } = getMonthDateRange({
         year: parsedYear,
         month: parsedMonth,
       });
-      return LeaveLedger.find({
-        employeeId,
-        leaveYear: parsedYear,
-        effectiveDate: { $gte: startDate, $lte: endDate },
-      }).select("entryType leaveType amount metadata");
+      return withSession(
+        LeaveLedger.find({
+          employeeId,
+          leaveYear: parsedYear,
+          effectiveDate: { $gte: startDate, $lte: endDate },
+        }).select("entryType leaveType amount metadata"),
+        session
+      );
     })(),
   ]);
 
@@ -327,18 +715,84 @@ export const recomputeMonthlyLeaveSummary = async ({
     0
   );
 
+  let approvedRequests = 0;
+  let rejectedRequests = 0;
+  const approvedImpactRequests = [];
+
   for (const request of leaveRequests) {
     const status = String(request.status || "").toLowerCase();
-    if (status === "pending") nextSummary.pendingRequests += 1;
-    if (status === "approved") nextSummary.approvedRequests += 1;
-    if (status === "rejected") nextSummary.rejectedRequests += 1;
-    if (status === "modified") nextSummary.modifiedRequests += 1;
+    const requestStart = normalizeDateOnly(request.startDate);
+    if (
+      requestStart &&
+      requestStart.getFullYear() === parsedYear &&
+      requestStart.getMonth() + 1 === parsedMonth
+    ) {
+      if (status === "approved") approvedRequests += 1;
+      if (status === "rejected") rejectedRequests += 1;
+    }
+
+    if (status === "approved" && request.impactApplied) {
+      approvedImpactRequests.push(request);
+    }
   }
-  nextSummary.totalRequests =
-    nextSummary.pendingRequests +
-    nextSummary.approvedRequests +
-    nextSummary.rejectedRequests +
-    nextSummary.modifiedRequests;
+
+  nextSummary.pendingRequests = 0;
+  nextSummary.modifiedRequests = 0;
+  nextSummary.approvedRequests = approvedRequests;
+  nextSummary.rejectedRequests = rejectedRequests;
+  nextSummary.totalRequests = approvedRequests + rejectedRequests;
+
+  const monthStart = new Date(parsedYear, parsedMonth - 1, 1);
+  const monthEnd = new Date(parsedYear, parsedMonth, 0);
+
+  for (const request of approvedImpactRequests) {
+    const requestStart = normalizeDateOnly(request.startDate);
+    const requestEnd = normalizeDateOnly(request.endDate);
+    const durationType = String(request.durationType || "").toLowerCase();
+
+    if (!requestStart || !requestEnd || requestEnd < requestStart) {
+      continue;
+    }
+
+    const overlapStart = requestStart > monthStart ? requestStart : monthStart;
+    const overlapEnd = requestEnd < monthEnd ? requestEnd : monthEnd;
+    if (overlapEnd < overlapStart) {
+      continue;
+    }
+
+    const totalUnits = calculateLeaveUnits({
+      durationType,
+      startDate: requestStart,
+      endDate: requestEnd,
+    });
+    if (totalUnits <= 0) {
+      continue;
+    }
+
+    let overlapUnits = 0;
+    if (durationType === "half_day") {
+      overlapUnits =
+        requestStart.getTime() >= monthStart.getTime() &&
+        requestStart.getTime() <= monthEnd.getTime()
+          ? 0.5
+          : 0;
+    } else {
+      overlapUnits =
+        Math.floor(
+          (overlapEnd.getTime() - overlapStart.getTime()) / (1000 * 60 * 60 * 24)
+        ) + 1;
+    }
+
+    if (overlapUnits <= 0) {
+      continue;
+    }
+
+    const ratio = overlapUnits / totalUnits;
+    const applied = parseAppliedBreakup(request.appliedDeduction);
+    nextSummary.clUsed += applied.cl * ratio;
+    nextSummary.elUsed += applied.el * ratio;
+    nextSummary.lopUsed += applied.lop * ratio;
+  }
 
   for (const entry of ledgerEntries) {
     const amount = toFiniteNumber(entry.amount, 0);
@@ -364,40 +818,6 @@ export const recomputeMonthlyLeaveSummary = async ({
         nextSummary.carryForwardEL += elCarry;
       } else if (amount > 0) {
         nextSummary.carryForwardCL += amount;
-      }
-      continue;
-    }
-    if (entry.entryType === "deduction") {
-      const applied = parseAppliedBreakup(entry?.metadata?.appliedDeduction);
-      if (applied.cl > 0 || applied.el > 0 || applied.lop > 0) {
-        nextSummary.clUsed += applied.cl;
-        nextSummary.elUsed += applied.el;
-        nextSummary.lopUsed += applied.lop;
-      } else if (entry.leaveType === "CL") {
-        nextSummary.clUsed += Math.abs(amount);
-      } else if (entry.leaveType === "EL") {
-        nextSummary.elUsed += Math.abs(amount);
-      } else if (entry.leaveType === "LOP") {
-        nextSummary.lopUsed += Math.abs(amount);
-      } else {
-        nextSummary.lopUsed += Math.abs(amount);
-      }
-      continue;
-    }
-    if (entry.entryType === "restore") {
-      const restored = parseAppliedBreakup(entry?.metadata?.restoredDeduction);
-      if (restored.cl > 0 || restored.el > 0 || restored.lop > 0) {
-        nextSummary.clUsed -= restored.cl;
-        nextSummary.elUsed -= restored.el;
-        nextSummary.lopUsed -= restored.lop;
-      } else if (entry.leaveType === "CL") {
-        nextSummary.clUsed -= Math.abs(amount);
-      } else if (entry.leaveType === "EL") {
-        nextSummary.elUsed -= Math.abs(amount);
-      } else if (entry.leaveType === "LOP") {
-        nextSummary.lopUsed -= Math.abs(amount);
-      } else {
-        nextSummary.lopUsed -= Math.abs(amount);
       }
       continue;
     }
@@ -427,7 +847,7 @@ export const recomputeMonthlyLeaveSummary = async ({
   const savedSummary = await MonthlyLeaveSummary.findOneAndUpdate(
     { employeeId, year: parsedYear, month: parsedMonth },
     nextSummary,
-    { upsert: true, new: true, setDefaultsOnInsert: true }
+    { upsert: true, new: true, setDefaultsOnInsert: true, session }
   );
 
   return savedSummary;
@@ -437,6 +857,7 @@ export const getStoredMonthlyLeaveSummary = async ({
   employeeId,
   year,
   recompute = true,
+  session = null,
 }) => {
   const parsedYear = Number(year);
   if (!Number.isInteger(parsedYear) || parsedYear <= 0) {
@@ -450,16 +871,20 @@ export const getStoredMonthlyLeaveSummary = async ({
         employeeId,
         year: parsedYear,
         month,
+        session,
       });
       computedMonths.push(summary);
     }
     return computedMonths;
   }
 
-  const existingRows = await MonthlyLeaveSummary.find({
-    employeeId,
-    year: parsedYear,
-  }).sort({ month: 1 });
+  const existingRows = await withSession(
+    MonthlyLeaveSummary.find({
+      employeeId,
+      year: parsedYear,
+    }).sort({ month: 1 }),
+    session
+  );
 
   const byMonth = new Map(existingRows.map((row) => [row.month, row]));
   const months = [];
@@ -515,6 +940,7 @@ export const getYearlyLeaveOverview = async ({
   employeeId,
   year,
   recompute = true,
+  session = null,
 }) => {
   const parsedYear = Number(year);
   if (!Number.isInteger(parsedYear) || parsedYear <= 0) {
@@ -522,11 +948,12 @@ export const getYearlyLeaveOverview = async ({
   }
 
   const [leaveBalance, monthlySummary] = await Promise.all([
-    ensureLeaveBalance(employeeId, parsedYear),
+    ensureLeaveBalance(employeeId, parsedYear, session),
     getStoredMonthlyLeaveSummary({
       employeeId,
       year: parsedYear,
       recompute,
+      session,
     }),
   ]);
 
@@ -570,28 +997,41 @@ const createLedgerEntry = async ({
   leaveType = "MIXED",
   amount = 0,
   requestId = null,
-  transactionKey = null,
+  transactionKey = undefined,
   metadata = {},
   effectiveDate = new Date(),
+  session = null,
 }) => {
-  if (transactionKey) {
-    const existingEntry = await LeaveLedger.findOne({ transactionKey });
+  const normalizedTransactionKey =
+    typeof transactionKey === "string" ? transactionKey.trim() : "";
+  const fallbackTransactionKey = `ledger-${entryType}-${employeeId}-${leaveYear}-${Date.now()}-${randomUUID()}`;
+  const finalTransactionKey = normalizedTransactionKey || fallbackTransactionKey;
+
+  if (normalizedTransactionKey) {
+    const existingEntry = await withSession(
+      LeaveLedger.findOne({
+        transactionKey: normalizedTransactionKey,
+      }),
+      session
+    );
     if (existingEntry) {
       return existingEntry;
     }
   }
 
-  return LeaveLedger.create({
+  const payload = {
     employeeId,
     leaveYear,
     entryType,
     leaveType,
     amount,
     requestId,
-    transactionKey,
     metadata,
     effectiveDate,
-  });
+    transactionKey: finalTransactionKey,
+  };
+
+  return createModelRecord(LeaveLedger, payload, session);
 };
 
 const parsePositiveNumber = (value, fallback = 0) => {
@@ -606,9 +1046,12 @@ export const manualAdjustLeaveBalance = async ({
   clValue = 0,
   elValue = 0,
   lopValue = 0,
+  carryForwardCLDelta = 0,
+  carryForwardELDelta = 0,
   reason = "",
   updatedBy = null,
   runDate = new Date(),
+  session = null,
 } = {}) => {
   if (!employeeId) {
     throw new Error("employeeId is required for manual leave adjustment");
@@ -624,14 +1067,20 @@ export const manualAdjustLeaveBalance = async ({
     throw new Error("mode must be either delta or set");
   }
 
-  const leaveBalance = await ensureLeaveBalance(employeeId, parsedYear);
+  const leaveBalance = await ensureLeaveBalance(employeeId, parsedYear, session);
   const currentCL = toFiniteNumber(leaveBalance.clBalance, 0);
   const currentEL = toFiniteNumber(leaveBalance.elBalance, 0);
   const currentLOP = toFiniteNumber(leaveBalance.lopUsed, 0);
+  const { carryForwardCL: currentCarryCL, carryForwardEL: currentCarryEL } =
+    getCarryForwardBuckets(leaveBalance);
+  const requestedCarryForwardCLDelta = toFiniteNumber(carryForwardCLDelta, 0);
+  const requestedCarryForwardELDelta = toFiniteNumber(carryForwardELDelta, 0);
 
   let nextCL = currentCL;
   let nextEL = currentEL;
   let nextLOP = currentLOP;
+  let nextCarryCL = currentCarryCL;
+  let nextCarryEL = currentCarryEL;
 
   if (normalizedMode === "set") {
     nextCL = Math.max(0, toFiniteNumber(clValue, currentCL));
@@ -641,18 +1090,27 @@ export const manualAdjustLeaveBalance = async ({
     nextCL = Math.max(0, currentCL + toFiniteNumber(clValue, 0));
     nextEL = Math.max(0, currentEL + toFiniteNumber(elValue, 0));
     nextLOP = Math.max(0, currentLOP + toFiniteNumber(lopValue, 0));
+    nextCarryCL = currentCarryCL + requestedCarryForwardCLDelta;
+    nextCarryEL = currentCarryEL + requestedCarryForwardELDelta;
   }
+
+  nextCarryCL = Math.min(nextCL, Math.max(0, nextCarryCL));
+  nextCarryEL = Math.min(nextEL, Math.max(0, nextCarryEL));
 
   const actualDelta = {
     cl: roundTwo(nextCL - currentCL),
     el: roundTwo(nextEL - currentEL),
     lop: roundTwo(nextLOP - currentLOP),
+    carryForwardCL: roundTwo(nextCarryCL - currentCarryCL),
+    carryForwardEL: roundTwo(nextCarryEL - currentCarryEL),
   };
 
   const hasChange =
     Math.abs(actualDelta.cl) > 0 ||
     Math.abs(actualDelta.el) > 0 ||
-    Math.abs(actualDelta.lop) > 0;
+    Math.abs(actualDelta.lop) > 0 ||
+    Math.abs(actualDelta.carryForwardCL) > 0 ||
+    Math.abs(actualDelta.carryForwardEL) > 0;
 
   if (!hasChange) {
     return {
@@ -666,8 +1124,11 @@ export const manualAdjustLeaveBalance = async ({
 
   leaveBalance.clBalance = nextCL;
   leaveBalance.elBalance = nextEL;
+  leaveBalance.carryForwardCL = nextCarryCL;
+  leaveBalance.carryForwardEL = nextCarryEL;
   leaveBalance.lopUsed = nextLOP;
-  await leaveBalance.save();
+  clampCarryForwardBuckets(leaveBalance);
+  await leaveBalance.save({ session });
 
   const effectiveDate = buildEffectiveDateForLeaveYear(parsedYear, runDate);
 
@@ -688,26 +1149,41 @@ export const manualAdjustLeaveBalance = async ({
         cl: toFiniteNumber(clValue, 0),
         el: toFiniteNumber(elValue, 0),
         lop: toFiniteNumber(lopValue, 0),
+        carryForwardCLDelta: requestedCarryForwardCLDelta,
+        carryForwardELDelta: requestedCarryForwardELDelta,
       },
       actualDelta,
       previousBalance: {
         cl: currentCL,
         el: currentEL,
         lop: currentLOP,
+        carryForwardCL: currentCarryCL,
+        carryForwardEL: currentCarryEL,
       },
       nextBalance: {
         cl: nextCL,
         el: nextEL,
         lop: nextLOP,
+        carryForwardCL: nextCarryCL,
+        carryForwardEL: nextCarryEL,
       },
     },
     effectiveDate,
+    session,
   });
 
   await recomputeMonthlyLeaveSummary({
     employeeId,
     year: parsedYear,
     month: effectiveDate.getMonth() + 1,
+    session,
+  });
+
+  const carrySyncResult = await syncCarryForwardChainFromYear({
+    employeeId,
+    changedYear: parsedYear,
+    runDate,
+    session,
   });
 
   return {
@@ -716,6 +1192,7 @@ export const manualAdjustLeaveBalance = async ({
     year: parsedYear,
     month: effectiveDate.getMonth() + 1,
     ledgerEntry,
+    carrySyncResult,
   };
 };
 
@@ -740,6 +1217,7 @@ export const applyLeaveImpact = async ({
   startDateValue,
   endDateValue,
   requestId = null,
+  session = null,
 }) => {
   const startDate = normalizeDateOnly(startDateValue);
   const endDate = normalizeDateOnly(endDateValue);
@@ -761,33 +1239,51 @@ export const applyLeaveImpact = async ({
   }
 
   const leaveYear = startDate.getFullYear();
-  const leaveBalance = await ensureLeaveBalance(employeeId, leaveYear);
+  const leaveBalance = await ensureLeaveBalance(employeeId, leaveYear, session);
   const requiredUnits = calculateLeaveUnits({ durationType, startDate, endDate });
 
   if (requiredUnits <= 0) {
     throw new Error("Invalid leave duration");
   }
 
-  const deduction = { cl: 0, el: 0, lop: 0 };
+  const deduction = { cl: 0, el: 0, lop: 0, clCarry: 0, elCarry: 0 };
   let remainingUnits = requiredUnits;
 
   if (leaveType === "CL") {
     const availableCL = Math.max(0, Number(leaveBalance.clBalance) || 0);
     deduction.cl = Math.min(availableCL, remainingUnits);
+    const availableCarryCL = Math.min(
+      Math.max(0, Number(leaveBalance.carryForwardCL) || 0),
+      availableCL
+    );
+    deduction.clCarry = Math.min(availableCarryCL, deduction.cl);
     remainingUnits -= deduction.cl;
+    leaveBalance.carryForwardCL = roundTwo(Math.max(0, availableCarryCL - deduction.clCarry));
     leaveBalance.clBalance = availableCL - deduction.cl;
   } else if (leaveType === "EL") {
     const availableEL = Math.max(0, Number(leaveBalance.elBalance) || 0);
     deduction.el = Math.min(availableEL, remainingUnits);
+    const availableCarryEL = Math.min(
+      Math.max(0, Number(leaveBalance.carryForwardEL) || 0),
+      availableEL
+    );
+    deduction.elCarry = Math.min(availableCarryEL, deduction.el);
     remainingUnits -= deduction.el;
+    leaveBalance.carryForwardEL = roundTwo(Math.max(0, availableCarryEL - deduction.elCarry));
     leaveBalance.elBalance = availableEL - deduction.el;
   } else {
     throw new Error("Invalid leave type");
   }
 
   deduction.lop = Math.max(0, remainingUnits);
+  deduction.cl = roundTwo(deduction.cl);
+  deduction.el = roundTwo(deduction.el);
+  deduction.lop = roundTwo(deduction.lop);
+  deduction.clCarry = roundTwo(deduction.clCarry);
+  deduction.elCarry = roundTwo(deduction.elCarry);
   leaveBalance.lopUsed = (Number(leaveBalance.lopUsed) || 0) + deduction.lop;
-  await leaveBalance.save();
+  clampCarryForwardBuckets(leaveBalance);
+  await leaveBalance.save({ session });
 
   const attendanceDates = enumerateDates(startDate, endDate);
   const appliedStatus = durationType === "half_day" ? "Half Day" : "Absent";
@@ -798,10 +1294,13 @@ export const applyLeaveImpact = async ({
     const touchedKey = `${attendanceDate.getFullYear()}-${attendanceDate.getMonth() + 1}`;
     touchedMonthKeys.add(touchedKey);
 
-    const existingAttendance = await Attendance.findOne({
-      employeeId,
-      date: attendanceDate,
-    });
+    const existingAttendance = await withSession(
+      Attendance.findOne({
+        employeeId,
+        date: attendanceDate,
+      }),
+      session
+    );
 
     attendanceSnapshot.push({
       date: attendanceDate,
@@ -818,7 +1317,7 @@ export const applyLeaveImpact = async ({
         status: appliedStatus,
         leaveRequestId: requestId,
       },
-      { upsert: true, new: true, setDefaultsOnInsert: true }
+      { upsert: true, new: true, setDefaultsOnInsert: true, session }
     );
   }
 
@@ -830,19 +1329,29 @@ export const applyLeaveImpact = async ({
       employeeId,
       year: touchedYear,
       month: touchedMonth,
+      session,
     });
     await recomputeMonthlyLeaveSummary({
       employeeId,
       year: touchedYear,
       month: touchedMonth,
+      session,
     });
   }
+
+  const carrySyncResult = await syncCarryForwardChainFromYear({
+    employeeId,
+    changedYear: leaveYear,
+    runDate: new Date(),
+    session,
+  });
 
   return {
     leaveYear,
     totalUnits: requiredUnits,
     appliedDeduction: deduction,
     attendanceSnapshot,
+    carrySyncResult,
   };
 };
 
@@ -851,20 +1360,31 @@ export const restoreLeaveImpact = async ({
   leaveYear,
   appliedDeduction,
   attendanceSnapshot,
+  restoreAttendanceToPresent = false,
+  session = null,
 }) => {
-  const leaveBalance = await ensureLeaveBalance(employeeId, leaveYear);
+  const leaveBalance = await ensureLeaveBalance(employeeId, leaveYear, session);
 
   const clToRestore = parsePositiveNumber(appliedDeduction?.cl);
   const elToRestore = parsePositiveNumber(appliedDeduction?.el);
   const lopToRestore = parsePositiveNumber(appliedDeduction?.lop);
+  const clCarryToRestore = parsePositiveNumber(appliedDeduction?.clCarry);
+  const elCarryToRestore = parsePositiveNumber(appliedDeduction?.elCarry);
+  const { carryForwardCL: currentCarryCL, carryForwardEL: currentCarryEL } =
+    getCarryForwardBuckets(leaveBalance);
 
   leaveBalance.clBalance = (Number(leaveBalance.clBalance) || 0) + clToRestore;
   leaveBalance.elBalance = (Number(leaveBalance.elBalance) || 0) + elToRestore;
+  const restoredCarryCL = Math.min(clToRestore, clCarryToRestore);
+  const restoredCarryEL = Math.min(elToRestore, elCarryToRestore);
+  leaveBalance.carryForwardCL = currentCarryCL + restoredCarryCL;
+  leaveBalance.carryForwardEL = currentCarryEL + restoredCarryEL;
   leaveBalance.lopUsed = Math.max(
     0,
     (Number(leaveBalance.lopUsed) || 0) - lopToRestore
   );
-  await leaveBalance.save();
+  clampCarryForwardBuckets(leaveBalance);
+  await leaveBalance.save({ session });
 
   const touchedMonthKeys = new Set();
   for (const snapshot of attendanceSnapshot || []) {
@@ -876,8 +1396,23 @@ export const restoreLeaveImpact = async ({
     const touchedKey = `${attendanceDate.getFullYear()}-${attendanceDate.getMonth() + 1}`;
     touchedMonthKeys.add(touchedKey);
 
+    if (restoreAttendanceToPresent) {
+      await Attendance.findOneAndUpdate(
+        { employeeId, date: attendanceDate },
+        {
+          employeeId,
+          date: attendanceDate,
+          status: "Present",
+          leaveRequestId: null,
+          note: "",
+        },
+        { upsert: true, new: true, setDefaultsOnInsert: true, session }
+      );
+      continue;
+    }
+
     if (!snapshot.hadRecord && snapshot.previousStatus === "Present") {
-      await Attendance.deleteOne({ employeeId, date: attendanceDate });
+      await Attendance.deleteOne({ employeeId, date: attendanceDate }, { session });
       continue;
     }
 
@@ -889,7 +1424,7 @@ export const restoreLeaveImpact = async ({
         status: snapshot.previousStatus || "Present",
         leaveRequestId: null,
       },
-      { upsert: true, new: true, setDefaultsOnInsert: true }
+      { upsert: true, new: true, setDefaultsOnInsert: true, session }
     );
   }
 
@@ -901,13 +1436,54 @@ export const restoreLeaveImpact = async ({
       employeeId,
       year: touchedYear,
       month: touchedMonth,
+      session,
     });
     await recomputeMonthlyLeaveSummary({
       employeeId,
       year: touchedYear,
       month: touchedMonth,
+      session,
     });
   }
+
+  const carrySyncResult = await syncCarryForwardChainFromYear({
+    employeeId,
+    changedYear: leaveYear,
+    runDate: new Date(),
+    session,
+  });
+
+  return { carrySyncResult };
+};
+
+export const hasOverlappingApprovedLeave = async ({
+  employeeId,
+  startDateValue,
+  endDateValue,
+  excludeRequestId = null,
+  session = null,
+}) => {
+  const startDate = normalizeDateOnly(startDateValue);
+  const endDate = normalizeDateOnly(endDateValue);
+
+  if (!startDate || !endDate) {
+    throw new Error("Invalid leave dates for overlap validation");
+  }
+
+  const filter = {
+    employeeId,
+    status: "approved",
+    impactApplied: true,
+    startDate: { $lte: endDate },
+    endDate: { $gte: startDate },
+  };
+
+  if (excludeRequestId) {
+    filter._id = { $ne: excludeRequestId };
+  }
+
+  const overlap = await withSession(LeaveRequest.exists(filter), session);
+  return Boolean(overlap);
 };
 
 export const runMonthlyLeaveCredit = async ({ runDate = new Date() } = {}) => {
@@ -929,86 +1505,101 @@ export const runMonthlyLeaveCredit = async ({ runDate = new Date() } = {}) => {
   };
 
   for (const employee of employees) {
-    const leaveBalance = await ensureLeaveBalance(employee._id, year);
+    const creditResult = await executeWithOptionalTransaction(async (session) => {
+      const leaveBalance = await ensureLeaveBalance(employee._id, year, session);
+      let clCredited = 0;
+      let elCredited = 0;
+      let skipped = 0;
 
-    const clTransactionKey = buildMonthlyTransactionKey({
-      employeeId: employee._id,
-      year,
-      month,
-      type: "cl-accrual",
-    });
-
-    const existingCLCredit = await LeaveLedger.findOne({
-      transactionKey: clTransactionKey,
-    });
-    if (!existingCLCredit) {
-      leaveBalance.clBalance =
-        (Number(leaveBalance.clBalance) || 0) + CL_MONTHLY_CREDIT;
-      leaveBalance.lastMonthlyCreditMonth = month;
-      await leaveBalance.save();
-
-      await createLedgerEntry({
-        employeeId: employee._id,
-        leaveYear: year,
-        entryType: "accrual_cl",
-        leaveType: "CL",
-        amount: CL_MONTHLY_CREDIT,
-        transactionKey: clTransactionKey,
-        metadata: {
-          source: "monthly-cron",
-          month,
-          probation: Boolean(employee.probation),
+      const clUpdateResult = await LeaveBalance.updateOne(
+        {
+          _id: leaveBalance._id,
+          lastMonthlyCreditMonth: { $ne: month },
         },
-        effectiveDate: date,
-      });
+        {
+          $inc: { clBalance: CL_MONTHLY_CREDIT },
+          $set: { lastMonthlyCreditMonth: month },
+        },
+        session ? { session } : {}
+      );
 
-      summary.clCredited += 1;
-    } else {
-      summary.skipped += 1;
-    }
+      if (Number(clUpdateResult?.modifiedCount || 0) > 0) {
+        const clTransactionKey = buildMonthlyTransactionKey({
+          employeeId: employee._id,
+          year,
+          month,
+          type: "cl-accrual",
+        });
 
-    const shouldCreditEL =
-      month % EL_CREDIT_INTERVAL_MONTHS === 0 && !Boolean(employee.probation);
+        await createLedgerEntry({
+          employeeId: employee._id,
+          leaveYear: year,
+          entryType: "accrual_cl",
+          leaveType: "CL",
+          amount: CL_MONTHLY_CREDIT,
+          transactionKey: clTransactionKey,
+          metadata: {
+            source: "monthly-cron",
+            month,
+            probation: Boolean(employee.probation),
+          },
+          effectiveDate: date,
+          session,
+        });
+        clCredited += 1;
+      } else {
+        skipped += 1;
+      }
 
-    if (!shouldCreditEL) {
-      continue;
-    }
+      const shouldCreditEL =
+        month % EL_CREDIT_INTERVAL_MONTHS === 0 && !Boolean(employee.probation);
 
-    const elTransactionKey = buildMonthlyTransactionKey({
-      employeeId: employee._id,
-      year,
-      month,
-      type: "el-accrual",
+      if (shouldCreditEL) {
+        const elUpdateResult = await LeaveBalance.updateOne(
+          {
+            _id: leaveBalance._id,
+            lastELCreditMonth: { $ne: month },
+          },
+          {
+            $inc: { elBalance: EL_BIMONTHLY_CREDIT },
+            $set: { lastELCreditMonth: month },
+          },
+          session ? { session } : {}
+        );
+
+        if (Number(elUpdateResult?.modifiedCount || 0) > 0) {
+          const elTransactionKey = buildMonthlyTransactionKey({
+            employeeId: employee._id,
+            year,
+            month,
+            type: "el-accrual",
+          });
+
+          await createLedgerEntry({
+            employeeId: employee._id,
+            leaveYear: year,
+            entryType: "accrual_el",
+            leaveType: "EL",
+            amount: EL_BIMONTHLY_CREDIT,
+            transactionKey: elTransactionKey,
+            metadata: {
+              source: "monthly-cron",
+              month,
+              probation: Boolean(employee.probation),
+            },
+            effectiveDate: date,
+            session,
+          });
+          elCredited += 1;
+        }
+      }
+
+      return { clCredited, elCredited, skipped };
     });
 
-    const existingELCredit = await LeaveLedger.findOne({
-      transactionKey: elTransactionKey,
-    });
-    if (existingELCredit) {
-      continue;
-    }
-
-    leaveBalance.elBalance =
-      (Number(leaveBalance.elBalance) || 0) + EL_BIMONTHLY_CREDIT;
-    leaveBalance.lastELCreditMonth = month;
-    await leaveBalance.save();
-
-    await createLedgerEntry({
-      employeeId: employee._id,
-      leaveYear: year,
-      entryType: "accrual_el",
-      leaveType: "EL",
-      amount: EL_BIMONTHLY_CREDIT,
-      transactionKey: elTransactionKey,
-      metadata: {
-        source: "monthly-cron",
-        month,
-        probation: Boolean(employee.probation),
-      },
-      effectiveDate: date,
-    });
-
-    summary.elCredited += 1;
+    summary.clCredited += Number(creditResult?.clCredited || 0);
+    summary.elCredited += Number(creditResult?.elCredited || 0);
+    summary.skipped += Number(creditResult?.skipped || 0);
   }
 
   for (const employee of employees) {
@@ -1036,102 +1627,142 @@ export const runCarryForwardForEmployee = async ({
     throw new Error("nextYear must be a valid year");
   }
 
-  const date = normalizeDateOnly(runDate) || new Date();
-  const effectiveDate = buildEffectiveDateForLeaveYear(normalizedNextYear, date);
-  const previousYear = normalizedNextYear - 1;
-  const transactionKey = buildCarryForwardKey({
-    employeeId,
-    previousYear,
-    nextYear: normalizedNextYear,
-  });
-
-  const existingCarryEntry = await LeaveLedger.findOne({ transactionKey });
-  if (existingCarryEntry) {
-    const leaveBalance = await ensureLeaveBalance(employeeId, normalizedNextYear);
-    return {
-      carried: false,
-      reason: "already_carried",
+  return executeWithOptionalTransaction(async (session) => {
+    const date = normalizeDateOnly(runDate) || new Date();
+    const effectiveDate = buildEffectiveDateForLeaveYear(normalizedNextYear, date);
+    const previousYear = normalizedNextYear - 1;
+    const transactionKey = buildCarryForwardKey({
+      employeeId,
       previousYear,
       nextYear: normalizedNextYear,
-      leaveBalance,
-      carryEntry: existingCarryEntry,
-    };
-  }
+    });
 
-  const previousBalance = await LeaveBalance.findOne({
-    employeeId,
-    year: previousYear,
-  });
+    const existingCarryEntry = await withSession(
+      LeaveLedger.findOne({ transactionKey }),
+      session
+    );
+    if (existingCarryEntry) {
+      const leaveBalance = await ensureLeaveBalance(employeeId, normalizedNextYear, session);
+      return {
+        carried: false,
+        reason: "already_carried",
+        previousYear,
+        nextYear: normalizedNextYear,
+        leaveBalance,
+        carryEntry: existingCarryEntry,
+      };
+    }
 
-  if (!previousBalance) {
-    const leaveBalance = await ensureLeaveBalance(employeeId, normalizedNextYear);
+    const previousBalance = await withSession(
+      LeaveBalance.findOne({
+        employeeId,
+        year: previousYear,
+      }),
+      session
+    );
+
+    if (!previousBalance) {
+      const leaveBalance = await ensureLeaveBalance(employeeId, normalizedNextYear, session);
+      return {
+        carried: false,
+        reason: "no_previous_year_balance",
+        previousYear,
+        nextYear: normalizedNextYear,
+        leaveBalance,
+      };
+    }
+
+    const nextYearBalance = await ensureLeaveBalance(employeeId, normalizedNextYear, session);
+
+    const rawCLCarry = Number(previousBalance.clBalance) || 0;
+    const rawELCarry = Number(previousBalance.elBalance) || 0;
+
+    const clToCarry = hasCarryCap(CL_CARRY_FORWARD_CAP)
+      ? Math.min(rawCLCarry, CL_CARRY_FORWARD_CAP)
+      : rawCLCarry;
+    const elToCarry = hasCarryCap(EL_CARRY_FORWARD_CAP)
+      ? Math.min(rawELCarry, EL_CARRY_FORWARD_CAP)
+      : rawELCarry;
+
+    if (clToCarry <= 0 && elToCarry <= 0) {
+      return {
+        carried: false,
+        reason: "no_balance_to_carry",
+        previousYear,
+        nextYear: normalizedNextYear,
+        leaveBalance: nextYearBalance,
+      };
+    }
+
+    const carryUpdateResult = await LeaveBalance.updateOne(
+      {
+        _id: nextYearBalance._id,
+        lastCarryForwardFromYear: { $ne: previousYear },
+      },
+      {
+        $inc: {
+          clBalance: clToCarry,
+          elBalance: elToCarry,
+          carryForwardCL: clToCarry,
+          carryForwardEL: elToCarry,
+        },
+        $set: { lastCarryForwardFromYear: previousYear },
+      },
+      session ? { session } : {}
+    );
+
+    if (Number(carryUpdateResult?.modifiedCount || 0) === 0) {
+      const refreshedBalance = await ensureLeaveBalance(employeeId, normalizedNextYear, session);
+      const existingEntryAfterSkip = await withSession(
+        LeaveLedger.findOne({ transactionKey }),
+        session
+      );
+      return {
+        carried: false,
+        reason: "already_carried",
+        previousYear,
+        nextYear: normalizedNextYear,
+        leaveBalance: refreshedBalance,
+        carryEntry: existingEntryAfterSkip || null,
+      };
+    }
+
+    const carryEntry = await createLedgerEntry({
+      employeeId,
+      leaveYear: normalizedNextYear,
+      entryType: "carry_forward",
+      leaveType: "MIXED",
+      amount: clToCarry + elToCarry,
+      transactionKey,
+      metadata: {
+        previousYear,
+        nextYear: normalizedNextYear,
+        clToCarry,
+        elToCarry,
+      },
+      effectiveDate,
+      session,
+    });
+
+    await recomputeMonthlyLeaveSummary({
+      employeeId,
+      year: normalizedNextYear,
+      month: effectiveDate.getMonth() + 1,
+      session,
+    });
+
+    const refreshedBalance = await ensureLeaveBalance(employeeId, normalizedNextYear, session);
     return {
-      carried: false,
-      reason: "no_previous_year_balance",
-      previousYear,
-      nextYear: normalizedNextYear,
-      leaveBalance,
-    };
-  }
-
-  const nextYearBalance = await ensureLeaveBalance(employeeId, normalizedNextYear);
-
-  const rawCLCarry = Number(previousBalance.clBalance) || 0;
-  const rawELCarry = Number(previousBalance.elBalance) || 0;
-
-  const clToCarry = hasCarryCap(CL_CARRY_FORWARD_CAP)
-    ? Math.min(rawCLCarry, CL_CARRY_FORWARD_CAP)
-    : rawCLCarry;
-  const elToCarry = hasCarryCap(EL_CARRY_FORWARD_CAP)
-    ? Math.min(rawELCarry, EL_CARRY_FORWARD_CAP)
-    : rawELCarry;
-
-  if (clToCarry <= 0 && elToCarry <= 0) {
-    return {
-      carried: false,
-      reason: "no_balance_to_carry",
-      previousYear,
-      nextYear: normalizedNextYear,
-      leaveBalance: nextYearBalance,
-    };
-  }
-
-  nextYearBalance.clBalance = (Number(nextYearBalance.clBalance) || 0) + clToCarry;
-  nextYearBalance.elBalance = (Number(nextYearBalance.elBalance) || 0) + elToCarry;
-  await nextYearBalance.save();
-
-  const carryEntry = await createLedgerEntry({
-    employeeId,
-    leaveYear: normalizedNextYear,
-    entryType: "carry_forward",
-    leaveType: "MIXED",
-    amount: clToCarry + elToCarry,
-    transactionKey,
-    metadata: {
+      carried: true,
+      reason: "carried",
       previousYear,
       nextYear: normalizedNextYear,
       clToCarry,
       elToCarry,
-    },
-    effectiveDate,
+      leaveBalance: refreshedBalance,
+      carryEntry,
+    };
   });
-
-  await recomputeMonthlyLeaveSummary({
-    employeeId,
-    year: normalizedNextYear,
-    month: effectiveDate.getMonth() + 1,
-  });
-
-  return {
-    carried: true,
-    reason: "carried",
-    previousYear,
-    nextYear: normalizedNextYear,
-    clToCarry,
-    elToCarry,
-    leaveBalance: nextYearBalance,
-    carryEntry,
-  };
 };
 
 export const runYearEndCarryForward = async ({ runDate = new Date() } = {}) => {
@@ -1168,6 +1799,7 @@ export const addCompensationLeave = async ({
   year = getLeaveYear(),
   reason = "",
   createdBy = null,
+  session = null,
 }) => {
   const creditAmount = parsePositiveNumber(amount);
   if (!creditAmount) {
@@ -1177,13 +1809,13 @@ export const addCompensationLeave = async ({
     throw new Error("Compensation leave type must be CL or EL");
   }
 
-  const leaveBalance = await ensureLeaveBalance(employeeId, year);
+  const leaveBalance = await ensureLeaveBalance(employeeId, year, session);
   if (leaveType === "CL") {
     leaveBalance.clBalance = (Number(leaveBalance.clBalance) || 0) + creditAmount;
   } else {
     leaveBalance.elBalance = (Number(leaveBalance.elBalance) || 0) + creditAmount;
   }
-  await leaveBalance.save();
+  await leaveBalance.save({ session });
 
   const effectiveDate = buildEffectiveDateForLeaveYear(year, new Date());
 
@@ -1198,12 +1830,21 @@ export const addCompensationLeave = async ({
       createdBy,
     },
     effectiveDate,
+    session,
   });
 
   await recomputeMonthlyLeaveSummary({
     employeeId,
     year,
     month: effectiveDate.getMonth() + 1,
+    session,
+  });
+
+  await syncCarryForwardChainFromYear({
+    employeeId,
+    changedYear: year,
+    runDate: new Date(),
+    session,
   });
 
   return leaveBalance;

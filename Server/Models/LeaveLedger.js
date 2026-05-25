@@ -43,10 +43,15 @@ const leaveLedgerSchema = new mongoose.Schema(
     },
     transactionKey: {
       type: String,
-      default: null,
-      index: true,
-      unique: true,
-      sparse: true,
+      trim: true,
+      default: undefined,
+      set: (value) => {
+        if (typeof value !== "string") {
+          return undefined;
+        }
+        const normalized = value.trim();
+        return normalized.length ? normalized : undefined;
+      },
     },
     metadata: {
       type: mongoose.Schema.Types.Mixed,
@@ -59,6 +64,15 @@ const leaveLedgerSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+  }
+);
+
+leaveLedgerSchema.index(
+  { transactionKey: 1 },
+  {
+    name: "transactionKey_1",
+    unique: true,
+    partialFilterExpression: { transactionKey: { $type: "string" } },
   }
 );
 
