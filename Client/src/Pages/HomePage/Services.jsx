@@ -102,6 +102,10 @@ const Services = () => {
       value: "IT Services",
       label: "IT Services",
     },
+    {
+      value: "E-Commerce Solutions",
+      label: "E-Commerce Solutions",
+    },
   ];
 
   useEffect(() => {
@@ -132,7 +136,8 @@ const Services = () => {
 
             <p className="mx-auto max-w-screen-md text-center text-gray-500 md:text-lg">
               Empowering success through tailored Management Consulting,
-              Financial Guidance and innovative IT Products, we solve for you.
+              Financial Guidance, innovative IT Products and E-Commerce
+              Solutions, we solve for you.
             </p>
           </div>
 
@@ -244,7 +249,7 @@ const Services = () => {
               </div>
             </a>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 md:gap-8 xl:grid-cols-2 mt-4">
+          <div className="grid gap-4 sm:grid-cols-2 md:gap-8 xl:grid-cols-3 mt-4">
             <a
               href="https://www.referbiz.in/"
               target="_blank"
@@ -314,6 +319,44 @@ const Services = () => {
                   seamless integration and unparalleled user experiences. Trust
                   DOC-Labz to elevate your online presence and propel your
                   success in the digital landscape.
+                </p>
+              </div>
+            </a>
+
+            <a
+              href="https://www.doclabz.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex divide-x rounded-lg border bg-white shadow-lg"
+            >
+              <div className="flex items-center p-2 text-indigo-500 md:p-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6 md:h-8 md:w-8"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+
+              <div className="p-4 md:p-6">
+                <h3 className="mb-2 text-lg font-semibold md:text-xl">
+                  E-Commerce Solutions
+                </h3>
+                <p className="text-gray-500">
+                  Take Your Business Online with Powerful E-Commerce Solutions.
+                  From custom online stores and secure payment gateway
+                  integration to product catalogue management, inventory
+                  tracking and order fulfilment, we build fast, mobile-friendly
+                  shops that convert visitors into loyal customers. Partner with
+                  DOC-Labz to launch, scale and grow your online sales.
                 </p>
               </div>
             </a>

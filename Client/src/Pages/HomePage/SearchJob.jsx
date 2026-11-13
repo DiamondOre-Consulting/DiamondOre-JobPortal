@@ -156,6 +156,10 @@ const SearchJob = () => {
       value: "IT Services",
       label: "IT Services",
     },
+    {
+      value: "E-Commerce Solutions",
+      label: "E-Commerce Solutions",
+    },
   ];
 
   return (
