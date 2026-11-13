@@ -185,8 +185,8 @@ const PostReview = () => {
       label: "IT Services",
     },
     {
-      value: "E-Commerce Solutions",
-      label: "E-Commerce Solutions",
+      value: "E-Commerce (Avline)",
+      label: "E-Commerce (Avline)",
     },
   ];
 

@@ -103,8 +103,8 @@ const Services = () => {
       label: "IT Services",
     },
     {
-      value: "E-Commerce Solutions",
-      label: "E-Commerce Solutions",
+      value: "E-Commerce (Avline)",
+      label: "E-Commerce (Avline)",
     },
   ];
 
@@ -136,8 +136,8 @@ const Services = () => {
 
             <p className="mx-auto max-w-screen-md text-center text-gray-500 md:text-lg">
               Empowering success through tailored Management Consulting,
-              Financial Guidance, innovative IT Products and E-Commerce
-              Solutions, we solve for you.
+              Financial Guidance, innovative IT Products and our own
+              E-Commerce platform, we solve for you.
             </p>
           </div>
 
@@ -324,7 +324,7 @@ const Services = () => {
             </a>
 
             <a
-              href="https://www.doclabz.com/"
+              href="https://avline.in/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex divide-x rounded-lg border bg-white shadow-lg"
@@ -348,15 +348,14 @@ const Services = () => {
 
               <div className="p-4 md:p-6">
                 <h3 className="mb-2 text-lg font-semibold md:text-xl">
-                  E-Commerce Solutions
+                  E-Commerce
                 </h3>
                 <p className="text-gray-500">
-                  Take Your Business Online with Powerful E-Commerce Solutions.
-                  From custom online stores and secure payment gateway
-                  integration to product catalogue management, inventory
-                  tracking and order fulfilment, we build fast, mobile-friendly
-                  shops that convert visitors into loyal customers. Partner with
-                  DOC-Labz to launch, scale and grow your online sales.
+                  Shop Smarter with Avline, Our Very Own E-Commerce Platform.
+                  Discover a wide range of quality products at great prices,
+                  with secure payments, easy ordering and reliable doorstep
+                  delivery. Avline brings the trust of the Diamond Ore group to
+                  your online shopping experience.
                 </p>
               </div>
             </a>
