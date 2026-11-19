@@ -103,8 +103,8 @@ const Services = () => {
       label: "IT Services",
     },
     {
-      value: "E-Commerce (Avline)",
-      label: "E-Commerce (Avline)",
+      value: "E-Commerce",
+      label: "E-Commerce",
     },
   ];
 
@@ -136,8 +136,8 @@ const Services = () => {
 
             <p className="mx-auto max-w-screen-md text-center text-gray-500 md:text-lg">
               Empowering success through tailored Management Consulting,
-              Financial Guidance, innovative IT Products and our own
-              E-Commerce platform, we solve for you.
+              Financial Guidance, innovative IT Products and E-Commerce
+              expertise, we solve for you.
             </p>
           </div>
 
@@ -323,12 +323,7 @@ const Services = () => {
               </div>
             </a>
 
-            <a
-              href="https://avline.in/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex divide-x rounded-lg border bg-white shadow-lg"
-            >
+            <div className="flex divide-x rounded-lg border bg-white shadow-lg">
               <div className="flex items-center p-2 text-indigo-500 md:p-4">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -351,14 +346,16 @@ const Services = () => {
                   E-Commerce
                 </h3>
                 <p className="text-gray-500">
-                  Shop Smarter with Avline, Our Very Own E-Commerce Platform.
-                  Discover a wide range of quality products at great prices,
-                  with secure payments, easy ordering and reliable doorstep
-                  delivery. Avline brings the trust of the Diamond Ore group to
-                  your online shopping experience.
+                  Along with consulting and talent solutions, we also have
+                  strong expertise in E-Commerce. From product sourcing and
+                  catalogue management to online marketing, secure payments and
+                  seamless order fulfilment, our team brings hands-on
+                  experience in running and growing online retail. We bring the
+                  same commitment to quality and trust that defines the Diamond
+                  Ore group.
                 </p>
               </div>
-            </a>
+            </div>
           </div>
         </div>
       </div>

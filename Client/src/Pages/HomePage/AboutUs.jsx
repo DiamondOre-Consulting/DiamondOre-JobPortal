@@ -111,8 +111,8 @@ const AboutUs = () => {
       label: "IT Services",
     },
     {
-      value: "E-Commerce (Avline)",
-      label: "E-Commerce (Avline)",
+      value: "E-Commerce",
+      label: "E-Commerce",
     },
   ];
 
